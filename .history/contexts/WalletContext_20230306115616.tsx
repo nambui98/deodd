@@ -88,8 +88,8 @@ interface wallerContextType {
 	refresh: boolean,
 	setRefresh: (status: boolean) => void,
 	bnbAssets: string,
-	theme: 'light' | 'dark'
-	setTheme: (theme: 'light' | 'dark') => void,
+	// theme: 'light' | 'dark'
+	// setTheme: (theme: 'light' | 'dark') => void,
 	userInfo: { userName: string, avatar: string }
 }
 
@@ -118,8 +118,8 @@ const WalletContext = createContext<wallerContextType>({
 	refresh: false,
 	setRefresh: () => { },
 	bnbAssets: '',
-	theme: 'dark',
-	setTheme: () => { },
+	// theme: 'dark',
+	// setTheme: () => {},
 	userInfo: { userName: '', avatar: '' }
 })
 

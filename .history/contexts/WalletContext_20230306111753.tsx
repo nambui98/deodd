@@ -90,7 +90,7 @@ interface wallerContextType {
 	bnbAssets: string,
 	theme: 'light' | 'dark'
 	setTheme: (theme: 'light' | 'dark') => void,
-	userInfo: { userName: string, avatar: string }
+	userInfo: {userName: string, avatar: string}
 }
 
 interface IProps {
@@ -119,8 +119,8 @@ const WalletContext = createContext<wallerContextType>({
 	setRefresh: () => { },
 	bnbAssets: '',
 	theme: 'dark',
-	setTheme: () => { },
-	userInfo: { userName: '', avatar: '' }
+	setTheme: () => {},
+	userInfo: {userName: '', avatar: ''}
 })
 
 export const useWalletContext = () => useContext(WalletContext);
@@ -155,16 +155,16 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [refresh, setRefresh] = useState<boolean>(false);
 	const [bnbAssets, setBnbAssets] = useState<string>('')
 	const [theme, setTheme] = useState<'light' | 'dark'>('dark')
-	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
+	const [userInfo, setUserInfo] = useState<{userName: string, avatar: string}>({userName: '', avatar: ''})
 
 	const handleDisconnectWallet = () => {
 		UserService.removeCurrentUser();
 	}
 
 	const getInfoAddress = async () => {
-		const res = await getUserInfo(ethersSigner, walletAccount)
-		res && setUserInfo({ userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei') })
-	}
+    const res = await getUserInfo(ethersSigner, walletAccount)
+    res && setUserInfo({userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei')})
+  }
 
 	const handleWalletAccountsChanged = async (accounts: any) => {
 		if (accounts.length > 0) {
@@ -181,7 +181,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const playerAssets = await getPlayerAssets(ethersSigner, walletAccount)
 			//GET balance
 			const balance = await ethersProvider.getBalance(walletAccount);
-
+		
 			setBnbBalance(ethers.utils.formatEther(balance))
 			setBnbAssets(ethers.utils.formatUnits(playerAssets))
 		}
@@ -197,7 +197,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	}
 
 	useEffect(() => {
-
+		
 		const startApp = async (_ethereumProvider: any) => {
 			//The provider detected by detectEthereumProvider() must be the same as window.ethereum
 			// if (_ethereumProvider !== (window as any).ethereum) {
@@ -261,7 +261,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		// }
 		// changeChain();
 
-		if (!localStorage.getItem('theme')) {
+		if(!localStorage.getItem('theme')){
 			setTheme('dark')
 			localStorage.setItem('theme', 'dark')
 		} else {
