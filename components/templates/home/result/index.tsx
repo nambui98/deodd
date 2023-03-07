@@ -1,11 +1,12 @@
-import { Button } from "../../components/button"
-import { TEXT_STYLE } from "../../styles/common"
+import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, CircularProgress, Stack, styled, Typography } from "@mui/material";
-import { handleClaimAll } from "../../libs/flipCoinContract";
-import { useWalletContext } from "../../contexts/WalletContext";
+import { handleClaimAll } from "../../../../libs/flipCoinContract";
+import { useWalletContext } from "../../../../contexts/WalletContext";
 import { useEffect, useState } from 'react'
-import { Popup } from "../../components/popup";
-import { propsTheme } from "../../pages/homepage";
+import { Popup } from "../../../common/popup";
+import { propsTheme } from "../../../../pages/homepage";
+import { useColorModeContext } from "../../../../contexts/ColorModeContext";
+import { ButtonMain } from "../../../ui/button";
 
 interface IProps {
   amount: string | undefined,
@@ -17,7 +18,8 @@ interface IProps {
 }
 
 export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winningStreakAmount, winningStreakLength, playAgain }) => {
-  const { ethersSigner, refresh, setRefresh, bnbAssets, theme } = useWalletContext()
+  const { ethersSigner, refresh, setRefresh, bnbAssets } = useWalletContext()
+  const { darkMode } = useColorModeContext();
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -41,16 +43,16 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
         <Box><img src='assets/icons/close-circle.svg' /></Box>
-        <Typography sx={{ ...TEXT_STYLE(14, 500, theme === 'light' ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
-        <Button active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ padding: 13.5 }} />
+        <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
+        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
       </Box>
     )
   }
 
   const bodyPopupSuccess = (
     <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-      <Typography sx={{ ...TEXT_STYLE(24, 500, theme === 'light' ? '#181536' : '#ffffff'), marginBottom: '24px' }}>Claim successful!</Typography>
-      <Button active={true} title={'OKEY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ padding: 13.5 }} />
+      <Typography sx={{ ...TEXT_STYLE(24, 500, !darkMode ? '#181536' : '#ffffff'), marginBottom: '24px' }}>Claim successful!</Typography>
+      <ButtonMain active={true} title={'OKEY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
     </Box>
   )
 
@@ -78,34 +80,34 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
 
   return <Wrap>
     <Coin><img src={`assets/icons/${renderImage()}.svg`} /></Coin>
-    <Title themeLight={theme === 'light'}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: theme === 'light' ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
+    <Title themeLight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
     {coinSide === flipResult && <BoxAmount sx={{
       justifyContent: 'space-between'
     }}>
-      <WinStreak themeLight={theme === 'light'}>
+      <WinStreak themeLight={!darkMode}>
         <div>{winningStreakLength}</div>
         WIN STREAK
       </WinStreak>
-      <WinStreak themeLight={theme === 'light'}>
+      <WinStreak themeLight={!darkMode}>
         <div>{winningStreakAmount}</div>
         BALANCE (BNB)
       </WinStreak>
     </BoxAmount>}
-    {coinSide !== flipResult && <TextFail themeLight={theme === 'light'}>Fall where, double there, don’t give up</TextFail>}
+    {coinSide !== flipResult && <TextFail themeLight={!darkMode}>Fall where, double there, don’t give up</TextFail>}
     <Box sx={{
       display: 'flex',
       justifyContent: 'center'
     }}>
-      {coinSide === flipResult && <Button title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={parseFloat(bnbAssets) > 0 ? true : false} onClick={handleClaim} customStyle={{
+      {coinSide === flipResult && <ButtonMain title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={parseFloat(bnbAssets) > 0 ? true : false} onClick={handleClaim} customStyle={{
         padding: '13.5px',
         maxWidth: '225px',
         width: '100%',
         marginRight: '24px'
       }} />}
-      <Button title={coinSide !== flipResult ? 'TRY AGAIN' : "PLAY AGAIN"} active={true} onClick={playAgain} customStyle={{
+      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "PLAY AGAIN"} active={true} onClick={playAgain} customStyle={{
         padding: '13.5px',
         maxWidth: '225px',
-        width: '100%',       
+        width: '100%',
       }} />
     </Box>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>

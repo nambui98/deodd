@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography, useMediaQuery } from "@mui/material";
 import Modal from '@mui/material/Modal';
-import { Button } from "../components/button"
-import { Header } from "../components/header"
-import { CONTENT } from "../const/connectWallet"
-import { ConnectWallet } from "../containers/connectWallet"
-import { PlayPart } from "../containers/playPart"
-import { TopList } from "../containers/topList"
+// import { Button } from "../components/ui/button"
+import { Header } from "../components/common/header"
+import { CONTENT } from "../constants/connectWallet"
+import { ConnectWallet } from "../components/common/connectWallet"
+import { PlayPart } from "../components/templates/home/playPart"
+import { TopList } from "../components/templates/home/topList"
 import { Container, TEXT_STYLE } from "../styles/common"
 import { useRouter } from "next/router"
 import { changeNetwork, useWalletContext } from "../contexts/WalletContext"
-import { Popup } from "../components/popup";
+import { Popup } from "../components/common/popup";
+import { useColorModeContext } from "../contexts/ColorModeContext";
+import { ButtonMain } from "../components/ui/button";
 
 export enum StatusGame {
   flip,
@@ -22,7 +24,8 @@ const HomePage: React.FC = () => {
   const width800 = useMediaQuery(`(min-width: 800px)`)
   const [statusPopup, setStatusPopup] = useState<boolean>(false);
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
-  const { theme, chainIdIsSupported, provider, walletAccount } = useWalletContext();
+  const { chainIdIsSupported, provider, walletAccount } = useWalletContext();
+  const { darkMode } = useColorModeContext();
   const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
 
   const router = useRouter()
@@ -40,10 +43,10 @@ const HomePage: React.FC = () => {
     setStatusPopupType(type)
   }
 
-  return <Wrap themeLight={theme === 'light'}>
-    <Header />
-    <Body sx={{background: theme === 'light' ? '#FFFFFF' : '#1C1B3E'}}>
+  return <Wrap themeLight={!darkMode}>
+    <Body >
       <Container>
+
         <Inner sx={{
           '@media (min-width: 800px)': {
             flexDirection: statusGame !== StatusGame.flip ? 'column !important' : 'row',
@@ -52,27 +55,28 @@ const HomePage: React.FC = () => {
         }}>
           <LeftBody>
             {walletAccount ? <PlayPart statusGame={statusGame} setStatusGame={setStatusGame} /> : <ConnectWallet />}
-            {width800 && statusGame === StatusGame.flip && <BoxPopup themeLight={theme === 'light'}>
-              <ItemPopup themeLight={theme === 'light'} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-              <ItemPopup themeLight={theme === 'light'} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-              <ItemPopup themeLight={theme === 'light'} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+            {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themeLight={!darkMode}>
+              <ItemPopup themeLight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
+              <ItemPopup themeLight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
+              <ItemPopup themeLight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </BoxPopup>}
             <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
-              <Box sx={{maxWidth: '304px'}}>
-                <TitlePopup themeLight={theme === 'light'}>{CONTENT[statusPopupType].title}</TitlePopup>
-                <BodyPopup themeLight={theme === 'light'}>{CONTENT[statusPopupType].body}</BodyPopup>
-                <Button active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ padding: 13.5 }} />
+              <Box sx={{ maxWidth: '304px' }}>
+                <TitlePopup themeLight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
+                <BodyPopup themeLight={!darkMode}>{CONTENT[statusPopupType].body}</BodyPopup>
+                <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
               </Box>
             </Box>} />
           </LeftBody>
           {statusGame === StatusGame.flip && <RightBody>
             <TopList />
-            {!width800 && <BoxPopup themeLight={theme === 'light'}>
-              <ItemPopup themeLight={theme === 'light'} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-              <ItemPopup themeLight={theme === 'light'} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-              <ItemPopup themeLight={theme === 'light'} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+            {!width800 && <BoxPopup themeLight={!darkMode}>
+              <ItemPopup themeLight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
+              <ItemPopup themeLight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
+              <ItemPopup themeLight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </BoxPopup>}
           </RightBody>}
+
         </Inner>
       </Container>
     </Body>
@@ -82,14 +86,17 @@ const HomePage: React.FC = () => {
 export default HomePage;
 
 export type propsTheme = {
-  themeLight: boolean
+  themeLight: boolean,
 }
+
 const Wrap = styled(Box)((props: propsTheme) => ({
-  background: props.themeLight ? '#FFFFFF' : '#1C1B3E',
-  height: '100vh'
+  // background: '#1C1B3E',
+  height: '100%',
+  // paddingBottom: "80px"
 }))
 const Body = styled(Box)({
   marginTop: 14,
+  // background: 'primary',
   '@media (min-width: 800px)': {
     marginTop: 19,
   }
@@ -128,12 +135,12 @@ const BoxPopup = styled(Box)((props: propsTheme) => ({
   display: 'flex',
   alignItems: 'center',
   color: props.themeLight ? '#181536' : '#FFFFFF',
-  margin: 'auto 0 24px',
+  // margin: 'auto 0 24px',
   justifyContent: 'center',
   paddingTop: 25,
   '@media (min-width: 800px)': {
     paddingTop: 25,
-    margin: 'auto 0 0',
+    // margin: 'auto 0 0',
   }
 }))
 const ItemPopup = styled(Box)((props: propsTheme) => ({

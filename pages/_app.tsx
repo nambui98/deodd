@@ -1,24 +1,22 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import 'antd/dist/antd.css';
-import { changeNetwork, useWalletContext, WalletProvider } from '../contexts/WalletContext';
-import { ThemeProvider } from '@mui/material';
-import theme from '../utils/theme';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ColorModeProvider } from '../contexts/ColorModeContext';
+import { WalletProvider } from '../contexts/WalletContext';
+import { AppPropsCustom } from '../libs/types';
+import '../styles/globals.css';
 import '../styles/globals.scss';
+import Layout from '../components/common/layout';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  
-
+function MyApp(props: AppPropsCustom) {
+  const { pageProps, Component } = props;
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <WalletProvider>
-          <CssBaseline />
+    <ColorModeProvider {...props}>
+      <WalletProvider>
+        <CssBaseline />
+        <Layout>
           <Component {...pageProps} />
-        </WalletProvider>
-      </ThemeProvider>
-    </>
+        </Layout>
+      </WalletProvider>
+    </ColorModeProvider>
   )
 }
 

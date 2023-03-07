@@ -88,8 +88,6 @@ interface wallerContextType {
 	refresh: boolean,
 	setRefresh: (status: boolean) => void,
 	bnbAssets: string,
-	theme: 'light' | 'dark'
-	setTheme: (theme: 'light' | 'dark') => void,
 	userInfo: { userName: string, avatar: string }
 }
 
@@ -118,8 +116,6 @@ const WalletContext = createContext<wallerContextType>({
 	refresh: false,
 	setRefresh: () => { },
 	bnbAssets: '',
-	theme: 'dark',
-	setTheme: () => { },
 	userInfo: { userName: '', avatar: '' }
 })
 
@@ -154,7 +150,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [busdBalance, setBusdBalance] = useState<string>('');
 	const [refresh, setRefresh] = useState<boolean>(false);
 	const [bnbAssets, setBnbAssets] = useState<string>('')
-	const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
 
 	const handleDisconnectWallet = () => {
@@ -162,8 +157,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	}
 
 	const getInfoAddress = async () => {
-		const res = await getUserInfo(ethersSigner, walletAccount)
-		res && setUserInfo({ userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei') })
+		if (walletAccount) {
+			const res = await getUserInfo(ethersSigner, walletAccount)
+			res && setUserInfo({ userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei') })
+		}
 	}
 
 	const handleWalletAccountsChanged = async (accounts: any) => {
@@ -181,7 +178,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const playerAssets = await getPlayerAssets(ethersSigner, walletAccount)
 			//GET balance
 			const balance = await ethersProvider.getBalance(walletAccount);
-
 			setBnbBalance(ethers.utils.formatEther(balance))
 			setBnbAssets(ethers.utils.formatUnits(playerAssets))
 		}
@@ -189,6 +185,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	const handleChainChanged = async (chainId: any) => {
 		// if (supportedChainIds.indexOf(chainId) >= 0) {
+
 		// 	setChainIdIsSupported(true);
 		// } else {
 		// 	setChainIdIsSupported(false);
@@ -253,22 +250,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		ethersSigner && getInfoAddress()
 	}, [walletAccount, ethersSigner, refresh])
 
-	useEffect(() => {
-		// const changeChain = async () => {
-		// 	if (!chainIdIsSupported) {
-		// 		await changeNetwork(provider)
-		// 	}
-		// }
-		// changeChain();
-
-		if (!localStorage.getItem('theme')) {
-			setTheme('dark')
-			localStorage.setItem('theme', 'dark')
-		} else {
-			setTheme((localStorage.getItem('theme') as 'dark' | 'light') || 'dark')
-		}
-	}, [])
-
 	const value = {
 		activePopup,
 		setToggleActivePopup: setActivePopup,
@@ -290,8 +271,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		refresh: refresh,
 		setRefresh: setRefresh,
 		bnbAssets: bnbAssets,
-		theme: theme,
-		setTheme: setTheme,
 		userInfo: userInfo
 	}
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>

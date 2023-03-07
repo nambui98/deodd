@@ -1,17 +1,18 @@
 
-import { Box, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Grid, Typography, styled, useMediaQuery } from "@mui/material";
 import Modal from '@mui/material/Modal';
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button } from "../components/button";
-import { Header } from "../components/header";
-import { Popup } from "../components/popup";
-import { CONTENT } from "../const/connectWallet";
-import { ConnectWallet } from "../containers/connectWallet";
-import { PlayPart } from "../containers/playPart";
-import { TopList } from "../containers/topList";
+// import { Button } from "../components/ui/button";
+import { Header } from "../components/common/header";
+import { Popup } from "../components/common/popup";
+import { CONTENT } from "../constants/connectWallet";
+import { ConnectWallet } from "../components/common/connectWallet";
+import { PlayPart } from "../components/templates/home/playPart";
+import { TopList } from "../components/templates/home/topList";
 import { useWalletContext } from "../contexts/WalletContext";
 import { Container, TEXT_STYLE } from "../styles/common";
+import { useColorModeContext } from "../contexts/ColorModeContext";
 
 export enum StatusGame {
     flip,
@@ -23,7 +24,8 @@ const LoyaltyPage: React.FC = () => {
     const width800 = useMediaQuery(`(min-width: 800px)`)
     const [statusPopup, setStatusPopup] = useState<boolean>(false);
     const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
-    const { theme, chainIdIsSupported, provider, walletAccount } = useWalletContext();
+    const { chainIdIsSupported, provider, walletAccount } = useWalletContext();
+    const { darkMode } = useColorModeContext();
     const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
 
     const router = useRouter()
@@ -41,40 +43,26 @@ const LoyaltyPage: React.FC = () => {
         setStatusPopupType(type)
     }
 
-    return <Wrap themeLight={theme === 'light'}>
-        <Header />
-        <Body sx={{ background: theme === 'light' ? '#FFFFFF' : '#1C1B3E' }}>
+    return <Wrap themeLight={!darkMode}>
+        <Body sx={{ background: !darkMode ? '#FFFFFF' : '#1C1B3E' }}>
+            <div style={{
+                backgroundColor: '#181536',
+                padding: "35px 0"
+            }}>
+                <Container>
+                    <Typography variant="h5" color={"#fff"}>LOYALTY</Typography>
+                </Container>
+            </div>
             <Container>
-                <Inner sx={{
-                    '@media (min-width: 800px)': {
-                        flexDirection: statusGame !== StatusGame.flip ? 'column !important' : 'row',
-                        alignItems: statusGame !== StatusGame.flip ? 'center !important' : 'flex-start'
-                    }
-                }}>
-                    <LeftBody>
-                        {walletAccount ? <PlayPart statusGame={statusGame} setStatusGame={setStatusGame} /> : <ConnectWallet />}
-                        {width800 && statusGame === StatusGame.flip && <BoxPopup themeLight={theme === 'light'}>
-                            <ItemPopup themeLight={theme === 'light'} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-                            <ItemPopup themeLight={theme === 'light'} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-                            <ItemPopup themeLight={theme === 'light'} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-                        </BoxPopup>}
-                        <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
-                            <Box sx={{ maxWidth: '304px' }}>
-                                <TitlePopup themeLight={theme === 'light'}>{CONTENT[statusPopupType].title}</TitlePopup>
-                                <BodyPopup themeLight={theme === 'light'}>{CONTENT[statusPopupType].body}</BodyPopup>
-                                <Button active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ padding: 13.5 }} />
-                            </Box>
-                        </Box>} />
-                    </LeftBody>
-                    {statusGame === StatusGame.flip && <RightBody>
-                        <TopList />
-                        {!width800 && <BoxPopup themeLight={theme === 'light'}>
-                            <ItemPopup themeLight={theme === 'light'} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-                            <ItemPopup themeLight={theme === 'light'} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-                            <ItemPopup themeLight={theme === 'light'} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-                        </BoxPopup>}
-                    </RightBody>}
-                </Inner>
+                <Grid container spacing={4}>
+                    <Grid item xs={6}>
+                        <Item>xs=8</Item>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Item>xs=4</Item>
+                    </Grid>
+
+                </Grid>
             </Container>
         </Body>
     </Wrap>
@@ -85,8 +73,11 @@ export default LoyaltyPage;
 export type propsTheme = {
     themeLight: boolean
 }
+const Item = styled(Box)(() => ({
+}))
 const Wrap = styled(Box)((props: propsTheme) => ({
-    background: props.themeLight ? '#FFFFFF' : '#1C1B3E',
+    // background: props.themeLight ? '#FFFFFF' : '#1C1B3E',
+    background: '#1C1B3E',
     height: '100vh'
 }))
 const Body = styled(Box)({

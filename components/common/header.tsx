@@ -1,20 +1,25 @@
-import { useEffect, useState } from 'react'
-import { Container, TEXT_STYLE } from "../../styles/common";
-import { Box, BoxProps, ButtonProps, CircularProgress, MenuItem, Select, Stack, styled, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, CircularProgress, Typography, styled, useMediaQuery } from "@mui/material";
+import { useEffect, useState } from 'react';
 import { useWalletContext } from "../../contexts/WalletContext";
-import { formatMoney } from "../../libs/utils/utils";
-import { Popup } from "../popup";
-import { Button } from "../button";
-import { getHistory } from '../../libs/apis/flipCoin';
+import { Container, TEXT_STYLE } from "../../styles/common";
+import { Popup } from "./popup";
+// import { Button } from "../ui/button";
 import { ethers } from 'ethers';
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+import { Colors } from '../../constants';
+import { useColorModeContext } from '../../contexts/ColorModeContext';
+import { getHistory } from '../../libs/apis/flipCoin';
 import { getCalculateFee, handleClaimAll } from '../../libs/flipCoinContract';
 import { propsTheme } from '../../pages/homepage';
+import { Format } from '../../utils/format';
+import { ButtonMain } from '../ui/button';
+import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
 
 
 export const Header: React.FC = () => {
-  const { bnbAssets, theme, setTheme, refresh, setRefresh, walletAccount, ethersSigner } = useWalletContext()
+  const { bnbAssets, refresh, setRefresh, walletAccount, ethersSigner } = useWalletContext()
+  const { darkMode, setDarkMode } = useColorModeContext();
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
   const width520 = useMediaQuery('(min-width: 520px)')
@@ -34,53 +39,53 @@ export const Header: React.FC = () => {
   }
 
   const handleClaim = async () => {
-    if(!statusLoading && parseFloat(bnbAssets) > 0){
+    if (!statusLoading && parseFloat(bnbAssets) > 0) {
       setStatusLoading(true)
       try {
         const res = await handleClaimAll(ethersSigner)
         if (res.status) {
           setStatusLoading(false)
-          setPopup({status: true, body: bodyPopupSuccess})
+          setPopup({ status: true, body: bodyPopupSuccess })
           setRefresh(!refresh)
         }
       } catch (error: any) {
         setStatusLoading(false)
-        setPopup({status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')})
+        setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
       }
     }
   }
 
   const bodyPopupError = (message: string) => {
     return (
-      <Box sx={{textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
+      <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
         <Box><img src='assets/icons/close-circle.svg' /></Box>
-        <Typography sx={{...TEXT_STYLE(14, 500, theme === 'light' ? '#181536' : '#ffffff'), margin: '24px 0'}}>{message}</Typography>
-        <Button active={true} title={'Try again'} onClick={() => setPopup({...popup, status: false})} customStyle={{ padding: 13.5 }} />
+        <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
+        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
       </Box>
     )
   }
 
   const bodyPopupSuccess = (
-    <Box sx={{textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-      <Typography sx={{...TEXT_STYLE(24, 500, theme === 'light' ? '#181536' : '#ffffff'), marginBottom: '24px'}}>Claim successful!</Typography>
-      <Button active={true} title={'OKEY'} onClick={() => setPopup({...popup, status: false})} customStyle={{ padding: 13.5 }} />
+    <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
+      <Typography sx={{ ...TEXT_STYLE(24, 500, !darkMode ? '#181536' : '#ffffff'), marginBottom: '24px' }}>Claim successful!</Typography>
+      <ButtonMain active={true} title={'OKEY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
     </Box>
   )
 
   const bodyBalance = async () => {
-    return (<Box>
+    return (<Box >
       <HeaderPopup>
-        <Box sx={{ ...TEXT_STYLE(14, 500, theme === 'light' ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {formatMoney(bnbAssets)} <img src={`assets/icons/binance-coin${theme === 'light' ? '-light' : ''}.svg`} /></Box>
-        <Button active={parseFloat(bnbAssets) ? true : false} disable={parseFloat(bnbAssets) ? false : true} title={statusLoading ? <CircularProgress sx={{width: '25px !important', height: 'auto !important'}} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ padding: 13.5, width: 160 }} />
+        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(bnbAssets)} <img src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
+        <ButtonMain active={parseFloat(bnbAssets) ? true : false} disable={parseFloat(bnbAssets) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} />
       </HeaderPopup>
-      <HistoryPopup themeLight={theme === 'light'}>History</HistoryPopup>
-      <BoxItemHistory themeLight={theme === 'light'}>
+      <HistoryPopup themeLight={!darkMode}>History</HistoryPopup>
+      <BoxItemHistory themeLight={!darkMode}>
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
           const currentFee = await getCalculateFee(ethersSigner, ethers.utils.formatUnits(`${item.amount}`))
           return <ItemHistory key={index}>
             <Box>
-              <TitleHistory themeLight={theme === 'light'}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory> 
-              <BnbHistory themeLight={theme === 'light'} active={item.flipResult}>
+              <TitleHistory themeLight={!darkMode}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
+              <BnbHistory themeLight={!darkMode} active={item.flipResult}>
                 {item.flipResult ? '+' : '-'}{ethers.utils.formatUnits(`${item.amount}`)} BNB
                 <Box>Fee: {ethers.utils.formatUnits(currentFee)} BNB</Box>
               </BnbHistory>
@@ -98,7 +103,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const reRenderPopup = async () => {
-      statusLoading && setPopup({body: await bodyBalance(), status: true})
+      statusLoading && setPopup({ body: await bodyBalance(), status: true })
     }
     reRenderPopup()
   }, [statusLoading])
@@ -106,14 +111,25 @@ export const Header: React.FC = () => {
   return <Wrap>
     <Container>
       <Inner>
-        <Logo><img src={`assets/logos/logo${theme === 'light' ? '-light' : ''}.svg`} /></Logo>
+        <Logo><img src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Logo>
         <BoxRight>
-          <ItemRight themeLight={theme === 'light'}><img src={`assets/icons/volume-high${theme === 'light' ? '-light' : ''}.svg`} /></ItemRight>
-          <ItemRight themeLight={theme === 'light'} onClick={() => {setTheme(theme === 'dark' ? 'light' : 'dark'); localStorage.setItem('theme', theme === 'dark' ? 'light' : 'dark')}}><img src={`assets/icons/${theme === 'dark' ? 'moon' : 'sun'}.svg`} /></ItemRight>
-          <ItemRight themeLight={theme === 'light'} className='stats'><BoxStats>Stats</BoxStats></ItemRight>
-          {/* <ItemRight themeLight={theme === 'light'} className='leadeboard'><Leadeboard>Leadeboard <img src={`/assets/icons/ranking${theme === 'light' ? '-orange' : ''}.svg`} /></Leadeboard></ItemRight> */}
-          {walletAccount && (width520 ? <ItemRight themeLight={theme === 'light'} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{formatMoney(bnbAssets)}</span> <img src={`assets/icons/binance-coin${theme === 'light' ? '-light' : ''}.svg`} /></ItemRight> :
-            <ItemRight themeLight={theme === 'light'} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img src="assets/icons/wallet.svg" /></ItemRight>)}
+
+          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          {/* <ItemRight themeLight={!darkMode}><img src={`assets/icons/volume-high${darkMode ? "" : '-light'}.svg`} /></ItemRight>
+          <ItemRight themeLight={!darkMode} onClick={() => { setDarkMode(!darkMode) }}><img src={`assets/icons/${darkMode ? 'moon' : 'sun'}.svg`} /></ItemRight> */}
+          {/* <ItemRight themeLight={!darkMode} className='stats'><BoxStats>Stats</BoxStats></ItemRight> */}
+          {walletAccount && (width520 ?
+            <>
+              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}> <span>Assets</span></ItemRight>
+              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(bnbAssets)}</span> <img src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
+            </>
+            :
+            <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img src="assets/icons/wallet.svg" /></ItemRight>
+          )}
+
+          <ItemRight themeLight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
         </BoxRight>
       </Inner>
     </Container>
@@ -140,6 +156,46 @@ const BoxRight = styled(Box)({
   display: 'flex',
   alignItems: 'center'
 })
+const HeaderItem = styled(Button)({
+  ...TEXT_STYLE(12, 500),
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  padding: '8px 12px',
+  background: 'text',
+  border: '2px solid ',
+  borderRadius: 8,
+  marginLeft: 8,
+  // '&.stats': {
+  //   background: props.themeLight ? '#E9EAEF' : '#181536',
+  //   '& > div': {
+  //     color: props.themeLight ? '#181536 !important' : ''
+  //   }
+  // },
+  // '&.leadeboard': {
+  //   '& > div': {
+  //     color: props.themeLight ? '#181536 !important' : ''
+  //   }
+  // },
+  // '& .MuiInputBase-root': {
+  //   ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
+  //   outline: 0,
+  //   border: 0,
+  //   '& svg': {
+  //     color: props.themeLight ? 'transparent' : '#7071B3'
+  //   },
+  //   '& fieldset': {
+  //     display: 'none'
+  //   },
+  //   '& .MuiSelect-select': {
+  //     padding: '8px',
+  //   }
+  // },
+  // '& span': {
+  //   ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
+  //   margin: '0 8px'
+  // }
+})
 const ItemRight = styled(Box)((props: propsTheme) => ({
   ...TEXT_STYLE(12, 500, props.themeLight ? '#181536' : '#FFFFFF'),
   cursor: 'pointer',
@@ -147,7 +203,8 @@ const ItemRight = styled(Box)((props: propsTheme) => ({
   alignItems: 'center',
   padding: '8px 12px',
   background: props.themeLight ? '#FFFFFF' : '#181536',
-  border: props.themeLight ? '2px solid #E9EAEF' : 0,
+  border: '2px solid ',
+  borderColor: props.themeLight ? '#E9EAEF' : '#181536',
   borderRadius: 8,
   marginLeft: 8,
   '&.stats': {
@@ -223,7 +280,7 @@ type propsBnbHistory = {
   themeLight: boolean
 }
 const BnbHistory = styled(Typography)((props: propsBnbHistory) => ({
-  display:  'flex',
+  display: 'flex',
   alignItems: 'flex-end',
   ...TEXT_STYLE(14, 500, props.themeLight ? props.active ? '#FC753F' : '#A7ACB8' : props.active ? '#FEF156' : '#A7ACB8'),
   '& > div': {

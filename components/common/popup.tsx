@@ -1,6 +1,7 @@
 import { Box, Modal, styled } from "@mui/material"
 import { useWalletContext } from "../../contexts/WalletContext";
 import { propsTheme } from "../../pages/homepage";
+import { useColorModeContext } from "../../contexts/ColorModeContext";
 
 interface IProps {
   status: boolean;
@@ -10,13 +11,14 @@ interface IProps {
 }
 
 export const Popup: React.FC<IProps> = ({ status, body, handleClose, customWidth }) => {
-  const {theme} = useWalletContext()
+  const { darkMode } = useColorModeContext()
   return (
     <Modal
       open={status}
       onClose={handleClose}
+      sx={{ border: 'none' }}
     >
-      <BoxBody themeLight={theme === 'light'} sx={customWidth ? customWidth : {}}>
+      <BoxBody themeLight={!darkMode} sx={customWidth ? customWidth : {}}>
         {body}
       </BoxBody>
     </Modal>
