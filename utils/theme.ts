@@ -132,9 +132,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		},
 		text: {
 			primary: "#fff",
-			secondary: "#FEF156",
-
-
+			secondary: "#FEF156"
 		}
 	},
 	// breakpoints: {
@@ -190,7 +188,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 							border: `2px solid`,
 							filter: 'drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.25))',
 							'&:hover': {
-								color: darkTheme.palette.text.secondary,
+								color: darkTheme.palette.background.default,
 							}
 						}
 

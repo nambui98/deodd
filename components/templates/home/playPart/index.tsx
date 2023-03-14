@@ -1,6 +1,7 @@
 import { ethers } from "ethers"
 import { useEffect, useState } from "react"
 // import { Button } from "../../../ui/button"
+import Image from "next/image"
 import { useWalletContext } from "../../../../contexts/WalletContext"
 import { approvePurchase, createProfile, getAllowance, getCalculateFee, getFlipTokenDetail, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
 import { TEXT_STYLE } from "../../../../styles/common"
@@ -54,7 +55,7 @@ export const PlayPart: React.FC<IProps> = ({ statusGame, setStatusGame }) => {
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
-        <Box><img src='assets/icons/close-circle.svg' /></Box>
+        <Box><Image alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
       </Box>
@@ -220,9 +221,9 @@ export const PlayPart: React.FC<IProps> = ({ statusGame, setStatusGame }) => {
   const bodyCreateProfile = (
     <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
       <TitlePopup themeLight={!darkMode}>{userInfo.userName ? 'Change' : 'Create'} profile</TitlePopup>
-      <BoxAvatar><img src={currentProfile.avatar !== null ? avatar[currentProfile.avatar] : avatar[parseFloat(userInfo.avatar)]} /></BoxAvatar>
+      <BoxAvatar><Image alt="" src={currentProfile.avatar !== null ? avatar[currentProfile.avatar] : avatar[parseFloat(userInfo.avatar)]} /></BoxAvatar>
       <ListAvatar>
-        {avatar.map((item, index) => <Box onClick={() => setCurrentProfile({ ...currentProfile, avatar: index })} key={index}><img src={item} /></Box>)}
+        {avatar.map((item, index) => <Box onClick={() => setCurrentProfile({ ...currentProfile, avatar: index })} key={index}><Image alt="" src={item} /></Box>)}
       </ListAvatar>
       <InputNickname value={currentProfile.username !== null ? currentProfile.username : userInfo.userName} themeLight={!darkMode} placeholder="Nickname" onChange={(e) => setCurrentProfile({ ...currentProfile, username: e.target.value })}></InputNickname>
       <Typography sx={{
@@ -256,7 +257,7 @@ export const PlayPart: React.FC<IProps> = ({ statusGame, setStatusGame }) => {
   const renderPlayPart = () => {
     return <div>
       <BoxWallet themeLight={!darkMode}>
-        <Avt><img src={userInfo?.avatar ? `assets/images/${checkAvatar()}.png` : "assets/icons/avt.svg"} /></Avt>
+        <Avt><Image alt="" src={userInfo?.avatar ? `assets/images/${checkAvatar()}.png` : "assets/icons/avt.svg"} /></Avt>
         <Box sx={{ '@media (min-width: 800px)': { display: 'flex', alignItems: 'center' } }}>
           <Wallet themeLight={!darkMode}>{userInfo?.userName ? <Box>
             {userInfo?.userName}
@@ -268,8 +269,8 @@ export const PlayPart: React.FC<IProps> = ({ statusGame, setStatusGame }) => {
       </BoxWallet>
       <Typography variant="h5" style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>You like</Typography>
       <BoxCoin>
-        <Itemcoin themeLight={!darkMode} active={dataSelect?.coinSide === 0} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}><img src={`assets/icons/head${dataSelect?.coinSide === 0 ? '' : '-disable'}.svg`} /> HEAD</Itemcoin>
-        <Itemcoin themeLight={!darkMode} active={dataSelect?.coinSide === 1} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}><img src={`assets/icons/tail${dataSelect?.coinSide === 1 ? '' : '-disable'}.svg`} /> TAIL</Itemcoin>
+        <Itemcoin themeLight={!darkMode} active={dataSelect?.coinSide === 0} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}><Image alt="" src={`assets/icons/head${dataSelect?.coinSide === 0 ? '' : '-disable'}.svg`} /> HEAD</Itemcoin>
+        <Itemcoin themeLight={!darkMode} active={dataSelect?.coinSide === 1} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}><Image alt="" src={`assets/icons/tail${dataSelect?.coinSide === 1 ? '' : '-disable'}.svg`} /> TAIL</Itemcoin>
       </BoxCoin>
       <Typography variant="h5" style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>Bet amount</Typography>
       <BoxAmount>
@@ -313,23 +314,23 @@ export const PlayPart: React.FC<IProps> = ({ statusGame, setStatusGame }) => {
       status: true,
       body: bodyCreateProfile
     })
-  }, [currentProfile.avatar, currentProfile.username])
+  }, [currentProfile.avatar, currentProfile.username, bodyCreateProfile, popup.status])
 
   useEffect(() => {
     if (localStorage.getItem('popupCreateProfile') !== walletAccount) {
       localStorage.setItem('popupCreateProfile', walletAccount)
       localStorage.getItem('popupCreateProfile') === walletAccount && handleCreateProfile()
     }
-  }, [walletAccount, ethersSigner])
+  }, [walletAccount, ethersSigner, handleCreateProfile])
 
   useEffect(() => {
     statusLoading && setPopup({ status: true, body: bodyCreateProfile })
-  }, [statusLoading])
+  }, [statusLoading, bodyCreateProfile])
 
   useEffect(() => {
     parseFloat(userInfo.avatar) !== currentProfile.avatar && setCurrentProfile({ username: userInfo.userName, avatar: userInfo.avatar })
 
-  }, [userInfo.avatar])
+  }, [userInfo.avatar, currentProfile.avatar])
 
   return <Wrap>
     {renderUi()}

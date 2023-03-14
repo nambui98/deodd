@@ -1,5 +1,6 @@
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, CircularProgress, Stack, styled, Typography } from "@mui/material";
+import Image from "next/image"
 import { handleClaimAll } from "../../../../libs/flipCoinContract";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { useEffect, useState } from 'react'
@@ -42,7 +43,7 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-        <Box><img src='assets/icons/close-circle.svg' /></Box>
+        <Box><Image alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
       </Box>
@@ -76,10 +77,10 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
   useEffect(() => {
     const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
     audio.play();
-  }, [])
+  }, [flipResult, coinSide])
 
   return <Wrap>
-    <Coin><img src={`assets/icons/${renderImage()}.svg`} /></Coin>
+    <Coin><Image alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
     <Title themeLight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
     {coinSide === flipResult && <BoxAmount sx={{
       justifyContent: 'space-between'

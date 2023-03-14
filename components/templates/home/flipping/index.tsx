@@ -3,7 +3,7 @@ import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/mate
 import { propsTheme } from "../../../../pages/homepage";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
-
+import Image from 'next/image'
 interface IProps {
   amount: string
 }
@@ -20,7 +20,7 @@ export const Flipping: React.FC<IProps> = ({ amount }) => {
       left: "50%",
       transform: 'translate(-50%, -50%)',
     }} >
-      <Coin><img src="assets/coin-flip.gif" /></Coin>
+      <Coin><Image alt="" src="assets/coin-flip.gif" /></Coin>
       <Title themeLight={!darkMode}>FLIPPING</Title>
       <Amount themeLight={!darkMode}>{amount} BNB</Amount>
 

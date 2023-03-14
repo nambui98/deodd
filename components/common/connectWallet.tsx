@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 // import { Button } from "../ui/button"
 import { changeNetwork, useWalletContext } from "../../contexts/WalletContext";
+import Image from 'next/image'
 import { UserService } from "../../services/user.service";
 import { TEXT_STYLE } from "../../styles/common"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/material";
@@ -44,7 +45,7 @@ export const ConnectWallet = () => {
 	return <Wrap>
 		<BoxConnect>
 			<Title themeLight={!darkMode}>Feel lucky today?</Title>
-			<div style={{ marginBottom: '35px' }}><img width={144} src="assets/icons/head.svg" /></div>
+			<div style={{ marginBottom: '35px' }}><Image alt="" width={144} src="assets/icons/head.svg" /></div>
 			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
 				width: 213
 			}} />

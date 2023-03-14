@@ -15,6 +15,7 @@ import { propsTheme } from '../../pages/homepage';
 import { Format } from '../../utils/format';
 import { ButtonMain } from '../ui/button';
 import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
+import Image from 'next/image'
 
 
 export const Header: React.FC = () => {
@@ -58,7 +59,7 @@ export const Header: React.FC = () => {
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-        <Box><img src='assets/icons/close-circle.svg' /></Box>
+        <Box><Image alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
       </Box>
@@ -75,7 +76,7 @@ export const Header: React.FC = () => {
   const bodyBalance = async () => {
     return (<Box >
       <HeaderPopup>
-        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(bnbAssets)} <img src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
+        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(bnbAssets)} <Image alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
         <ButtonMain active={parseFloat(bnbAssets) ? true : false} disable={parseFloat(bnbAssets) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} />
       </HeaderPopup>
       <HistoryPopup themeLight={!darkMode}>History</HistoryPopup>
@@ -99,34 +100,34 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     walletAccount && ethersSigner && fetchHistory()
-  }, [walletAccount, ethersSigner, refresh])
+  }, [walletAccount, ethersSigner, refresh, fetchHistory])
 
   useEffect(() => {
     const reRenderPopup = async () => {
       statusLoading && setPopup({ body: await bodyBalance(), status: true })
     }
     reRenderPopup()
-  }, [statusLoading])
+  }, [statusLoading, bodyBalance])
 
   return <Wrap>
     <Container>
       <Inner>
-        <Logo><img src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Logo>
+        <Logo><Image alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Logo>
         <BoxRight>
 
           <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
           <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
           <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          {/* <ItemRight themeLight={!darkMode}><img src={`assets/icons/volume-high${darkMode ? "" : '-light'}.svg`} /></ItemRight>
-          <ItemRight themeLight={!darkMode} onClick={() => { setDarkMode(!darkMode) }}><img src={`assets/icons/${darkMode ? 'moon' : 'sun'}.svg`} /></ItemRight> */}
+          {/* <ItemRight themeLight={!darkMode}><img alt="" src={`assets/icons/volume-high${darkMode ? "" : '-light'}.svg`} /></ItemRight>
+          <ItemRight themeLight={!darkMode} onClick={() => { setDarkMode(!darkMode) }}><img alt="" src={`assets/icons/${darkMode ? 'moon' : 'sun'}.svg`} /></ItemRight> */}
           {/* <ItemRight themeLight={!darkMode} className='stats'><BoxStats>Stats</BoxStats></ItemRight> */}
           {walletAccount && (width520 ?
             <>
               <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}> <span>Assets</span></ItemRight>
-              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(bnbAssets)}</span> <img src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
+              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(bnbAssets)}</span> <Image alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
             </>
             :
-            <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img src="assets/icons/wallet.svg" /></ItemRight>
+            <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><Image alt="" src="assets/icons/wallet.svg" /></ItemRight>
           )}
 
           <ItemRight themeLight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
