@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/material";
+import Image from "next/image"
 import { getRecentFlipping, getTopStreak } from "../../../../libs/apis/flipCoin";
 // import { convertTimeStamp, convertWalletAddress } from "../../../../libs/utils/utils";
 import { useWalletContext } from "../../../../contexts/WalletContext";
@@ -61,15 +62,15 @@ export const TopList = () => {
     <TabTitle themeLight={!darkMode}>
       <TabTitleItem themeLight={!darkMode} active={currentTab === 'leaderboard'} onClick={() => setCurrentTab('leaderboard')} style={{ marginRight: '8px' }}><RankingIcon fill={"#7071B3"} /> Leaderboard</TabTitleItem>
 
-      <TabTitleItem themeLight={!darkMode} active={currentTab === 'recent'} onClick={() => setCurrentTab('recent')} style={{ marginRight: '8px' }}><img src="assets/icons/clock.svg" /> Recent</TabTitleItem>
-      <TabTitleItem themeLight={!darkMode} active={currentTab === 'top'} onClick={() => setCurrentTab('top')}><img src={`assets/icons/cup${!darkMode ? '-light' : ''}.svg`} /> Top streak</TabTitleItem>
+      <TabTitleItem themeLight={!darkMode} active={currentTab === 'recent'} onClick={() => setCurrentTab('recent')} style={{ marginRight: '8px' }}><Image alt="" src="assets/icons/clock.svg" /> Recent</TabTitleItem>
+      <TabTitleItem themeLight={!darkMode} active={currentTab === 'top'} onClick={() => setCurrentTab('top')}><Image alt="" src={`assets/icons/cup${!darkMode ? '-light' : ''}.svg`} /> Top streak</TabTitleItem>
     </TabTitle>
     <TabBody themeLight={!darkMode}>
       {recentData.length || topData.length ? (currentTab === 'recent' ? recentData : topData).map((item: any, index) => (
         <TabItem themeLight={!darkMode} key={index}>
           <AvtItem>
-            {currentTab === 'recent' ? <img src={`assets/images/${checkAvatar((walletAccount && item.player === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} /> :
-              <img src={`assets/images/${checkAvatar((walletAccount && item.walletAddress === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} />}
+            {currentTab === 'recent' ? <Image alt="" src={`assets/images/${checkAvatar((walletAccount && item.player === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} /> :
+              <Image alt="" src={`assets/images/${checkAvatar((walletAccount && item.walletAddress === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} />}
           </AvtItem>
           <div>
             <TitleItem themeLight={!darkMode}>{item.playerName ? item.playerName : Convert.convertWalletAddress((currentTab === 'recent' ? item.player : item.walletAddress), 6, 3)}</TitleItem>
@@ -78,15 +79,15 @@ export const TopList = () => {
           <TimeItem>{item.blockTimestamp && Convert.convertTimeStamp(item.blockTimestamp)}</TimeItem>
         </TabItem>
       )) : <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 'auto' }}>
-        <img src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
+        <Image alt="" src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
         <Typography sx={{ ...TEXT_STYLE(16, 500, '#7071B3'), marginTop: '40px' }}>It’s look quiet here...</Typography>
       </Box>}
       {(recentData.length || topData.length) && walletAccount && <YourHighest themeLight={!darkMode}>
-        <img src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
+        <Image alt="" src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
         <Box>
           My highest streak
           <Box>
-            {MyhighestStreak()} <img src="/assets/icons/cup-black.svg" />
+            {MyhighestStreak()} <Image alt="" src="/assets/icons/cup-black.svg" />
           </Box>
         </Box>
       </YourHighest>}
