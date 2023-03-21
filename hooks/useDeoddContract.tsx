@@ -5,6 +5,7 @@ import { useWalletContext } from "../contexts/WalletContext"
 import { Convert } from "../utils/convert"
 import { FlipResultType } from "../libs/types"
 import { StatusGame } from "../pages/homepage"
+import { getUserByPublicAddress } from "../libs/apis/flipCoin"
 export type resultType = {
     amount: string,
     coinSide: string,
@@ -40,11 +41,10 @@ export const useDeoddContract = () => {
     useEffect(() => {
 
     }, [])
-
+    let id: any;
     useEffect(() => {
         if (contract) {
             console.log("vào day");
-
             contract.on("FlipCoinResult", async (...args) => {
                 console.log("===========================================================");
                 let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = args[10].args;
@@ -53,6 +53,8 @@ export const useDeoddContract = () => {
                 audio.load();
                 console.log("===========================================================");
                 console.log(ethers.utils.formatEther(amount));
+                console.log(id);
+
                 setDataResult({
                     amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
                     coinSide: ethers.utils.formatUnits(flipChoice, 'wei'),
@@ -64,16 +66,24 @@ export const useDeoddContract = () => {
                     winningStreakAmount: parseFloat(ethers.utils.formatUnits(jackpotReward)).toString(),
                     winningStreakLength: parseFloat(ethers.utils.formatUnits(tpoint, 'wei')).toString()
                 })
+                let res = await getUserByPublicAddress(walletAccount);
+                debugger
                 setStatusGame(StatusGame.result)
                 setRefresh(!refresh)
                 // }
             });
         }
-    }, [contract, latestFlipId])
+    }, [contract])
 
     useEffect(() => {
         if (isFinish === true) {
-            getLatestFlipId();
+            // getLatestFlipId();
+            const fetchdata = async () => {
+                const res = await contract?.getPlayerLatestFlipId(walletAccount)
+                return res;
+            }
+            id = fetchdata()
+
         }
     }, [isFinish !== false, contract])
 
@@ -81,6 +91,7 @@ export const useDeoddContract = () => {
         const res = await contract?.getPlayerLatestFlipId(walletAccount)
         debugger
         setLatestFlipId(res)
+        return res;
     }
     const handleFlipToken = async (index: number, coinSide: number, bnbSend: BigNumber) => {
         const res = await contract!.flipTheCoin(

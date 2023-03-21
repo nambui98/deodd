@@ -23,7 +23,7 @@ export const getHistory = async (walletAddress: string, offset: number) => {
   })
 }
 
-export const getUserByPublicAddress = async (walletAddress: string, offset: number) => {
+export const getUserByPublicAddress = async (walletAddress: string) => {
   return vhIdRequest({
     url: `${apiRouter}/users/address?address=${walletAddress}`,
     method: 'get',
