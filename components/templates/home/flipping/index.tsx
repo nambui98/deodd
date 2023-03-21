@@ -18,11 +18,12 @@ export const Flipping: React.FC<IProps> = ({ amount }) => {
       position: 'absolute',
       top: "50%",
       left: "50%",
+      zIndex: 1000,
       transform: 'translate(-50%, -50%)',
     }} >
-      <Coin><Image alt="" src="assets/coin-flip.gif" /></Coin>
-      <Title themeLight={!darkMode}>FLIPPING</Title>
-      <Amount themeLight={!darkMode}>{amount} BNB</Amount>
+      <Coin><img alt="" src="assets/coin-flip.gif" /></Coin>
+      <Title themelight={!darkMode}>FLIPPING</Title>
+      <Amount themelight={!darkMode}>{amount} BNB</Amount>
 
     </Box>
   </Wrap>
@@ -40,11 +41,11 @@ const Wrap = styled(Box)({
   }
 })
 const Title = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 24
 }))
 const Amount = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 700, props.themeLight ? '#FC753F' : '#FEF156'),
+  ...TEXT_STYLE(24, 700, props.themelight ? '#FC753F' : '#FEF156'),
 }))
 const Coin = styled(Box)({
   marginBottom: 24,

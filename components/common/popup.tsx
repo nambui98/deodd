@@ -18,7 +18,7 @@ export const Popup: React.FC<IProps> = ({ status, body, handleClose, customWidth
       onClose={handleClose}
       sx={{ border: 'none' }}
     >
-      <BoxBody themeLight={!darkMode} sx={customWidth ? customWidth : {}}>
+      <BoxBody themelight={!darkMode} sx={customWidth ? customWidth : {}}>
         {body}
       </BoxBody>
     </Modal>
@@ -31,7 +31,7 @@ const BoxBody = styled(Box)((props: propsTheme) => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   boxShadow: '0px 0px 40px rgba(112, 113, 179, 0.3)',
-  background: props.themeLight ? '#FFFFFF' : '#181536',
+  background: props.themelight ? '#FFFFFF' : '#181536',
   borderRadius: 8,
   padding: 24,
   minWidth: 352

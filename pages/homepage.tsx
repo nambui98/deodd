@@ -13,6 +13,7 @@ import { changeNetwork, useWalletContext } from "../contexts/WalletContext"
 import { Popup } from "../components/common/popup";
 import { useColorModeContext } from "../contexts/ColorModeContext";
 import { ButtonMain } from "../components/ui/button";
+import { useDeoddContract } from "../hooks/useDeoddContract";
 
 export enum StatusGame {
   flip,
@@ -25,9 +26,11 @@ const HomePage: React.FC = () => {
   const [statusPopup, setStatusPopup] = useState<boolean>(false);
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
   const { chainIdIsSupported, provider, walletAccount } = useWalletContext();
-  const { darkMode } = useColorModeContext();
-  const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
 
+  const { darkMode } = useColorModeContext();
+  // const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
+
+  const { getFlipTokenDetail, setIsFinish, audio, dataResult, statusGame, setStatusGame } = useDeoddContract();
   const router = useRouter()
   useEffect(() => {
     // const checkChain = async () => {
@@ -43,10 +46,9 @@ const HomePage: React.FC = () => {
     setStatusPopupType(type)
   }
 
-  return <Wrap themeLight={!darkMode}>
+  return <Wrap themelight={!darkMode}>
     <Body >
       <Container>
-
         <Inner sx={{
           '@media (min-width: 800px)': {
             flexDirection: statusGame !== StatusGame.flip ? 'column !important' : 'row',
@@ -54,26 +56,26 @@ const HomePage: React.FC = () => {
           }
         }}>
           <LeftBody>
-            {walletAccount ? <PlayPart statusGame={statusGame} setStatusGame={setStatusGame} /> : <ConnectWallet />}
-            {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themeLight={!darkMode}>
-              <ItemPopup themeLight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-              <ItemPopup themeLight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-              <ItemPopup themeLight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+            {walletAccount ? <PlayPart getFlipTokenDetail={getFlipTokenDetail} setIsFinish={setIsFinish} audio={audio} dataResult={dataResult} statusGame={statusGame} setStatusGame={setStatusGame} /> : <ConnectWallet />}
+            {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themelight={!darkMode}>
+              <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
+              <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
+              <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </BoxPopup>}
             <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
               <Box sx={{ maxWidth: '304px' }}>
-                <TitlePopup themeLight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
-                <BodyPopup themeLight={!darkMode}>{CONTENT[statusPopupType].body}</BodyPopup>
+                <TitlePopup themelight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
+                <BodyPopup themelight={!darkMode}>{CONTENT[statusPopupType].body}</BodyPopup>
                 <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
               </Box>
             </Box>} />
           </LeftBody>
           {statusGame === StatusGame.flip && <RightBody>
             <TopList />
-            {!width800 && <BoxPopup themeLight={!darkMode}>
-              <ItemPopup themeLight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-              <ItemPopup themeLight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-              <ItemPopup themeLight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+            {!width800 && <BoxPopup themelight={!darkMode}>
+              <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
+              <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
+              <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </BoxPopup>}
           </RightBody>}
 
@@ -86,7 +88,7 @@ const HomePage: React.FC = () => {
 export default HomePage;
 
 export type propsTheme = {
-  themeLight: boolean,
+  themelight: boolean,
 }
 
 const Wrap = styled(Box)((props: propsTheme) => ({
@@ -134,7 +136,7 @@ const RightBody = styled(Box)({
 const BoxPopup = styled(Box)((props: propsTheme) => ({
   display: 'flex',
   alignItems: 'center',
-  color: props.themeLight ? '#181536' : '#FFFFFF',
+  color: props.themelight ? '#181536' : '#FFFFFF',
   // margin: 'auto 0 24px',
   justifyContent: 'center',
   paddingTop: 25,
@@ -144,29 +146,29 @@ const BoxPopup = styled(Box)((props: propsTheme) => ({
   }
 }))
 const ItemPopup = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(13, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(13, 500, props.themelight ? '#181536' : '#FFFFFF'),
   margin: '0 16px',
   cursor: 'pointer',
   '@media (min-width: 800px)': {
-    ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+    ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#FFFFFF'),
   }
 }))
 const TitlePopup = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 24,
   textAlign: 'center',
 }))
 const BodyPopup = styled(Box)((props: propsTheme) => ({
   '& h5': {
-    ...TEXT_STYLE(18, 500, props.themeLight ? '#FC753F' : '#FEF156'),
+    ...TEXT_STYLE(18, 500, props.themelight ? '#FC753F' : '#FEF156'),
     marginBottom: 8
   },
   '& p': {
-    ...TEXT_STYLE(14, 400, props.themeLight ? '#181536' : '#FFFFFF'),
+    ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
     marginBottom: 24
   },
   '& a': {
-    color: props.themeLight ? '#FC753F' : '#FEF156',
+    color: props.themelight ? '#FC753F' : '#FEF156',
     textDecoration: 'underline'
   }
 }))

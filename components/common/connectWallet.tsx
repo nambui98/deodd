@@ -44,8 +44,8 @@ export const ConnectWallet = () => {
 
 	return <Wrap>
 		<BoxConnect>
-			<Title themeLight={!darkMode}>Feel lucky today?</Title>
-			<div style={{ marginBottom: '35px' }}><Image alt="" width={144} src="assets/icons/head.svg" /></div>
+			<Title themelight={!darkMode}>Feel lucky today?</Title>
+			<div style={{ marginBottom: '35px' }}><img alt="" width={144} src="assets/icons/head.svg" /></div>
 			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
 				width: 213
 			}} />
@@ -66,7 +66,7 @@ const BoxConnect = styled(Box)({
 	alignItems: 'center',
 })
 const Title = styled(Typography)((props: propsTheme) => ({
-	...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+	...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
 	textTransform: 'uppercase',
 	marginBottom: 24,
 	'@media (min-width: 800px)': {

@@ -43,7 +43,7 @@ const LoyaltyPage: React.FC = () => {
         setStatusPopupType(type)
     }
 
-    return <Wrap themeLight={!darkMode}>
+    return <Wrap themelight={!darkMode}>
         <Body sx={{ background: !darkMode ? '#FFFFFF' : '#1C1B3E' }}>
             <div style={{
                 backgroundColor: '#181536',
@@ -71,12 +71,12 @@ const LoyaltyPage: React.FC = () => {
 export default LoyaltyPage;
 
 export type propsTheme = {
-    themeLight: boolean
+    themelight: boolean
 }
 const Item = styled(Box)(() => ({
 }))
 const Wrap = styled(Box)((props: propsTheme) => ({
-    // background: props.themeLight ? '#FFFFFF' : '#1C1B3E',
+    // background: props.themelight ? '#FFFFFF' : '#1C1B3E',
     background: '#1C1B3E',
     height: '100vh'
 }))
@@ -119,7 +119,7 @@ const RightBody = styled(Box)({
 const BoxPopup = styled(Box)((props: propsTheme) => ({
     display: 'flex',
     alignItems: 'center',
-    color: props.themeLight ? '#181536' : '#FFFFFF',
+    color: props.themelight ? '#181536' : '#FFFFFF',
     margin: 'auto 0 24px',
     justifyContent: 'center',
     paddingTop: 25,
@@ -129,29 +129,29 @@ const BoxPopup = styled(Box)((props: propsTheme) => ({
     }
 }))
 const ItemPopup = styled(Box)((props: propsTheme) => ({
-    ...TEXT_STYLE(13, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+    ...TEXT_STYLE(13, 500, props.themelight ? '#181536' : '#FFFFFF'),
     margin: '0 16px',
     cursor: 'pointer',
     '@media (min-width: 800px)': {
-        ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+        ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#FFFFFF'),
     }
 }))
 const TitlePopup = styled(Typography)((props: propsTheme) => ({
-    ...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+    ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
     marginBottom: 24,
     textAlign: 'center',
 }))
 const BodyPopup = styled(Box)((props: propsTheme) => ({
     '& h5': {
-        ...TEXT_STYLE(18, 500, props.themeLight ? '#FC753F' : '#FEF156'),
+        ...TEXT_STYLE(18, 500, props.themelight ? '#FC753F' : '#FEF156'),
         marginBottom: 8
     },
     '& p': {
-        ...TEXT_STYLE(14, 400, props.themeLight ? '#181536' : '#FFFFFF'),
+        ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
         marginBottom: 24
     },
     '& a': {
-        color: props.themeLight ? '#FC753F' : '#FEF156',
+        color: props.themelight ? '#FC753F' : '#FEF156',
         textDecoration: 'underline'
     }
 }))

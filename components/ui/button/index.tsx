@@ -30,7 +30,7 @@ export const ButtonSecond: React.FC<IProps & ButtonProps> = ({ children, onClick
 //   </Button>
 // }
 const Wrap = styled(Button)((props: propsTheme) => ({
-  filter: props.themeLight ? 'none' : 'drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.25))',
+  filter: props.themelight ? 'none' : 'drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.25))',
   ...TEXT_STYLE(16, 700),
   textAlign: 'center',
   cursor: 'pointer',

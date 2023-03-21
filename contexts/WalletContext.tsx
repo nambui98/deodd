@@ -1,4 +1,4 @@
-import { ethers, utils } from "ethers"
+import { BigNumber, ethers, utils } from "ethers"
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
 import detectEthereumProvider from '@metamask/detect-provider';
 import { UserService } from "../services/user.service";
@@ -87,7 +87,7 @@ interface wallerContextType {
 	claimBoxContract: any,
 	refresh: boolean,
 	setRefresh: (status: boolean) => void,
-	bnbAssets: string,
+	bnbAssets: BigNumber,
 	userInfo: { userName: string, avatar: string }
 }
 
@@ -115,7 +115,7 @@ const WalletContext = createContext<wallerContextType>({
 	claimBoxContract: null,
 	refresh: false,
 	setRefresh: () => { },
-	bnbAssets: '',
+	bnbAssets: BigNumber.from(0),
 	userInfo: { userName: '', avatar: '' }
 })
 
@@ -142,14 +142,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [metaMaskIsInstalled, setMetaMaskIsInstalled] = useState<boolean>(false);
 	const [chainIdIsSupported, setChainIdIsSupported] = useState<boolean>(false);
 	const [claimBoxContract, setClaimBoxContract] = useState<any>();
-	const [bnbBalance, setBnbBalance] = useState<string>('');
-	const [heeBalance, setHeebalance] = useState<string>('');
-	const [fiuBalance, setFiuBalance] = useState<string>('');
-	const [shoeBalance, setShoeBalance] = useState<string>('');
-	const [boxBalance, setBoxBalance] = useState<string>('');
-	const [busdBalance, setBusdBalance] = useState<string>('');
+	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [refresh, setRefresh] = useState<boolean>(false);
-	const [bnbAssets, setBnbAssets] = useState<string>('')
+	const [bnbAssets, setBnbAssets] = useState<BigNumber>(BigNumber.from(0))
 	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
 
 	const handleDisconnectWallet = () => {
@@ -178,8 +173,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const playerAssets = await getPlayerAssets(ethersSigner, walletAccount)
 			//GET balance
 			const balance = await ethersProvider.getBalance(walletAccount);
-			setBnbBalance(ethers.utils.formatEther(balance))
-			setBnbAssets(ethers.utils.formatUnits(playerAssets))
+			setBnbBalance(balance)
+			setBnbAssets(playerAssets)
+			// ethers.utils.formatUnits(
 		}
 	}
 
@@ -261,11 +257,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		metaMaskIsInstalled,
 		chainIdIsSupported,
 		bnbBalance: bnbBalance,
-		heeBalance: heeBalance,
-		fiuBalance: fiuBalance,
-		shoeBalance: shoeBalance,
-		boxBalance: boxBalance,
-		busdBalance: busdBalance,
 		updateAssetsBalance: updateBalance,
 		claimBoxContract,
 		refresh: refresh,
@@ -273,5 +264,5 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		bnbAssets: bnbAssets,
 		userInfo: userInfo
 	}
-	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
+	return <WalletContext.Provider value={value as any}>{children}</WalletContext.Provider>
 }

@@ -8,8 +8,12 @@ import { Popup } from "../../../common/popup";
 import { propsTheme } from "../../../../pages/homepage";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
 import { ButtonMain } from "../../../ui/button";
+import { BigNumber, ethers } from "ethers";
+import { resultType, useDeoddContract } from "../../../../hooks/useDeoddContract";
+import { Format } from "../../../../utils/format";
 
 interface IProps {
+  dataResult: resultType;
   amount: string | undefined,
   coinSide: string | undefined,
   flipResult: string | undefined,
@@ -17,9 +21,14 @@ interface IProps {
   winningStreakLength: string | undefined,
   playAgain: () => any
 }
-
-export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winningStreakAmount, winningStreakLength, playAgain }) => {
+const dataTypeNFT: any = {
+  0: "/assets/images/bronze.png",
+  1: "/assets/images/gold.png",
+  2: "/assets/images/diamond.png",
+}
+export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipResult, winningStreakAmount, winningStreakLength, playAgain }) => {
   const { ethersSigner, refresh, setRefresh, bnbAssets } = useWalletContext()
+  // const { dataResult } = useDeoddContract();
   const { darkMode } = useColorModeContext();
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
@@ -43,7 +52,7 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-        <Box><Image alt="" src='assets/icons/close-circle.svg' /></Box>
+        <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
       </Box>
@@ -58,7 +67,7 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
   )
 
   const handleClaim = async () => {
-    if (!statusLoading && parseFloat(bnbAssets) > 0) {
+    if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
         const res = await handleClaimAll(ethersSigner)
@@ -78,34 +87,64 @@ export const Result: React.FC<IProps> = ({ amount, coinSide, flipResult, winning
     const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
     audio.play();
   }, [flipResult, coinSide])
+  console.log(dataResult);
 
+  console.log(dataResult?.typeId.toNumber().toString());
+  let typeNFT: number | undefined = dataResult?.typeId.toNumber();
   return <Wrap>
-    <Coin><Image alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
-    <Title themeLight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
-    {coinSide === flipResult && <BoxAmount sx={{
-      justifyContent: 'space-between'
-    }}>
-      <WinStreak themeLight={!darkMode}>
-        <div>{winningStreakLength}</div>
-        WIN STREAK
-      </WinStreak>
-      <WinStreak themeLight={!darkMode}>
-        <div>{winningStreakAmount}</div>
-        BALANCE (BNB)
-      </WinStreak>
-    </BoxAmount>}
-    {coinSide !== flipResult && <TextFail themeLight={!darkMode}>Fall where, double there, don’t give up</TextFail>}
+    <Coin><img alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
+    <Title themelight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
+    <Box>
+      <Box display={'flex'} justifyContent={"center"} alignItems={'flex-start'}>
+        <Box>
+          <WinStreak themelight={!darkMode}>
+            <div>{winningStreakLength}</div>
+            WIN STREAK
+          </WinStreak>
+          {
+            dataResult?.tokenId.gt(BigNumber.from(0)) && <>
+              <Image width={47} height={48} src={dataTypeNFT[typeNFT || 0]} alt="" />
+              <Typography mt={1} textAlign={'center'} variant="h5" style={{ ...TEXT_STYLE(24, 500), textTransform: 'uppercase' }}>NFT ITEM</Typography>
+            </>
+          }
+        </Box>
+        <Box>
+          {
+            dataResult?.tossPoints?.gt(BigNumber.from(0)) &&
+            <WinStreak themelight={!darkMode}>
+              <div>{dataResult?.tossPoints?.toNumber()}</div>
+              TOSSPOINT
+            </WinStreak>
+          }
+          {
+            dataResult?.jackpotWin?.gt(BigNumber.from(0)) &&
+            <WinStreak sx={{ mt: 0 }} themelight={!darkMode}>
+              <div>{Format.formatMoney(ethers.utils.formatUnits(dataResult?.jackpotWin ?? BigNumber.from(0)))}</div>
+              JACKPOT WIN (BNB)
+            </WinStreak>
+          }
+        </Box>
+      </Box>
+      {
+
+        (dataResult?.jackpotWin?.gt(BigNumber.from(0)) ||
+          dataResult?.tokenId.gt(BigNumber.from(0))) &&
+        <ButtonMain title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={bnbAssets.gt(BigNumber.from(0)) ? true : false} onClick={handleClaim} customStyle={{
+          padding: '13.5px',
+          maxWidth: '225px',
+          width: '100%',
+          marginBottom: '24px'
+        }} />
+
+      }
+    </Box>
+    {coinSide !== flipResult && <TextFail themelight={!darkMode}>Fall where, double there, don’t give up</TextFail>}
     <Box sx={{
       display: 'flex',
       justifyContent: 'center'
     }}>
-      {coinSide === flipResult && <ButtonMain title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={parseFloat(bnbAssets) > 0 ? true : false} onClick={handleClaim} customStyle={{
-        padding: '13.5px',
-        maxWidth: '225px',
-        width: '100%',
-        marginRight: '24px'
-      }} />}
-      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "PLAY AGAIN"} active={true} onClick={playAgain} customStyle={{
+
+      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={playAgain} customStyle={{
         padding: '13.5px',
         maxWidth: '225px',
         width: '100%',
@@ -126,11 +165,12 @@ const Coin = styled(Box)({
 })
 
 const Title = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
+  fontFamily: 'BeVietnamPro',
   textTransform: 'uppercase',
   marginBottom: 40,
   '& span': {
-    color: props.themeLight ? '#FC753F' : '#FEF156'
+    color: props.themelight ? '#FC753F' : '#FEF156'
   }
 }))
 const BoxAmount = styled(Box)({
@@ -138,15 +178,15 @@ const BoxAmount = styled(Box)({
   justifyContent: 'space-between'
 })
 const WinStreak = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 40,
   padding: '0 21.5px',
   '& div': {
-    ...TEXT_STYLE(40, 500, props.themeLight ? '#FC753F' : '#FEF156'),
+    ...TEXT_STYLE(40, 500, props.themelight ? '#FC753F' : '#FEF156'),
     marginBottom: 8
   }
 }))
 const TextFail = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(16, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(16, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 24
 }))

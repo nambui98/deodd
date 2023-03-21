@@ -4,7 +4,7 @@ import { useWalletContext } from "../../contexts/WalletContext";
 import { Container, TEXT_STYLE } from "../../styles/common";
 import { Popup } from "./popup";
 // import { Button } from "../ui/button";
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { Colors } from '../../constants';
@@ -40,7 +40,7 @@ export const Header: React.FC = () => {
   }
 
   const handleClaim = async () => {
-    if (!statusLoading && parseFloat(bnbAssets) > 0) {
+    if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
         const res = await handleClaimAll(ethersSigner)
@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-        <Box><Image alt="" src='assets/icons/close-circle.svg' /></Box>
+        <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
       </Box>
@@ -76,17 +76,17 @@ export const Header: React.FC = () => {
   const bodyBalance = async () => {
     return (<Box >
       <HeaderPopup>
-        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(bnbAssets)} <Image alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
-        <ButtonMain active={parseFloat(bnbAssets) ? true : false} disable={parseFloat(bnbAssets) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} />
+        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(ethers.utils.formatUnits(bnbAssets))} <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
+        <ButtonMain active={bnbAssets.gt(BigNumber.from(0)) ? true : false} disable={bnbAssets.gt(BigNumber.from(0)) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} />
       </HeaderPopup>
-      <HistoryPopup themeLight={!darkMode}>History</HistoryPopup>
-      <BoxItemHistory themeLight={!darkMode}>
+      <HistoryPopup themelight={!darkMode}>History</HistoryPopup>
+      <BoxItemHistory themelight={!darkMode}>
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
           const currentFee = await getCalculateFee(ethersSigner, ethers.utils.formatUnits(`${item.amount}`))
           return <ItemHistory key={index}>
             <Box>
-              <TitleHistory themeLight={!darkMode}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
-              <BnbHistory themeLight={!darkMode} active={item.flipResult}>
+              <TitleHistory themelight={!darkMode}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
+              <BnbHistory themelight={!darkMode} active={item.flipResult}>
                 {item.flipResult ? '+' : '-'}{ethers.utils.formatUnits(`${item.amount}`)} BNB
                 <Box>Fee: {ethers.utils.formatUnits(currentFee)} BNB</Box>
               </BnbHistory>
@@ -112,25 +112,21 @@ export const Header: React.FC = () => {
   return <Wrap>
     <Container>
       <Inner>
-        <Logo><Image alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Logo>
+        <Box><img alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
         <BoxRight>
-
-          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          <ItemRight themeLight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          {/* <ItemRight themeLight={!darkMode}><img alt="" src={`assets/icons/volume-high${darkMode ? "" : '-light'}.svg`} /></ItemRight>
-          <ItemRight themeLight={!darkMode} onClick={() => { setDarkMode(!darkMode) }}><img alt="" src={`assets/icons/${darkMode ? 'moon' : 'sun'}.svg`} /></ItemRight> */}
-          {/* <ItemRight themeLight={!darkMode} className='stats'><BoxStats>Stats</BoxStats></ItemRight> */}
+          <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
           {walletAccount && (width520 ?
             <>
-              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}> <span>Assets</span></ItemRight>
-              <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(bnbAssets)}</span> <Image alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
+              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}> <span>Assets</span></ItemRight>
+              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
             </>
             :
-            <ItemRight themeLight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><Image alt="" src="assets/icons/wallet.svg" /></ItemRight>
+            <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img alt="" src="assets/icons/wallet.svg" /></ItemRight>
           )}
 
-          <ItemRight themeLight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
+          <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
         </BoxRight>
       </Inner>
     </Container>
@@ -150,81 +146,39 @@ const Inner = styled(Box)({
     padding: '22px 0',
   }
 })
-const Logo = styled(Box)({
 
-})
 const BoxRight = styled(Box)({
   display: 'flex',
   alignItems: 'center'
 })
-const HeaderItem = styled(Button)({
-  ...TEXT_STYLE(12, 500),
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  padding: '8px 12px',
-  background: 'text',
-  border: '2px solid ',
-  borderRadius: 8,
-  marginLeft: 8,
-  // '&.stats': {
-  //   background: props.themeLight ? '#E9EAEF' : '#181536',
-  //   '& > div': {
-  //     color: props.themeLight ? '#181536 !important' : ''
-  //   }
-  // },
-  // '&.leadeboard': {
-  //   '& > div': {
-  //     color: props.themeLight ? '#181536 !important' : ''
-  //   }
-  // },
-  // '& .MuiInputBase-root': {
-  //   ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
-  //   outline: 0,
-  //   border: 0,
-  //   '& svg': {
-  //     color: props.themeLight ? 'transparent' : '#7071B3'
-  //   },
-  //   '& fieldset': {
-  //     display: 'none'
-  //   },
-  //   '& .MuiSelect-select': {
-  //     padding: '8px',
-  //   }
-  // },
-  // '& span': {
-  //   ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
-  //   margin: '0 8px'
-  // }
-})
 const ItemRight = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(12, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(12, 500, props.themelight ? '#181536' : '#FFFFFF'),
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   padding: '8px 12px',
-  background: props.themeLight ? '#FFFFFF' : '#181536',
+  background: props.themelight ? '#FFFFFF' : '#181536',
   border: '2px solid ',
-  borderColor: props.themeLight ? '#E9EAEF' : '#181536',
+  borderColor: props.themelight ? '#E9EAEF' : '#181536',
   borderRadius: 8,
   marginLeft: 8,
   '&.stats': {
-    background: props.themeLight ? '#E9EAEF' : '#181536',
+    background: props.themelight ? '#E9EAEF' : '#181536',
     '& > div': {
-      color: props.themeLight ? '#181536 !important' : ''
+      color: props.themelight ? '#181536 !important' : ''
     }
   },
   '&.leadeboard': {
     '& > div': {
-      color: props.themeLight ? '#181536 !important' : ''
+      color: props.themelight ? '#181536 !important' : ''
     }
   },
   '& .MuiInputBase-root': {
-    ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
+    ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
     outline: 0,
     border: 0,
     '& svg': {
-      color: props.themeLight ? 'transparent' : '#7071B3'
+      color: props.themelight ? 'transparent' : '#7071B3'
     },
     '& fieldset': {
       display: 'none'
@@ -234,7 +188,7 @@ const ItemRight = styled(Box)((props: propsTheme) => ({
     }
   },
   '& span': {
-    ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
+    ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
     margin: '0 8px'
   }
 }))
@@ -245,7 +199,7 @@ const HeaderPopup = styled(Box)({
   justifyContent: 'space-between'
 })
 const HistoryPopup = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 500, props.themeLight ? '#181536' : '#7071B3'),
+  ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
   margin: '8px 0'
 }))
 const BoxItemHistory = styled(Box)((props: propsTheme) => ({
@@ -260,11 +214,11 @@ const BoxItemHistory = styled(Box)((props: propsTheme) => ({
     borderRadius: 10
   },
   '&::-webkit-scrollbar-thumb': {
-    background: `linear-gradient(180deg, ${props.themeLight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themeLight ? '#FC753F' : '#FEF156'} 66.9%)`,
+    background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`,
     borderRadius: 10
   },
   '&::-webkit-scrollbar-thumb:hover': {
-    background: `linear-gradient(180deg, ${props.themeLight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themeLight ? '#FC753F' : '#FEF156'} 66.9%)`
+    background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`
   }
 }))
 const ItemHistory = styled(Box)({
@@ -278,19 +232,19 @@ const TimeHistory = styled(Typography)({
 })
 type propsBnbHistory = {
   active: boolean,
-  themeLight: boolean
+  themelight: boolean
 }
 const BnbHistory = styled(Typography)((props: propsBnbHistory) => ({
   display: 'flex',
   alignItems: 'flex-end',
-  ...TEXT_STYLE(14, 500, props.themeLight ? props.active ? '#FC753F' : '#A7ACB8' : props.active ? '#FEF156' : '#A7ACB8'),
+  ...TEXT_STYLE(14, 500, props.themelight ? props.active ? '#FC753F' : '#A7ACB8' : props.active ? '#FEF156' : '#A7ACB8'),
   '& > div': {
     ...TEXT_STYLE(10, 500, '#5A6178'),
     marginLeft: 4
   }
 }))
 const TitleHistory = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 400, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 6
 }))
 const BoxStats = styled(Box)({
