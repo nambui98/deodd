@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/material";
 import Image from "next/image"
-import { getRecentFlipping, getTopStreak } from "../../../../libs/apis/flipCoin";
+import { getRecentFlipping, getTopNetGains, getTopStreak } from "../../../../libs/apis/flipCoin";
 // import { convertTimeStamp, convertWalletAddress } from "../../../../libs/utils/utils";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { ethers } from "ethers";
@@ -10,7 +10,6 @@ import { propsTheme } from "../../../../pages/homepage";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
 import { Convert } from "../../../../utils/convert";
 import { RankingIcon } from "../../../common/icons";
-// import Ranking from 'assets/icons/ranking.svg'
 type tabsType = tabsEnum;
 enum tabsEnum {
   RECENT,
@@ -18,25 +17,41 @@ enum tabsEnum {
   TOPNETGAINS
 }
 export const TopList = () => {
-  const { walletAccount, userInfo, ethersSigner, refresh } = useWalletContext()
+  const { walletAccount, userInfo, refresh } = useWalletContext()
   const { darkMode } = useColorModeContext();
   const [currentTab, setCurrentTab] = useState<tabsType>(tabsEnum.RECENT)
-  const [recentData, setRecentData] = useState<any[]>([])
-  const [topData, setTopData] = useState<any[]>([])
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getDataList = async (type: tabsType) => {
-    const res = type === tabsEnum.RECENT ? await getRecentFlipping(0) : await getTopStreak(0)
-    if (res.status === 200 && res.data.data.length) {
-      type === tabsEnum.RECENT ? setRecentData(res.data.data) : setTopData(res.data.data)
+
+  useEffect(() => {
+    setIsLoading(true);
+    const getData = async () => {
+      let res: any;
+      if (currentTab === tabsEnum.RECENT) {
+        res = await getRecentFlipping();
+      } else if (currentTab === tabsEnum.TOPSTREAK) {
+        res = await getTopStreak();
+      } else {
+        res = await getTopNetGains();
+      }
+      setIsLoading(false);
+      if (res.status === 200) {
+        setData(res.data.data);
+      } else {
+        setData([]);
+      }
     }
-  }
+    getData();
+  }, [currentTab, refresh])
+
 
   const renderSubtitleData = (item: any) => {
     if (currentTab === tabsEnum.RECENT) {
-      return item.flipResult ? (`flipped ${ethers.utils.formatUnits(item.amount.toString())} and `) : `${ethers.utils.formatUnits(item.amount.toString())} was flipped and slipped`
+      return item.flipResult ? (`flipped ${ethers.utils.formatUnits((item.amount ?? 0).toString())} and `) : `${ethers.utils.formatUnits((item.amount ?? 0).toString())} was flipped and slipped`
     }
     if (currentTab === tabsEnum.TOPSTREAK) {
-      return `flipped ${ethers.utils.formatUnits(item.streakAmount.toString())} and got a double ${item.maxStreakLength} times in a row`
+      return `flipped ${ethers.utils.formatUnits((item.streakAmount ?? 0).toString())} and got a double ${item.maxStreakLength} times in a row`
     }
   }
 
@@ -50,35 +65,26 @@ export const TopList = () => {
     }
   }
 
-  useEffect(() => {
-    getDataList(currentTab)
-  }, [currentTab, ethersSigner, refresh])
-
-  useEffect(() => {
-    getDataList(tabsEnum.TOPSTREAK)
-  }, [])
-
   const MyhighestStreak = () => {
-    const data = topData.length ? topData.filter((item: any) => item.walletAddress === walletAccount) : []
-    return data.length ? data[0].maxStreakLength : 0
+    const myData = data.length && !isLoading ? data.find((item: any) => item.wallet === walletAccount) : null;
+    return myData ? myData.maxStreakLength : 0
   }
 
   return <Wrap>
     <TabTitle themelight={!darkMode}>
       <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.RECENT} onClick={() => setCurrentTab(tabsEnum.RECENT)} style={{ marginRight: '8px' }}> <img alt="" src="assets/icons/clock.svg" /> Recent</TabTitleItem>
-
       <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.TOPSTREAK} onClick={() => setCurrentTab(tabsEnum.TOPSTREAK)} style={{ marginRight: '8px' }}><img alt="" src={`assets/icons/cup${!darkMode ? '-light' : ''}.svg`} />Top streak</TabTitleItem>
       <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.TOPNETGAINS} onClick={() => setCurrentTab(tabsEnum.TOPNETGAINS)}><RankingIcon fill={"#7071B3"} />  Top net gains</TabTitleItem>
     </TabTitle>
-    <TabBody themelight={!darkMode}>
-      {recentData.length || topData.length ? (currentTab === tabsEnum.RECENT ? recentData : topData).map((item: any, index) => (
+    <TabBody position={"relative"} themelight={!darkMode}>
+      {data.length && !isLoading ? data.map((item: any, index) => (
         <TabItem themelight={!darkMode} key={index}>
           <AvtItem>
-            {currentTab === tabsEnum.RECENT ? <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.player === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} /> :
-              <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.walletAddress === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} />}
+            {currentTab === tabsEnum.RECENT ? <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.wallet === walletAccount) ? userInfo.avatar : item.avatarId?.toString())}.png`} /> :
+              <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.wallet === walletAccount) ? userInfo.avatar : item.avatarId?.toString())}.png`} />}
           </AvtItem>
           <div>
-            <TitleItem themelight={!darkMode}>{item.playerName ? item.playerName : Convert.convertWalletAddress((currentTab === tabsEnum.RECENT ? item.player : item.walletAddress), 6, 3)}</TitleItem>
+            <TitleItem themelight={!darkMode}>{item.userName ? item.userName : Convert.convertWalletAddress((item.wallet), 6, 3)}</TitleItem>
             <SubtitleItem themelight={!darkMode}>{renderSubtitleData(item)} {item.flipResult && currentTab === tabsEnum.RECENT && <span>doubled</span>}</SubtitleItem>
           </div>
           <TimeItem>{item.blockTimestamp && Convert.convertTimeStamp(item.blockTimestamp)}</TimeItem>
@@ -87,7 +93,7 @@ export const TopList = () => {
         <img alt="" src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
         <Typography sx={{ ...TEXT_STYLE(16, 500, '#7071B3'), marginTop: '40px' }}>It’s look quiet here...</Typography>
       </Box>}
-      {(recentData.length || topData.length) && walletAccount && <YourHighest themelight={!darkMode}>
+      {!isLoading && data.length && walletAccount && <YourHighest themelight={!darkMode}>
         <img alt="" src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
         <Box>
           My highest streak
@@ -206,6 +212,7 @@ const YourHighest = styled(Box)((props: yourHighest) => ({
   borderRadius: 8,
   background: props.themelight ? '#FC753F' : '#FEF156',
   display: 'flex',
+  bottom: 0,
   justifyContent: 'center',
   alignItems: 'center',
   '& > img': {

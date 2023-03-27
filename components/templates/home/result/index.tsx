@@ -9,32 +9,34 @@ import { propsTheme } from "../../../../pages/homepage";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
 import { ButtonMain } from "../../../ui/button";
 import { BigNumber, ethers } from "ethers";
-import { resultType, useDeoddContract } from "../../../../hooks/useDeoddContract";
 import { Format } from "../../../../utils/format";
+import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
 
-interface IProps {
-  dataResult: resultType;
-  amount: string | undefined,
-  coinSide: string | undefined,
-  flipResult: string | undefined,
-  winningStreakAmount: string | undefined,
-  winningStreakLength: string | undefined,
-  playAgain: () => any
-}
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
   1: "/assets/images/gold.png",
   2: "/assets/images/diamond.png",
 }
-export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipResult, winningStreakAmount, winningStreakLength, playAgain }) => {
+export const Result = () => {
   const { ethersSigner, refresh, setRefresh, bnbAssets } = useWalletContext()
-  // const { dataResult } = useDeoddContract();
   const { darkMode } = useColorModeContext();
+  const { gameResult, setStatusGame } = useContractContext();
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
     body: <></>
   })
+  const {
+    coinSide,
+    flipResult,
+    amount,
+    tokenId,
+    typeId,
+    winningStreakAmount,
+    winningStreakLength,
+    tossPoints,
+    jackpotWin
+  } = gameResult!;
   const renderImage = () => {
     if (coinSide === flipResult) {
       if (coinSide === '0') {
@@ -87,10 +89,8 @@ export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipRes
     const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
     audio.play();
   }, [flipResult, coinSide])
-  console.log(dataResult);
 
-  console.log(dataResult?.typeId.toNumber().toString());
-  let typeNFT: number | undefined = dataResult?.typeId.toNumber();
+  let typeNFT: number | undefined = typeId.toNumber();
   return <Wrap>
     <Coin><img alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
     <Title themelight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
@@ -102,24 +102,24 @@ export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipRes
             WIN STREAK
           </WinStreak>
           {
-            dataResult?.tokenId.gt(BigNumber.from(0)) && <>
+            tokenId.gt(BigNumber.from(0)) && <>
               <Image width={47} height={48} src={dataTypeNFT[typeNFT || 0]} alt="" />
-              <Typography mt={1} textAlign={'center'} variant="h5" style={{ ...TEXT_STYLE(24, 500), textTransform: 'uppercase' }}>NFT ITEM</Typography>
+              <Typography mt={1} mb={4} textAlign={'center'} variant="h5" style={{ ...TEXT_STYLE(24, 500), textTransform: 'uppercase' }}>NFT ITEM</Typography>
             </>
           }
         </Box>
         <Box>
           {
-            dataResult?.tossPoints?.gt(BigNumber.from(0)) &&
+            tossPoints?.gt(BigNumber.from(0)) &&
             <WinStreak themelight={!darkMode}>
-              <div>{dataResult?.tossPoints?.toNumber()}</div>
+              <div>{tossPoints?.toNumber()}</div>
               TOSSPOINT
             </WinStreak>
           }
           {
-            dataResult?.jackpotWin?.gt(BigNumber.from(0)) &&
+            jackpotWin?.gt(BigNumber.from(0)) &&
             <WinStreak sx={{ mt: 0 }} themelight={!darkMode}>
-              <div>{Format.formatMoney(ethers.utils.formatUnits(dataResult?.jackpotWin ?? BigNumber.from(0)))}</div>
+              <div>{Format.formatMoney(ethers.utils.formatUnits(jackpotWin ?? BigNumber.from(0)))}</div>
               JACKPOT WIN (BNB)
             </WinStreak>
           }
@@ -127,8 +127,8 @@ export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipRes
       </Box>
       {
 
-        (dataResult?.jackpotWin?.gt(BigNumber.from(0)) ||
-          dataResult?.tokenId.gt(BigNumber.from(0))) &&
+        (jackpotWin?.gt(BigNumber.from(0)) ||
+          tokenId.gt(BigNumber.from(0))) &&
         <ButtonMain title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={bnbAssets.gt(BigNumber.from(0)) ? true : false} onClick={handleClaim} customStyle={{
           padding: '13.5px',
           maxWidth: '225px',
@@ -144,7 +144,9 @@ export const Result: React.FC<IProps> = ({ dataResult, amount, coinSide, flipRes
       justifyContent: 'center'
     }}>
 
-      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={playAgain} customStyle={{
+      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
+        setStatusGame(StatusGame.flip);
+      }} customStyle={{
         padding: '13.5px',
         maxWidth: '225px',
         width: '100%',

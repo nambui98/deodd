@@ -77,14 +77,8 @@ interface wallerContextType {
 	setWalletAccount: (account: any) => void
 	metaMaskIsInstalled: boolean,
 	chainIdIsSupported: boolean,
-	bnbBalance: string,
-	heeBalance: string,
-	fiuBalance: string,
-	shoeBalance: string,
-	boxBalance: string,
-	busdBalance: string,
+	bnbBalance: BigNumber,
 	updateAssetsBalance: () => void
-	claimBoxContract: any,
 	refresh: boolean,
 	setRefresh: (status: boolean) => void,
 	bnbAssets: BigNumber,
@@ -105,14 +99,8 @@ const WalletContext = createContext<wallerContextType>({
 	setWalletAccount: () => { },
 	metaMaskIsInstalled: false,
 	chainIdIsSupported: false,
-	bnbBalance: '',
-	heeBalance: '',
-	fiuBalance: '',
-	shoeBalance: '',
-	boxBalance: '',
-	busdBalance: '',
+	bnbBalance: BigNumber.from(0),
 	updateAssetsBalance: () => null,
-	claimBoxContract: null,
 	refresh: false,
 	setRefresh: () => { },
 	bnbAssets: BigNumber.from(0),
@@ -129,7 +117,6 @@ export async function changeNetwork(provider: any) {
 		});
 		window.location.reload();
 	} catch (addError: any) {
-		// console.error('wallet_addEthereumChain', addError);
 	}
 }
 
@@ -175,39 +162,25 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const balance = await ethersProvider.getBalance(walletAccount);
 			setBnbBalance(balance)
 			setBnbAssets(playerAssets)
-			// ethers.utils.formatUnits(
 		}
 	}
 
 	const handleChainChanged = async (chainId: any) => {
-		// if (supportedChainIds.indexOf(chainId) >= 0) {
-
-		// 	setChainIdIsSupported(true);
-		// } else {
-		// 	setChainIdIsSupported(false);
-		// }
 		window.location.reload();
 	}
 
 	useEffect(() => {
 
 		const startApp = async (_ethereumProvider: any) => {
-			//The provider detected by detectEthereumProvider() must be the same as window.ethereum
-			// if (_ethereumProvider !== (window as any).ethereum) {
-			// 	alert('Do you have multiple wallets installed?');
-			// 	return;
-			// }
 			if (_ethereumProvider.isMetaMask === true) {
 				setMetaMaskIsInstalled(true);
 			}
-			// Check if a MetaMask account has permission to connect to app
 			const accounts = await _ethereumProvider.request({ method: 'eth_accounts' });
 			if (accounts.length > 0 && UserService.getCurrentUser()) {
 				setWalletAccount(utils.getAddress(accounts[0]));
 			};
 
 			const _ethersProvider = await new ethers.providers.Web3Provider(_ethereumProvider);
-			// await _ethersProvider.send('eth_requestAccounts', []);
 			setEthersProvider(_ethersProvider);
 			const _ethersSigner = await _ethersProvider.getSigner();
 			setEthersSigner(_ethersSigner);
@@ -238,15 +211,19 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	}, []);
 
 	useEffect(() => {
-		walletAccount === null && handleDisconnectWallet()
+		if (walletAccount === null) {
+			handleDisconnectWallet();
+		}
 	}, [walletAccount])
 
 	useEffect(() => {
-		ethersSigner && updateBalance()
-		ethersSigner && getInfoAddress()
+		if (ethersSigner) {
+			updateBalance();
+			getInfoAddress();
+		}
 	}, [walletAccount, ethersSigner, refresh])
 
-	const value = {
+	const value: wallerContextType = {
 		activePopup,
 		setToggleActivePopup: setActivePopup,
 		provider,
@@ -258,11 +235,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		chainIdIsSupported,
 		bnbBalance: bnbBalance,
 		updateAssetsBalance: updateBalance,
-		claimBoxContract,
 		refresh: refresh,
 		setRefresh: setRefresh,
 		bnbAssets: bnbAssets,
 		userInfo: userInfo
 	}
-	return <WalletContext.Provider value={value as any}>{children}</WalletContext.Provider>
+	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

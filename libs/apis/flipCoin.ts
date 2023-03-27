@@ -2,16 +2,23 @@ import vhIdRequest from '../utils/vhIdRequest';
 
 const apiRouter = 'https://testapi.befitter.io/deodd'
 
-export const getRecentFlipping = async (offset: number) => {
+export const getRecentFlipping = async () => {
   return vhIdRequest({
-    url: `${apiRouter}/recent-flipping?limit=10&offset=${offset}`,
+    url: `${apiRouter}/recent`,
     method: 'get',
   })
 }
 
-export const getTopStreak = async (offset: number) => {
+export const getTopStreak = async () => {
   return vhIdRequest({
-    url: `${apiRouter}/top-streak?limit=10&offset=${offset}`,
+    url: `${apiRouter}/topstreak`,
+    method: 'get',
+  })
+}
+
+export const getTopNetGains = async () => {
+  return vhIdRequest({
+    url: `${apiRouter}/topnetgains`,
     method: 'get',
   })
 }

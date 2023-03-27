@@ -13,7 +13,7 @@ import { changeNetwork, useWalletContext } from "../contexts/WalletContext"
 import { Popup } from "../components/common/popup";
 import { useColorModeContext } from "../contexts/ColorModeContext";
 import { ButtonMain } from "../components/ui/button";
-import { useDeoddContract } from "../hooks/useDeoddContract";
+import { useContractContext } from "../contexts/ContractContext";
 
 export enum StatusGame {
   flip,
@@ -30,7 +30,7 @@ const HomePage: React.FC = () => {
   const { darkMode } = useColorModeContext();
   // const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
 
-  const { getFlipTokenDetail, setIsFinish, audio, dataResult, statusGame, setStatusGame } = useDeoddContract();
+  const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
   const router = useRouter()
   useEffect(() => {
     // const checkChain = async () => {
@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
           }
         }}>
           <LeftBody>
-            {walletAccount ? <PlayPart getFlipTokenDetail={getFlipTokenDetail} setIsFinish={setIsFinish} audio={audio} dataResult={dataResult} statusGame={statusGame} setStatusGame={setStatusGame} /> : <ConnectWallet />}
+            {walletAccount ? <PlayPart /> : <ConnectWallet />}
             {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themelight={!darkMode}>
               <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
               <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |

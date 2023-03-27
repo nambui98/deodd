@@ -5,16 +5,19 @@ import { AppPropsCustom } from '../libs/types';
 import '../styles/globals.css';
 import '../styles/globals.scss';
 import Layout from '../components/common/layout';
+import { ContractProvider } from '../contexts/ContractContext';
 
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
   return (
     <ColorModeProvider {...props}>
       <WalletProvider>
-        <CssBaseline />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ContractProvider>
+          <CssBaseline />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ContractProvider>
       </WalletProvider>
     </ColorModeProvider>
   )

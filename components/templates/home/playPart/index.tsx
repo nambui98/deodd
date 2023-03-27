@@ -13,7 +13,7 @@ import { useColorModeContext } from "../../../../contexts/ColorModeContext"
 import { ButtonMain } from "../../../ui/button"
 import { Format } from "../../../../utils/format"
 import { Convert } from "../../../../utils/convert"
-import { useDeoddContract } from "../../../../hooks/useDeoddContract"
+import { useContractContext } from "../../../../contexts/ContractContext"
 
 const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
 
@@ -30,9 +30,9 @@ interface IProps {
   setStatusGame: (status: StatusGame) => any
 }
 
-export const PlayPart: React.FC<any> = ({ }) => {
+export const PlayPart: React.FC<any> = () => {
   const { walletAccount, setWalletAccount, ethersSigner, updateAssetsBalance, userInfo, setRefresh, refresh, bnbAssets, bnbBalance } = useWalletContext()
-  const { getFlipTokenDetail, setIsFinish, audio, dataResult, statusGame, setStatusGame } = useDeoddContract();
+  const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
   const { darkMode } = useColorModeContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -44,13 +44,7 @@ export const PlayPart: React.FC<any> = ({ }) => {
     amount?: number,
     index?: number,
   }>()
-  // const [dataResult, setDataResult] = useState<{
-  //   amount: string,
-  //   coinSide: string,
-  //   flipResult: string,
-  //   winningStreakAmount: string,
-  //   winningStreakLength: string
-  // }>()
+
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 
@@ -70,37 +64,23 @@ export const PlayPart: React.FC<any> = ({ }) => {
       <ButtonMain active={true} title={'OKAY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
     </Box>
   )
-  const getComplement = async () => {
-    // playerAsset = await deodd.getPlayerAsset(player);
 
-    // fee = await feeManager.calcTotalFee(m);
-    const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
-    let complement;
-    let totalAmount = dataSelect?.amount! + fee;
-
-    if (bnbAssets > totalAmount) {
-      complement = BigNumber.from(0);
-    }
-    else {
-      complement = totalAmount.sub(bnbAssets);
-    }
-    return complement;
-  }
   const handleFlip = async () => {
     const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
     let complement: BigNumber = BigNumber.from(0);
     let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelect!.amount!.toString()).add(fee);
-
     if (bnbAssets.gte(totalAmount)) {
       complement = BigNumber.from(0);
     }
     else {
       complement = totalAmount.sub(bnbAssets);
     }
-    debugger
     if (bnbAssets < totalAmount && complement.gte(bnbBalance)) {
-
       // debugger
+      setPopup({
+        status: true,
+        body: bodyPopupError('Something went wrong. Please try again!')
+      })
     }
     else {
       if (!statusLoadingFlip) {
@@ -108,10 +88,10 @@ export const PlayPart: React.FC<any> = ({ }) => {
         setIsFinish(false);
         try {
           const getCaculateFee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
+          audio.loop = true;
           audio.play();
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
-
           if (getCaculateFee) {
             const res = await handleFlipToken(
               ethersSigner,
@@ -123,7 +103,6 @@ export const PlayPart: React.FC<any> = ({ }) => {
               setStatusLoadingFlip(false)
               setIsFinish(true);
             }
-
           }
         } catch (error: any) {
           audio.load();
@@ -134,118 +113,7 @@ export const PlayPart: React.FC<any> = ({ }) => {
             body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
           })
         }
-
       }
-    }
-
-  }
-  // const handlePlayGame = async () => {
-
-  //   const audio = new Audio('/assets/roll.mp3');
-  //   if (!statusLoadingFlip) {
-  //     setStatusLoadingFlip(true)
-  //     const getCaculateFee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
-  //     debugger
-  //     const handleDeposit = async () => {
-  //       audio.play();
-  //       try {
-  //         setStatusGame(StatusGame.flipping)
-  //         setPopup({ ...popup, status: false })
-  //         if (getCaculateFee) {
-  //           const res = await handleFlipToken(
-  //             ethersSigner,
-  //             dataSelect?.index || 0,
-  //             dataSelect?.coinSide || 0,
-  //             `${(dataSelect?.amount || 0) + parseFloat(ethers.utils.formatUnits(getCaculateFee)) - parseFloat(bnbAssets)}`
-  //           )
-  //           if (res.status) {
-  //             debugger
-  //             await handleGetResult()
-  //           }
-  //         }
-  //         setStatusLoadingFlip(false)
-  //       } catch (error: any) {
-
-  //         audio.load();
-  //         setStatusLoadingFlip(false)
-  //         setStatusGame(StatusGame.flip)
-  //         debugger
-  //         setPopup({
-  //           status: true,
-  //           body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
-  //         })
-  //       }
-  //     }
-  //     if ((dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount) {
-  //       try {
-  //         if (parseFloat(bnbAssets) > parseFloat(`${dataSelect?.amount}`)) {
-  //           audio.play();
-  //           setStatusGame(StatusGame.flipping)
-  //           const res = await handleFlipToken(
-  //             ethersSigner,
-  //             dataSelect?.index || 0,
-  //             dataSelect?.coinSide || 0,
-  //             '0')
-  //           if (res.status) {
-  //             await handleGetResult()
-  //           }
-  //         } else if (parseFloat(bnbAssets) === 0) {
-  //           handleDeposit()
-  //         } else {
-  //           setPopup({
-  //             status: true,
-  //             body: <>
-  //               <TitlePopup themelight={!darkMode}>Add more token</TitlePopup>
-  //               <Typography sx={{
-  //                 ...TEXT_STYLE(14, 400, !darkMode ? '#181536' : '#FFFFFF'),
-  //                 marginBottom: '24px'
-  //               }}>You don’t have enough token, add more to flip!</Typography>
-  //               <Box>
-  //                 <ItemBodyPopup themelight={!darkMode}>Current balance <span>{Format.formatMoney(`${bnbAssets}`)} BNB</span></ItemBodyPopup>
-  //                 <ItemBodyPopup themelight={!darkMode}>Bet amount <span>{dataSelect.amount} BNB</span></ItemBodyPopup>
-  //                 <ItemBodyPopup themelight={!darkMode}>Need more <span>{Format.formatMoney(`${(dataSelect?.amount || 0) - parseFloat(bnbAssets) + parseFloat(ethers.utils.formatUnits(getCaculateFee))}`)} BNB</span></ItemBodyPopup>
-  //               </Box>
-  //               <ButtonMain active={true} title={'DEPOSITE & FLIP'} onClick={handleDeposit} customStyle={{ width: '100%' }} />
-  //             </>,
-  //           })
-  //         }
-  //         setStatusLoadingFlip(false)
-  //       } catch (error: any) {
-  //         audio.load();
-  //         debugger
-  //         setStatusGame(StatusGame.flip)
-  //         setStatusLoadingFlip(false)
-  //         setPopup({
-  //           status: true,
-  //           body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
-
-  const handleGetResult = async () => {
-    try {
-      const res: any = getFlipTokenDetail()
-      if (res) {
-        const winningStreakAmount = await getWinningStreakAmount(ethersSigner, walletAccount)
-        const winningStreakLength = await getWinningStreakLength(ethersSigner, walletAccount)
-        // setDataResult({
-        //   amount: parseFloat(ethers.utils.formatUnits(res.amount)).toString(),
-        //   coinSide: ethers.utils.formatUnits(res.coinSide, 'wei'),
-        //   flipResult: ethers.utils.formatUnits(res.flipResult, 'wei'),
-        //   winningStreakAmount: parseFloat(ethers.utils.formatUnits(winningStreakAmount)).toString(),
-        //   winningStreakLength: parseFloat(ethers.utils.formatUnits(winningStreakLength, 'wei')).toString()
-        // })
-        setStatusGame(StatusGame.result)
-        setRefresh(!refresh)
-      }
-    } catch (error: any) {
-      setStatusGame(StatusGame.flip)
-      setPopup({
-        status: true,
-        body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
-      })
     }
   }
 
@@ -378,13 +246,6 @@ export const PlayPart: React.FC<any> = ({ }) => {
       case 0: return renderPlayPart()
       case 1: return <Flipping amount={`${dataSelect?.amount}`} />
       case 2: return <Result
-        dataResult={dataResult}
-        amount={dataResult?.amount}
-        coinSide={dataResult?.coinSide}
-        flipResult={dataResult?.flipResult}
-        winningStreakAmount={dataResult?.winningStreakAmount}
-        winningStreakLength={dataResult?.winningStreakLength}
-        playAgain={() => setStatusGame(0)}
       />
     }
   }

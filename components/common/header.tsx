@@ -16,6 +16,7 @@ import { Format } from '../../utils/format';
 import { ButtonMain } from '../ui/button';
 import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
 import Image from 'next/image'
+import Link from "next/link";
 
 
 export const Header: React.FC = () => {
@@ -119,7 +120,7 @@ export const Header: React.FC = () => {
           <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
           {walletAccount && (width520 ?
             <>
-              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}> <span>Assets</span></ItemRight>
+              <Link href={"/assets"}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
               <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
             </>
             :

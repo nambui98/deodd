@@ -9,7 +9,7 @@ export const Convert = {
         end: number,
         split: string = '...'
     ) => {
-        return walletAddress.slice(0, start) + split + walletAddress.slice(-end);
+        return walletAddress?.slice(0, start) + split + walletAddress?.slice(-end);
     },
 
     convertTimeStamp: (time: number) => {

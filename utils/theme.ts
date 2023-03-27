@@ -123,17 +123,22 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		},
 		secondary: {
 			main: "#FEF156",
+			"100": "#7071b3"
 		},
+		// neure:{},
 		error: {
 			main: red.A400
 		},
 		background: {
-			default: "#1C1B3E"
+			default: "#1C1B3E",
+			paper: "#181536"
 		},
 		text: {
 			primary: "#fff",
-			secondary: "#FEF156"
-		}
+			secondary: "#FEF156",
+			// disabled: '#7071b3'
+		},
+
 	},
 	// breakpoints: {
 	// 	values: {
@@ -156,9 +161,21 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			fontWeight: 400,
 			lineHeight: 1.2,
 		},
+		body2: {
+			fontSize: 14,
+			fontWeight: 500
+		},
 		button: {
 			fontSize: 16,
 		},
+		h2: {
+			fontSize: 24,
+			fontWeight: 500
+		},
+		caption: {
+			fontSize: 12,
+			fontWeight: 500
+		}
 	},
 	components: {
 		MuiButton: {
