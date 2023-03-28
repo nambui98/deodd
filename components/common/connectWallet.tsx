@@ -10,38 +10,8 @@ import { useColorModeContext } from "../../contexts/ColorModeContext";
 import { ButtonMain } from "../ui/button";
 
 export const ConnectWallet = () => {
-	const { provider, setWalletAccount, setToggleActivePopup, walletAccount, metaMaskIsInstalled, chainIdIsSupported } = useWalletContext();
+	const { handleConnectWallet } = useWalletContext();
 	const { darkMode } = useColorModeContext();
-
-	const handleConnectWallet = async () => {
-		if (!metaMaskIsInstalled) {
-			let a = document.createElement('a');
-			a.target = '_blank';
-			a.href = 'https://metamask.io/download';
-			a.click();
-		} else if (!walletAccount) {
-			const providerEthers = await new ethers.providers.Web3Provider(provider);
-			const address = await providerEthers.send("eth_requestAccounts", []);
-			if (address) {
-				setWalletAccount(ethers.utils.getAddress(address[0]));
-				UserService.setCurrentUser(address[0]);
-				setToggleActivePopup(false);
-			} else {
-				const signer = providerEthers.getSigner();
-				const signature = await signer.signMessage("Please sign this transaction");
-				if (address && signature) {
-					setWalletAccount(ethers.utils.getAddress(address[0]));
-					UserService.setCurrentUser(address[0]);
-					setToggleActivePopup(false);
-				}
-			}
-			if (!chainIdIsSupported) {
-				await changeNetwork(provider)
-			}
-		}
-
-	}
-
 	return <Wrap>
 		<BoxConnect>
 			<Title themelight={!darkMode}>Feel lucky today?</Title>

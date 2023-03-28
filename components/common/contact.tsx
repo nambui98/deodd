@@ -8,7 +8,7 @@ import { DiscordIcon, TelegramIcon, TwiterIcon } from "./icons";
 export const Contact: React.FC = () => {
   const { darkMode } = useColorModeContext();
   return <Wrap>
-    <Box display={"flex"} flexDirection={"column"} sx={{ pointerEvents: "auto" }} alignItems={"center"} alignSelf={"flex-end"} marginBottom={10} marginLeft={10}>
+    <Box display={"flex"} flexDirection={"column"} sx={{ pointerEvents: "auto" }} alignItems={"center"} alignSelf={"flex-end"} >
       <Typography display={'inline-block'} fontWeight={500}>JOIN OUR SOCIAL</Typography>
       <Box display={'flex'} gap={2} marginTop={2} >
         <IconButton color="primary" ><DiscordIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /></IconButton>
@@ -20,11 +20,13 @@ export const Contact: React.FC = () => {
 }
 
 const Wrap = styled(Box)({
-  position: "absolute",
-  inset: 0,
-  zIndex: 1,
-  height: "100vh",
-  display: 'flex',
-  pointerEvents: "none"
+  position: "fixed",
+  // inset: 0,
+  bottom: '80px',
+  left: '80px',
+  // zIndex: 1,
+  // height: "100vh",
+  // display: 'flex',
+  // pointerEvents: "none"
 })
 

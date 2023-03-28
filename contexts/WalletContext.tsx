@@ -82,7 +82,8 @@ interface wallerContextType {
 	refresh: boolean,
 	setRefresh: (status: boolean) => void,
 	bnbAssets: BigNumber,
-	userInfo: { userName: string, avatar: string }
+	userInfo: { userName: string, avatar: string },
+	handleConnectWallet: () => any
 }
 
 interface IProps {
@@ -104,7 +105,8 @@ const WalletContext = createContext<wallerContextType>({
 	refresh: false,
 	setRefresh: () => { },
 	bnbAssets: BigNumber.from(0),
-	userInfo: { userName: '', avatar: '' }
+	userInfo: { userName: '', avatar: '' },
+	handleConnectWallet: () => { }
 })
 
 export const useWalletContext = () => useContext(WalletContext);
@@ -137,7 +139,34 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const handleDisconnectWallet = () => {
 		UserService.removeCurrentUser();
 	}
+	const handleConnectWallet = async () => {
+		if (!metaMaskIsInstalled) {
+			let a = document.createElement('a');
+			a.target = '_blank';
+			a.href = 'https://metamask.io/download';
+			a.click();
+		} else if (!walletAccount) {
+			const providerEthers = await new ethers.providers.Web3Provider(provider);
+			const address = await providerEthers.send("eth_requestAccounts", []);
+			if (address) {
+				setWalletAccount(ethers.utils.getAddress(address[0]));
+				UserService.setCurrentUser(address[0]);
+				setActivePopup(false);
+			} else {
+				const signer = providerEthers.getSigner();
+				const signature = await signer.signMessage("Please sign this transaction");
+				if (address && signature) {
+					setWalletAccount(ethers.utils.getAddress(address[0]));
+					UserService.setCurrentUser(address[0]);
+					setActivePopup(false);
+				}
+			}
+			if (!chainIdIsSupported) {
+				await changeNetwork(provider)
+			}
+		}
 
+	}
 	const getInfoAddress = async () => {
 		if (walletAccount) {
 			const res = await getUserInfo(ethersSigner, walletAccount)
@@ -238,7 +267,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		refresh: refresh,
 		setRefresh: setRefresh,
 		bnbAssets: bnbAssets,
-		userInfo: userInfo
+		userInfo: userInfo,
+		handleConnectWallet
 	}
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

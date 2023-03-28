@@ -2,6 +2,7 @@ import { Button, ButtonProps, styled } from "@mui/material";
 import { useColorModeContext } from "../../../contexts/ColorModeContext";
 import { propsTheme } from "../../../pages/homepage";
 import { TEXT_STYLE } from "../../../styles/common";
+import { ReactElement } from "react";
 
 interface IProps {
   title: any
@@ -19,6 +20,10 @@ export const ButtonMain: React.FC<IProps> = ({ title, customStyle, onClick, acti
     pointerevents: disable === undefined || !disable ? 'auto' : 'none',
     ...customStyle
   }} color="secondary" variant="outlined" disabled={disable}>{title}</Button>
+}
+// type ButtonProps2 = React.ButtonHTMLAttributes<HTMLButtonElement>;
+export const ButtonTertiary: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} color="secondary" variant="outlined" >{props.children}</Button>
 }
 export const ButtonSecond: React.FC<IProps & ButtonProps> = ({ children, onClick, active, sx, disable }) => {
   return <Button onClick={onClick} color="secondary" variant="outlined" disabled={disable} sx={sx}>{children}</Button>

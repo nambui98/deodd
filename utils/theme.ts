@@ -119,15 +119,20 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		mode: "dark",
 		primary: {
 			main: "#556cd6",
-			light: "#f1f5f9"
+			light: "#f1f5f9",
+
 		},
 		secondary: {
 			main: "#FEF156",
-			"100": "#7071b3"
+			"100": "#7071b3",
+			"200": "#A7ACB8",
+			'300': "#25244B"
+
 		},
 		// neure:{},
 		error: {
-			main: red.A400
+			main: red.A400,
+			"100": '#FC753F'
 		},
 		background: {
 			default: "#1C1B3E",
@@ -170,6 +175,14 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		},
 		h2: {
 			fontSize: 24,
+			fontWeight: 500
+		},
+		h3: {
+			fontSize: 16,
+			fontWeight: 500
+		},
+		h4: {
+			fontSize: 18,
 			fontWeight: 500
 		},
 		caption: {

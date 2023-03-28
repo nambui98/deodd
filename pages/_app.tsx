@@ -4,7 +4,7 @@ import { WalletProvider } from '../contexts/WalletContext';
 import { AppPropsCustom } from '../libs/types';
 import '../styles/globals.css';
 import '../styles/globals.scss';
-import Layout from '../components/common/layout';
+import Layout from '../components/common/Layout';
 import { ContractProvider } from '../contexts/ContractContext';
 
 function MyApp(props: AppPropsCustom) {

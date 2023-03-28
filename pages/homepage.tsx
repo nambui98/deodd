@@ -2,9 +2,9 @@ import { useEffect, useState } from "react"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography, useMediaQuery } from "@mui/material";
 import Modal from '@mui/material/Modal';
 // import { Button } from "../components/ui/button"
-import { Header } from "../components/common/header"
+import { Header } from "../components/common/Header"
 import { CONTENT } from "../constants/connectWallet"
-import { ConnectWallet } from "../components/common/connectWallet"
+import { ConnectWallet } from "../components/common/ConnectWallet"
 import { PlayPart } from "../components/templates/home/playPart"
 import { TopList } from "../components/templates/home/topList"
 import { Container, TEXT_STYLE } from "../styles/common"
