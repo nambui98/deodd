@@ -6,20 +6,29 @@ import '../styles/globals.css';
 import '../styles/globals.scss';
 import Layout from '../components/common/Layout';
 import { ContractProvider } from '../contexts/ContractContext';
+import { WagmiConfig } from 'wagmi';
+import { wagmiClient } from 'config/wagmi';
+import { useEffect, useState } from 'react';
 
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   return (
-    <ColorModeProvider {...props}>
-      <WalletProvider>
-        <ContractProvider>
-          <CssBaseline />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ContractProvider>
-      </WalletProvider>
-    </ColorModeProvider>
+    <WagmiConfig client={wagmiClient}>
+      <ColorModeProvider {...props}>
+        <WalletProvider>
+          <ContractProvider>
+            <CssBaseline />
+            {
+              mounted && <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            }
+          </ContractProvider>
+        </WalletProvider>
+      </ColorModeProvider>
+    </WagmiConfig>
   )
 }
 

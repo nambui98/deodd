@@ -1,12 +1,14 @@
-import { BigNumber, ethers, utils } from "ethers"
+import { BigNumber, Contract, ethers, utils } from "ethers"
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
 import detectEthereumProvider from '@metamask/detect-provider';
 import { UserService } from "../services/user.service";
 
 import { ENVIRONMENT_SWITCH } from "../libs/common";
-import { luckyProfile } from "../libs/contract";
+import { deoddContract, feeManagerContract, luckyProfile } from "../libs/contract";
 import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-
+import { useAccount, useBalance, useConnect, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
+import { fetchBalance } from '@wagmi/core';
+import { disconnect } from "process";
 interface Map {
 	[key: string]: any;
 }
@@ -65,24 +67,20 @@ const networks: Map = {
 };
 
 const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
-const supportedChainIds = [network.chainId];
 
 interface wallerContextType {
-	activePopup: boolean,
-	setToggleActivePopup: (status: boolean) => void,
-	provider: any,
-	ethersProvider: any,
-	ethersSigner: any,
-	walletAccount: any,
-	setWalletAccount: (account: any) => void
-	metaMaskIsInstalled: boolean,
-	chainIdIsSupported: boolean,
-	bnbBalance: BigNumber,
+	walletAddress: any,
+	walletIsConnected: boolean,
+	setWalletAddress: (account: any) => void
+	setIsLoading: Function;
+	isLoading: boolean;
 	updateAssetsBalance: () => void
-	refresh: boolean,
-	setRefresh: (status: boolean) => void,
 	bnbAssets: BigNumber,
+	bnbBalance: BigNumber,
 	userInfo: { userName: string, avatar: string },
+	contractProfile: Contract | undefined,
+	contractDeodd: Contract | undefined,
+	contractFeeManager: Contract | undefined,
 	handleConnectWallet: () => any
 }
 
@@ -91,184 +89,171 @@ interface IProps {
 }
 
 const WalletContext = createContext<wallerContextType>({
-	activePopup: false,
-	setToggleActivePopup: () => { },
-	provider: null,
-	ethersProvider: null,
-	ethersSigner: null,
-	walletAccount: null,
-	setWalletAccount: () => { },
-	metaMaskIsInstalled: false,
-	chainIdIsSupported: false,
-	bnbBalance: BigNumber.from(0),
+	walletAddress: null,
+	walletIsConnected: false,
+	setWalletAddress: () => { },
+	isLoading: false,
+	setIsLoading: () => { },
 	updateAssetsBalance: () => null,
-	refresh: false,
-	setRefresh: () => { },
+	bnbBalance: BigNumber.from(0),
 	bnbAssets: BigNumber.from(0),
 	userInfo: { userName: '', avatar: '' },
+	contractDeodd: undefined,
+	contractProfile: undefined,
+	contractFeeManager: undefined,
 	handleConnectWallet: () => { }
 })
 
 export const useWalletContext = () => useContext(WalletContext);
 
-export async function changeNetwork(provider: any) {
-	try {
-		await provider.request({
-			method: "wallet_addEthereumChain",
-			params: [{ ...network }]
-		});
-		window.location.reload();
-	} catch (addError: any) {
-	}
-}
-
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
-	const [provider, setProvider] = useState<any>();
-	const [ethersProvider, setEthersProvider] = useState<any>();
-	const [ethersSigner, setEthersSigner] = useState<any>();
-	const [activePopup, setActivePopup] = useState<boolean>(false);
-	const [walletAccount, setWalletAccount] = useState<any>();
+	// const [provider, setProvider] = useState<any>();
+	// const [ethersProvider, setEthersProvider] = useState<any>();
+	// const [ethersSigner, setEthersSigner] = useState<any>();
+	// const [activePopup, setActivePopup] = useState<boolean>(false);
+	// const [walletAccount, setWalletAccount] = useState<any>();
 	const [metaMaskIsInstalled, setMetaMaskIsInstalled] = useState<boolean>(false);
-	const [chainIdIsSupported, setChainIdIsSupported] = useState<boolean>(false);
-	const [claimBoxContract, setClaimBoxContract] = useState<any>();
+	// const [chainIdIsSupported, setChainIdIsSupported] = useState<boolean>(false);
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
-	const [refresh, setRefresh] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [bnbAssets, setBnbAssets] = useState<BigNumber>(BigNumber.from(0))
 	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
+	const [walletAddress, setWalletAddress] = useState<any>();
+	const [walletIsConnected, setWalletIsConnected] = useState<any>();
+
+	const { address, connector, isConnected } = useAccount();
+	const { chain } = useNetwork();
+	// const { chains } = useProvider();
+	const { switchNetworkAsync } = useSwitchNetwork();
+	const { connect, connectors, error, pendingConnector } =
+		useConnect();
+	const balance = useBalance({
+		address: walletAddress,
+		watch: true
+	})
+	const [contractProfile, setContractProfile] = useState<
+		Contract | undefined
+	>();
+	const [contractDeodd, setContractDeodd] = useState<
+		Contract | undefined
+	>();
+	const [contractFeeManager, setContractFeeManager] = useState<
+		Contract | undefined
+	>();
+	// get balance
+	const getBalance: any = async (addressToken: `0x${string}`) => {
+		let token;
+		try {
+			token = await fetchBalance({
+				token: addressToken,
+				address: walletAddress,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+		return token;
+	};
+	useEffect(() => {
+		setWalletIsConnected(isConnected);
+		setWalletAddress(address);
+		if (address) {
+			UserService.setCurrentUser(address);
+		}
+	}, [address, isConnected]);
 
 	const handleDisconnectWallet = () => {
 		UserService.removeCurrentUser();
+		disconnect();
 	}
+
+	useEffect(() => {
+		if (window.ethereum) {
+			const provider = new ethers.providers.Web3Provider(
+				window.ethereum as any
+			);
+			const signer = provider.getSigner();
+			const contract = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
+			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
+			const contractFeeManager = new ethers.Contract(feeManagerContract.address, feeManagerContract.abi, signer)
+			setContractProfile(contract);
+			setContractDeodd(contractDeodd);
+			setContractFeeManager(contractFeeManager);
+		}
+	}, [chain]);
+
+
 	const handleConnectWallet = async () => {
-		if (!metaMaskIsInstalled) {
+		const needsInjectedWalletFallback =
+			typeof window !== 'undefined' &&
+			window.ethereum &&
+			!window.ethereum.isMetaMask &&
+			!window.ethereum.isCoinbaseWallet;
+		debugger
+		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
 			a.target = '_blank';
 			a.href = 'https://metamask.io/download';
 			a.click();
-		} else if (!walletAccount) {
-			const providerEthers = await new ethers.providers.Web3Provider(provider);
-			const address = await providerEthers.send("eth_requestAccounts", []);
-			if (address) {
-				setWalletAccount(ethers.utils.getAddress(address[0]));
-				UserService.setCurrentUser(address[0]);
-				setActivePopup(false);
-			} else {
-				const signer = providerEthers.getSigner();
-				const signature = await signer.signMessage("Please sign this transaction");
-				if (address && signature) {
-					setWalletAccount(ethers.utils.getAddress(address[0]));
-					UserService.setCurrentUser(address[0]);
-					setActivePopup(false);
-				}
-			}
-			if (!chainIdIsSupported) {
-				await changeNetwork(provider)
-			}
+		} else if (!walletIsConnected) {
+			connect({ connector: connectors[0] })
+			// const providerEthers = await new ethers.providers.Web3Provider(provider);
+			// const address = await providerEthers.send("eth_requestAccounts", []);
+			// if (address) {
+			// 	setWalletAddress(ethers.utils.getAddress(address[0]));
+			// 	UserService.setCurrentUser(address[0]);
+			// 	setActivePopup(false);
+			// } else {
+			// 	const signer = providerEthers.getSigner();
+			// 	const signature = await signer.signMessage("Please sign this transaction");
+			// 	if (address && signature) {
+			// 		setWalletAddress(ethers.utils.getAddress(address[0]));
+			// 		UserService.setCurrentUser(address[0]);
+			// 		setActivePopup(false);
+			// 	}
+			// }
+			// if (!chainIdIsSupported) {
+			// 	await changeNetwork(provider)
+			// }
 		}
 
 	}
 	const getInfoAddress = async () => {
-		if (walletAccount) {
-			const res = await getUserInfo(ethersSigner, walletAccount)
+		if (walletAddress && contractProfile) {
+			const res = await getUserInfo(contractProfile, walletAddress)
 			res && setUserInfo({ userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei') })
 		}
 	}
 
-	const handleWalletAccountsChanged = async (accounts: any) => {
-		if (accounts.length > 0) {
-			setWalletAccount(utils.getAddress(accounts[0]))
-			UserService.setCurrentUser(utils.getAddress(accounts[0]))
-		} else {
-			handleDisconnectWallet();
-			window.location.reload();
-		}
-	}
-
 	const updateBalance = async () => {
-		if (walletAccount && ethersSigner) {
-			const playerAssets = await getPlayerAssets(ethersSigner, walletAccount)
+		if (walletAddress && contractDeodd) {
+			const playerAssets = await getPlayerAssets(contractDeodd, walletAddress)
 			//GET balance
-			const balance = await ethersProvider.getBalance(walletAccount);
-			setBnbBalance(balance)
+			setBnbBalance(balance?.data?.value!)
 			setBnbAssets(playerAssets)
 		}
 	}
 
-	const handleChainChanged = async (chainId: any) => {
-		window.location.reload();
-	}
-
 	useEffect(() => {
-
-		const startApp = async (_ethereumProvider: any) => {
-			if (_ethereumProvider.isMetaMask === true) {
-				setMetaMaskIsInstalled(true);
-			}
-			const accounts = await _ethereumProvider.request({ method: 'eth_accounts' });
-			if (accounts.length > 0 && UserService.getCurrentUser()) {
-				setWalletAccount(utils.getAddress(accounts[0]));
-			};
-
-			const _ethersProvider = await new ethers.providers.Web3Provider(_ethereumProvider);
-			setEthersProvider(_ethersProvider);
-			const _ethersSigner = await _ethersProvider.getSigner();
-			setEthersSigner(_ethersSigner);
-			const chainId = await _ethereumProvider.request({ method: 'eth_chainId' });
-			if (supportedChainIds.indexOf(chainId) >= 0) {
-				console.log(123123)
-				setChainIdIsSupported(true);
-			}
-			_ethereumProvider.on('accountsChanged', handleWalletAccountsChanged);
-			_ethereumProvider.on('chainChanged', handleChainChanged);
-		};
-		const init = async () => {
-			//detect whether the browser is connected to a provider
-			let ethereumProvider = await detectEthereumProvider({ silent: true });
-			if (ethereumProvider) {
-				setProvider(ethereumProvider);
-				await startApp(ethereumProvider);
-			}
-
-		};
-		init();
-		return () => {
-			if (provider) {
-				provider.removeListener('accountsChanged', handleWalletAccountsChanged);
-				provider.removeListener('chainChanged', handleChainChanged);
-			}
-		}
-	}, []);
-
-	useEffect(() => {
-		if (walletAccount === null) {
-			handleDisconnectWallet();
-		}
-	}, [walletAccount])
-
-	useEffect(() => {
-		if (ethersSigner) {
+		if (walletIsConnected && walletAddress) {
 			updateBalance();
 			getInfoAddress();
 		}
-	}, [walletAccount, ethersSigner, refresh])
+	}, [walletAddress, walletIsConnected])
 
 	const value: wallerContextType = {
-		activePopup,
-		setToggleActivePopup: setActivePopup,
-		provider,
-		ethersProvider,
-		ethersSigner,
-		walletAccount,
-		setWalletAccount,
-		metaMaskIsInstalled,
-		chainIdIsSupported,
-		bnbBalance: bnbBalance,
+		walletIsConnected,
+		walletAddress,
+		setWalletAddress,
+		setIsLoading,
+		isLoading,
 		updateAssetsBalance: updateBalance,
-		refresh: refresh,
-		setRefresh: setRefresh,
+		bnbBalance: bnbBalance,
 		bnbAssets: bnbAssets,
 		userInfo: userInfo,
-		handleConnectWallet
+		handleConnectWallet,
+		contractDeodd,
+		contractProfile,
+		contractFeeManager
 	}
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

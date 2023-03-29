@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from "ethers"
+import { BigNumber, Contract, ethers } from "ethers"
 import { bftBusdToken, deoddContract, feeManagerContract, luckyProfile } from "./contract"
 
 export const handleFlipToken = async (etherSinger: any, index: number, coinSide: number, bnbSend: BigNumber) => {
@@ -60,8 +60,7 @@ export const getWinningStreakLength = async (etherSinger: any, walletAddress: st
   return res;
 }
 
-export const getPlayerAssets = async (etherSinger: any, walletAddress: string) => {
-  const contract = new ethers.Contract(deoddContract.address, deoddContract.abi, etherSinger)
+export const getPlayerAssets = async (contract: Contract, walletAddress: string) => {
   const res = await contract.getPlayerAsset(walletAddress)
   return res;
 }
@@ -78,14 +77,12 @@ export const createProfile = async (etherSinger: any, username: string, avatar: 
   return res.wait();
 }
 
-export const getUserInfo = async (etherSinger: any, walletAddress: string) => {
-  const contract = new ethers.Contract(luckyProfile.address, luckyProfile.abi, etherSinger)
+export const getUserInfo = async (contract: Contract, walletAddress: string) => {
   const res = await contract.getUserInfo(walletAddress)
   return res;
 }
 
-export const handleClaimAll = async (etherSinger: any) => {
-  const contract = new ethers.Contract(deoddContract.address, deoddContract.abi, etherSinger)
+export const handleClaimAll = async (contract: Contract) => {
   const res = await contract.claimBNB()
   return res.wait()
 }

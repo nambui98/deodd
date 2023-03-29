@@ -31,7 +31,7 @@ interface IProps {
 }
 
 export const PlayPart: React.FC<any> = () => {
-  const { walletAccount, setWalletAccount, ethersSigner, updateAssetsBalance, userInfo, setRefresh, refresh, bnbAssets, bnbBalance } = useWalletContext()
+  const { walletAddress, setWalletAddress, contractFeeManager, updateAssetsBalance, userInfo, bnbAssets, bnbBalance } = useWalletContext()
   const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
   const { darkMode } = useColorModeContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
@@ -66,7 +66,8 @@ export const PlayPart: React.FC<any> = () => {
   )
 
   const handleFlip = async () => {
-    const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
+    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
+    // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
     let complement: BigNumber = BigNumber.from(0);
     let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelect!.amount!.toString()).add(fee);
     if (bnbAssets.gte(totalAmount)) {

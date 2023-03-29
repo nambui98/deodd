@@ -11,6 +11,8 @@ export const Rank3Image = "/assets/images/rank_silver.png";
 export const AvatarImage = "/assets/images/avatar.png";
 export const ReferralImage = "/assets/images/ref-banner.png";
 export const LogoHeadImage = '/assets/icons/head.svg'
+export const LoyaltyImage = '/assets/images/bgloyalty.png'
+export const Loyalty2Image = '/assets/images/bgloyalty2.png'
 
 export const BnbImage = '/assets/icons/binance-coin.svg'
 export const MapIcon: { [key: string]: string } = {

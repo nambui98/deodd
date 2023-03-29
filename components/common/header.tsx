@@ -17,11 +17,13 @@ import { ButtonMain } from '../ui/button';
 import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
 import Image from 'next/image'
 import Link from "next/link";
+import { useDeoddNFTContract } from "hooks/useDeoddNFTContract";
 
 
 export const Header: React.FC = () => {
-  const { bnbAssets, refresh, setRefresh, walletAccount, ethersSigner } = useWalletContext()
+  const { bnbAssets, walletAddress, contractFeeManager, walletIsConnected, setIsLoading } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
+  const { handleClaimAll } = useDeoddNFTContract();
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
   const width520 = useMediaQuery('(min-width: 520px)')
@@ -34,7 +36,7 @@ export const Header: React.FC = () => {
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
 
   const fetchHistory = async () => {
-    const res = await getHistory(walletAccount, 0)
+    const res = await getHistory(walletAddress, 0)
     if (res.status === 200 && res.data.data.length) {
       setDataHistory(res.data.data)
     }
@@ -44,11 +46,11 @@ export const Header: React.FC = () => {
     if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
-        const res = await handleClaimAll(ethersSigner)
+        const res = await handleClaimAll();
         if (res.status) {
           setStatusLoading(false)
           setPopup({ status: true, body: bodyPopupSuccess })
-          setRefresh(!refresh)
+          // setRefresh(!refresh)
         }
       } catch (error: any) {
         setStatusLoading(false)
@@ -83,7 +85,7 @@ export const Header: React.FC = () => {
       <HistoryPopup themelight={!darkMode}>History</HistoryPopup>
       <BoxItemHistory themelight={!darkMode}>
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
-          const currentFee = await getCalculateFee(ethersSigner, ethers.utils.formatUnits(`${item.amount}`))
+          const currentFee = contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(ethers.utils.formatUnits(`${item.amount}`)))
           return <ItemHistory key={index}>
             <Box>
               <TitleHistory themelight={!darkMode}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
@@ -100,8 +102,8 @@ export const Header: React.FC = () => {
   }
 
   useEffect(() => {
-    walletAccount && ethersSigner && fetchHistory()
-  }, [walletAccount, ethersSigner, refresh, fetchHistory])
+    walletAddress && fetchHistory()
+  }, [walletAddress])
 
   useEffect(() => {
     const reRenderPopup = async () => {
@@ -123,8 +125,11 @@ export const Header: React.FC = () => {
 
             <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
           </Link>
-          <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          {walletAccount && (width520 ?
+          <Link href="/loyalty">
+
+            <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+          </Link>
+          {walletAddress && (width520 ?
             <>
               <Link href={"/assets"}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
               <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>

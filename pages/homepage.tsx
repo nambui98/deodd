@@ -9,7 +9,7 @@ import { PlayPart } from "../components/templates/home/playPart"
 import { TopList } from "../components/templates/home/topList"
 import { Container, TEXT_STYLE } from "../styles/common"
 import { useRouter } from "next/router"
-import { changeNetwork, useWalletContext } from "../contexts/WalletContext"
+import { useWalletContext } from "../contexts/WalletContext"
 import { Popup } from "../components/common/popup";
 import { useColorModeContext } from "../contexts/ColorModeContext";
 import { ButtonMain } from "../components/ui/button";
@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
   const width800 = useMediaQuery(`(min-width: 800px)`)
   const [statusPopup, setStatusPopup] = useState<boolean>(false);
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
-  const { chainIdIsSupported, provider, walletAccount } = useWalletContext();
+  const { walletIsConnected } = useWalletContext();
 
   const { darkMode } = useColorModeContext();
   // const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
     //   }
     // }
     // checkChain();
-  }, [router.asPath, provider])
+  }, [router.asPath])
 
   const handleShowPopup = (type: 'about' | 'faq' | 'howToPlay' | 'flip') => {
     setStatusPopup(true)
@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
           }
         }}>
           <LeftBody>
-            {walletAccount ? <PlayPart /> : <ConnectWallet />}
+            {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
             {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themelight={!darkMode}>
               <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
               <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |

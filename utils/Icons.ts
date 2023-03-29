@@ -8,6 +8,8 @@ import DotIcon from 'public/assets/icons/dot.svg'
 import CopyIcon from 'public/assets/icons/copy.svg'
 import NotiIcon from 'public/assets/icons/noti.svg'
 import LogoHeadIcon from 'public/assets/icons/head.svg'
+import CupIcon from 'public/assets/icons/cup.svg'
+import ClockIcon from 'public/assets/icons/clock.svg'
 export {
     BnbIcon,
     BnbUsdIcon,
@@ -18,5 +20,7 @@ export {
     DotIcon,
     CopyIcon,
     NotiIcon,
-    LogoHeadIcon
+    LogoHeadIcon,
+    CupIcon,
+    ClockIcon
 }

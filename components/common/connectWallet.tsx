@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 // import { Button } from "../ui/button"
-import { changeNetwork, useWalletContext } from "../../contexts/WalletContext";
+import { useWalletContext } from "../../contexts/WalletContext";
 import Image from 'next/image'
 import { UserService } from "../../services/user.service";
 import { TEXT_STYLE } from "../../styles/common"

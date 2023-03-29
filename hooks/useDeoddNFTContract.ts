@@ -1,23 +1,32 @@
-import { Contract, ethers } from "ethers";
+import { BigNumber, Contract, ethers } from "ethers";
 import { useWalletContext } from "../contexts/WalletContext";
 import { useEffect, useState } from "react";
 import { deoddContract } from "../libs/contract";
 
 export const useDeoddNFTContract = () => {
-    const { ethersSigner, walletAccount, setRefresh, refresh } = useWalletContext();
+    const { walletAddress, contractDeodd, isLoading, setIsLoading, bnbAssets } = useWalletContext();
 
-    const [contract, setContract] = useState<Contract>()
-    useEffect(() => {
-        if (ethersSigner) {
-            let contractInit = new ethers.Contract(deoddContract.address, deoddContract.abi, ethersSigner)
-            setContract(contractInit)
-        }
-    }, [ethersSigner])
-
-    const claimToWallet = async () => {
-        const res = await contract?.claimToWallet(walletAccount)
-        return res.wait();
+    const handleClaimAll = async () => {
+        const res = await contractDeodd?.claimBNB()
+        return res.wait()
     }
-
-    return { claimToWallet }
+    // const handleClaim = async () => {
+    //     if (!isLoading && bnbAssets.gt(BigNumber.from(0))) {
+    //         setIsLoading(true)
+    //         try {
+    //             // const res = await handleClaimAll(ethersSigner)
+    //             let res = await contractDeodd?.claimBNB()
+    //             res = res.wait()
+    //             if (res.status) {
+    //                 setIsLoading(false)
+    //                 // setPopup({ status: true, body: bodyPopupSuccess })
+    //                 // setRefresh(!refresh)
+    //             }
+    //         } catch (error: any) {
+    //             setStatusLoading(false)
+    //             setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
+    //         }
+    //     }
+    // }
+    return { handleClaimAll }
 }
