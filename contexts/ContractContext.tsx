@@ -53,7 +53,7 @@ export const useContractContext = () => useContext(ContractContext);
 
 export const ContractProvider: React.FC<IProps> = ({ children }) => {
 
-	const { ethersSigner, walletAccount, setRefresh, refresh } = useWalletContext();
+	const { walletAddress, contractDeodd } = useWalletContext();
 	const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip);
 	const [gameResult, setGameResult] = useState<GameResultType>(undefined);
 	const [latestFlipId, setLatestFlipId] = useState<BigNumber | null | undefined>(null)
@@ -69,24 +69,24 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		setAudio(audioInit)
 	}, [])
 
-	useEffect(() => {
-		if (ethersSigner) {
-			let contractInit = new ethers.Contract(deoddContract.address, deoddContract.abi, ethersSigner)
-			setContract(contractInit)
-		}
-	}, [ethersSigner])
+	// useEffect(() => {
+	// 	if (ethersSigner) {
+	// 		let contractInit = new ethers.Contract(deoddContract.address, deoddContract.abi, ethersSigner)
+	// 		setContract(contractInit)
+	// 	}
+	// }, [ethersSigner])
 
 	useEffect(() => {
 		if (contract) {
 			contract.on("FlipCoinResult", async (...args) => {
 				console.log("===========================================================");
 				if (isFinish) {
-					const latestFlipId: BigNumber = await contract?.getPlayerLatestFlipId(walletAccount)
+					const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
 					let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = args[10].args;
 					if (latestFlipId?.eq(fId)) {
 						audio.loop = false;
 						audio.load();
-						let res = await getUserByPublicAddress(walletAccount);
+						let res = await getUserByPublicAddress(walletAddress);
 						setGameResult({
 							amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
 							coinSide: ethers.utils.formatUnits(flipChoice, 'wei'),
@@ -99,7 +99,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 							winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
 						})
 						setStatusGame(StatusGame.result)
-						setRefresh(!refresh)
+						// setRefresh(!refresh)
 					}
 				}
 			});

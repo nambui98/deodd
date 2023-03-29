@@ -13,7 +13,9 @@ import { useColorModeContext } from "../../../../contexts/ColorModeContext"
 import { ButtonMain } from "../../../ui/button"
 import { Format } from "../../../../utils/format"
 import { Convert } from "../../../../utils/convert"
-import { useContractContext } from "../../../../contexts/ContractContext"
+// import { feeManagerContract } from "libs/contract"
+import { useDeoddNFTContract } from "hooks/useDeoddNFTContract"
+import { useContractContext } from "contexts/ContractContext"
 
 const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
 
@@ -31,8 +33,9 @@ interface IProps {
 }
 
 export const PlayPart: React.FC<any> = () => {
-  const { walletAddress, setWalletAddress, contractFeeManager, updateAssetsBalance, userInfo, bnbAssets, bnbBalance } = useWalletContext()
+  const { walletAddress, contractProfile, setWalletAddress, contractFeeManager, updateAssetsBalance, userInfo, bnbAssets, bnbBalance } = useWalletContext()
   const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
+  const { handleFlipToken } = useDeoddNFTContract();
   const { darkMode } = useColorModeContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -88,14 +91,13 @@ export const PlayPart: React.FC<any> = () => {
         setStatusLoadingFlip(true);
         setIsFinish(false);
         try {
-          const getCaculateFee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
+          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
           audio.loop = true;
           audio.play();
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
             const res = await handleFlipToken(
-              ethersSigner,
               dataSelect?.index || 0,
               dataSelect?.coinSide || 0,
               complement
@@ -131,7 +133,7 @@ export const PlayPart: React.FC<any> = () => {
           </Grid>
           <Grid item xs={12}>
 
-            <ButtonMain active={false} title={'YES'} onClick={() => setWalletAccount(null)} customStyle={{ width: "100%", padding: "17px 0" }} />
+            <ButtonMain active={false} title={'YES'} onClick={() => setWalletAddress(null)} customStyle={{ width: "100%", padding: "17px 0" }} />
           </Grid>
 
         </Grid>
@@ -148,10 +150,10 @@ export const PlayPart: React.FC<any> = () => {
     if (!statusLoading) {
       setStatusLoading(true)
       try {
-        const res = await createProfile(ethersSigner, currentProfile.username || userInfo.userName, currentProfile.avatar)
+        const res = await contractProfile?.registerName(currentProfile.username || userInfo.userName, currentProfile.avatar)
         if (res.status) {
           setStatusLoading(false)
-          setRefresh(!refresh)
+          // setRefresh(!refresh)
           updateAssetsBalance();
           setPopup({ ...popup, body: bodyPopupSuccess })
         }
@@ -209,8 +211,8 @@ export const PlayPart: React.FC<any> = () => {
         <Box sx={{ '@media (min-width: 800px)': { display: 'flex', alignItems: 'center' } }}>
           <Wallet themelight={!darkMode}>{userInfo?.userName ? <Box>
             {userInfo?.userName}
-            <Box>({Convert.convertWalletAddress(walletAccount, 5, 4)})</Box>
-          </Box> : Convert.convertWalletAddress(walletAccount, 6, 3)}</Wallet>
+            <Box>({Convert.convertWalletAddress(walletAddress, 5, 4)})</Box>
+          </Box> : Convert.convertWalletAddress(walletAddress, 6, 3)}</Wallet>
           <NickName onClick={handleCreateProfile}>{userInfo.userName ? 'Change' : 'Create'} nickname</NickName>
         </Box>
         <NickName style={{ marginLeft: 'auto' }} onClick={handleShowDisconnect}>Disconnect</NickName>
@@ -259,11 +261,11 @@ export const PlayPart: React.FC<any> = () => {
   }, [currentProfile.avatar, currentProfile.username])
 
   useEffect(() => {
-    if (localStorage.getItem('popupCreateProfile') !== walletAccount) {
-      localStorage.setItem('popupCreateProfile', walletAccount)
-      localStorage.getItem('popupCreateProfile') === walletAccount && handleCreateProfile()
+    if (localStorage.getItem('popupCreateProfile') !== walletAddress) {
+      localStorage.setItem('popupCreateProfile', walletAddress)
+      localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
     }
-  }, [walletAccount, ethersSigner])
+  }, [walletAddress])
 
   useEffect(() => {
     statusLoading && setPopup({ status: true, body: bodyCreateProfile })

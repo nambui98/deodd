@@ -28,5 +28,13 @@ export const useDeoddNFTContract = () => {
     //         }
     //     }
     // }
-    return { handleClaimAll }
+    const handleFlipToken = async (index: number, coinSide: number, bnbSend: BigNumber) => {
+        const res = await contractDeodd?.flipTheCoin(
+            coinSide,
+            BigNumber.from(index.toString()),
+            { value: bnbSend }
+        )
+        return res.wait()
+    }
+    return { handleClaimAll, handleFlipToken }
 }

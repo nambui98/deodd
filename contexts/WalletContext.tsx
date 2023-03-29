@@ -140,6 +140,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractFeeManager, setContractFeeManager] = useState<
 		Contract | undefined
 	>();
+	const [contractFlipCoin, setContractFlipCoin] = useState<
+		Contract | undefined
+	>();
 	// get balance
 	const getBalance: any = async (addressToken: `0x${string}`) => {
 		let token;
@@ -175,6 +178,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const contract = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
 			const contractFeeManager = new ethers.Contract(feeManagerContract.address, feeManagerContract.abi, signer)
+			// const contractFlipCoin = new ethers.Contract(f.address, feeManagerContract.abi, signer)
 			setContractProfile(contract);
 			setContractDeodd(contractDeodd);
 			setContractFeeManager(contractFeeManager);
