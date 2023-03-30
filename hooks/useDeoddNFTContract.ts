@@ -1,40 +1,69 @@
-import { BigNumber, Contract, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useWalletContext } from "../contexts/WalletContext";
 import { useEffect, useState } from "react";
-import { deoddContract } from "../libs/contract";
+
+import { fetchBalance } from '@wagmi/core';
+type TypeNFT = {
+    id: number,
+    type: number,
+    amount: number,
+}
 
 export const useDeoddNFTContract = () => {
-    const { walletAddress, contractDeodd, isLoading, setIsLoading, bnbAssets } = useWalletContext();
+    const { contractDeoddNft, walletAddress } = useWalletContext();
+    const [spendingTokens, setSpendingTokens] = useState<TypeNFT[]>()
+    const [walletTokens, setWalletTokens] = useState<TypeNFT[]>()
 
-    const handleClaimAll = async () => {
-        const res = await contractDeodd?.claimBNB()
-        return res.wait()
-    }
-    // const handleClaim = async () => {
-    //     if (!isLoading && bnbAssets.gt(BigNumber.from(0))) {
-    //         setIsLoading(true)
-    //         try {
-    //             // const res = await handleClaimAll(ethersSigner)
-    //             let res = await contractDeodd?.claimBNB()
-    //             res = res.wait()
-    //             if (res.status) {
-    //                 setIsLoading(false)
-    //                 // setPopup({ status: true, body: bodyPopupSuccess })
-    //                 // setRefresh(!refresh)
-    //             }
-    //         } catch (error: any) {
-    //             setStatusLoading(false)
-    //             setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
-    //         }
-    //     }
-    // }
-    const handleFlipToken = async (index: number, coinSide: number, bnbSend: BigNumber) => {
-        const res = await contractDeodd?.flipTheCoin(
-            coinSide,
-            BigNumber.from(index.toString()),
-            { value: bnbSend }
+
+    const getSpendingTokens = async () => {
+        const res = await contractDeoddNft?.getSpendingTokens(walletAddress)
+        return getInfoTokens(res);
+    };
+    const getTokenTypeId = async (id: BigNumber) => {
+        const res = await contractDeoddNft?.getTokenTypeId(id)
+
+        return res;
+    };
+    const getWalletTokens = async () => {
+        const res = await contractDeoddNft?.getWalletTokens(walletAddress)
+        return res;
+    };
+    const getInfoTokens = async (tokens: BigNumber[]) => {
+        let res = await Promise.all(
+            (tokens ?? []).map(async (token) => {
+                const type: BigNumber = await getTokenTypeId(token);
+                token = BigNumber.from(token);
+
+                const nft: TypeNFT = {
+                    id: token.toNumber(),
+                    type: type.toNumber(),
+                    amount: 1
+                }
+
+                debugger
+                return nft;
+            })
         )
-        return res.wait()
+            .then((res) => {
+                debugger
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+                return;
+            });
+        debugger
+        return res;
     }
-    return { handleClaimAll, handleFlipToken }
+
+
+    useEffect(() => {
+        getSpendingTokens().then((res) => {
+
+            // setSpendingTokens(res)
+        });
+        getWalletTokens().then(res => setWalletTokens(res));
+    }, [])
+
+    return {}
 }

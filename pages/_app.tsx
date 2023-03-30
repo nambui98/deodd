@@ -8,6 +8,7 @@ import Layout from '../components/common/Layout';
 import { WagmiConfig } from 'wagmi';
 import { wagmiClient } from 'config/wagmi';
 import { useEffect, useState } from 'react';
+import { ContractProvider } from 'contexts/ContractContext';
 
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
@@ -17,12 +18,14 @@ function MyApp(props: AppPropsCustom) {
     <WagmiConfig client={wagmiClient}>
       <ColorModeProvider {...props}>
         <WalletProvider>
-          <CssBaseline />
-          {
-            mounted && <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          }
+          <ContractProvider>
+            <CssBaseline />
+            {
+              mounted && <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            }
+          </ContractProvider>
         </WalletProvider>
       </ColorModeProvider>
     </WagmiConfig>

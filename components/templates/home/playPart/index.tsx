@@ -2,7 +2,7 @@ import { BigNumber, ethers } from "ethers"
 import { useEffect, useState } from "react"
 // import { Button } from "../../../ui/button"
 import { useWalletContext } from "../../../../contexts/WalletContext"
-import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
+// import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Flipping } from "../flipping"
 import { Result } from "../result"
@@ -14,8 +14,10 @@ import { ButtonMain } from "../../../ui/button"
 import { Format } from "../../../../utils/format"
 import { Convert } from "../../../../utils/convert"
 // import { feeManagerContract } from "libs/contract"
-import { useDeoddNFTContract } from "hooks/useDeoddNFTContract"
+import { useDeoddContract } from "hooks/useDeoddContract"
 import { useContractContext } from "contexts/ContractContext"
+import { DeoddService } from "libs/apis"
+import { useProfileContract } from "hooks/useProfileContract"
 
 const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
 
@@ -33,9 +35,10 @@ interface IProps {
 }
 
 export const PlayPart: React.FC<any> = () => {
-  const { walletAddress, contractProfile, setWalletAddress, contractFeeManager, updateAssetsBalance, userInfo, bnbAssets, bnbBalance } = useWalletContext()
+  const { walletAddress, contractProfile, refresh, setRefresh, setWalletAddress, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
   const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
-  const { handleFlipToken } = useDeoddNFTContract();
+  const { registerName } = useProfileContract();
+  const { handleFlipToken } = useDeoddContract();
   const { darkMode } = useColorModeContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -146,16 +149,28 @@ export const PlayPart: React.FC<any> = () => {
     if (format.test(currentProfile.username)) {
       return
     }
-
+    debugger
     if (!statusLoading) {
       setStatusLoading(true)
       try {
-        const res = await contractProfile?.registerName(currentProfile.username || userInfo.userName, currentProfile.avatar)
+        const res = await registerName(currentProfile.username || userInfo.userName, currentProfile.avatar)
         if (res.status) {
+          debugger
+          const resService = await DeoddService.saveInfoUser({
+            wallet: walletAddress,
+            username: currentProfile.username || userInfo.userName,
+            avatarId: currentProfile.avatar
+          });
           setStatusLoading(false)
-          // setRefresh(!refresh)
-          updateAssetsBalance();
-          setPopup({ ...popup, body: bodyPopupSuccess })
+          if (resService.status === 200) {
+            setRefresh(!refresh);
+            setPopup({ ...popup, body: bodyPopupSuccess })
+          } else {
+            setPopup({
+              status: true,
+              body: bodyPopupError('Something went wrong. Please try again!')
+            })
+          }
         }
       } catch (error: any) {
         console.log(error)

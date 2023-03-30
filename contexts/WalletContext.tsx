@@ -4,10 +4,9 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { UserService } from "../services/user.service";
 
 import { ENVIRONMENT_SWITCH } from "../libs/common";
-import { deoddContract, feeManagerContract, luckyProfile } from "../libs/contract";
-import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-import { useAccount, useBalance, useConnect, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
-import { fetchBalance } from '@wagmi/core';
+import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
+// import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
+import { useAccount, useBalance, useConnect, useContractRead, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
 import { disconnect } from "process";
 interface Map {
 	[key: string]: any;
@@ -74,14 +73,18 @@ interface wallerContextType {
 	setWalletAddress: (account: any) => void
 	setIsLoading: Function;
 	isLoading: boolean;
-	updateAssetsBalance: () => void
 	bnbAssets: BigNumber,
 	bnbBalance: BigNumber,
 	userInfo: { userName: string, avatar: string },
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
+	contractDeoddNft: Contract | undefined,
 	contractFeeManager: Contract | undefined,
-	handleConnectWallet: () => any
+	contractJackpot: Contract | undefined,
+	contractNftHolder: Contract | undefined,
+	handleConnectWallet: () => any,
+	setRefresh: (refresh: boolean) => void,
+	refresh: boolean
 }
 
 interface IProps {
@@ -94,14 +97,18 @@ const WalletContext = createContext<wallerContextType>({
 	setWalletAddress: () => { },
 	isLoading: false,
 	setIsLoading: () => { },
-	updateAssetsBalance: () => null,
 	bnbBalance: BigNumber.from(0),
 	bnbAssets: BigNumber.from(0),
 	userInfo: { userName: '', avatar: '' },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
-	handleConnectWallet: () => { }
+	contractJackpot: undefined,
+	contractNftHolder: undefined,
+	contractDeoddNft: undefined,
+	handleConnectWallet: () => { },
+	refresh: false,
+	setRefresh: () => { },
 })
 
 export const useWalletContext = () => useContext(WalletContext);
@@ -120,15 +127,34 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
+	const [refresh, setRefresh] = useState<boolean>(false);
 
 	const { address, connector, isConnected } = useAccount();
 	const { chain } = useNetwork();
 	// const { chains } = useProvider();
-	const { switchNetworkAsync } = useSwitchNetwork();
+	// const { switchNetworkAsync } = useSwitchNetwork();
 	const { connect, connectors, error, pendingConnector } =
 		useConnect();
-	const balance = useBalance({
+	const { data: balance } = useBalance({
 		address: walletAddress,
+		watch: true
+	})
+	const balanceBNBAssets = useContractRead({
+		address: deoddContract.address,
+		abi: deoddContract.abi,
+		functionName: 'getPlayerAsset',
+		args: [walletAddress],
+		watch: true
+	})
+
+	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
+		address: luckyProfile.address,
+		abi: luckyProfile.abi,
+		functionName: 'getUserInfo',
+		args: [walletAddress],
+		// cacheOnBlock: true,
+		// isDataEqual: (prev, next) => prev === next,
+		// structuralSharing: (prev, next) => (prev === next ? prev : next),
 		watch: true
 	})
 	const [contractProfile, setContractProfile] = useState<
@@ -140,22 +166,28 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractFeeManager, setContractFeeManager] = useState<
 		Contract | undefined
 	>();
-	const [contractFlipCoin, setContractFlipCoin] = useState<
+	const [contractJackpot, setContractJackpot] = useState<
+		Contract | undefined
+	>();
+	const [contractNftHolder, setContractNftHolder] = useState<
+		Contract | undefined
+	>();
+	const [contractDeoddNft, setContractDeoddNft] = useState<
 		Contract | undefined
 	>();
 	// get balance
-	const getBalance: any = async (addressToken: `0x${string}`) => {
-		let token;
-		try {
-			token = await fetchBalance({
-				token: addressToken,
-				address: walletAddress,
-			});
-		} catch (err) {
-			console.log(err);
-		}
-		return token;
-	};
+	// const getBalance: any = async (addressToken: `0x${string}`) => {
+	// 	let token;
+	// 	try {
+	// 		token = await fetchBalance({
+	// 			token: addressToken,
+	// 			address: walletAddress,
+	// 		});
+	// 	} catch (err) {
+	// 		console.log(err);
+	// 	}
+	// 	return token;
+	// };
 	useEffect(() => {
 		setWalletIsConnected(isConnected);
 		setWalletAddress(address);
@@ -175,13 +207,18 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				window.ethereum as any
 			);
 			const signer = provider.getSigner();
-			const contract = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
+			const contractProfile = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
 			const contractFeeManager = new ethers.Contract(feeManagerContract.address, feeManagerContract.abi, signer)
-			// const contractFlipCoin = new ethers.Contract(f.address, feeManagerContract.abi, signer)
-			setContractProfile(contract);
+			const contractJackpot = new ethers.Contract(jackpotContract.address, jackpotContract.abi, signer)
+			const contractNftHolder = new ethers.Contract(nftHolderContract.address, nftHolderContract.abi, signer)
+			const contractDeoddNft = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
+			setContractProfile(contractProfile);
 			setContractDeodd(contractDeodd);
 			setContractFeeManager(contractFeeManager);
+			setContractJackpot(contractJackpot);
+			setContractNftHolder(contractNftHolder);
+			setContractDeoddNft(contractDeoddNft);
 		}
 	}, [chain]);
 
@@ -192,7 +229,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			window.ethereum &&
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
-		debugger
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
 			a.target = '_blank';
@@ -221,28 +257,31 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		}
 
 	}
-	const getInfoAddress = async () => {
-		if (walletAddress && contractProfile) {
-			const res = await getUserInfo(contractProfile, walletAddress)
-			res && setUserInfo({ userName: res[0], avatar: ethers.utils.formatUnits(res[1], 'wei') })
-		}
-	}
 
-	const updateBalance = async () => {
-		if (walletAddress && contractDeodd) {
-			const playerAssets = await getPlayerAssets(contractDeodd, walletAddress)
-			//GET balance
-			setBnbBalance(balance?.data?.value!)
-			setBnbAssets(playerAssets)
-		}
-	}
+
 
 	useEffect(() => {
-		if (walletIsConnected && walletAddress) {
-			updateBalance();
-			getInfoAddress();
+		if (balanceBNBAssets.data !== undefined) {
+			setBnbAssets((balanceBNBAssets?.data! as BigNumber));
 		}
-	}, [walletAddress, walletIsConnected])
+	}, [balanceBNBAssets.data])
+
+	useEffect(() => {
+		if (balance?.formatted) {
+			setBnbBalance(balance?.value!)
+		}
+	}, [balance?.formatted])
+
+	useEffect(() => {
+		if (resInfo) {
+			let info = {
+				userName: resInfo[0], avatar: ethers.utils.formatUnits(resInfo[1], 'wei')
+			}
+			setUserInfo(info)
+		}
+	}, [resInfo?.[0], (resInfo?.[1] as BigNumber)?.toNumber()])
+
+
 
 	const value: wallerContextType = {
 		walletIsConnected,
@@ -250,14 +289,18 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		setWalletAddress,
 		setIsLoading,
 		isLoading,
-		updateAssetsBalance: updateBalance,
 		bnbBalance: bnbBalance,
 		bnbAssets: bnbAssets,
 		userInfo: userInfo,
 		handleConnectWallet,
 		contractDeodd,
 		contractProfile,
-		contractFeeManager
+		contractFeeManager,
+		contractJackpot,
+		contractNftHolder,
+		contractDeoddNft,
+		refresh,
+		setRefresh
 	}
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

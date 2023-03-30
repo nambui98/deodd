@@ -10,20 +10,19 @@ import en from 'javascript-time-ago/locale/en';
 import { Colors } from '../../constants';
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { getHistory } from '../../libs/apis/flipCoin';
-import { getCalculateFee, handleClaimAll } from '../../libs/flipCoinContract';
 import { propsTheme } from '../../pages/homepage';
 import { Format } from '../../utils/format';
 import { ButtonMain } from '../ui/button';
 import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
 import Image from 'next/image'
 import Link from "next/link";
-import { useDeoddNFTContract } from "hooks/useDeoddNFTContract";
+import { useDeoddContract } from "hooks/useDeoddContract";
 
 
 export const Header: React.FC = () => {
   const { bnbAssets, walletAddress, contractFeeManager, walletIsConnected, setIsLoading } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
-  const { handleClaimAll } = useDeoddNFTContract();
+  const { handleClaimBnb } = useDeoddContract();
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
   const width520 = useMediaQuery('(min-width: 520px)')
@@ -46,7 +45,7 @@ export const Header: React.FC = () => {
     if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
-        const res = await handleClaimAll();
+        const res = await handleClaimBnb();
         if (res.status) {
           setStatusLoading(false)
           setPopup({ status: true, body: bodyPopupSuccess })

@@ -17,7 +17,7 @@ enum tabsEnum {
   TOPNETGAINS
 }
 export const TopList = () => {
-  const { walletAccount, userInfo, refresh } = useWalletContext()
+  const { walletAddress, userInfo, refresh } = useWalletContext()
   const { darkMode } = useColorModeContext();
   const [currentTab, setCurrentTab] = useState<tabsType>(tabsEnum.RECENT)
   const [data, setData] = useState<any[]>([]);
@@ -66,7 +66,7 @@ export const TopList = () => {
   }
 
   const MyhighestStreak = () => {
-    const myData = data.length && !isLoading ? data.find((item: any) => item.wallet === walletAccount) : null;
+    const myData = data.length && !isLoading ? data.find((item: any) => item.wallet === walletAddress) : null;
     return myData ? myData.maxStreakLength : 0
   }
 
@@ -80,8 +80,8 @@ export const TopList = () => {
       {data.length && !isLoading ? data.map((item: any, index) => (
         <TabItem themelight={!darkMode} key={index}>
           <AvtItem>
-            {currentTab === tabsEnum.RECENT ? <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.wallet === walletAccount) ? userInfo.avatar : item.avatarId?.toString())}.png`} /> :
-              <img alt="" src={`assets/images/${checkAvatar((walletAccount && item.wallet === walletAccount) ? userInfo.avatar : item.avatarId?.toString())}.png`} />}
+            {currentTab === tabsEnum.RECENT ? <img alt="" src={`assets/images/${checkAvatar(item.avatarId?.toString())}.png`} /> :
+              <img alt="" src={`assets/images/${checkAvatar(item.avatarId?.toString())}.png`} />}
           </AvtItem>
           <div>
             <TitleItem themelight={!darkMode}>{item.userName ? item.userName : Convert.convertWalletAddress((item.wallet), 6, 3)}</TitleItem>
@@ -93,7 +93,7 @@ export const TopList = () => {
         <img alt="" src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
         <Typography sx={{ ...TEXT_STYLE(16, 500, '#7071B3'), marginTop: '40px' }}>It’s look quiet here...</Typography>
       </Box>}
-      {!isLoading && data.length && walletAccount && <YourHighest themelight={!darkMode}>
+      {!isLoading && data.length && walletAddress && <YourHighest themelight={!darkMode}>
         <img alt="" src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
         <Box>
           My highest streak

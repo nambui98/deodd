@@ -1,7 +1,7 @@
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, CircularProgress, Stack, styled, Typography } from "@mui/material";
 import Image from "next/image"
-import { handleClaimAll } from "../../../../libs/flipCoinContract";
+// import { handleClaimAll } from "../../../../libs/flipCoinContract";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { useEffect, useState } from 'react'
 import { Popup } from "../../../common/popup";
@@ -11,6 +11,7 @@ import { ButtonMain } from "../../../ui/button";
 import { BigNumber, ethers } from "ethers";
 import { Format } from "../../../../utils/format";
 import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
+import { useDeoddContract } from "hooks/useDeoddContract";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
@@ -18,9 +19,10 @@ const dataTypeNFT: any = {
   2: "/assets/images/diamond.png",
 }
 export const Result = () => {
-  const { ethersSigner, refresh, setRefresh, bnbAssets } = useWalletContext()
+  const { bnbAssets } = useWalletContext()
   const { darkMode } = useColorModeContext();
   const { gameResult, setStatusGame } = useContractContext();
+  const { handleClaimBnb } = useDeoddContract();
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -72,10 +74,9 @@ export const Result = () => {
     if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
-        const res = await handleClaimAll(ethersSigner)
+        const res = await handleClaimBnb();
         if (res.status) {
           setStatusLoading(false)
-          setRefresh(!refresh)
           setPopup({ status: true, body: bodyPopupSuccess })
         }
       } catch (error: any) {

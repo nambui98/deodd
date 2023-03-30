@@ -19,6 +19,7 @@
       "@/*": ["./src/*"],
       "@/public/*": ["./public/*"],
       "@/templates/*": ["./components/templates/*"],
+      "@/utils/*": ["./libs/utils/*"],
 
     }
   },
