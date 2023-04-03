@@ -41,22 +41,22 @@ export const Header: React.FC = () => {
     }
   }
 
-  const handleClaim = async () => {
-    if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
-      setStatusLoading(true)
-      try {
-        const res = await handleClaimBnb();
-        if (res.status) {
-          setStatusLoading(false)
-          setPopup({ status: true, body: bodyPopupSuccess })
-          // setRefresh(!refresh)
-        }
-      } catch (error: any) {
-        setStatusLoading(false)
-        setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
-      }
-    }
-  }
+  // const handleClaim = async () => {
+  //   if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
+  //     setStatusLoading(true)
+  //     try {
+  //       const res = await handleClaimBnb();
+  //       if (res.status) {
+  //         setStatusLoading(false)
+  //         setPopup({ status: true, body: bodyPopupSuccess })
+  //         // setRefresh(!refresh)
+  //       }
+  //     } catch (error: any) {
+  //       setStatusLoading(false)
+  //       setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
+  //     }
+  //   }
+  // }
 
   const bodyPopupError = (message: string) => {
     return (
@@ -79,7 +79,7 @@ export const Header: React.FC = () => {
     return (<Box >
       <HeaderPopup>
         <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(ethers.utils.formatUnits(bnbAssets))} <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
-        <ButtonMain active={bnbAssets.gt(BigNumber.from(0)) ? true : false} disable={bnbAssets.gt(BigNumber.from(0)) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} />
+        {/* <ButtonMain active={bnbAssets.gt(BigNumber.from(0)) ? true : false} disable={bnbAssets.gt(BigNumber.from(0)) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} /> */}
       </HeaderPopup>
       <HistoryPopup themelight={!darkMode}>History</HistoryPopup>
       <BoxItemHistory themelight={!darkMode}>
@@ -114,7 +114,9 @@ export const Header: React.FC = () => {
   return <Wrap>
     <Container>
       <Inner>
-        <Box><img alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
+        <Link href={"/"}>
+          <Box><img alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
+        </Link>
         <BoxRight>
           <Link href={"/campaign"}>
 

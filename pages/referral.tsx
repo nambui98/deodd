@@ -1,12 +1,15 @@
 import ContentData from "@/templates/referral/ContentData";
 import ContentNoData from "@/templates/referral/ContentNoData";
 import { Box, Container, Typography } from "@mui/material";
+import { useWalletContext } from "contexts/WalletContext";
 import { useState } from "react";
 
 type Props = {};
 
 function referral({ }: Props) {
-    const [data, setData] = useState<any>({});
+    const { walletIsConnected } = useWalletContext();
+    console.log(walletIsConnected);
+
     return (
         <Box>
             <Box bgcolor={"background.paper"} p={"35px 0px"}>
@@ -16,7 +19,7 @@ function referral({ }: Props) {
                     </Typography>
                 </Container>
             </Box>
-            <Box>{data ? <ContentData /> : <ContentNoData />}</Box>
+            <Box>{walletIsConnected ? <ContentData /> : <ContentNoData />}</Box>
         </Box>
     );
 }

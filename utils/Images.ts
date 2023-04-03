@@ -21,3 +21,8 @@ export const MapIcon: { [key: string]: string } = {
     'Gold': GoldImage,
     'Diamond': DiamondImage,
 }
+export const MapIconNFT: { [key: number]: string } = {
+    0: BronzeImage,
+    1: GoldImage,
+    2: DiamondImage,
+}

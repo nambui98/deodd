@@ -2,13 +2,30 @@ import { BigNumber, Contract, ethers } from "ethers";
 import { useWalletContext } from "../contexts/WalletContext";
 import { useEffect, useState } from "react";
 import { deoddContract } from "../libs/contract";
+import { useSiteContext } from "contexts/SiteContext";
 
 export const useDeoddContract = () => {
     const { contractDeodd } = useWalletContext();
-
+    const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
+    const claimBNB = async () => {
+        const res = await contractDeodd?.claimBNB();
+        return res.wait();
+    }
     const handleClaimBnb = async () => {
-        const res = await contractDeodd?.claimBNB()
-        return res.wait()
+        try {
+            setIsLoading(true);
+            let res = await claimBNB();
+
+            setIsLoading(false);
+            if (res.status) {
+                setTitleSuccess('Claimed successfully')
+                setIsSuccess(true);
+            }
+        } catch (error: any) {
+            setIsLoading(false);
+            setTitleError(error.reason || 'Something went wrong. Please try again!')
+            setIsError(true);
+        }
     }
 
     const handleFlipToken = async (index: number, coinSide: number, bnbSend: BigNumber) => {

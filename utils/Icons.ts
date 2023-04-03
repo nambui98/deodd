@@ -10,6 +10,7 @@ import NotiIcon from 'public/assets/icons/noti.svg'
 import LogoHeadIcon from 'public/assets/icons/head.svg'
 import CupIcon from 'public/assets/icons/cup.svg'
 import ClockIcon from 'public/assets/icons/clock.svg'
+import CloseIcon from 'public/assets/icons/close-circle2.svg'
 export {
     BnbIcon,
     BnbUsdIcon,
@@ -22,5 +23,6 @@ export {
     NotiIcon,
     LogoHeadIcon,
     CupIcon,
-    ClockIcon
+    ClockIcon,
+    CloseIcon
 }

@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 type Props = {
     open: boolean,
     setOpen: Function,
-    title: string,
+    title?: string,
     children: ReactNode
 }
 const style = {
@@ -40,14 +40,3 @@ export default function MyModal({ open, setOpen, title, children }: Props) {
         </Modal>
     )
 }
-// const BoxBody = styled(Box)({
-//     position: 'absolute',
-//     top: '50%',
-//     left: '50%',
-//     transform: 'translate(-50%, -50%)',
-//     boxShadow: '0px 0px 40px rgba(112, 113, 179, 0.3)',
-//     background: 'background.paper',
-//     borderRadius: 8,
-//     padding: 24,
-//     minWidth: 352
-// })

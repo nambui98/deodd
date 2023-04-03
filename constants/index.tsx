@@ -4,3 +4,4 @@ export const Colors = {
     secondary: "#1C1B3E",
     secondaryDark: "#7071B3"
 }
+export const MINXIMUM_BALANCE_DEPOSIT = 0;

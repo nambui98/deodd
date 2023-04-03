@@ -9,6 +9,19 @@ export type ColorModeType = {
     darkMode: boolean,
     setDarkMode: (value: boolean) => void
 }
+export type SiteContextType = {
+    isLoading: boolean,
+    setIsLoading: (value: boolean) => void,
+    isError: boolean,
+    setIsError: (value: boolean) => void;
+    titleError: string;
+    setTitleError: (value: string) => void;
+    isSuccess: boolean,
+    setIsSuccess: (value: boolean) => void;
+    titleSuccess: string;
+    setTitleSuccess: (value: string) => void;
+}
+
 
 export type FlipResultType = {
     amount: BigNumber,
@@ -21,4 +34,9 @@ export type FlipResultType = {
     tpoint: BigNumber,
     typeId: BigNumber,
     wallet: string
+}
+export enum EnumNFT {
+    BRONZE,
+    GOLD,
+    DIAMOND
 }

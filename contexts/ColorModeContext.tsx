@@ -7,7 +7,7 @@ import { AppPropsCustom, ColorModeType } from "../libs/types";
 import { darkTheme, lightTheme } from "../utils/theme";
 
 export const ColorModeContext = createContext<ColorModeType>({
-    darkMode: false,
+    darkMode: true,
     setDarkMode: () => { }
 })
 
