@@ -63,6 +63,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		abi: deoddContract.abi,
 		eventName: 'FlipCoinResult',
 		async listener(...args) {
+			debugger
 			if (isFinish) {
 				const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
 				let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = (args[10] as any).args;

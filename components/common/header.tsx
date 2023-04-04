@@ -34,12 +34,7 @@ export const Header: React.FC = () => {
   })
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
 
-  const fetchHistory = async () => {
-    const res = await getHistory(walletAddress, 0)
-    if (res.status === 200 && res.data.data.length) {
-      setDataHistory(res.data.data)
-    }
-  }
+
 
   // const handleClaim = async () => {
   //   if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
@@ -55,25 +50,7 @@ export const Header: React.FC = () => {
   //       setStatusLoading(false)
   //       setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
   //     }
-  //   }
-  // }
 
-  const bodyPopupError = (message: string) => {
-    return (
-      <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-        <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
-        <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
-        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
-      </Box>
-    )
-  }
-
-  const bodyPopupSuccess = (
-    <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-      <Typography sx={{ ...TEXT_STYLE(24, 500, !darkMode ? '#181536' : '#ffffff'), marginBottom: '24px' }}>Claim successful!</Typography>
-      <ButtonMain active={true} title={'OKEY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
-    </Box>
-  )
 
   const bodyBalance = async () => {
     return (<Box >
@@ -99,10 +76,6 @@ export const Header: React.FC = () => {
       </BoxItemHistory>
     </Box>)
   }
-
-  useEffect(() => {
-    walletAddress && fetchHistory()
-  }, [walletAddress])
 
   useEffect(() => {
     const reRenderPopup = async () => {

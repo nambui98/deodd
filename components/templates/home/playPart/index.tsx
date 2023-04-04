@@ -100,14 +100,18 @@ export const PlayPart: React.FC<any> = () => {
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
+
+            debugger
+
+            setIsFinish(true);
             const res = await handleFlipToken(
               dataSelect?.index || 0,
               dataSelect?.coinSide || 0,
               complement
             )
+            debugger
             if (res.status) {
               setStatusLoadingFlip(false)
-              setIsFinish(true);
             }
           }
         } catch (error: any) {

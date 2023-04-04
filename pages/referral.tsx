@@ -2,12 +2,14 @@ import ContentData from "@/templates/referral/ContentData";
 import ContentNoData from "@/templates/referral/ContentNoData";
 import { Box, Container, Typography } from "@mui/material";
 import { useWalletContext } from "contexts/WalletContext";
+import useReferral from "hooks/useReferral";
 import { useState } from "react";
 
 type Props = {};
 
 function referral({ }: Props) {
     const { walletIsConnected } = useWalletContext();
+    const { ckReferral } = useReferral();
     console.log(walletIsConnected);
 
     return (
