@@ -5,7 +5,7 @@ import { useColorModeContext } from "../../contexts/ColorModeContext";
 import { DiscordIcon, TelegramIcon, TwiterIcon } from "./icons";
 
 
-export const Contact: React.FC = () => {
+export const Contact: React.FC<any> = () => {
   const { darkMode } = useColorModeContext();
   return <Box position={'fixed'} bottom={{ lg: "80px", md: "30px" }} left={{ lg: '80px', md: "30px" }} display={{ xs: 'none', md: 'block' }} >
     <Box display={"flex"} flexDirection={"column"} sx={{ pointerEvents: "auto" }} alignItems={"center"} alignSelf={"flex-end"} >
