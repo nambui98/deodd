@@ -1,22 +1,11 @@
-import ContentData from "@/templates/referral/ContentData";
-import ContentNoData from "@/templates/referral/ContentNoData";
+import Content from "@/templates/referral/Content";
 import { Box, Container, Typography } from "@mui/material";
 import Loader from "components/common/Loader";
-import { Donut } from "components/ui/donuts";
-import { useWalletContext } from "contexts/WalletContext";
-import useReferral from "hooks/useReferral";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense } from "react";
 
-type Props = { ckReferral: boolean };
-export async function getStaticProps() {
-    return {
-        props: {
-            ckReferral: false
-        }, // will be passed to the page component as props
-    }
-}
+type Props = {};
+
 function referral({ }: Props) {
-    const { ckReferral, link, dataAvailable, dataExpired } = useReferral({ isNotGet: false });
     return (
         <Box>
             <Suspense fallback={<Loader isLoadingProps={true} />}>
@@ -27,17 +16,7 @@ function referral({ }: Props) {
                         </Typography>
                     </Container>
                 </Box>
-                <Box>
-                    {
-                        ckReferral !== undefined &&
-                        (ckReferral ?
-                            <ContentData
-                                dataAvailable={dataAvailable}
-                                dataExpired={dataExpired}
-                                link={link ?? ''}
-                            /> : <ContentNoData link={link ?? ''} ckReferral={ckReferral} />)}
-
-                </Box>
+                <Content />
             </Suspense>
 
         </Box>

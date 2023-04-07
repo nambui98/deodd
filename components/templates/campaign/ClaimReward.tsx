@@ -74,7 +74,7 @@ const ClaimReward: React.FC<any> = () => {
                                         {row.name}
                                     </TableCell>
                                     <TableCell align="right">{row.rewards?.map((reward) =>
-                                        <Stack mt={1} direction={'row'} justifyContent={"flex-end"}>
+                                        <Stack key={reward.type} mt={1} direction={'row'} justifyContent={"flex-end"}>
                                             <Typography mr={.5}>{reward.value}</Typography>
                                             <img width={16} src={MapIcon[reward.type]} alt="" />
                                         </Stack>

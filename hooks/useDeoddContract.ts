@@ -15,7 +15,6 @@ export const useDeoddContract = () => {
         try {
             setIsLoading(true);
             let res = await claimBNB();
-
             setIsLoading(false);
             if (res.status) {
                 setTitleSuccess('Claimed successfully')

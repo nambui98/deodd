@@ -94,7 +94,7 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
                     </Box>
                     {
                         BigNumber.from(MINXIMUM_BALANCE_DEPOSIT).gt(bnbAssets) &&
-                        <Typography mt={1} variant='caption' color={"error.100"}>You don't have BNB token in Balance, Flip now to get double</Typography>
+                        <Typography mt={1} variant='caption' color={"error.100"}>You don&apos;t have BNB token in Balance, Flip now to get double</Typography>
                     }
                 </Box>
 
@@ -131,7 +131,7 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
                                         <List component="div" disablePadding>
                                             {
                                                 nft.list.map((detailNFT) =>
-                                                    <ListItemButton sx={{ pl: 3, pr: 0, pt: 1 }} selected={detailNFT.id === nftSelected?.id} onClick={() => handleClickNFT(detailNFT)}>
+                                                    <ListItemButton key={detailNFT.id} sx={{ pl: 3, pr: 0, pt: 1 }} selected={detailNFT.id === nftSelected?.id} onClick={() => handleClickNFT(detailNFT)}>
                                                         <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
                                                             <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
                                                         <Typography ml="auto" variant='h2' color={"secondary"}>

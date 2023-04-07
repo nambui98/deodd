@@ -1,12 +1,10 @@
 // import { BASE_URL_REFERRAL } from 'constants/index';
-import { useSiteContext } from 'contexts/SiteContext';
-import { useWalletContext } from 'contexts/WalletContext'
-import { DeoddService } from 'libs/apis'
-import React, { useEffect, useState } from 'react'
+import { useWalletContext } from 'contexts/WalletContext';
+import { DeoddService } from 'libs/apis';
+import { useEffect, useState } from 'react';
 
 function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const { walletAddress } = useWalletContext();
-    const { setIsLoading } = useSiteContext();
     const [ckReferral, setCkReferral] = useState<boolean | undefined>();
 
     const [link, setLink] = useState<string | undefined>();
@@ -17,13 +15,6 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
             getLinkUser();
         }
     }, [isNotGet])
-    // useEffect(() => {
-    //     if (ckReferral === undefined) {
-    //         setIsLoading(true);
-    //     } else {
-    //         setIsLoading(false);
-    //     }
-    // }, [ckReferral])
 
     const getLinkUser = async () => {
         const ck = await DeoddService.checkUserReferral(walletAddress)
