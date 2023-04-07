@@ -66,11 +66,17 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 			debugger
 			if (isFinish) {
 				const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
+				console.log("latestFlipId: " + latestFlipId);
+
 				let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = (args[10] as any).args;
 				if (latestFlipId?.eq(fId)) {
 					audio.loop = false;
 					audio.load();
 					let res = await getUserByPublicAddress(walletAddress);
+					console.log(res);
+					console.log("result from backend: " + res);
+
+					debugger
 					setGameResult({
 						amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
 						coinSide: ethers.utils.formatUnits(flipChoice, 'wei'),

@@ -28,7 +28,7 @@
     "react-dom": "18.2.0",
     "react-responsive": "^9.0.0",
     "sass": "^1.56.1",
-    "wagmi": "^0.12.6"
+    "wagmi": "^0.12.10"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",
