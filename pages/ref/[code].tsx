@@ -1,9 +1,7 @@
 import { ContentRef } from '@/templates/ref/Content';
 import { Box, Container, Typography } from '@mui/material';
 
-type Props = {}
-
-function ref({ }: Props) {
+function Ref() {
     return (
         <Box>
             <Box bgcolor={"background.paper"} p={"35px 0px"}>
@@ -19,5 +17,9 @@ function ref({ }: Props) {
         </Box>
     )
 }
-
-export default ref
+// Ref.getInitialProps = async () => {
+//     const res = await fetch('https://api.github.com/repos/vercel/next.js')
+//     const json = await res.json()
+//     return { stars: json.stargazers_count }
+// }
+export default Ref
