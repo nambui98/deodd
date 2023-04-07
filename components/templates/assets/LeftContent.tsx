@@ -112,9 +112,9 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
                 </Stack>
                 <ListCus sx={{ border: "none" }}>
                     {
-                        spendingTokens?.data.map((nft) =>
+                        spendingTokens?.data.map((nft, index) =>
                             nft.list.length > 0 ?
-                                <>
+                                <div key={nft.type + index}>
                                     <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
                                         {openNftType === nft.type ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                         <Stack ml={1} direction={"row"} alignItems={"center"}>
@@ -142,8 +142,8 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
                                             }
                                         </List>
                                     </Collapse>
-                                </>
-                                : <div />
+                                </div>
+                                : <div key={index} />
                         )
                     }
                 </ListCus>
