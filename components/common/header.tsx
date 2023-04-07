@@ -1,34 +1,29 @@
-import { Box, Button, CircularProgress, Stack, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useWalletContext } from "../../contexts/WalletContext";
 import { Container, TEXT_STYLE } from "../../styles/common";
 import { Popup } from "./popup";
 // import { Button } from "../ui/button";
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
+import { useDeoddContract } from "hooks/useDeoddContract";
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import Link from "next/link";
 import { Colors } from '../../constants';
 import { useColorModeContext } from '../../contexts/ColorModeContext';
-import { getHistory } from '../../libs/apis/flipCoin';
 import { propsTheme } from '../../pages/homepage';
 import { Format } from '../../utils/format';
-import { ButtonMain } from '../ui/button';
-import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
-import Image from 'next/image'
-import Link from "next/link";
-import { useDeoddContract } from "hooks/useDeoddContract";
 import MenuMobile from "./MenuMobile";
+import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
 
 
 export const Header: React.FC = () => {
-  const { bnbAssets, walletAddress, contractFeeManager, walletIsConnected, setIsLoading } = useWalletContext()
+  const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
-  const { handleClaimBnb } = useDeoddContract();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
   const width520 = useMediaQuery('(min-width: 520px)')
-  const [statusSelect, setStatusSelect] = useState<any>(0)
   const [dataHistory, setDataHistory] = useState<any[]>([])
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
