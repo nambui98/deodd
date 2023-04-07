@@ -1,6 +1,6 @@
 import React from 'react'
 import { IProps } from '../../libs/interfaces'
-import { Header } from './Header'
+import Header from './Header'
 import { Contact } from './Contact'
 
 

@@ -15,9 +15,11 @@ import { propsTheme } from '../../pages/homepage';
 import { Format } from '../../utils/format';
 import MenuMobile from "./MenuMobile";
 import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
+import React from 'react'
 
+type Props = {}
 
-export const Header: React.FC = () => {
+function Header({ }: Props) {
   const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
@@ -155,6 +157,8 @@ export const Header: React.FC = () => {
   </Wrap>
 }
 
+export default Header
+
 const Wrap = styled(Box)({
 })
 const Inner = styled(Box)({
@@ -266,15 +270,3 @@ const TitleHistory = styled(Typography)((props: propsTheme) => ({
   ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 6
 }))
-const BoxStats = styled(Box)({
-  ...TEXT_STYLE(14, 500, '#7071B3')
-})
-const Leadeboard = styled(Box)({
-  ...TEXT_STYLE(14, 500, '#FEF156'),
-  display: 'flex',
-  alignItems: 'center',
-  '& img': {
-    marginLeft: 8,
-    maxWidth: 20
-  }
-})
