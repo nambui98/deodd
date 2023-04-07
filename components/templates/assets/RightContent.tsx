@@ -80,9 +80,9 @@ function RightContent({ walletTokens, priceToken }: Props) {
                 </Stack>
                 <ListCus sx={{ border: "none" }}>
                     {
-                        walletTokens?.data.map((nft) => nft.list.length > 0
+                        walletTokens?.data.map((nft, index) => nft.list.length > 0
                             ?
-                            <div>
+                            <div key={nft.type + index}>
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
                                     {openNftType === nft.type ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
@@ -114,7 +114,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                                     </List>
                                 </Collapse>
                             </div>
-                            : <div></div>
+                            : <div key={index}></div>
                         )
                     }
                 </ListCus>

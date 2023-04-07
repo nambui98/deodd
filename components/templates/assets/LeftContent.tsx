@@ -130,8 +130,8 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
                                     <Collapse in={openNftType === nft.type} timeout="auto" unmountOnExit>
                                         <List component="div" disablePadding>
                                             {
-                                                nft.list.map((detailNFT) =>
-                                                    <ListItemButton key={detailNFT.id} sx={{ pl: 3, pr: 0, pt: 1 }} selected={detailNFT.id === nftSelected?.id} onClick={() => handleClickNFT(detailNFT)}>
+                                                nft.list.map((detailNFT, index) =>
+                                                    <ListItemButton key={detailNFT.id + index} sx={{ pl: 3, pr: 0, pt: 1 }} selected={detailNFT.id === nftSelected?.id} onClick={() => handleClickNFT(detailNFT)}>
                                                         <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
                                                             <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
                                                         <Typography ml="auto" variant='h2' color={"secondary"}>
