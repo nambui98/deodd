@@ -74,11 +74,7 @@ export const Result = () => {
     if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
       try {
-        const res = await handleClaimBnb();
-        if (res.status) {
-          setStatusLoading(false)
-          setPopup({ status: true, body: bodyPopupSuccess })
-        }
+        await handleClaimBnb();
       } catch (error: any) {
         setStatusLoading(false)
         setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
@@ -94,13 +90,15 @@ export const Result = () => {
   let typeNFT: number | undefined = typeId.toNumber();
   return <Wrap>
     <Coin><img alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
-    <Title themelight={!darkMode}>{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <span style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</span>!</Title>
+    <Typography variant="h2" textTransform={'uppercase'} >{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <Typography component={'span'} variant="h2" style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</Typography>!</Typography>
     <Box>
       <Box display={'flex'} justifyContent={"center"} alignItems={'flex-start'}>
         <Box>
           <WinStreak themelight={!darkMode}>
             <div>{winningStreakLength}</div>
-            WIN STREAK
+            <Typography variant="h3">
+              WIN STREAK
+            </Typography>
           </WinStreak>
           {
             tokenId.gt(BigNumber.from(0)) && <>
@@ -114,14 +112,18 @@ export const Result = () => {
             tossPoints?.gt(BigNumber.from(0)) &&
             <WinStreak themelight={!darkMode}>
               <div>{tossPoints?.toNumber()}</div>
-              TOSSPOINT
+              <Typography variant="h3">
+                TOSSPOINT
+              </Typography>
             </WinStreak>
           }
           {
             jackpotWin?.gt(BigNumber.from(0)) &&
             <WinStreak sx={{ mt: 0 }} themelight={!darkMode}>
               <div>{Format.formatMoney(ethers.utils.formatUnits(jackpotWin ?? BigNumber.from(0)))}</div>
-              JACKPOT WIN (BNB)
+              <Typography variant="h3">
+                JACKPOT WIN (BNB)
+              </Typography>
             </WinStreak>
           }
         </Box>
@@ -139,7 +141,7 @@ export const Result = () => {
 
       }
     </Box>
-    {coinSide !== flipResult && <TextFail themelight={!darkMode}>Fall where, double there, don’t give up</TextFail>}
+    {coinSide !== flipResult && <Typography variant="h3" mb={2}>Fall where, double there, don’t give up</Typography>}
     <Box sx={{
       display: 'flex',
       justifyContent: 'center'

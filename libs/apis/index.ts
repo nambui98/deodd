@@ -25,24 +25,30 @@ const getReferralRewardExpired = async (address: string) => {
         method: 'get'
     })
 }
-const checkUserIsValidForReferral = async (body: any) => {
+const checkUserIsValidForReferral = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/check`,
-        method: 'post',
-        data: body
+        url: `/users/ref/check?address=${address}`,
+        method: 'get',
     })
 }
-const findGenerateReferralLinkByWallet = async (address: string, body: any) => {
+const findGenerateReferralLinkByWallet = async (address: string) => {
     return vhIdRequest({
         url: `/users/ref/findLink?address=${address}`,
-        method: 'post',
-        data: body
+        method: 'get',
     })
 }
-const generateReferralLink = async () => {
+const generateReferralLink = async (address: string) => {
     return vhIdRequest({
         url: `/users/ref/generate`,
-        method: 'post'
+        method: 'put',
+        data: JSON.stringify({ wallet: address })
+    })
+}
+const confirmReferralForUser = async (body: any) => {
+    return vhIdRequest({
+        url: `/users/ref/confirm`,
+        method: 'post',
+        data: JSON.stringify(body)
     })
 }
 export const DeoddService = {
@@ -52,5 +58,6 @@ export const DeoddService = {
     findGenerateReferralLinkByWallet,
     getReferralRewardAvailable,
     saveInfoUser,
-    checkUserReferral
+    checkUserReferral,
+    confirmReferralForUser
 }

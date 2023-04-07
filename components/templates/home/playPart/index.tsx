@@ -18,6 +18,7 @@ import { useDeoddContract } from "hooks/useDeoddContract"
 import { useContractContext } from "contexts/ContractContext"
 import { DeoddService } from "libs/apis"
 import { useProfileContract } from "hooks/useProfileContract"
+import { useDisconnect } from "wagmi"
 
 const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
 
@@ -35,8 +36,9 @@ interface IProps {
 }
 
 export const PlayPart: React.FC<any> = () => {
-  const { walletAddress, contractProfile, refresh, setRefresh, setWalletAddress, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
-  const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
+  const { walletAddress, refresh, setRefresh, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
+  const { disconnect } = useDisconnect()
+  const { setIsFinish, audio, statusGame, setStatusGame } = useContractContext();
   const { registerName } = useProfileContract();
   const { handleFlipToken } = useDeoddContract();
   const { darkMode } = useColorModeContext();
@@ -100,16 +102,12 @@ export const PlayPart: React.FC<any> = () => {
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
-
-            debugger
-
             setIsFinish(true);
             const res = await handleFlipToken(
               dataSelect?.index || 0,
               dataSelect?.coinSide || 0,
               complement
             )
-            debugger
             if (res.status) {
               setStatusLoadingFlip(false)
             }
@@ -140,7 +138,7 @@ export const PlayPart: React.FC<any> = () => {
           </Grid>
           <Grid item xs={12}>
 
-            <ButtonMain active={false} title={'YES'} onClick={() => setWalletAddress(null)} customStyle={{ width: "100%", padding: "17px 0" }} />
+            <ButtonMain active={false} title={'YES'} onClick={() => disconnect()} customStyle={{ width: "100%", padding: "17px 0" }} />
           </Grid>
 
         </Grid>
@@ -229,28 +227,30 @@ export const PlayPart: React.FC<any> = () => {
         <Avt><img alt="" src={userInfo?.avatar ? `assets/images/${checkAvatar()}.png` : "assets/icons/avt.svg"} /></Avt>
         <Box sx={{ '@media (min-width: 800px)': { display: 'flex', alignItems: 'center' } }}>
           <Wallet themelight={!darkMode}>{userInfo?.userName ? <Box>
-            {userInfo?.userName}
-            <Box>({Convert.convertWalletAddress(walletAddress, 5, 4)})</Box>
+            {userInfo?.userName + " "}
+            <Typography display={{ xs: "none", md: 'initial' }} variant="body2" component={'span'}>({Convert.convertWalletAddress(walletAddress, 5, 4)})</Typography>
+
           </Box> : Convert.convertWalletAddress(walletAddress, 6, 3)}</Wallet>
-          <NickName onClick={handleCreateProfile}>{userInfo.userName ? 'Change' : 'Create'} nickname</NickName>
+          <NickName onClick={handleCreateProfile}>{userInfo.userName ? 'Change' : 'Create'} profile</NickName>
         </Box>
         <NickName style={{ marginLeft: 'auto' }} onClick={handleShowDisconnect}>Disconnect</NickName>
       </BoxWallet>
       <Typography variant="h5" style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>You like</Typography>
-      <BoxCoin>
+      <Stack direction={'row'} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
         <Itemcoin themelight={!darkMode} active={dataSelect?.coinSide === 0} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}><img alt="" src={`assets/icons/head${dataSelect?.coinSide === 0 ? '' : '-disable'}.svg`} /> HEAD</Itemcoin>
         <Itemcoin themelight={!darkMode} active={dataSelect?.coinSide === 1} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}><img alt="" src={`assets/icons/tail${dataSelect?.coinSide === 1 ? '' : '-disable'}.svg`} /> TAIL</Itemcoin>
-      </BoxCoin>
-      <Typography variant="h5" style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>Bet amount</Typography>
-      <BoxAmount>
+      </Stack>
+      <Typography variant="h5" mt={{ xs: 3, md: 4 }} style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>Bet amount</Typography>
+      <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} rowGap={2}>
         {amounts?.map((item, index) => (
-          <AmountItem key={index}><ButtonMain title={`${item} BNB`} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })} active={true} customStyle={{
-            padding: '13px 35px',
+          <Box flexBasis={'30%'} width={'100%'} key={index}><ButtonMain title={`${item} BNB`} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })} active={true} customStyle={{
+            padding: '13px 0px',
+            width: '100%',
             background: !darkMode ? (dataSelect?.amount === item ? '#FC753F' : '#FFFFFF') : (dataSelect?.amount === item ? '#FEF156' : '#25244B'),
             color: !darkMode ? dataSelect?.amount === item ? '#FFFFFF' : '#FC753F' : dataSelect?.amount === item ? '#1C1B3E' : '#FEF156',
-          }} /></AmountItem>
+          }} /></Box>
         ))}
-      </BoxAmount>
+      </Stack>
       <ButtonMain
         disable={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? false : true}
         active={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? true : false}
@@ -305,7 +305,6 @@ export const PlayPart: React.FC<any> = () => {
 
 const Wrap = styled(Box)({
   width: '100%',
-  maxWidth: 544
 })
 const BoxWallet = styled(Box)((props: propsTheme) => ({
   padding: '12px 16px',
@@ -334,14 +333,7 @@ const NickName = styled(Box)({
   ...TEXT_STYLE(14, 500, '#7071B3'),
   cursor: 'pointer'
 })
-const BoxCoin = styled(Box)({
-  marginBottom: 32,
-  display: 'flex',
-  justifyContent: 'center',
-  '@media (min-width: 800px)': {
-    justifyContent: 'flex-start',
-  }
-})
+
 type ItemCoinProps = {
   active: boolean,
   themelight: boolean
@@ -350,49 +342,25 @@ const Itemcoin = styled(Box)((props: ItemCoinProps) => ({
   display: 'flex',
   alignItems: 'center',
   flexDirection: 'column' as any,
-  marginRight: 38,
+  gap: '24px',
   ...TEXT_STYLE(40, 700, props.themelight ? props.active ? '#FC753F' : '#5A6178' : props.active ? '#FEF156' : '#5A6178'),
+  lineHeight: 1,
   cursor: 'pointer',
-  '& img': {
-    '@media (min-width: 1000px)': {
-      marginRight: 24,
-    }
+  '@media (min-width: 900px )': {
+    flexDirection: 'row',
   },
-  '@media (min-width: 1000px)': {
-    flexDirection: 'row' as any,
-  },
-  '@media (max-width: 800px)': {
-    '&:last-of-type': {
-      marginRight: 0
-    }
-  }
 }))
-const BoxAmount = styled(Box)({
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
+// const BoxAmount = styled(Box)({
+//   display: 'flex',
+//   flexWrap: 'wrap',
+//   justifyContent: 'space-between',
 
-  columnGap: 24,
-  '@media (min-width: 800px)': {
-    justifyContent: 'flex-start'
-  }
-})
-const AmountItem = styled(Box)({
-  width: 'calc(33.3333% - 14px)',
-  marginBottom: 16,
+//   columnGap: 24,
+//   '@media (min-width: 800px)': {
+//     justifyContent: 'flex-start'
+//   }
+// })
 
-  '& > div': {
-    width: '100% !important',
-  },
-
-  '@media (min-width: 800px)': {
-    width: 'auto',
-    // padding: '0 12px 16px',
-    '& > div': {
-      width: '112px !important',
-    },
-  }
-})
 
 const TitlePopup = styled(Typography)((props: propsTheme) => ({
   ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),

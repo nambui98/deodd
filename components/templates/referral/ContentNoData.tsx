@@ -3,13 +3,32 @@ import { DiscordIcon, TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonTertiary } from 'components/ui/button'
 import { useWalletContext } from 'contexts/WalletContext'
 import React from 'react'
-import { CopyIcon, NotiIcon } from 'utils/Icons'
+import {
+    FacebookShareButton, TelegramShareButton, TwitterShareButton,
+} from 'next-share'
+import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import { LogoHeadImage } from 'utils/Images'
+import { useSiteContext } from 'contexts/SiteContext'
+import { Colors } from 'constants/index'
+import { Convert } from 'utils/convert'
 
-type Props = {}
+type Props = {
+    ckReferral: boolean;
+    link: string;
+    success?: boolean;
+    dataReferralSuccess?: { username: string, wallet: string } | undefined;
+}
 
-function ContentNoData({ }: Props) {
-    const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
+function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props) {
+    const { walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { setIsSuccess, setTitleSuccess } = useSiteContext();
+    const handleCopy = () => {
+        navigator?.clipboard.writeText(link);
+        setTitleSuccess("Copy to clipboard");
+        setIsSuccess(true);
+    }
+    // console.log(window.origin);
+
     return (
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
@@ -18,21 +37,42 @@ function ContentNoData({ }: Props) {
                 <img width={40} src={LogoHeadImage} alt="" />
             </Stack>
             <Box mt={10} textAlign={'center'}>
-                <Typography mx={2} variant='h3' textTransform={'uppercase'}>Connect wallet to get your referral link</Typography>
                 {
+
                     !walletIsConnected &&
-                    <ButtonTertiary onClick={handleConnectWallet} sx={{ py: "17px", px: 3, mt: 3 }}>
-                        <Typography>Connect wallet</Typography>
-                    </ButtonTertiary>
+                    <>
+                        <Typography mx={2} variant='h3' textTransform={'uppercase'}>Connect wallet to get your referral link</Typography>
+                        <ButtonTertiary onClick={handleConnectWallet} sx={{ py: "17px", px: 3, mt: 3 }}>
+                            <Typography>Connect wallet</Typography>
+                        </ButtonTertiary>
+                    </>
                 }
                 {
-                    walletIsConnected && <>
+                    success &&
+                    <Typography variant='h4' textTransform={'uppercase'}>You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
+                }
+                {
+                    !ckReferral && walletIsConnected && <>
                         <Typography variant='h4' textAlign={'center'} mt={5}>
                             Your referral link
                         </Typography>
-                        <ButtonTertiary sx={{ mt: 1, py: '12px' }}>
+                        <ButtonTertiary sx={{
+                            mt: 1, py: '12px',
+                            color: 'secondary.main',
+
+                            'svg': {
+                                fill: Colors.primaryDark,
+                            },
+                            '&:hover': {
+                                svg: {
+                                    fill: Colors.secondary
+                                }
+                            }
+                        }} onClick={handleCopy} >
                             <Typography variant='h4' mr={3} textTransform={'none'} >
-                                https://www.deodd.io/ref/53sdkgj3434
+                                {
+                                    link
+                                }
                             </Typography>
                             <CopyIcon />
                         </ButtonTertiary>
@@ -40,9 +80,26 @@ function ContentNoData({ }: Props) {
                             Share to
                         </Typography>
                         <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                            <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton>
-                            <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
-                            <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                            {/* <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton> */}
+                            <TelegramShareButton url={link}
+                                title={'next-share is a social share buttons for your next React apps.'}>
+
+                                <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
+                            </TelegramShareButton>
+                            <TwitterShareButton
+                                url={link}
+                                title={'next-share is a social share buttons for your next React apps.'}
+                            >
+
+                                <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                            </TwitterShareButton>
+                            <FacebookShareButton
+                                url={link}
+                                quote={''}
+                                hashtag={'#deodd'}
+                            >
+                                <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
+                            </FacebookShareButton>
                         </Stack>
                     </>
                 }

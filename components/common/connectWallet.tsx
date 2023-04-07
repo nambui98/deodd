@@ -11,10 +11,9 @@ import { ButtonMain } from "../ui/button";
 
 export const ConnectWallet = () => {
 	const { handleConnectWallet } = useWalletContext();
-	const { darkMode } = useColorModeContext();
 	return <Wrap>
 		<BoxConnect>
-			<Title themelight={!darkMode}>Feel lucky today?</Title>
+			<Typography mb={{ xs: 3, md: 5 }} variant="h2" fontWeight={500} textTransform={'uppercase'}>Feel lucky today?</Typography>
 			<div style={{ marginBottom: '35px' }}><img alt="" width={144} src="assets/icons/head.svg" /></div>
 			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
 				width: 213
@@ -35,11 +34,4 @@ const BoxConnect = styled(Box)({
 	flexDirection: 'column',
 	alignItems: 'center',
 })
-const Title = styled(Typography)((props: propsTheme) => ({
-	...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
-	textTransform: 'uppercase',
-	marginBottom: 24,
-	'@media (min-width: 800px)': {
-		marginBottom: 40
-	}
-}))
+

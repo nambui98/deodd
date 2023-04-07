@@ -1,19 +1,18 @@
-import { useEffect, useState } from "react"
-import { Box, BoxProps, ButtonProps, Stack, styled, Typography, useMediaQuery } from "@mui/material";
+import { Box, Container, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import Modal from '@mui/material/Modal';
+import { useEffect, useState } from "react";
 // import { Button } from "../components/ui/button"
-import { Header } from "../components/common/Header"
-import { CONTENT } from "../constants/connectWallet"
-import { ConnectWallet } from "../components/common/ConnectWallet"
-import { PlayPart } from "../components/templates/home/playPart"
-import { TopList } from "../components/templates/home/topList"
-import { Container, TEXT_STYLE } from "../styles/common"
-import { useRouter } from "next/router"
-import { useWalletContext } from "../contexts/WalletContext"
+import { useRouter } from "next/router";
+import { ConnectWallet } from "../components/common/ConnectWallet";
 import { Popup } from "../components/common/popup";
-import { useColorModeContext } from "../contexts/ColorModeContext";
+import { PlayPart } from "../components/templates/home/playPart";
+import { TopList } from "../components/templates/home/topList";
 import { ButtonMain } from "../components/ui/button";
+import { CONTENT } from "../constants/connectWallet";
+import { useColorModeContext } from "../contexts/ColorModeContext";
 import { useContractContext } from "../contexts/ContractContext";
+import { useWalletContext } from "../contexts/WalletContext";
+import { TEXT_STYLE } from "../styles/common";
 
 export enum StatusGame {
   flip,
@@ -22,7 +21,9 @@ export enum StatusGame {
 }
 
 const HomePage: React.FC = () => {
-  const width800 = useMediaQuery(`(min-width: 800px)`)
+  // const width800 = useMediaQuery(`(min-width: 800px)`)
+
+  const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const [statusPopup, setStatusPopup] = useState<boolean>(false);
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
   const { walletIsConnected } = useWalletContext();
@@ -49,19 +50,22 @@ const HomePage: React.FC = () => {
   return <Wrap themelight={!darkMode}>
     <Body >
       <Container>
-        <Inner sx={{
-          '@media (min-width: 800px)': {
-            flexDirection: statusGame !== StatusGame.flip ? 'column !important' : 'row',
-            alignItems: statusGame !== StatusGame.flip ? 'center !important' : 'flex-start'
-          }
-        }}>
-          <LeftBody>
+        <Box ></Box>
+        <Stack justifyContent={'space-between'} columnGap={{ xs: 0, sm: 3, md: 4, lg: 15 }} direction={{ xs: 'column', md: 'row' }}>
+          <Stack textAlign='center'
+            justifyContent='space-between'
+            mb={{ xs: 0, md: 6 }}
+            mt={{ xs: 3.5, md: 8 }}
+            width={"100%"}
+
+          >
             {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
-            {width800 && statusGame === StatusGame.flip && <BoxPopup sx={{ marginTop: 10 }} themelight={!darkMode}>
+
+            {statusGame === StatusGame.flip && <Stack direction={'row'} mt={10} display={{ xs: 'none', md: 'flex' }} justifyContent={'center'} >
               <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
               <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
               <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-            </BoxPopup>}
+            </Stack>}
             <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
               <Box sx={{ maxWidth: '304px' }}>
                 <TitlePopup themelight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
@@ -69,17 +73,17 @@ const HomePage: React.FC = () => {
                 <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
               </Box>
             </Box>} />
-          </LeftBody>
-          {statusGame === StatusGame.flip && <RightBody>
+          </Stack>
+          {statusGame === StatusGame.flip && <Box mt={{ xs: 6, md: 0 }} width={"100%"}>
             <TopList />
-            {!width800 && <BoxPopup themelight={!darkMode}>
+            <Stack direction={'row'} justifyContent={'center'} mt={4} mb={3} display={{ sm: 'flex', md: 'none' }}>
               <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
               <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
               <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-            </BoxPopup>}
-          </RightBody>}
+            </Stack>
+          </Box>}
 
-        </Inner>
+        </Stack>
       </Container>
     </Body>
   </Wrap>
@@ -103,29 +107,7 @@ const Body = styled(Box)({
     marginTop: 19,
   }
 })
-const Inner = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between',
-  flexDirection: 'column',
-  alignItems: 'center',
-  '@media (min-width: 800px)': {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  }
-})
-const LeftBody = styled(Box)({
-  display: 'flex',
-  textAlign: 'center',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  marginBottom: 48,
-  '@media (min-width: 800px)': {
-    marginBottom: 0,
-    width: 'calc(50% - 15px)',
-    marginTop: 50,
-    minHeight: 584,
-  }
-})
+
 const RightBody = styled(Box)({
   width: '100%',
   '@media (min-width: 800px)': {

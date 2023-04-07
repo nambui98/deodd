@@ -2,73 +2,59 @@ import { Box, Container, IconButton, Paper, Stack, Table, TableBody, TableCell, 
 import MyTabs, { TypeTab } from 'components/common/Tabs'
 import { DiscordIcon, TelegramIcon, TwiterIcon } from 'components/common/icons';
 import { ButtonTertiary } from 'components/ui/button';
-import React, { useState } from 'react'
-import { BnbIcon, CopyIcon, NotiIcon } from 'utils/Icons';
+import { Colors } from 'constants/index';
+import { useSiteContext } from 'contexts/SiteContext';
+import { BigNumber } from 'ethers';
+import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share';
+import { useEffect, useMemo, useState } from 'react';
+import { BnbIcon, CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons';
 import { AvatarImage, BnbImage, CoinEmptyImage } from 'utils/Images';
+import { Convert } from 'utils/convert';
+import { Format } from 'utils/format';
 
-type Props = {}
+type Props = {
+    dataAvailable: any | undefined,
+    dataExpired: any | undefined,
+    link: string
+}
 function createData(
     name: string,
-    userName: string,
-    quantityFriends: string | undefined,
+    expire: string,
+    profit: BigNumber,
 ) {
-    return { name, userName, quantityFriends };
+    return { name: Convert.convertWalletAddress(name, 5, 5), expire, profit: Format.formatMoneyFromBigNumberEther(profit) };
 }
-function ContentData({ }: Props) {
+function ContentData({ dataAvailable, dataExpired, link }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
+    const { setIsSuccess, setTitleSuccess } = useSiteContext();
+    let rowsAvailable = useMemo(() => dataAvailable && dataAvailable?.referralEarningRoleFatherList ? dataAvailable?.referralEarningRoleFatherList.map((item: any) => createData(item.userNameReferred + "(" + item.userWalletReferred + ")",
+        item.expiredDateForFather,
+        item.rewardFatherClaimed),) : [], [dataAvailable])
+    let rowsExpired = useMemo(() => dataExpired && dataExpired?.referralEarningRoleFatherList ? dataExpired?.referralEarningRoleFatherList.map((item: any) => createData(item.userNameReferred + "(" + item.userWalletReferred + ")",
+        item.expiredDateForFather,
+        item.rewardFatherClaimed),) : [], [dataExpired])
+    let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
+
+
     const listTabs: TypeTab[] = [
         {
             id: 1,
             title: 'Avaiable',
-            value: "(12)"
+            value: `(${rowsAvailable.length})`
         },
         {
             id: 2,
             title: 'Expired',
-            value: "(6)",
+            value: `(${rowsExpired.length})`,
         },
 
     ]
-    let rows = [
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
 
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-    ];
+    const handleCopy = () => {
+        navigator?.clipboard.writeText(link);
+        setTitleSuccess("Copy to clipboard");
+        setIsSuccess(true);
+    }
     return (
         <Container>
             {/* {
@@ -82,7 +68,7 @@ function ContentData({ }: Props) {
                         <Stack direction={'row'} py={"14px"} flex={1} borderBottom={1} borderColor={"secondary.100"} justifyContent={"flex-end"}>
                             <Typography variant='body2'>CLAIMED</Typography>
                             <Stack direction={'row'} ml={1} columnGap={1} alignItems={'center'}>
-                                <Typography variant='body2' color="secondary.main">2,523</Typography>
+                                <Typography variant='body2' color="secondary.main">{Format.formatMoneyFromBigNumberEther(dataAvailable?.claimedReward)}</Typography>
                                 <BnbIcon />
                             </Stack>
 
@@ -98,7 +84,7 @@ function ContentData({ }: Props) {
                                 </TableRow>
                             </TableHead>
                             <TableBody sx={{ bgcolor: 'background.paper' }}>
-                                {rows.length > 0 && rows.map((row, index) => (
+                                {rows.length > 0 && rows.map((row: any, index: number) => (
                                     <TableRow
                                         key={row.name}
                                         sx={{
@@ -108,18 +94,16 @@ function ContentData({ }: Props) {
                                         <TableCell component="th" scope="row">
                                             <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                                                 <img src={AvatarImage} width={24} alt="" />
-                                                <Typography variant='caption'>{row.userName}</Typography>
+                                                <Typography variant='caption'>{row.name}</Typography>
                                             </Stack>
                                         </TableCell>
                                         <TableCell align="right">
-                                            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                <Typography variant='caption'>{row.userName}</Typography>
-                                            </Stack>
+                                            <Typography variant='caption'>{row.expire}</Typography>
                                         </TableCell>
                                         <TableCell align="right" >
 
-                                            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                <Typography variant='caption' color="secondary.main"> {row.quantityFriends}</Typography>
+                                            <Stack direction={'row'} justifyContent={'flex-end'} columnGap={1} alignItems={'center'}>
+                                                <Typography variant='caption' color="secondary.main"> {row.profit}</Typography>
                                                 <BnbIcon />
                                             </Stack>
                                         </TableCell>
@@ -144,20 +128,20 @@ function ContentData({ }: Props) {
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"} >
                     <Typography variant='body2' textTransform={"uppercase"} textAlign={"center"} mt={2}>AvailAble to claim</Typography>
                     <Stack mt={1} direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"}>
-                        <Typography variant='h3' fontSize={"48px"}>0,534</Typography>
+                        <Typography variant='h3' fontSize={"48px"}>{Format.formatMoneyFromBigNumberEther(dataAvailable?.unclaimedReward)}</Typography>
                         <img src={BnbImage} width={40} alt="" />
                     </Stack>
                     <Stack direction={'row'} mt={2} alignItems={'center'} justifyContent={"space-between"}>
                         <Typography variant='body2' textTransform={"uppercase"}>Claimed</Typography>
                         <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                            <Typography variant='body2'> 0,234</Typography>
+                            <Typography variant='body2'> {Format.formatMoneyFromBigNumberEther(dataAvailable?.claimedReward)}</Typography>
                             <BnbIcon />
                         </Stack>
                     </Stack>
                     <Stack direction={'row'} mt={2} alignItems={'center'} justifyContent={"space-between"}>
                         <Typography variant='body2' textTransform={"uppercase"}>claim fee</Typography>
                         <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                            <Typography variant='body2'> 0,3</Typography>
+                            <Typography variant='body2'>{Format.formatMoney(dataAvailable?.claimFee ?? 0)} </Typography>
                             <BnbIcon />
                         </Stack>
                     </Stack>
@@ -170,19 +154,51 @@ function ContentData({ }: Props) {
                     <Typography variant='h4' textAlign={'center'} mt={5}>
                         Your referral link
                     </Typography>
-                    <ButtonTertiary sx={{ mt: 1, py: '12px', width: '100%', bgcolor: "secondary.300" }}>
+                    <ButtonTertiary sx={{
+                        mt: 1, py: '12px',
+                        color: 'secondary.main',
+
+                        'svg': {
+                            fill: Colors.primaryDark,
+                        },
+                        '&:hover': {
+                            svg: {
+                                fill: Colors.secondary
+                            }
+                        }
+                    }} onClick={handleCopy} >
                         <Typography variant='h4' mr={3} textTransform={'none'} >
-                            https://www.deodd.io/ref/53sdkgj3434
+                            {
+                                link
+                            }
                         </Typography>
                         <CopyIcon />
                     </ButtonTertiary>
+
                     <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
                         Share to
                     </Typography>
                     <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                        <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton>
-                        <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
-                        <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                        {/* <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton> */}
+                        <TelegramShareButton url={link}
+                            title={'share title'}>
+
+                            <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
+                        </TelegramShareButton>
+                        <TwitterShareButton
+                            url={link}
+                            title={'share title'}
+                        >
+                            <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                        </TwitterShareButton>
+                        <FacebookShareButton
+                            url={link}
+                            quote={'share title'}
+                            hashtag={'#deodd'}
+                        >
+                            <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
+                        </FacebookShareButton>
+
                     </Stack>
                     <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
                         <NotiIcon />

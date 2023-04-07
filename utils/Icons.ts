@@ -11,6 +11,7 @@ import LogoHeadIcon from 'public/assets/icons/head.svg'
 import CupIcon from 'public/assets/icons/cup.svg'
 import ClockIcon from 'public/assets/icons/clock.svg'
 import CloseIcon from 'public/assets/icons/close-circle2.svg'
+import FacebookIcon from 'public/assets/icons/facebook.svg'
 export {
     BnbIcon,
     BnbUsdIcon,
@@ -24,5 +25,6 @@ export {
     LogoHeadIcon,
     CupIcon,
     ClockIcon,
-    CloseIcon
+    CloseIcon,
+    FacebookIcon
 }

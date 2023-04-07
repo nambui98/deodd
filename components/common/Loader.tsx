@@ -1,12 +1,13 @@
 import { Box } from '@mui/material';
 import { useSiteContext } from 'contexts/SiteContext';
 
-type Props = {}
+type Props = { isLoadingProps?: boolean }
 
-export default function Loader({ }: Props) {
+export default function Loader({ isLoadingProps }: Props) {
     const { isLoading } = useSiteContext();
+    let loading = isLoading || isLoadingProps;
     return (
-        <Box position={'fixed'} zIndex={100} sx={{ inset: 0, display: isLoading ? 'flex' : 'none', justifyContent: 'center', alignItems: 'center', bgcolor: "#25244b86" }} >
+        <Box position={'fixed'} zIndex={100} sx={{ inset: 0, display: loading ? 'flex' : 'none', justifyContent: 'center', alignItems: 'center', bgcolor: "#25244b86" }} >
             <div className="spinner">
                 <div className="dot" />
                 <div className="dot" />

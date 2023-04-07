@@ -5,3 +5,4 @@ export const Colors = {
     secondaryDark: "#7071B3"
 }
 export const MINXIMUM_BALANCE_DEPOSIT = 0;
+// export const BASE_URL_REFERRAL = window.origin + "/ref/"

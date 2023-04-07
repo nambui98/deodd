@@ -132,13 +132,15 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		// neure:{},
 		error: {
 			main: red.A400,
-			"100": '#FC753F'
+			"100": '#FC753F',
+			"200": '#ff6f61'
 		},
 		background: {
 			default: "#1C1B3E",
 			paper: "#181536"
 		},
 		text: {
+
 			primary: "#fff",
 			secondary: "#FEF156",
 			// disabled: '#7071b3'

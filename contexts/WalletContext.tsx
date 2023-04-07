@@ -114,13 +114,6 @@ const WalletContext = createContext<wallerContextType>({
 export const useWalletContext = () => useContext(WalletContext);
 
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
-	// const [provider, setProvider] = useState<any>();
-	// const [ethersProvider, setEthersProvider] = useState<any>();
-	// const [ethersSigner, setEthersSigner] = useState<any>();
-	// const [activePopup, setActivePopup] = useState<boolean>(false);
-	// const [walletAccount, setWalletAccount] = useState<any>();
-	const [metaMaskIsInstalled, setMetaMaskIsInstalled] = useState<boolean>(false);
-	// const [chainIdIsSupported, setChainIdIsSupported] = useState<boolean>(false);
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [bnbAssets, setBnbAssets] = useState<BigNumber>(BigNumber.from(0))
@@ -129,11 +122,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
 
-	const { address, connector, isConnected } = useAccount();
+	const { address, isConnected } = useAccount();
 	const { chain } = useNetwork();
-	// const { chains } = useProvider();
-	// const { switchNetworkAsync } = useSwitchNetwork();
-	const { connect, connectors, error, pendingConnector } =
+	const { connect, connectors } =
 		useConnect();
 	const { data: balance } = useBalance({
 		address: walletAddress,
@@ -152,9 +143,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		abi: luckyProfile.abi,
 		functionName: 'getUserInfo',
 		args: [walletAddress],
-		// cacheOnBlock: true,
-		// isDataEqual: (prev, next) => prev === next,
-		// structuralSharing: (prev, next) => (prev === next ? prev : next),
 		watch: true
 	})
 	const [contractProfile, setContractProfile] = useState<
@@ -175,19 +163,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractDeoddNft, setContractDeoddNft] = useState<
 		Contract | undefined
 	>();
-	// get balance
-	// const getBalance: any = async (addressToken: `0x${string}`) => {
-	// 	let token;
-	// 	try {
-	// 		token = await fetchBalance({
-	// 			token: addressToken,
-	// 			address: walletAddress,
-	// 		});
-	// 	} catch (err) {
-	// 		console.log(err);
-	// 	}
-	// 	return token;
-	// };
+
 	useEffect(() => {
 		setWalletIsConnected(isConnected);
 		setWalletAddress(address);
@@ -195,11 +171,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			UserService.setCurrentUser(address);
 		}
 	}, [address, isConnected]);
-
-	const handleDisconnectWallet = () => {
-		UserService.removeCurrentUser();
-		disconnect();
-	}
 
 	useEffect(() => {
 		if (window.ethereum) {
@@ -281,18 +252,34 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		}
 	}, [resInfo?.[0], (resInfo?.[1] as BigNumber)?.toNumber()])
 
+	const value: wallerContextType = useMemo(() => {
+		return {
+			walletIsConnected,
+			walletAddress,
+			setWalletAddress,
+			setIsLoading,
+			isLoading,
+			bnbBalance,
+			bnbAssets,
+			userInfo,
+			handleConnectWallet,
+			contractDeodd,
+			contractProfile,
+			contractFeeManager,
+			contractJackpot,
+			contractNftHolder,
+			contractDeoddNft,
+			refresh,
+			setRefresh
+		}
 
-
-	const value: wallerContextType = {
+	}, [
 		walletIsConnected,
 		walletAddress,
-		setWalletAddress,
-		setIsLoading,
 		isLoading,
-		bnbBalance: bnbBalance,
-		bnbAssets: bnbAssets,
-		userInfo: userInfo,
-		handleConnectWallet,
+		bnbBalance,
+		bnbAssets,
+		userInfo,
 		contractDeodd,
 		contractProfile,
 		contractFeeManager,
@@ -300,7 +287,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		contractNftHolder,
 		contractDeoddNft,
 		refresh,
-		setRefresh
-	}
+	])
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

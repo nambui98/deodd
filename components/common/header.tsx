@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Button, CircularProgress, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useWalletContext } from "../../contexts/WalletContext";
 import { Container, TEXT_STYLE } from "../../styles/common";
@@ -17,12 +17,14 @@ import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons'
 import Image from 'next/image'
 import Link from "next/link";
 import { useDeoddContract } from "hooks/useDeoddContract";
+import MenuMobile from "./MenuMobile";
 
 
 export const Header: React.FC = () => {
   const { bnbAssets, walletAddress, contractFeeManager, walletIsConnected, setIsLoading } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
   const { handleClaimBnb } = useDeoddContract();
+  const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
   const width520 = useMediaQuery('(min-width: 520px)')
@@ -34,6 +36,7 @@ export const Header: React.FC = () => {
   })
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
 
+  const [ckMenuMobile, setCkMenuMobile] = useState<boolean>(false);
 
 
   // const handleClaim = async () => {
@@ -88,37 +91,72 @@ export const Header: React.FC = () => {
     <Container>
       <Inner>
         <Link href={"/"}>
-          <Box><img alt="" src={`assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
+          <Box><img alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
         </Link>
-        <BoxRight>
-          <Link href={"/campaign"}>
+        {
+          !md &&
+          <MenuMobile ck={ckMenuMobile} setCk={setCkMenuMobile}>
+            <Stack justifyContent={"center"} height={"100%"} alignItems={'center'}>
+              <Link href={"/campaign"} onClick={() => setCkMenuMobile(false)}>
 
-            <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          </Link>
-          <Link href="/referral">
+                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+              </Link>
+              <Link href="/referral" onClick={() => setCkMenuMobile(false)}>
 
-            <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          </Link>
-          <Link href="/loyalty">
+                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+              </Link>
+              <Link href="/loyalty" onClick={() => setCkMenuMobile(false)}>
 
-            <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-          </Link>
-          {walletAddress && (width520 ?
-            <>
-              <Link href={"/assets"}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
-              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
-            </>
-            :
-            <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img alt="" src="assets/icons/wallet.svg" /></ItemRight>
-          )}
+                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+              </Link>
+              {walletAddress && (
+                <>
+                  <Link href={"/assets"} onClick={() => setCkMenuMobile(false)}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
+                  <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
+                </>
 
-          <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
-        </BoxRight>
+              )}
+
+              <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
+            </Stack>
+
+
+          </MenuMobile>
+        }
+        {
+          md &&
+          <BoxRight >
+            <Link href={"/campaign"}>
+
+              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+            </Link>
+            <Link href="/referral" >
+
+              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+            </Link>
+            <Link href="/loyalty">
+
+              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+            </Link>
+            {walletAddress && (width520 ?
+              <>
+                <Link href={"/assets"}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
+                <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
+              </>
+              :
+              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img alt="" src="assets/icons/wallet.svg" /></ItemRight>
+            )}
+
+            <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
+          </BoxRight>
+
+        }
       </Inner>
     </Container>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
     </Box>} />
+
   </Wrap>
 }
 

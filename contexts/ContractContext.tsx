@@ -84,6 +84,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					})
 					setStatusGame(StatusGame.result);
 					setRefresh(!refresh);
+					setIsFinish(false);
 				}
 			}
 		},
