@@ -82,7 +82,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                     {
                         walletTokens?.data.map((nft) => nft.list.length > 0
                             ?
-                            <>
+                            <div>
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
                                     {openNftType === nft.type ? <ArrowUpIcon /> : <ArrowDownIcon />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
@@ -98,9 +98,9 @@ function RightContent({ walletTokens, priceToken }: Props) {
                                 <Collapse in={openNftType === nft.type} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {
-                                            nft.list.map((detailNFT) => {
+                                            nft.list.map((detailNFT, index) => {
 
-                                                return <ListItemButton key={detailNFT.id} sx={{ pl: 3, pr: 0, pt: 1 }} >
+                                                return <ListItemButton key={detailNFT.id + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
                                                     <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
                                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
                                                     <Typography ml="auto" variant='h2' color={"secondary"}>
@@ -113,7 +113,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                                         }
                                     </List>
                                 </Collapse>
-                            </>
+                            </div>
                             : <div></div>
                         )
                     }
