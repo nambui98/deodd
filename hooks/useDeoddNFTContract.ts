@@ -1,11 +1,10 @@
 import { BigNumber } from "ethers";
-import { useWalletContext } from "../contexts/WalletContext";
 import { useEffect, useState } from "react";
+import { useWalletContext } from "../contexts/WalletContext";
 
-import { fetchBalance } from '@wagmi/core';
-import { EnumNFT } from "libs/types";
-import { getPriceToken } from "libs/apis/coinmarketcap";
 import { useSiteContext } from "contexts/SiteContext";
+import { getPriceToken } from "libs/apis/coinmarketcap";
+import { EnumNFT } from "libs/types";
 export type TypeNFT = {
     id: number,
     type: number,
