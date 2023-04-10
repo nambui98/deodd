@@ -3,7 +3,7 @@ import { useWalletContext } from "../contexts/WalletContext";
 import { useEffect, useState } from "react";
 
 export const useJackpotContract = () => {
-    const { contractJackpot, walletAddress } = useWalletContext();
+    const { contractJackpot, walletAddress, walletIsConnected } = useWalletContext();
     const [sId, setSID] = useState<BigNumber | undefined>()
     const [tossPoint, setTossPoint] = useState<BigNumber | undefined>()
 
@@ -19,17 +19,23 @@ export const useJackpotContract = () => {
     }
 
     useEffect(() => {
-        getCurrentSeason().then(res => {
-            setSID(res);
-        });
-    }, [])
+        if (walletIsConnected) {
+            getCurrentSeason().then(res => {
+                setSID(res);
+            });
+
+        }
+    }, [walletIsConnected])
 
     useEffect(() => {
-        if (sId) {
+        if (sId && walletAddress) {
             getMyTossPointOf().then(res => {
                 setTossPoint(res);
             });
+        } else {
+            setTossPoint(BigNumber.from(0))
         }
-    }, [sId])
+
+    }, [sId, walletAddress])
     return { getCurrentSeason, getMyTossPointOf, tossPoint }
 }

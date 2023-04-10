@@ -112,22 +112,25 @@ export const useDeoddNFTContract = () => {
     }
 
     useEffect(() => {
-        getSpendingTokens().then((res) => {
-            if (res && res.data.length > 0) {
-                setSpendingTokens(res);
-            }
-        });
-        getWalletTokens().then(res => {
-            if (res && res.data.length > 0) {
-                setWalletTokens(res);
-            }
-        });
-        getPriceToken().then(res => {
-            if (res.status === 200) {
-                setPriceToken(res.data.data[0].quote['BUSD'].price)
-            }
-        })
-    }, [reload])
+        if (walletAddress) {
+            getSpendingTokens().then((res) => {
+                if (res && res.data.length > 0) {
+                    setSpendingTokens(res);
+                }
+            });
+            getWalletTokens().then(res => {
+                if (res && res.data.length > 0) {
+                    setWalletTokens(res);
+                }
+            });
+            getPriceToken().then(res => {
+                if (res.status === 200) {
+                    setPriceToken(res.data.data[0].quote['BUSD'].price)
+                }
+            })
+
+        }
+    }, [reload, walletAddress])
 
     const handleClickNFT = (nft: TypeNFT) => {
         setNftSelected(nft)

@@ -234,8 +234,11 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	useEffect(() => {
 		if (balanceBNBAssets.data !== undefined) {
 			setBnbAssets((balanceBNBAssets?.data! as BigNumber));
+		} else {
+			setBnbAssets(BigNumber.from(0))
 		}
-	}, [balanceBNBAssets.data])
+
+	}, [balanceBNBAssets.data, walletIsConnected])
 
 	useEffect(() => {
 		if (balance?.formatted) {
