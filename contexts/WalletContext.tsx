@@ -8,6 +8,7 @@ import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, l
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
 import { useAccount, useBalance, useConnect, useContractRead, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
 import { disconnect } from "process";
+import { bscTestnet } from "wagmi/chains";
 interface Map {
 	[key: string]: any;
 }
@@ -113,6 +114,32 @@ const WalletContext = createContext<wallerContextType>({
 
 export const useWalletContext = () => useContext(WalletContext);
 
+const switchNetworkCus = async () => {
+	const bscTestnetCus = {
+		chainId: `0x${Number(bscTestnet.id).toString(16)}`,
+		chainName: bscTestnet.name,
+		nativeCurrency: bscTestnet.nativeCurrency,
+		rpcUrls: [
+			"https://data-seed-prebsc-1-s1.binance.org:8545/",
+			"https://data-seed-prebsc-2-s1.binance.org:8545/",
+			"http://data-seed-prebsc-1-s2.binance.org:8545/",
+			"http://data-seed-prebsc-2-s2.binance.org:8545/",
+			"https://data-seed-prebsc-1-s3.binance.org:8545/",
+			"https://data-seed-prebsc-2-s3.binance.org:8545/"
+		],
+		blockExplorerUrls: ["https://testnet.bscscan.com"]
+	}
+	if (!window.ethereum) throw new Error("No crypto wallet found");
+	await (window.ethereum as any).request({
+		method: "wallet_addEthereumChain",
+		params: [
+			{
+				...bscTestnetCus
+			}
+		]
+	});
+}
+
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -124,6 +151,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	const { address, isConnected } = useAccount();
 	const { chain } = useNetwork();
+	const { chains, switchNetwork, switchNetworkAsync } = useSwitchNetwork()
 	const { connect, connectors } =
 		useConnect();
 	const { data: balance } = useBalance({
@@ -163,6 +191,18 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractDeoddNft, setContractDeoddNft] = useState<
 		Contract | undefined
 	>();
+	useEffect(() => {
+		if (bscTestnet.id !== chain?.id) {
+
+			switchNetworkCus()
+			// switchNetworkAsync?.(bscTestnet.id);
+		}
+
+		// if (switchNetwork) {
+		debugger
+		// switchNetwork?.(bscTestnet.id);
+		// }
+	}, [chain])
 
 	useEffect(() => {
 		setWalletIsConnected(isConnected);

@@ -41,12 +41,12 @@ export const Result = () => {
   } = gameResult!;
   const renderImage = () => {
     if (coinSide === flipResult) {
-      if (coinSide === '0') {
+      if (coinSide === 0) {
         return 'head'
       }
       return 'tail'
     } else {
-      if (coinSide === '1') {
+      if (coinSide === 1) {
         return 'head-disable'
       }
       return 'tail-disable'
@@ -63,13 +63,6 @@ export const Result = () => {
     )
   }
 
-  const bodyPopupSuccess = (
-    <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-      <Typography sx={{ ...TEXT_STYLE(24, 500, !darkMode ? '#181536' : '#ffffff'), marginBottom: '24px' }}>Claim successful!</Typography>
-      <ButtonMain active={true} title={'OKEY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
-    </Box>
-  )
-
   const handleClaim = async () => {
     if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
       setStatusLoading(true)
@@ -82,10 +75,10 @@ export const Result = () => {
     }
   }
 
-  useEffect(() => {
-    const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
-    audio.play();
-  }, [flipResult, coinSide])
+  // useEffect(() => {
+  //   const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
+  //   audio.play();
+  // }, [flipResult, coinSide])
 
   let typeNFT: number | undefined = typeId.toNumber();
   return <Wrap>

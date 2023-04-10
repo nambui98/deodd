@@ -92,6 +92,9 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					setStatusGame(StatusGame.result);
 					setRefresh(!refresh);
 					setIsFinish(false);
+					const audioResult = new Audio(`/assets/${playerWin.gt(BigNumber.from(0)) ? 'win' : 'lost'}.mp3`);
+					audioResult.play();
+					audioResult.load();
 				}
 			}
 		},

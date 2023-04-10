@@ -74,7 +74,12 @@ export const PlayPart: React.FC<any> = () => {
   )
 
   const handleFlip = async () => {
+    console.log(ethers.utils.parseUnits(`${dataSelect?.amount}`));
+
+    debugger
     const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
+
+    debugger
     // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
     let complement: BigNumber = BigNumber.from(0);
     let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelect!.amount!.toString()).add(fee);
@@ -92,6 +97,7 @@ export const PlayPart: React.FC<any> = () => {
       })
     }
     else {
+      debugger
       if (!statusLoadingFlip) {
         setStatusLoadingFlip(true);
         setIsFinish(false);

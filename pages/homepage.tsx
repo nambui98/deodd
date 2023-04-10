@@ -32,6 +32,7 @@ const HomePage: React.FC = () => {
   // const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip)
 
   const { setIsFinish, audio, gameResult, statusGame, setStatusGame } = useContractContext();
+
   const router = useRouter()
   useEffect(() => {
     // const checkChain = async () => {
@@ -40,6 +41,8 @@ const HomePage: React.FC = () => {
     //   }
     // }
     // checkChain();
+
+    setStatusGame(StatusGame.flip);
   }, [router.asPath])
 
   const handleShowPopup = (type: 'about' | 'faq' | 'howToPlay' | 'flip') => {
