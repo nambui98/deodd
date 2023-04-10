@@ -20,8 +20,8 @@ export enum StatusGame {
 }
 export type GameResultType = {
 	amount: string,
-	coinSide: string,
-	flipResult: string,
+	coinSide: number,
+	flipResult: number,
 	tokenId: BigNumber,
 	typeId: BigNumber,
 	jackpotWin: BigNumber,
@@ -75,12 +75,13 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					let res = await getUserByPublicAddress(walletAddress);
 					console.log(res);
 					console.log("result from backend: " + res);
+					console.log(playerWin.toNumber());
 
 					debugger
 					setGameResult({
 						amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
-						coinSide: ethers.utils.formatUnits(flipChoice, 'wei'),
-						flipResult: ethers.utils.formatUnits(playerWin, 'wei'),
+						coinSide: flipChoice.toNumber(),
+						flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
 						tokenId: tokenId,
 						typeId,
 						jackpotWin: jackpotReward,

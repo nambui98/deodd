@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
     setStatusPopupType(type)
   }
 
-  return <Wrap themelight={!darkMode}>
+  return <Box>
     <Body >
       <Container>
         <Box ></Box>
@@ -86,7 +86,7 @@ const HomePage: React.FC = () => {
         </Stack>
       </Container>
     </Body>
-  </Wrap>
+  </Box>
 }
 
 export default HomePage;
@@ -95,11 +95,7 @@ export type propsTheme = {
   themelight: boolean,
 }
 
-const Wrap = styled(Box)((props: propsTheme) => ({
-  // background: '#1C1B3E',
-  height: '100%',
-  // paddingBottom: "80px"
-}))
+
 const Body = styled(Box)({
   marginTop: 14,
   // background: 'primary',
@@ -108,25 +104,7 @@ const Body = styled(Box)({
   }
 })
 
-const RightBody = styled(Box)({
-  width: '100%',
-  '@media (min-width: 800px)': {
-    maxWidth: 449,
-    width: 'calc(50% - 15px)',
-  }
-})
-const BoxPopup = styled(Box)((props: propsTheme) => ({
-  display: 'flex',
-  alignItems: 'center',
-  color: props.themelight ? '#181536' : '#FFFFFF',
-  // margin: 'auto 0 24px',
-  justifyContent: 'center',
-  paddingTop: 25,
-  '@media (min-width: 800px)': {
-    paddingTop: 25,
-    // margin: 'auto 0 0',
-  }
-}))
+
 const ItemPopup = styled(Box)((props: propsTheme) => ({
   ...TEXT_STYLE(13, 500, props.themelight ? '#181536' : '#FFFFFF'),
   margin: '0 16px',
@@ -154,13 +132,3 @@ const BodyPopup = styled(Box)((props: propsTheme) => ({
     textDecoration: 'underline'
   }
 }))
-const BoxModal = styled(Modal)({
-  borderRadius: 8,
-  maxWidth: 352,
-  '& .ant-modal-body': {
-    padding: 24,
-    background: '#181536',
-    boxShadow: '0px 0px 40px rgba(112, 113, 179, 0.3)',
-  }
-})
-
