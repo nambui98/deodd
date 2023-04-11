@@ -55,6 +55,8 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
+    console.log(dataAvailable?.unclaimedReward);
+
     return (
         <Container>
             {/* {
