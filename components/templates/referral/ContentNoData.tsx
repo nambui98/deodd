@@ -1,15 +1,14 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
-import { DiscordIcon, TelegramIcon, TwiterIcon } from 'components/common/icons'
+import { CoinAnimation } from 'components/common/CoinAnimation'
+import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonTertiary } from 'components/ui/button'
+import { Colors } from 'constants/index'
+import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
-import React from 'react'
 import {
     FacebookShareButton, TelegramShareButton, TwitterShareButton,
 } from 'next-share'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
-import { LogoHeadImage } from 'utils/Images'
-import { useSiteContext } from 'contexts/SiteContext'
-import { Colors } from 'constants/index'
 import { Convert } from 'utils/convert'
 
 type Props = {
@@ -32,9 +31,10 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
     return (
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
-                <img width={40} src={LogoHeadImage} alt="" />
+
+                <CoinAnimation width={40} />
                 <Typography mx={2} variant='h2' textTransform={'uppercase'}>invite friends to get more profit from each flip!</Typography>
-                <img width={40} src={LogoHeadImage} alt="" />
+                <CoinAnimation width={40} />
             </Stack>
             <Box mt={10} textAlign={'center'}>
                 {

@@ -94,7 +94,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					setIsFinish(false);
 					const audioResult = new Audio(`/assets/${playerWin.gt(BigNumber.from(0)) ? 'win' : 'lost'}.mp3`);
 					audioResult.play();
-					audioResult.load();
+					// audioResult.load();
 				}
 			}
 		},
