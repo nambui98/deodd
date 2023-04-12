@@ -42,8 +42,9 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
             <Stack direction={'row'} alignItems={"flex-end"} justifyContent={'space-between'}>
-                <Typography variant='h2' textTransform={'uppercase'}>
-                    Assets
+                <Typography variant='h2' textTransform={'uppercase'} visibility={{ xs: 'hidden', md: 'visible' }}>
+
+                    Balance
                 </Typography>
                 <ButtonBase onClick={() => setOpenModal(true)}>
                     <Typography variant='body2' color={"secondary.100"}>

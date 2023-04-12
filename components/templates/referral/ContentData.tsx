@@ -13,6 +13,7 @@ import { BnbIcon, CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons';
 import { AvatarImage, BnbImage, CoinEmptyImage } from 'utils/Images';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
+import ShareLink from './ShareLink';
 
 type Props = {
     dataAvailable: any | undefined,
@@ -55,16 +56,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
 
     ]
 
-    const handleCopy = () => {
-        navigator?.clipboard.writeText(link);
-        setTitleSuccess("Copy to clipboard");
-        setIsSuccess(true);
-    }
+
     const handleClaim = async () => {
         try {
             setIsLoading(true);
             const res = await DeoddService.ClaimReferral(walletAddress);
-
             setIsLoading(false);
             if (res.data.data && res.status === 200) {
                 setTitleSuccess("Claimed successfully");
@@ -79,16 +75,12 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             setIsError(true);
             setTitleError("Something went wrong!");
         }
-
     }
 
     return (
         <Container>
-            {/* {
-                MapTap[valueTab]
-            } */}
-            <Stack direction="row" mt={2} columnGap={4}>
-                <Box flexGrow={1} flexShrink={1} flexBasis={"60%"}>
+            <Stack direction={{ xs: "column-reverse", md: 'row' }} mt={2} columnGap={4}>
+                <Box flexGrow={1} mt={{ xs: 2, md: 0 }} flexShrink={1} flexBasis={"60%"}>
                     <Stack direction={'row'} justifyContent={"space-between"} alignItems={'center'}>
 
                         <MyTabs listTabs={listTabs} value={valueTab} setValue={setValueTab} />
@@ -101,51 +93,57 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
 
                         </Stack>
                     </Stack>
-                    <TableContainer sx={{ mt: 1, backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
-                        <Table stickyHeader aria-label="simple table">
-                            <TableHead>
-                                <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-                                    <TableCell sx={{ textTransform: "uppercase" }}>User</TableCell>
-                                    <TableCell sx={{ textTransform: "uppercase" }} align="right">Expire</TableCell>
-                                    <TableCell sx={{ textTransform: "uppercase" }} align="right">profit</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody sx={{ bgcolor: 'background.paper' }}>
-                                {rows.length > 0 && rows.map((row: any, index: number) => (
-                                    <TableRow
-                                        key={row.name}
-                                        sx={{
-                                            'td, th': { border: 0, py: 1 }
-                                        }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                <img src={AvatarImage} width={24} alt="" />
-                                                <Typography variant='caption'>{row.name}</Typography>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Typography variant='caption'>{row.expire}</Typography>
-                                        </TableCell>
-                                        <TableCell align="right" >
-
-                                            <Stack direction={'row'} justifyContent={'flex-end'} columnGap={1} alignItems={'center'}>
-                                                <Typography variant='caption' color="secondary.main"> {row.profit}</Typography>
-                                                <BnbIcon />
-                                            </Stack>
-                                        </TableCell>
+                    <Box mt={1}>
+                        <TableContainer sx={{ backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
+                            <Table stickyHeader aria-label="simple table">
+                                <TableHead>
+                                    <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
+                                        <TableCell sx={{ textTransform: "uppercase" }}>User</TableCell>
+                                        <TableCell sx={{ textTransform: "uppercase" }} align="right">Expire</TableCell>
+                                        <TableCell sx={{ textTransform: "uppercase" }} align="right">profit</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                        {
-                            rows.length <= 0 &&
-                            <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
-                                <img width={144} src={CoinEmptyImage} alt="" />
-                                <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
-                            </Box>
-                        }
-                    </TableContainer>
+                                </TableHead>
+                                <TableBody sx={{ bgcolor: 'background.paper' }}>
+                                    {rows.length > 0 && rows.map((row: any, index: number) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                'td, th': { border: 0, py: 1 }
+                                            }}
+                                        >
+                                            <TableCell component="th" scope="row">
+                                                <Stack direction={'row'} columnGap={1} alignItems={'center'}>
+                                                    <img src={AvatarImage} width={24} alt="" />
+                                                    <Typography variant='caption'>{row.name}</Typography>
+                                                </Stack>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <Typography variant='caption'>{row.expire}</Typography>
+                                            </TableCell>
+                                            <TableCell align="right" >
+
+                                                <Stack direction={'row'} justifyContent={'flex-end'} columnGap={1} alignItems={'center'}>
+                                                    <Typography variant='caption' color="secondary.main"> {row.profit}</Typography>
+                                                    <BnbIcon />
+                                                </Stack>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            {
+                                rows.length <= 0 &&
+                                <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
+                                    <img width={144} src={CoinEmptyImage} alt="" />
+                                    <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
+                                </Box>
+                            }
+                        </TableContainer>
+
+                    </Box>
+                    <Box display={{ xs: 'block', md: 'none' }}>
+                        <ShareLink link={link} />
+                    </Box>
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"} >
                     <Typography variant='body2' textTransform={"uppercase"} textAlign={"center"} mt={2}>AvailAble to claim</Typography>
@@ -170,61 +168,9 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                     <Typography mt={1} variant='caption' color="secondary.100">The fee collected on behalf of blockchain<br />No more gas fee required</Typography>
 
                     <ButtonTertiary sx={{ width: "100%", mt: 3 }} onClick={handleClaim}>Claim reward </ButtonTertiary>
-                    <Box sx={{ height: '1px', margin: "40px 0", bgcolor: 'secondary.100' }}>
-
+                    <Box display={{ xs: 'none', md: 'block' }}>
+                        <ShareLink link={link} />
                     </Box>
-                    <Typography variant='h4' textAlign={'center'} mt={5}>
-                        Your referral link
-                    </Typography>
-                    <ButtonTertiary sx={{
-                        mt: 1, py: '12px',
-                        color: 'secondary.main',
-
-                        'svg': {
-                            fill: Colors.primaryDark,
-                        },
-                        '&:hover': {
-                            svg: {
-                                fill: Colors.secondary
-                            }
-                        }
-                    }} onClick={handleCopy} >
-                        <Typography variant='h4' mr={3} textTransform={'none'} >
-                            {
-                                link
-                            }
-                        </Typography>
-                        <CopyIcon />
-                    </ButtonTertiary>
-
-                    <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
-                        Share to
-                    </Typography>
-                    <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                        <TelegramShareButton url={link}
-                            title={'share title'}>
-                            <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
-                        </TelegramShareButton>
-                        <TwitterShareButton
-                            url={link}
-                            title={'share title'}
-                        >
-                            <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
-                        </TwitterShareButton>
-                        <FacebookShareButton
-                            url={link}
-                            quote={'share title'}
-                            hashtag={'#deodd'}
-                        >
-                            <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
-                        </FacebookShareButton>
-                    </Stack>
-                    <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                        <NotiIcon />
-                        <Typography ml={1} variant='body2' textAlign={'center'} textTransform={'uppercase'} >
-                            HOW it work
-                        </Typography>
-                    </Stack>
                 </Box>
             </Stack >
 
