@@ -7,25 +7,20 @@ import useReferral from 'hooks/useReferral'
 type Props = {}
 
 function Content({ }: Props) {
-    const { ckReferral, link, dataAvailable, dataExpired } = useReferral({ isNotGet: false });
-    console.log(ckReferral);
-    console.log(link);
-
+    const { ckReferral, link, dataAvailable, dataExpired, reload } = useReferral({ isNotGet: false });
 
     return (
         <Box>
             {
-                // ckReferral !== undefined &&
+                ckReferral !== undefined &&
                 (ckReferral ?
                     <ContentData
                         dataAvailable={dataAvailable}
                         dataExpired={dataExpired}
+                        reload={reload}
                         link={link ?? ''}
                     /> : <ContentNoData link={link ?? ''} ckReferral={ckReferral ?? false} />)}
-
-
         </Box>
-
     )
 }
 

@@ -4,7 +4,9 @@ import { DiscordIcon, TelegramIcon, TwiterIcon } from 'components/common/icons';
 import { ButtonTertiary } from 'components/ui/button';
 import { Colors } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
+import { useWalletContext } from 'contexts/WalletContext';
 import { BigNumber } from 'ethers';
+import { DeoddService } from 'libs/apis';
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share';
 import { useEffect, useMemo, useState } from 'react';
 import { BnbIcon, CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons';
@@ -15,7 +17,8 @@ import { Format } from 'utils/format';
 type Props = {
     dataAvailable: any | undefined,
     dataExpired: any | undefined,
-    link: string
+    link: string,
+    reload: Function
 }
 function createData(
     name: string,
@@ -24,9 +27,11 @@ function createData(
 ) {
     return { name: Convert.convertWalletAddress(name, 5, 5), expire, profit: Format.formatMoneyFromBigNumberEther(profit) };
 }
-function ContentData({ dataAvailable, dataExpired, link }: Props) {
+function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
-    const { setIsSuccess, setTitleSuccess } = useSiteContext();
+
+    const { walletAddress } = useWalletContext();
+    const { setIsSuccess, setTitleSuccess, setIsLoading, setIsError, setTitleError } = useSiteContext();
     let rowsAvailable = useMemo(() => dataAvailable && dataAvailable?.referralEarningRoleFatherList ? dataAvailable?.referralEarningRoleFatherList.map((item: any) => createData(item.userNameReferred + "(" + item.userWalletReferred + ")",
         item.expiredDateForFather,
         item.rewardFatherClaimed),) : [], [dataAvailable])
@@ -55,7 +60,27 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-    console.log(dataAvailable?.unclaimedReward);
+    const handleClaim = async () => {
+        try {
+            setIsLoading(true);
+            const res = await DeoddService.ClaimReferral(walletAddress);
+
+            setIsLoading(false);
+            if (res.data.data && res.status === 200) {
+                setTitleSuccess("Claimed successfully");
+                setIsSuccess(true);
+                reload();
+            } else {
+                setIsError(true);
+                setTitleError(res.data.meta.error_message);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            setIsError(true);
+            setTitleError("Something went wrong!");
+        }
+
+    }
 
     return (
         <Container>
@@ -111,9 +136,7 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
                                         </TableCell>
                                     </TableRow>
                                 ))}
-
                             </TableBody>
-
                         </Table>
                         {
                             rows.length <= 0 &&
@@ -122,10 +145,7 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
                                 <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
                             </Box>
                         }
-
                     </TableContainer>
-
-
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"} >
                     <Typography variant='body2' textTransform={"uppercase"} textAlign={"center"} mt={2}>AvailAble to claim</Typography>
@@ -149,7 +169,7 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
                     </Stack>
                     <Typography mt={1} variant='caption' color="secondary.100">The fee collected on behalf of blockchain<br />No more gas fee required</Typography>
 
-                    <ButtonTertiary sx={{ width: "100%", mt: 3 }}>Claim reward </ButtonTertiary>
+                    <ButtonTertiary sx={{ width: "100%", mt: 3 }} onClick={handleClaim}>Claim reward </ButtonTertiary>
                     <Box sx={{ height: '1px', margin: "40px 0", bgcolor: 'secondary.100' }}>
 
                     </Box>
@@ -181,10 +201,8 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
                         Share to
                     </Typography>
                     <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                        {/* <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton> */}
                         <TelegramShareButton url={link}
                             title={'share title'}>
-
                             <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
                         </TelegramShareButton>
                         <TwitterShareButton
@@ -200,14 +218,12 @@ function ContentData({ dataAvailable, dataExpired, link }: Props) {
                         >
                             <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
                         </FacebookShareButton>
-
                     </Stack>
                     <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
                         <NotiIcon />
                         <Typography ml={1} variant='body2' textAlign={'center'} textTransform={'uppercase'} >
                             HOW it work
                         </Typography>
-
                     </Stack>
                 </Box>
             </Stack >

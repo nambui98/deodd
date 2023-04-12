@@ -96,7 +96,7 @@ function Header({ }: Props) {
             <Stack justifyContent={"center"} height={"100%"} alignItems={'center'}>
               <Link href={"/campaign"} onClick={() => setCkMenuMobile(false)}>
 
-                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campaign</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
               </Link>
               <Link href="/referral" onClick={() => setCkMenuMobile(false)}>
 
@@ -125,7 +125,7 @@ function Header({ }: Props) {
           <BoxRight >
             <Link href={"/campaign"}>
 
-              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campain</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
+              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campaign</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
             </Link>
             <Link href="/referral" >
 
