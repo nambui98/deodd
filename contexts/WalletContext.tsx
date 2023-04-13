@@ -6,7 +6,7 @@ import { UserService } from "../services/user.service";
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-import { useAccount, useBalance, useConnect, useContractRead, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
 import { disconnect } from "process";
 import { bscTestnet } from "wagmi/chains";
 interface Map {
@@ -151,6 +151,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	const { address, isConnected } = useAccount();
 	const { chain } = useNetwork();
+	const { data: ensAddress } = useEnsAddress({
+		name: 'awkweb.eth',
+	})
 	const { chains, switchNetwork, switchNetworkAsync } = useSwitchNetwork()
 	const { connect, connectors } =
 		useConnect();
@@ -199,7 +202,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		}
 
 		// if (switchNetwork) {
-		debugger
+		// debugger
 		// switchNetwork?.(bscTestnet.id);
 		// }
 	}, [chain])
@@ -230,8 +233,48 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setContractJackpot(contractJackpot);
 			setContractNftHolder(contractNftHolder);
 			setContractDeoddNft(contractDeoddNft);
+			// console.log(ensAddress);
+
+			// let etherscanProvider = new ethers.providers.JsonRpcProvider(
+			// 	"https://data-seed-prebsc-1-s1.binance.org:8545/",
+			// 	{
+			// 		chainId: 97,
+			// 		name: chain?.name ?? ''
+			// 	}
+			// );
+			// debugger
+			// etherscanProvider.getLogs({
+			// 	fromBlock: 0,
+			// 	toBlock: 'latest',
+			// 	address: walletAddress,
+			// }).then((history) => {
+			// 	debugger
+			// 	history.forEach((tx) => {
+			// 		console.log(tx);
+			// 	})
+			// });
+
 		}
 	}, [chain]);
+
+	// useEffect(() => {
+	// 	async function fetchData() {
+	// 		try {
+	// 			// check if MetaMask is installed and connected
+	// 			if (window.ethereum) {
+	// 				//   const provider = window.ethereum;
+	// 				//   await provider.request({ method: 'eth_requestAccounts' });
+	// 				//   const activity = await provider.request({ method: 'eth_getTransactionByAddress', params: [walletAddress, { fromBlock: '0', toBlock: 'latest' }] });
+	// 				//   debugger
+	// 			} else {
+	// 				console.error('MetaMask is not installed.');
+	// 			}
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	}
+	// 	fetchData();
+	// }, [])
 
 
 	const handleConnectWallet = async () => {

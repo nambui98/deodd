@@ -51,6 +51,15 @@ const confirmReferralForUser = async (body: any) => {
         data: JSON.stringify(body)
     })
 }
+const ClaimReferral = async (address: string) => {
+    return await vhIdRequest({
+        url: `/users/ref/claim`,
+        method: 'post',
+        data: JSON.stringify({
+            wallet: address
+        })
+    })
+}
 export const DeoddService = {
     generateReferralLink,
     checkUserIsValidForReferral,
@@ -59,5 +68,6 @@ export const DeoddService = {
     getReferralRewardAvailable,
     saveInfoUser,
     checkUserReferral,
-    confirmReferralForUser
+    confirmReferralForUser,
+    ClaimReferral
 }

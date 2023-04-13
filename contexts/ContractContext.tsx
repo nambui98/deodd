@@ -72,7 +72,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				if (latestFlipId?.eq(fId)) {
 					audio.loop = false;
 					audio.load();
-					let res = await getUserByPublicAddress(walletAddress);
+					let res = await getUserByPublicAddress(walletAddress, fId.toString());
 					console.log(res);
 					console.log("result from backend: " + res);
 					console.log(playerWin.toNumber());

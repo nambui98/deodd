@@ -7,7 +7,7 @@ import { DiscordIcon, TelegramIcon, TwiterIcon } from "./icons";
 
 export const Contact: React.FC<any> = () => {
   const { darkMode } = useColorModeContext();
-  return <Box position={'fixed'} bottom={{ lg: "80px", md: "30px" }} left={{ lg: '80px', md: "30px" }} display={{ xs: 'none', md: 'block' }} >
+  return <Box >
     <Box display={"flex"} flexDirection={"column"} sx={{ pointerEvents: "auto" }} alignItems={"center"} alignSelf={"flex-end"} >
       <Typography display={'inline-block'} fontWeight={500}>JOIN OUR SOCIAL</Typography>
       <Box display={'flex'} gap={2} marginTop={2} >
@@ -18,15 +18,3 @@ export const Contact: React.FC<any> = () => {
     </Box>
   </Box>
 }
-
-const Wrap = styled(Box)({
-  position: "fixed",
-  // inset: 0,
-  bottom: '10%',
-  left: '5%',
-  // zIndex: 1,
-  // height: "100vh",
-  // display: 'flex',
-  // pointerEvents: "none"
-})
-

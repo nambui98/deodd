@@ -1,11 +1,12 @@
 // import { BASE_URL_REFERRAL } from 'constants/index';
 import { useWalletContext } from 'contexts/WalletContext';
 import { DeoddService } from 'libs/apis';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const { walletAddress } = useWalletContext();
     const [ckReferral, setCkReferral] = useState<boolean | undefined>();
+    const [isReload, setIsReload] = useState<boolean>();
 
     const [link, setLink] = useState<string | undefined>();
     const [dataAvailable, setDataAvailable] = useState<any[] | undefined>();
@@ -31,6 +32,8 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         }
         if (ck.data && ck.data.data) {
             setCkReferral(true);
+        } else {
+            setCkReferral(false);
         }
         if (linkGenerate && linkGenerate.status === 200) {
             if (linkGenerate.data && linkGenerate.data.data) {
@@ -43,7 +46,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (ckReferral) {
             getDataReferral();
         }
-    }, [ckReferral, walletAddress])
+    }, [ckReferral, walletAddress, isReload])
 
     const getDataReferral = async () => {
         const [available, rewardExpired] = await Promise.all([
@@ -58,7 +61,11 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         }
     }
 
-    return { ckReferral, link, dataAvailable, dataExpired, getLinkUser }
+    const reload = useCallback(() => {
+        setIsReload(!isReload);
+    }, [])
+
+    return { ckReferral, link, dataAvailable, dataExpired, getLinkUser, reload }
 }
 
 export default useReferral

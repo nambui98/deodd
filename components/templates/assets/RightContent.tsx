@@ -30,7 +30,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
             <Stack direction={'row'} alignItems={"flex-end"} justifyContent={'space-between'}>
-                <Typography component={'span'} variant='h2' textTransform={'uppercase'}>
+                <Typography component={'span'} variant='h2' textTransform={'uppercase'} visibility={{ xs: 'hidden', md: 'visible' }}>
                     Wallet
                     <Typography component={"span"} variant='caption'>(3535***3534)</Typography>
                 </Typography>

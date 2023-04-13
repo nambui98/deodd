@@ -14,7 +14,7 @@ export const Format = {
     },
     formatMoneyFromBigNumberEther: (number: BigNumber | undefined, fixed?: number) => {
         if (number !== undefined) {
-            var newValue = ethers.utils.formatUnits(number);
+            var newValue = ethers.utils.formatUnits(number.toString());
             if (newValue[newValue.length - 1] === '.') {
                 newValue = parseFloat(newValue).toFixed(1);
             }
