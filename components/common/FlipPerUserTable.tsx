@@ -1,4 +1,4 @@
-import { Typography, Box, Grid } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
 
 type Props = {};
@@ -43,39 +43,6 @@ function RowItem({ times, users, percentage }: ItemProps) {
           {+parseFloat(percentage).toFixed(0)}%
         </Typography>
       </Box>
-      {/* <Grid item xs={1.5} minWidth={"fit-content"}>
-        <Typography variant="body2">{times}</Typography>
-      </Grid>
-      <Grid
-        item
-        xs={7.5}
-        display={"flex"}
-        alignItems={"center"}
-        marginRight={3}
-      >
-        <Box
-          width={"100%"}
-          height={"0.25rem"}
-          bgcolor={Colors.secondaryDark}
-          borderRadius={"100vh"}
-        >
-          <Box
-            width={percentage}
-            bgcolor={Colors.primaryDark}
-            height={"100%"}
-            borderRadius={"100vh"}
-          ></Box>
-        </Box>
-      </Grid>
-      <Grid item xs></Grid>
-      <Grid item xs={2} minWidth={"fit-content"}>
-        <Box display={"flex"} gap={2}>
-          <Typography variant="body2">{users}</Typography>
-          <Typography variant="body2">
-            {+parseFloat(percentage).toFixed(2)}%
-          </Typography>
-        </Box>
-      </Grid> */}
     </Box>
   );
 }
@@ -119,19 +86,6 @@ export function FlipPerUserTable({}: Props) {
         <RowItem times="40-45" users="522322" percentage="20%" />
         <RowItem times="45-50" users="522322" percentage="50%" />
       </Box>
-
-      {/* <Grid container rowSpacing={2}>
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="522322" percentage="80%" />
-        <RowItem times="0-5" users="522322" percentage="65.12%" />
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="522322" percentage="10%" />
-        <RowItem times="30-35" users="522322" percentage="50%" />
-        <RowItem times="40-45" users="522322" percentage="20%" />
-        <RowItem times="45-50" users="522322" percentage="50%" />
-      </Grid> */}
     </Box>
   );
 }
