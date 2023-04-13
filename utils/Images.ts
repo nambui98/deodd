@@ -14,15 +14,21 @@ export const LogoHeadImage = '/assets/icons/head.svg'
 export const LoyaltyImage = '/assets/images/bgloyalty.png'
 export const Loyalty2Image = '/assets/images/bgloyalty2.png'
 
+export const LogoImage = "/assets/logos/logo.svg";
+export const bgWinStreakImage = "/assets/images/bgwinstreak.png";
+export const bgLossStreakImage = "/assets/images/bglossstreak.png";
+export const coin0 = "/assets/images/coin/coin0.png";
+export const coin6 = "/assets/images/coin/coin6.png";
+
 export const BnbImage = '/assets/icons/binance-coin.svg'
 export const MapIcon: { [key: string]: string } = {
-    'BNB': BnbImage,
-    'Bronze': BronzeImage,
-    'Gold': GoldImage,
-    'Diamond': DiamondImage,
+  'BNB': BnbImage,
+  'Bronze': BronzeImage,
+  'Gold': GoldImage,
+  'Diamond': DiamondImage,
 }
 export const MapIconNFT: { [key: number]: string } = {
-    0: BronzeImage,
-    1: GoldImage,
-    2: DiamondImage,
+  0: BronzeImage,
+  1: GoldImage,
+  2: DiamondImage,
 }

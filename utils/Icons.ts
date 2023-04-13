@@ -12,19 +12,21 @@ import CupIcon from 'public/assets/icons/cup.svg'
 import ClockIcon from 'public/assets/icons/clock.svg'
 import CloseIcon from 'public/assets/icons/close-circle2.svg'
 import FacebookIcon from 'public/assets/icons/facebook.svg'
+import MobileIcon from 'public/assets/icons/mobile.svg'
 export {
-    BnbIcon,
-    BnbUsdIcon,
-    ArrowDownIcon,
-    ArrowUpIcon,
-    ArrowLeftIcon,
-    ArrowRightIcon,
-    DotIcon,
-    CopyIcon,
-    NotiIcon,
-    LogoHeadIcon,
-    CupIcon,
-    ClockIcon,
-    CloseIcon,
-    FacebookIcon
-}
+  BnbIcon,
+  BnbUsdIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  DotIcon,
+  CopyIcon,
+  NotiIcon,
+  LogoHeadIcon,
+  CupIcon,
+  ClockIcon,
+  CloseIcon,
+  FacebookIcon,
+  MobileIcon,
+};

@@ -3,27 +3,24 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-export const Donut = () => {
+export const Donut = (props: { data: [number, number] }) => {
     const data = {
         labels: ['TAIL', 'HEAD'],
 
         datasets: [
             {
-                label: 'Percent',
-                data: [40, 60],
-                cutout: 85,
-                backgroundColor: [
-                    '#FC753F',
-                    '#FEF156',
-                ],
+        label: "Percent",
+        data: props.data,
+        cutout: 68,
+        backgroundColor: ["#FC753F", "#FEF156"],
                 spacing: 3,
                 borderWidth: 0,
                 borderRadius: 50,
                 plugins: {
                     legend: {
-                        display: false
-                    }
-                }
+            display: false,
+          },
+        },
             },
         ],
     };
