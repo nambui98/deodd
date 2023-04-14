@@ -82,6 +82,7 @@ function CardType03({ children }: { children: React.ReactNode }) {
 export default function Statistic({}: Props) {
   const [topWinStreak, setTopWinStreak] = useState(0);
   const [topLossStreak, setTopLossStreak] = useState(0);
+  const [streakUsername, setStreakUsername] = useState("");
   const [flipDashboardStat, setFlipDashboardStat] = useState({} as any);
 
   // Today's Win streak.
@@ -90,6 +91,16 @@ export default function Statistic({}: Props) {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
       setTopWinStreak(data.highestWinStreak.currentStreakLength);
+    }
+    returnTopStreakToday();
+  }, []);
+
+  // Streak Username.
+  useEffect(() => {
+    async function returnTopStreakToday() {
+      const promiseResult = await getTopStreakToday();
+      const data = promiseResult.data.data;
+      setStreakUsername(data.highestWinStreak.username);
     }
     returnTopStreakToday();
   }, []);
@@ -140,7 +151,7 @@ export default function Statistic({}: Props) {
                   ? `0${topWinStreak}`
                   : topWinStreak}
               </Typography>
-              <Typography>Linh (38957***bF1)</Typography>
+              <Typography>{streakUsername}</Typography>
             </Box>
           </CardType01>
         </Grid>

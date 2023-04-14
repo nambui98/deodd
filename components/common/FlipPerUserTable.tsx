@@ -5,10 +5,6 @@ import { getFlipPerUser } from "libs/apis/statisticapi";
 
 type Props = {};
 
-function sortCondition(a: any, b: any) {
-  return a.localeCompare(b);
-}
-
 function RowItems({
   userPerFlip,
   totalUser,
@@ -17,23 +13,39 @@ function RowItems({
   totalUser: number;
 }) {
   return (
-    <Box display={"flex"} gap={3} flexGrow={"1"}>
-      <Box display={"flex"} width={"100%"} gap={3}>
+    <Box
+      display={"flex"}
+      flexGrow={"1"}
+      sx={{
+        gap: {
+          xs: 2,
+          sm: 3,
+        },
+      }}
+    >
+      <Box
+        display={"flex"}
+        width={"100%"}
+        sx={{
+          gap: {
+            xs: 1,
+            sm: 3,
+          },
+        }}
+      >
         <Box
           minWidth={"fit-content"}
           display={"flex"}
           flexDirection={"column"}
           gap={3}
         >
-          {Object.keys(userPerFlip)
-            .sort(sortCondition)
-            .map((element: string, index: number) => {
-              return (
-                <Typography key={index} variant="body2">
-                  {element}
-                </Typography>
-              );
-            })}
+          {Object.keys(userPerFlip).map((element: string, index: number) => {
+            return (
+              <Typography key={index} variant="body2">
+                {element}
+              </Typography>
+            );
+          })}
         </Box>
         <Box
           width={"100%"}
@@ -101,7 +113,6 @@ export function FlipPerUserTable({}: Props) {
     async function returnFlipPerUser() {
       const promiseResult = await getFlipPerUser();
       const data = promiseResult.data.data;
-      Object.entries(data.userPerFlip).sort();
       setUserPerFlip(data.userPerFlip);
       setTotalUser(data.totalUser);
     }
@@ -135,15 +146,7 @@ export function FlipPerUserTable({}: Props) {
         </Typography>
       </Box>
 
-      <Box display={"flex"} flexDirection={"column"} gap={3}>
-        {/* {Object.entries(flipPerUser.userPerFlip).sort().map(([property, value], index) => {
-          return <RowItem key={index} times={property} users={7} percentage={value} />
-        })} */}
-        {/* {userPerFlip.map(() => {
-
-        })} */}
-        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
-      </Box>
+      <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
     </Box>
   );
 }
