@@ -464,7 +464,7 @@ export default function Statistic({}: Props) {
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
               <Typography variant="h1">
-                55
+                {+flipDashboardStat.flipWinPercentage.toFixed(2)}
                 <Typography variant="h2" component={"span"}>
                   %
                 </Typography>
