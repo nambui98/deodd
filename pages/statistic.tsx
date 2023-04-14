@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Container, Typography, Grid } from "@mui/material";
 import Image from "next/image";
 import {
@@ -12,6 +12,7 @@ import { CupIcon, MobileIcon, ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { Donut } from "../components/ui/donuts";
 import { Colors } from "constants/index";
 import { FlipPerUserTable } from "components/common/FlipPerUserTable";
+import { getTopStreakToday } from "libs/apis/statisticapi";
 
 type Props = {};
 
@@ -76,6 +77,29 @@ function CardType03({ children }: { children: React.ReactNode }) {
 }
 
 export default function Statistic({}: Props) {
+  const [topWinStreak, setTopWinStreak] = useState(0);
+  const [topLossStreak, setTopLossStreak] = useState(0);
+
+  // Today's Win streak.
+  useEffect(() => {
+    async function returnTopStreakToday() {
+      const promiseResult = await getTopStreakToday();
+      const data = promiseResult.data.data;
+      setTopWinStreak(data.highestWinStreak.currentStreakLength);
+    }
+    returnTopStreakToday();
+  }, []);
+
+  // Today's Loss streak.
+  useEffect(() => {
+    async function returnTopStreakToday() {
+      const promiseResult = await getTopStreakToday();
+      const data = promiseResult.data.data;
+      setTopLossStreak(data.highestLossStreak.currentStreakLength);
+    }
+    returnTopStreakToday();
+  }, []);
+
   return (
     <Container sx={{ mt: 5, mb: 10 }}>
       <Typography variant="h2" mb={3}>
@@ -97,7 +121,7 @@ export default function Statistic({}: Props) {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <Typography variant="h1">08</Typography>
+              <Typography variant="h1">{(topWinStreak < 10 && topWinStreak >= 1) ? `0${topWinStreak}` : topWinStreak}</Typography>
               <Typography>Linh (38957***bF1)</Typography>
             </Box>
           </CardType01>
@@ -111,7 +135,7 @@ export default function Statistic({}: Props) {
             }}
           >
             <TitleTextAbsolute text="highest loss streak" />
-            <Typography variant="h1">05</Typography>
+            <Typography variant="h1">{(topLossStreak < 10 && topLossStreak >= 1) ? `0${topLossStreak}` : topLossStreak}</Typography>
           </CardType01>
         </Grid>
         <Grid item md={4} xs={12}>
