@@ -12,7 +12,10 @@ import { CupIcon, MobileIcon, ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { Donut } from "../components/ui/donuts";
 import { Colors } from "constants/index";
 import { FlipPerUserTable } from "components/common/FlipPerUserTable";
-import { getTopStreakToday } from "libs/apis/statisticapi";
+import {
+  getTopStreakToday,
+  getFlipDashboardStat,
+} from "libs/apis/statisticapi";
 
 type Props = {};
 
@@ -79,6 +82,7 @@ function CardType03({ children }: { children: React.ReactNode }) {
 export default function Statistic({}: Props) {
   const [topWinStreak, setTopWinStreak] = useState(0);
   const [topLossStreak, setTopLossStreak] = useState(0);
+  const [flipDashboardStat, setFlipDashboardStat] = useState({} as any);
 
   // Today's Win streak.
   useEffect(() => {
@@ -98,6 +102,16 @@ export default function Statistic({}: Props) {
       setTopLossStreak(data.highestLossStreak.currentStreakLength);
     }
     returnTopStreakToday();
+  }, []);
+
+  // DashboardStat.
+  useEffect(() => {
+    async function returnFlipDashboardStat() {
+      const promiseResult = await getFlipDashboardStat();
+      const data = promiseResult.data.data;
+      setFlipDashboardStat(data);
+    }
+    returnFlipDashboardStat();
   }, []);
 
   return (
@@ -121,7 +135,11 @@ export default function Statistic({}: Props) {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <Typography variant="h1">{(topWinStreak < 10 && topWinStreak >= 1) ? `0${topWinStreak}` : topWinStreak}</Typography>
+              <Typography variant="h1">
+                {topWinStreak < 10 && topWinStreak >= 1
+                  ? `0${topWinStreak}`
+                  : topWinStreak}
+              </Typography>
               <Typography>Linh (38957***bF1)</Typography>
             </Box>
           </CardType01>
@@ -135,7 +153,11 @@ export default function Statistic({}: Props) {
             }}
           >
             <TitleTextAbsolute text="highest loss streak" />
-            <Typography variant="h1">{(topLossStreak < 10 && topLossStreak >= 1) ? `0${topLossStreak}` : topLossStreak}</Typography>
+            <Typography variant="h1">
+              {topLossStreak < 10 && topLossStreak >= 1
+                ? `0${topLossStreak}`
+                : topLossStreak}
+            </Typography>
           </CardType01>
         </Grid>
         <Grid item md={4} xs={12}>
@@ -167,8 +189,11 @@ export default function Statistic({}: Props) {
                 >
                   head
                 </Typography>
-                <Typography textTransform={"uppercase"} variant="caption">
-                  6000 times (60%)
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.headResult} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.headResultPercentage}%)
+                  </Typography>
                 </Typography>
               </Box>
             </Box>
@@ -186,13 +211,18 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
               >
                 <Typography variant="h2" fontWeight={"700"}>
-                  10000
+                  {flipDashboardStat.numberFlipToday}
                 </Typography>
                 <Typography variant="body2" textTransform={"uppercase"}>
                   times
                 </Typography>
               </Box>
-              <Donut data={[4000, 6000]} />
+              <Donut
+                data={[
+                  flipDashboardStat.tailResult,
+                  flipDashboardStat.headResult,
+                ]}
+              />
             </Box>
             <Box
               display={"flex"}
@@ -203,13 +233,16 @@ export default function Statistic({}: Props) {
               <Box>
                 <Typography
                   variant="h3"
-                  color={"secondary.main"}
+                  color={"error.100"}
                   textTransform={"uppercase"}
                 >
                   tail
                 </Typography>
-                <Typography textTransform={"uppercase"} variant="caption">
-                  4000 times (40%)
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.tailResult} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.tailResultPercentage}%)
+                  </Typography>
                 </Typography>
               </Box>
               <Image src={coin6} width={24} height={24} alt="coin-icon" />
@@ -245,8 +278,11 @@ export default function Statistic({}: Props) {
                 >
                   head
                 </Typography>
-                <Typography textTransform={"uppercase"} variant="caption">
-                  4479 times (44,7%)
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.headChoice} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.headChoicePercentage}%)
+                  </Typography>
                 </Typography>
               </Box>
             </Box>
@@ -264,13 +300,18 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
               >
                 <Typography variant="h2" fontWeight={"700"}>
-                  10000
+                  {flipDashboardStat.numberFlipToday}
                 </Typography>
                 <Typography variant="body2" textTransform={"uppercase"}>
                   times
                 </Typography>
               </Box>
-              <Donut data={[4000, 6000]} />
+              <Donut
+                data={[
+                  flipDashboardStat.tailChoicePercentage,
+                  flipDashboardStat.headChoicePercentage,
+                ]}
+              />
             </Box>
             <Box
               display={"flex"}
@@ -281,13 +322,16 @@ export default function Statistic({}: Props) {
               <Box>
                 <Typography
                   variant="h3"
-                  color={"secondary.main"}
+                  color={"error.100"}
                   textTransform={"uppercase"}
                 >
                   tail
                 </Typography>
-                <Typography textTransform={"uppercase"} variant="caption">
-                  5531 times (55,3%)
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.tailChoice} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.tailChoicePercentage}%)
+                  </Typography>
                 </Typography>
               </Box>
               <Image src={coin6} width={24} height={24} alt="coin-icon" />

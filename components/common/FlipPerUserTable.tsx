@@ -102,7 +102,6 @@ export function FlipPerUserTable({}: Props) {
       const promiseResult = await getFlipPerUser();
       const data = promiseResult.data.data;
       Object.entries(data.userPerFlip).sort();
-      console.log(data.userPerFlip);
       setUserPerFlip(data.userPerFlip);
       setTotalUser(data.totalUser);
     }
