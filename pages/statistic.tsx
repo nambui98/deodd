@@ -401,7 +401,11 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
                 gap={1}
                 variant="body2"
-                color={Colors.decrease}
+                color={
+                  flipDashboardStat.feeTotalCompareYesterdayPercentage < 0
+                    ? Colors.decrease
+                    : Colors.increase
+                }
               >
                 {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
                   <ArrowDownIcon fill={Colors.decrease} />
