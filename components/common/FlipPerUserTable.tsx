@@ -1,60 +1,122 @@
+import { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
+import { getFlipPerUser } from "libs/apis/statisticapi";
 
 type Props = {};
 
-type ItemProps = {
-  times: string;
-  users: string;
-  percentage: string;
-};
+function sortCondition(a: any, b: any) {
+  return a.localeCompare(b);
+}
 
-function RowItem({ times, users, percentage }: ItemProps) {
+function RowItems({
+  userPerFlip,
+  totalUser,
+}: {
+  userPerFlip: any;
+  totalUser: number;
+}) {
   return (
-    <Box
-      display={"flex"}
-      gap={3}
-      justifyContent={"space-between"}
-      flexGrow={"1"}
-    >
-      <Typography variant="body2" minWidth={"3rem"}>
-        {times}
-      </Typography>
-      <Box display={"flex"} alignItems={"center"} width={"100%"}>
+    <Box display={"flex"} gap={3} flexGrow={"1"}>
+      <Box display={"flex"} width={"100%"} gap={3}>
+        <Box
+          minWidth={"fit-content"}
+          display={"flex"}
+          flexDirection={"column"}
+          gap={3}
+        >
+          {Object.keys(userPerFlip)
+            .sort(sortCondition)
+            .map((element: string, index: number) => {
+              return (
+                <Typography key={index} variant="body2">
+                  {element}
+                </Typography>
+              );
+            })}
+        </Box>
         <Box
           width={"100%"}
-          height={"0.25rem"}
-          bgcolor={Colors.secondaryDark}
-          borderRadius={"100vh"}
+          height={"100%"}
+          display={"flex"}
+          flexDirection={"column"}
+          gap={3}
         >
-          <Box
-            width={percentage}
-            bgcolor={Colors.primaryDark}
-            height={"100%"}
-            borderRadius={"100vh"}
-          ></Box>
+          {Object.values(userPerFlip).map((element: any, index: number) => {
+            return (
+              <Box
+                key={index}
+                display={"flex"}
+                height={"100%"}
+                alignItems={"center"}
+              >
+                <Box
+                  width={"100%"}
+                  height={"0.25rem"}
+                  bgcolor={Colors.secondaryDark}
+                  borderRadius={"100vh"}
+                >
+                  <Box
+                    width={`${element}%`}
+                    bgcolor={Colors.primaryDark}
+                    height={"100%"}
+                    borderRadius={"100vh"}
+                  ></Box>
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
       </Box>
-      <Box display={"flex"} gap={2} minWidth={"6.75rem"} textAlign="right">
-        <Typography variant="body2" flex={1}>
-          {users}
-        </Typography>
-        <Typography variant="body2" flex={0.5}>
-          {+parseFloat(percentage).toFixed(0)}%
-        </Typography>
+
+      <Box minWidth={"fit-content"} display={"flex"} gap={2} textAlign="right">
+        <Box display={"flex"} flexDirection={"column"} gap={3}>
+          {Object.values(userPerFlip).map((element, index: number) => {
+            return (
+              <Typography key={index} variant="body2" width={1}>
+                {totalUser}
+              </Typography>
+            );
+          })}
+        </Box>
+        <Box display={"flex"} flexDirection={"column"} gap={3}>
+          {Object.values(userPerFlip).map((element: any, index: number) => {
+            return (
+              <Typography key={index} variant="body2" minWidth={"fit-content"}>
+                {+parseFloat(element).toFixed(0)}%
+              </Typography>
+            );
+          })}
+        </Box>
       </Box>
     </Box>
   );
 }
 
 export function FlipPerUserTable({}: Props) {
+  const [userPerFlip, setUserPerFlip] = useState({});
+  const [totalUser, setTotalUser] = useState(0);
+
+  useEffect(() => {
+    async function returnFlipPerUser() {
+      const promiseResult = await getFlipPerUser();
+      const data = promiseResult.data.data;
+      Object.entries(data.userPerFlip).sort();
+      console.log(data.userPerFlip);
+      setUserPerFlip(data.userPerFlip);
+      setTotalUser(data.totalUser);
+    }
+    returnFlipPerUser();
+  }, []);
+
   return (
     <Box
       sx={{
-        paddingInline: { xs: 0, sm: 1, md: 3 },
+        paddingInline: { xs: 1, sm: 2, md: 3 },
         width: "100%",
         mt: 3,
-        maxHeight: "25rem",
+        height: "fit-content",
+        maxHeight: "27rem",
         overflowY: "auto",
         overflowX: "hidden",
       }}
@@ -74,17 +136,14 @@ export function FlipPerUserTable({}: Props) {
         </Typography>
       </Box>
 
-      <Box display={"flex"} flexDirection={"column"} gap={2}>
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="522322" percentage="50%" />
-        <RowItem times="0-5" users="3213" percentage="3%" />
-        <RowItem times="0-5" users="522322" percentage="80%" />
-        <RowItem times="0-5" users="522322" percentage="65.12%" />
-        <RowItem times="0-5" users="522322" percentage="5%" />
-        <RowItem times="0-5" users="522322" percentage="10%" />
-        <RowItem times="30-35" users="522322" percentage="50%" />
-        <RowItem times="40-45" users="522322" percentage="20%" />
-        <RowItem times="45-50" users="522322" percentage="50%" />
+      <Box display={"flex"} flexDirection={"column"} gap={3}>
+        {/* {Object.entries(flipPerUser.userPerFlip).sort().map(([property, value], index) => {
+          return <RowItem key={index} times={property} users={7} percentage={value} />
+        })} */}
+        {/* {userPerFlip.map(() => {
+
+        })} */}
+        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
       </Box>
     </Box>
   );
