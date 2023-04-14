@@ -385,7 +385,7 @@ export default function Statistic({}: Props) {
             <TitleTextAbsolute text="fee total" />
             <Box>
               <Typography mt={4} variant="h1">
-                52.645{" "}
+                {(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
                   variant="h2"
@@ -403,8 +403,13 @@ export default function Statistic({}: Props) {
                 variant="body2"
                 color={Colors.decrease}
               >
-                <ArrowDownIcon fill={Colors.decrease} />
-                12%
+                {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
+                  <ArrowDownIcon fill={Colors.decrease} />
+                ) : (
+                  <ArrowUpIcon fill={Colors.increase} />
+                )}
+                {Math.abs(flipDashboardStat.feeTotalCompareYesterdayPercentage)}
+                %
               </Typography>
             </Box>
           </CardType03>
@@ -413,7 +418,7 @@ export default function Statistic({}: Props) {
             <TitleTextAbsolute text="bnb total" />
             <Box>
               <Typography mt={4} variant="h1">
-                164,242{" "}
+                {(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
                   variant="h2"
@@ -429,10 +434,18 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
                 gap={1}
                 variant="body2"
-                color={Colors.increase}
+                color={
+                  flipDashboardStat.feeTotalCompareYesterdayPercentage < 0
+                    ? Colors.decrease
+                    : Colors.increase
+                }
               >
-                <ArrowUpIcon fill={Colors.increase} />
-                24%
+                {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
+                  <ArrowDownIcon fill={Colors.decrease} />
+                ) : (
+                  <ArrowUpIcon fill={Colors.increase} />
+                )}
+                {Math.abs(flipDashboardStat.amountCompareYesterdayPercentage)}%
               </Typography>
             </Box>
           </CardType03>
