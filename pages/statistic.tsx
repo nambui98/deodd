@@ -211,7 +211,9 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
               >
                 <Typography variant="h2" fontWeight={"700"}>
-                  {flipDashboardStat.numberFlipToday}
+                  {flipDashboardStat.numberFlipToday < 10
+                    ? "0" + flipDashboardStat.numberFlipToday
+                    : flipDashboardStat.numberFlipToday}
                 </Typography>
                 <Typography variant="body2" textTransform={"uppercase"}>
                   times
@@ -300,7 +302,9 @@ export default function Statistic({}: Props) {
                 alignItems={"center"}
               >
                 <Typography variant="h2" fontWeight={"700"}>
-                  {flipDashboardStat.numberFlipToday}
+                  {flipDashboardStat.numberFlipToday < 10
+                    ? "0" + flipDashboardStat.numberFlipToday
+                    : flipDashboardStat.numberFlipToday}
                 </Typography>
                 <Typography variant="body2" textTransform={"uppercase"}>
                   times
@@ -358,15 +362,27 @@ export default function Statistic({}: Props) {
               gap={2}
             >
               <Image src={coin0} width={80} height={80} alt="coin-img" />
-              <Typography variant="h1">59248731</Typography>
+              <Typography variant="h1">
+                {flipDashboardStat.numberFlipToday < 10
+                  ? "0" + flipDashboardStat.numberFlipToday
+                  : flipDashboardStat.numberFlipToday}
+              </Typography>
               <Typography
                 display={"flex"}
                 alignItems={"center"}
                 gap={1}
                 variant="body2"
-                color={Colors.increase}
+                color={
+                  flipDashboardStat.flipCompareYesterdayPercentage < 0
+                    ? Colors.decrease
+                    : Colors.increase
+                }
               >
-                <ArrowUpIcon fill={Colors.increase} />
+                {flipDashboardStat.flipCompareYesterdayPercentage < 0 ? (
+                  <ArrowDownIcon fill={Colors.decrease} />
+                ) : (
+                  <ArrowUpIcon fill={Colors.increase} />
+                )}
                 40%
               </Typography>
             </Box>
@@ -481,7 +497,7 @@ export default function Statistic({}: Props) {
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
               <Typography variant="h1">
-                {+flipDashboardStat.flipWinPercentage.toFixed(2)}
+                {flipDashboardStat.flipWinPercentage}
                 <Typography variant="h2" component={"span"}>
                   %
                 </Typography>
