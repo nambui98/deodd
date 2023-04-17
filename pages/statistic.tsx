@@ -33,44 +33,25 @@ function TitleTextAbsolute({ text }: { text: string }) {
 }
 
 export default function Statistic() {
-  const [topWinStreak, setTopWinStreak] = useState(0);
-  const [topLossStreak, setTopLossStreak] = useState(0);
-  const [streakUsername, setStreakUsername] = useState("");
+  const [streak, setStreak] = useState({
+    winStreak: 0,
+    lossStreak: 0,
+    username: "",
+  });
   const [flipDashboardStat, setFlipDashboardStat] = useState({} as any);
 
-  // Today's Win streak.
   useEffect(() => {
-    async function returnTopStreakToday() {
+    async function returnStreakToday() {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
-      setTopWinStreak(data.highestWinStreak.currentStreakLength);
+      setStreak({
+        winStreak: data.highestWinStreak.currentStreakLength,
+        lossStreak: data.highestLossStreak.currentStreakLength,
+        username: data.highestWinStreak.username,
+      });
     }
-    returnTopStreakToday();
-  }, []);
-
-  // Streak Username.
-  useEffect(() => {
-    async function returnTopStreakToday() {
-      const promiseResult = await getTopStreakToday();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        setStreakUsername(data.highestWinStreak.username);
-      }
-    }
-    returnTopStreakToday();
-  }, []);
-
-  // Today's Loss streak.
-  useEffect(() => {
-    async function returnTopStreakToday() {
-      const promiseResult = await getTopStreakToday();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        setTopLossStreak(data.highestLossStreak.currentStreakLength);
-      }
-    }
-    returnTopStreakToday();
-  }, []);
+    returnStreakToday();
+  });
 
   // DashboardStat.
   useEffect(() => {
@@ -108,14 +89,14 @@ export default function Statistic() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              {topWinStreak ? (
+              {streak.winStreak ? (
                 <>
                   <Typography variant="h1">
-                    {topWinStreak < 10 && topWinStreak >= 1
-                      ? `0${topWinStreak}`
-                      : topWinStreak}
+                    {streak.winStreak < 10 && streak.winStreak >= 1
+                      ? `0${streak.winStreak}`
+                      : streak.winStreak}
                   </Typography>
-                  <Typography>{streakUsername}</Typography>
+                  <Typography>{streak.username}</Typography>
                 </>
               ) : (
                 <Typography variant="h1">0</Typography>
@@ -135,11 +116,11 @@ export default function Statistic() {
             }}
           >
             <TitleTextAbsolute text="highest loss streak" />
-            {topLossStreak ? (
+            {streak.lossStreak ? (
               <Typography variant="h1">
-                {topLossStreak < 10 && topLossStreak >= 1
-                  ? `0${topLossStreak}`
-                  : topLossStreak}
+                {streak.lossStreak < 10 && streak.lossStreak >= 1
+                  ? `0${streak.lossStreak}`
+                  : streak.lossStreak}
               </Typography>
             ) : (
               <Typography variant="h1">0</Typography>
