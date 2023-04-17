@@ -209,7 +209,7 @@ export default function Statistic({}: Props) {
             {flipDashboardStat ? (
               <>
                 <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
-                  <Image src={coin6} width={24} height={24} alt="coin-icon" />
+                  <Image src={coin0} width={24} height={24} alt="coin-icon" />
                   <Box>
                     <Typography
                       variant="h3"
@@ -308,7 +308,7 @@ export default function Statistic({}: Props) {
             {flipDashboardStat ? (
               <>
                 <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
-                  <Image src={coin6} width={24} height={24} alt="coin-icon" />
+                  <Image src={coin0} width={24} height={24} alt="coin-icon" />
                   <Box>
                     <Typography
                       variant="h3"
