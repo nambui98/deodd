@@ -67,7 +67,11 @@ export function FlipPerUserTable({}: Props) {
         </Typography>
       </Box>
 
-      <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
+      {userPerFlip ? (
+        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
+      ) : (
+        <Typography variant="body2">Users have no flipped yet!</Typography>
+      )}
     </Box>
   );
 }
@@ -106,7 +110,7 @@ function RowItems({
           flexDirection={"column"}
           gap={3}
         >
-          {userPerFlip.map(([property], index: number) => {
+          {userPerFlip.map(([property]: [string], index: number) => {
             return (
               <Typography key={index} variant="body2">
                 {property}
@@ -121,7 +125,7 @@ function RowItems({
           flexDirection={"column"}
           gap={3}
         >
-          {userPerFlip.map(([, value], index: number) => {
+          {userPerFlip.map(([, value]: [string, number], index: number) => {
             return (
               <Box
                 key={index}
@@ -159,10 +163,10 @@ function RowItems({
           })}
         </Box>
         <Box display={"flex"} flexDirection={"column"} gap={3}>
-          {userPerFlip.map(([value], index: number) => {
+          {userPerFlip.map(([, value]: [string, number], index: number) => {
             return (
               <Typography key={index} variant="body2" minWidth={"fit-content"}>
-                {+parseFloat(value).toFixed(0)}%
+                {value.toFixed(0)}%
               </Typography>
             );
           })}
