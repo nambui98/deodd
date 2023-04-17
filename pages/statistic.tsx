@@ -400,7 +400,7 @@ export default function Statistic() {
             {flipDashboardStat ? (
               <Box>
                 <Typography mt={4} variant="h1">
-                  {(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
+                  {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
                   <Typography
                     component={"span"}
                     variant="h2"
@@ -447,9 +447,11 @@ export default function Statistic() {
             {flipDashboardStat ? (
               <Box>
                 <Typography mt={4} variant="h1">
-                  {(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(
-                    3
-                  )}{" "}
+                  {
+                    +(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(
+                      3
+                    )
+                  }{" "}
                   <Typography
                     component={"span"}
                     variant="h2"
