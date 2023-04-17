@@ -155,7 +155,7 @@ export function FlipPerUserTable({}: Props) {
       <Box
         display={"flex"}
         justifyContent={"space-between"}
-        mb={2}
+        mb={1.5}
         bgcolor={"secondary.300"}
         sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
       >
