@@ -10,14 +10,13 @@ import {
 } from "utils/Images";
 import { CupIcon, MobileIcon, ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { Donut } from "../components/ui/donuts";
+import { DashboardCard } from "../components/ui/dashboard/DashboardCard";
 import { Colors } from "constants/index";
 import { FlipPerUserTable } from "components/common/FlipPerUserTable";
 import {
   getTopStreakToday,
   getFlipDashboardStat,
 } from "libs/apis/statisticapi";
-
-type Props = {};
 
 function TitleTextAbsolute({ text }: { text: string }) {
   return (
@@ -33,53 +32,7 @@ function TitleTextAbsolute({ text }: { text: string }) {
   );
 }
 
-function CardType01({
-  children,
-  bgimg,
-}: {
-  children: React.ReactNode;
-  bgimg: {
-    backgroundImage: string;
-    backgroundSize?: string;
-    backgroundRepeat?: string;
-    backgroundPosition?: string;
-  };
-}) {
-  return (
-    <Box
-      p={2}
-      bgcolor={"secondary.300"}
-      borderRadius={1.5}
-      height={"15.5rem"}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      position={"relative"}
-      sx={bgimg}
-    >
-      {children}
-    </Box>
-  );
-}
-
-function CardType03({ children }: { children: React.ReactNode }) {
-  return (
-    <Box
-      p={2}
-      bgcolor={"secondary.300"}
-      borderRadius={1.5}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      position={"relative"}
-      height={"15.375rem"}
-    >
-      {children}
-    </Box>
-  );
-}
-
-export default function Statistic({}: Props) {
+export default function Statistic() {
   const [topWinStreak, setTopWinStreak] = useState(0);
   const [topLossStreak, setTopLossStreak] = useState(0);
   const [streakUsername, setStreakUsername] = useState("");
@@ -138,8 +91,11 @@ export default function Statistic({}: Props) {
       </Typography>
       <Grid container spacing={2}>
         <Grid item md={6} xs={12}>
-          <CardType01
-            bgimg={{
+          <DashboardCard
+            justifyContent={"center"}
+            position={"relative"}
+            height="15.5rem"
+            sx={{
               backgroundImage: `url(${bgWinStreakImage})`,
               backgroundSize: "cover",
             }}
@@ -165,11 +121,14 @@ export default function Statistic({}: Props) {
                 <Typography variant="h1">0</Typography>
               )}
             </Box>
-          </CardType01>
+          </DashboardCard>
         </Grid>
         <Grid item md={6} xs={12}>
-          <CardType01
-            bgimg={{
+          <DashboardCard
+            justifyContent={"center"}
+            position={"relative"}
+            height="15.5rem"
+            sx={{
               backgroundImage: `url(${bgLossStreakImage})`,
               backgroundRepeat: "no-repeat",
               backgroundPosition: "bottom",
@@ -185,18 +144,13 @@ export default function Statistic({}: Props) {
             ) : (
               <Typography variant="h1">0</Typography>
             )}
-          </CardType01>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Box
-            p={2}
-            bgcolor={"secondary.300"}
-            borderRadius={1.5}
-            height={"24.375rem"}
-            display={"flex"}
+          <DashboardCard
             flexDirection={"column"}
             justifyContent={"space-between"}
-            alignItems={"center"}
+            height="24.375rem"
           >
             <Typography
               position={"relative"}
@@ -284,18 +238,13 @@ export default function Statistic({}: Props) {
                 Users have not flipped yet
               </Typography>
             )}
-          </Box>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Box
-            p={2}
-            bgcolor={"secondary.300"}
-            borderRadius={1.5}
-            height={"24.375rem"}
-            display={"flex"}
+          <DashboardCard
             flexDirection={"column"}
             justifyContent={"space-between"}
-            alignItems={"center"}
+            height="24.375rem"
           >
             <Typography
               position={"relative"}
@@ -383,18 +332,14 @@ export default function Statistic({}: Props) {
                 Users have not flipped yet
               </Typography>
             )}
-          </Box>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
-          <Box
-            bgcolor={"secondary.300"}
-            borderRadius={1.5}
-            p={2}
-            height={"24.375rem"}
-            position={"relative"}
-            display={"flex"}
+          <DashboardCard
+            flexDirection={"column"}
             justifyContent={"center"}
-            alignItems={"center"}
+            height="24.375rem"
+            position={"relative"}
           >
             <TitleTextAbsolute text="flip total" />
             <Box
@@ -435,7 +380,7 @@ export default function Statistic({}: Props) {
                 <Typography variant="h1"></Typography>
               )}
             </Box>
-          </Box>
+          </DashboardCard>
         </Grid>
 
         <Grid
@@ -446,7 +391,11 @@ export default function Statistic({}: Props) {
           flexDirection={"column"}
           gap={2}
         >
-          <CardType03>
+          <DashboardCard
+            justifyContent={"center"}
+            height="15.375rem"
+            position={"relative"}
+          >
             <TitleTextAbsolute text="fee total" />
             {flipDashboardStat ? (
               <Box>
@@ -487,9 +436,13 @@ export default function Statistic({}: Props) {
             ) : (
               <Typography variant="h1">0</Typography>
             )}
-          </CardType03>
+          </DashboardCard>
 
-          <CardType03>
+          <DashboardCard
+            justifyContent={"center"}
+            height="15.375rem"
+            position={"relative"}
+          >
             <TitleTextAbsolute text="bnb total" />
             {flipDashboardStat ? (
               <Box>
@@ -530,19 +483,11 @@ export default function Statistic({}: Props) {
             ) : (
               <Typography variant="h1">0</Typography>
             )}
-          </CardType03>
+          </DashboardCard>
         </Grid>
 
         <Grid item md={8} xs={12}>
-          <Box
-            bgcolor={"secondary.300"}
-            borderRadius={1.5}
-            height={"100%"}
-            p={2}
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-          >
+          <DashboardCard flexDirection={"column"} height="100%">
             <Typography
               alignSelf={"flex-start"}
               textTransform={"uppercase"}
@@ -551,10 +496,14 @@ export default function Statistic({}: Props) {
               flip per user
             </Typography>
             <FlipPerUserTable />
-          </Box>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
-          <CardType03>
+          <DashboardCard
+            justifyContent={"center"}
+            height="15.375rem"
+            position={"relative"}
+          >
             <TitleTextAbsolute text="win percentage" />
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
@@ -565,10 +514,14 @@ export default function Statistic({}: Props) {
                 </Typography>
               </Typography>
             </Box>
-          </CardType03>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
-          <CardType03>
+          <DashboardCard
+            justifyContent={"center"}
+            height="15.375rem"
+            position={"relative"}
+          >
             <TitleTextAbsolute text="mobile flips" />
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <MobileIcon fill={Colors.primary} width={"2.5rem"} />
@@ -579,7 +532,7 @@ export default function Statistic({}: Props) {
                 </Typography>
               </Typography>
             </Box>
-          </CardType03>
+          </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
           <Box
