@@ -21,61 +21,6 @@ function sortFunction([a]: any, [b]: any) {
   }
 }
 
-export function FlipPerUserTable({}: Props) {
-  const [userPerFlip, setUserPerFlip] = useState([]);
-  const [totalUser, setTotalUser] = useState(0);
-
-  useEffect(() => {
-    async function returnFlipPerUser() {
-      const promiseResult = await getFlipPerUser();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        const sortedFlip = Object.entries(data.userPerFlip).toSorted(
-          sortFunction
-        );
-        setUserPerFlip(sortedFlip);
-        setTotalUser(data.totalUser);
-      }
-    }
-    returnFlipPerUser();
-  }, []);
-
-  return (
-    <Box
-      sx={{
-        paddingInline: { xs: 1, sm: 2, md: 3 },
-        width: "100%",
-        mt: 3,
-        height: "fit-content",
-        maxHeight: "27rem",
-        overflowY: "auto",
-        overflowX: "hidden",
-      }}
-    >
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        mb={2}
-        bgcolor={"secondary.300"}
-        sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
-      >
-        <Typography variant="body2" textTransform={"uppercase"}>
-          times
-        </Typography>
-        <Typography variant="body2" textTransform={"uppercase"}>
-          users
-        </Typography>
-      </Box>
-
-      {userPerFlip ? (
-        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
-      ) : (
-        <Typography variant="body2">Users have no flipped yet!</Typography>
-      )}
-    </Box>
-  );
-}
-
 function RowItems({
   userPerFlip,
   totalUser,
@@ -172,6 +117,61 @@ function RowItems({
           })}
         </Box>
       </Box>
+    </Box>
+  );
+}
+
+export function FlipPerUserTable({}: Props) {
+  const [userPerFlip, setUserPerFlip] = useState([]);
+  const [totalUser, setTotalUser] = useState(0);
+
+  useEffect(() => {
+    async function returnFlipPerUser() {
+      const promiseResult = await getFlipPerUser();
+      const data = promiseResult.data.data;
+      if (data != null) {
+        const sortedFlip = Object.entries(data.userPerFlip).toSorted(
+          sortFunction
+        );
+        setUserPerFlip(sortedFlip);
+        setTotalUser(data.totalUser);
+      }
+    }
+    returnFlipPerUser();
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        paddingInline: { xs: 1, sm: 2, md: 3 },
+        width: "100%",
+        mt: 3,
+        height: "fit-content",
+        maxHeight: "27rem",
+        overflowY: "auto",
+        overflowX: "hidden",
+      }}
+    >
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        mb={2}
+        bgcolor={"secondary.300"}
+        sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
+      >
+        <Typography variant="body2" textTransform={"uppercase"}>
+          times
+        </Typography>
+        <Typography variant="body2" textTransform={"uppercase"}>
+          users
+        </Typography>
+      </Box>
+
+      {userPerFlip ? (
+        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
+      ) : (
+        <Typography variant="body2">Users have no flipped yet!</Typography>
+      )}
     </Box>
   );
 }
