@@ -5,6 +5,73 @@ import { getFlipPerUser } from "libs/apis/statisticapi";
 
 type Props = {};
 
+function matchValue(str: string): any {
+  const matches = str.match(/\d+/g);
+  if (matches != null) {
+    const value = matches.length > 1 ? matches[1] : matches[0];
+    return value;
+  }
+}
+
+function sortFunction([a]: any, [b]: any) {
+  if (matchValue(a) - matchValue(b) > 0) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+
+export function FlipPerUserTable({}: Props) {
+  const [userPerFlip, setUserPerFlip] = useState([]);
+  const [totalUser, setTotalUser] = useState(0);
+
+  useEffect(() => {
+    async function returnFlipPerUser() {
+      const promiseResult = await getFlipPerUser();
+      const data = promiseResult.data.data;
+      if (data != null) {
+        const sortedFlip = Object.entries(data.userPerFlip).toSorted(
+          sortFunction
+        );
+        setUserPerFlip(sortedFlip);
+        setTotalUser(data.totalUser);
+      }
+    }
+    returnFlipPerUser();
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        paddingInline: { xs: 1, sm: 2, md: 3 },
+        width: "100%",
+        mt: 3,
+        height: "fit-content",
+        maxHeight: "27rem",
+        overflowY: "auto",
+        overflowX: "hidden",
+      }}
+    >
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        mb={2}
+        bgcolor={"secondary.300"}
+        sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
+      >
+        <Typography variant="body2" textTransform={"uppercase"}>
+          times
+        </Typography>
+        <Typography variant="body2" textTransform={"uppercase"}>
+          users
+        </Typography>
+      </Box>
+
+      <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
+    </Box>
+  );
+}
+
 function RowItems({
   userPerFlip,
   totalUser,
@@ -39,10 +106,10 @@ function RowItems({
           flexDirection={"column"}
           gap={3}
         >
-          {Object.keys(userPerFlip).map((element: string, index: number) => {
+          {userPerFlip.map(([property], index: number) => {
             return (
               <Typography key={index} variant="body2">
-                {element}
+                {property}
               </Typography>
             );
           })}
@@ -54,7 +121,7 @@ function RowItems({
           flexDirection={"column"}
           gap={3}
         >
-          {Object.values(userPerFlip).map((element: any, index: number) => {
+          {userPerFlip.map(([, value], index: number) => {
             return (
               <Box
                 key={index}
@@ -69,7 +136,7 @@ function RowItems({
                   borderRadius={"100vh"}
                 >
                   <Box
-                    width={`${element}%`}
+                    width={`${value}%`}
                     bgcolor={Colors.primaryDark}
                     height={"100%"}
                     borderRadius={"100vh"}
@@ -83,7 +150,7 @@ function RowItems({
 
       <Box minWidth={"fit-content"} display={"flex"} gap={2} textAlign="right">
         <Box display={"flex"} flexDirection={"column"} gap={3}>
-          {Object.values(userPerFlip).map((element, index: number) => {
+          {userPerFlip.map(([], index: number) => {
             return (
               <Typography key={index} variant="body2" width={1}>
                 {totalUser}
@@ -92,61 +159,15 @@ function RowItems({
           })}
         </Box>
         <Box display={"flex"} flexDirection={"column"} gap={3}>
-          {Object.values(userPerFlip).map((element: any, index: number) => {
+          {userPerFlip.map(([value], index: number) => {
             return (
               <Typography key={index} variant="body2" minWidth={"fit-content"}>
-                {+parseFloat(element).toFixed(0)}%
+                {+parseFloat(value).toFixed(0)}%
               </Typography>
             );
           })}
         </Box>
       </Box>
-    </Box>
-  );
-}
-
-export function FlipPerUserTable({}: Props) {
-  const [userPerFlip, setUserPerFlip] = useState({});
-  const [totalUser, setTotalUser] = useState(0);
-
-  useEffect(() => {
-    async function returnFlipPerUser() {
-      const promiseResult = await getFlipPerUser();
-      const data = promiseResult.data.data;
-      setUserPerFlip(data.userPerFlip);
-      setTotalUser(data.totalUser);
-    }
-    returnFlipPerUser();
-  }, []);
-
-  return (
-    <Box
-      sx={{
-        paddingInline: { xs: 1, sm: 2, md: 3 },
-        width: "100%",
-        mt: 3,
-        height: "fit-content",
-        maxHeight: "27rem",
-        overflowY: "auto",
-        overflowX: "hidden",
-      }}
-    >
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        mb={2}
-        bgcolor={"secondary.300"}
-        sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
-      >
-        <Typography variant="body2" textTransform={"uppercase"}>
-          times
-        </Typography>
-        <Typography variant="body2" textTransform={"uppercase"}>
-          users
-        </Typography>
-      </Box>
-
-      <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
     </Box>
   );
 }

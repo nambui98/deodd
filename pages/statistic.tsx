@@ -100,7 +100,9 @@ export default function Statistic({}: Props) {
     async function returnTopStreakToday() {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
-      setStreakUsername(data.highestWinStreak.username);
+      if (data != null) {
+        setStreakUsername(data.highestWinStreak.username);
+      }
     }
     returnTopStreakToday();
   }, []);
@@ -110,7 +112,9 @@ export default function Statistic({}: Props) {
     async function returnTopStreakToday() {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
-      setTopLossStreak(data.highestLossStreak.currentStreakLength);
+      if (data != null) {
+        setTopLossStreak(data.highestLossStreak.currentStreakLength);
+      }
     }
     returnTopStreakToday();
   }, []);
@@ -120,7 +124,9 @@ export default function Statistic({}: Props) {
     async function returnFlipDashboardStat() {
       const promiseResult = await getFlipDashboardStat();
       const data = promiseResult.data.data;
-      setFlipDashboardStat(data);
+      if (data != null) {
+        setFlipDashboardStat(data);
+      }
     }
     returnFlipDashboardStat();
   }, []);
