@@ -4,18 +4,15 @@ import { useWalletContext } from "../../contexts/WalletContext";
 import { Container, TEXT_STYLE } from "../../styles/common";
 import { Popup } from "./popup";
 // import { Button } from "../ui/button";
+import { ButtonSecondRemex } from "components/ui/button";
 import { ethers } from 'ethers';
-import { useDeoddContract } from "hooks/useDeoddContract";
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Link from "next/link";
-import { Colors } from '../../constants';
+import { LeftIcon } from "utils/Icons";
+import { VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
-import { Format } from '../../utils/format';
-import MenuMobile from "./MenuMobile";
-import { ArrowDownIcon, CampaignIcon, MedalStarIcon, PeopleIcon } from './icons';
-import React from 'react'
 
 type Props = {}
 
@@ -33,32 +30,14 @@ function Header({ }: Props) {
   })
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
 
-  const [ckMenuMobile, setCkMenuMobile] = useState<boolean>(false);
-
-
-  // const handleClaim = async () => {
-  //   if (!statusLoading && bnbAssets.gt(BigNumber.from(0))) {
-  //     setStatusLoading(true)
-  //     try {
-  //       const res = await handleClaimBnb();
-  //       if (res.status) {
-  //         setStatusLoading(false)
-  //         setPopup({ status: true, body: bodyPopupSuccess })
-  //         // setRefresh(!refresh)
-  //       }
-  //     } catch (error: any) {
-  //       setStatusLoading(false)
-  //       setPopup({ status: true, body: bodyPopupError(error.reason || 'Something went wrong. Please try again!') })
-  //     }
 
 
   const bodyBalance = async () => {
     return (<Box >
-      <HeaderPopup>
+      {/* <HeaderPopup>
         <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(ethers.utils.formatUnits(bnbAssets))} <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
-        {/* <ButtonMain active={bnbAssets.gt(BigNumber.from(0)) ? true : false} disable={bnbAssets.gt(BigNumber.from(0)) ? false : true} title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'CLAIM ALL'} onClick={handleClaim} customStyle={{ width: 160 }} /> */}
-      </HeaderPopup>
-      <HistoryPopup themelight={!darkMode}>History</HistoryPopup>
+      </HeaderPopup> */}
+      {/* <HistoryPopup themelight={!darkMode}>History</HistoryPopup> */}
       <BoxItemHistory themelight={!darkMode}>
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
           const currentFee = contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(ethers.utils.formatUnits(`${item.amount}`)))
@@ -84,91 +63,50 @@ function Header({ }: Props) {
     reRenderPopup()
   }, [statusLoading, bodyBalance])
 
-  return <Wrap>
-    <Container>
-      <Inner>
+  return <Container>
+    <Stack height={112} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+      <ButtonSecondRemex
+        aria-label="open drawer"
+        onClick={() => { }}
+        sx={{
+          padding: .5, minWidth: 0, borderRadius: 1,
+          img: {
+            transition: '.3s all'
+          },
+          svg: { stroke: 'none' }, '&:hover': {
+            backgroundColor: 'neutral.A100',
+            borderColor: 'transparent',
+            '& img': {
+              transform: 'scale(1.1)',
+            }
+          }
+        }}
+      >
+        <img src={VolumnImage} alt="" />
+      </ButtonSecondRemex>
+      <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>
-          <Box><img alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} /></Box>
+          <img width={106} height={64} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
         </Link>
-        {
-          !md &&
-          <MenuMobile ck={ckMenuMobile} setCk={setCkMenuMobile}>
-            <Stack justifyContent={"center"} height={"100%"} alignItems={'center'}>
-              <Link href={"/campaign"} onClick={() => setCkMenuMobile(false)}>
-
-                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campaign</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-              </Link>
-              <Link href="/referral" onClick={() => setCkMenuMobile(false)}>
-
-                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-              </Link>
-              <Link href="/loyalty" onClick={() => setCkMenuMobile(false)}>
-
-                <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-              </Link>
-              {walletAddress && (
-                <>
-                  <Link href={"/assets"} onClick={() => setCkMenuMobile(false)}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
-                  <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
-                </>
-
-              )}
-
-              <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
-            </Stack>
-
-
-          </MenuMobile>
-        }
-        {
-          md &&
-          <BoxRight >
-            <Link href={"/campaign"}>
-
-              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Campaign</Typography> <CampaignIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-            </Link>
-            <Link href="/referral" >
-
-              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Ref2Earn</Typography> <PeopleIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-            </Link>
-            <Link href="/loyalty">
-
-              <ItemRight themelight={!darkMode}><Typography fontStyle={"normal"} textTransform={"none"} color={"secondary"} marginRight={1}>Loyalty</Typography> <MedalStarIcon fill={darkMode ? Colors.primaryDark : Colors.primary} /> </ItemRight>
-            </Link>
-            {walletAddress && (width520 ?
-              <>
-                <Link href={"/assets"}> <ItemRight themelight={!darkMode}><span>Assets</span></ItemRight></Link>
-                <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}>BALANCE <span>{Format.formatMoney(ethers.utils.formatUnits(bnbAssets))}</span> <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></ItemRight>
-              </>
-              :
-              <ItemRight themelight={!darkMode} onClick={async () => setPopup({ body: await bodyBalance(), status: true })}><img alt="" src="assets/icons/wallet.svg" /></ItemRight>
-            )}
-
-            <ItemRight themelight={!darkMode}><ArrowDownIcon fill={darkMode ? Colors.secondaryDark : Colors.secondary} /> </ItemRight>
-          </BoxRight>
-
-        }
-      </Inner>
-    </Container>
+      </Box>
+      <ButtonSecondRemex
+        aria-label="open drawer"
+        onClick={() => { }}
+        sx={{ padding: .5, minWidth: 0, borderRadius: '0px 4px 4px 0px' }}
+      >
+        <LeftIcon />
+      </ButtonSecondRemex>
+    </Stack>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
     </Box>} />
 
-  </Wrap>
+
+  </Container>
 }
 
 export default Header
 
-const Wrap = styled(Box)({
-})
-const Inner = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between',
-  padding: '16px 0',
-  '@media (min-width: 800px)': {
-    padding: '22px 0',
-  }
-})
 
 const BoxRight = styled(Box)({
   display: 'flex',

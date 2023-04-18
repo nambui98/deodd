@@ -129,15 +129,19 @@ const switchNetworkCus = async () => {
 		],
 		blockExplorerUrls: ["https://testnet.bscscan.com"]
 	}
-	if (!window.ethereum) throw new Error("No crypto wallet found");
-	await (window.ethereum as any).request({
-		method: "wallet_addEthereumChain",
-		params: [
-			{
-				...bscTestnetCus
-			}
-		]
-	});
+	if (!window.ethereum) {
+		// throw new Error("No crypto wallet found")
+	} else {
+		await (window.ethereum as any).request({
+			method: "wallet_addEthereumChain",
+			params: [
+				{
+					...bscTestnetCus
+				}
+			]
+		});
+	}
+
 }
 
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
