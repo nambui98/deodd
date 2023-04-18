@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box, Container, Typography, Grid } from "@mui/material";
 import Image from "next/image";
 import {
@@ -13,10 +13,7 @@ import { Donut } from "../components/ui/donuts";
 import { DashboardCard } from "../components/ui/dashboard/DashboardCard";
 import { Colors } from "constants/index";
 import { FlipPerUserTable } from "components/common/FlipPerUserTable";
-import {
-  getTopStreakToday,
-  getFlipDashboardStat,
-} from "libs/apis/statisticapi";
+import { useDashboardStat } from "hooks/useDashboardStat";
 
 function TitleTextAbsolute({ text }: { text: string }) {
   return (
@@ -33,65 +30,7 @@ function TitleTextAbsolute({ text }: { text: string }) {
 }
 
 export default function Statistic() {
-  const [error, setError] = useState({
-    haveFlipped: true,
-    errorMessage: "",
-  });
-  const [streak, setStreak] = useState({
-    winStreak: 0,
-    lossStreak: 0,
-    username: "",
-  });
-  const [flipDashboardStat, setFlipDashboardStat] = useState({} as any);
-
-  useEffect(() => {
-    async function returnStreakToday() {
-      const promiseResult = await getTopStreakToday();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        setStreak({
-          winStreak: data.highestWinStreak.currentStreakLength,
-          lossStreak: data.highestLossStreak.currentStreakLength,
-          username: data.highestWinStreak.username,
-        });
-        setError((prev) => {
-          return {
-            ...prev,
-            haveFlipped: true,
-          };
-        });
-      } else {
-        setError({
-          haveFlipped: false,
-          errorMessage: promiseResult.data.meta.error_message,
-        });
-      }
-    }
-    returnStreakToday();
-  });
-
-  // DashboardStat.
-  useEffect(() => {
-    async function returnFlipDashboardStat() {
-      const promiseResult = await getFlipDashboardStat();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        setFlipDashboardStat(data);
-        setError((prev) => {
-          return {
-            ...prev,
-            haveFlipped: true,
-          };
-        });
-      } else {
-        setError({
-          haveFlipped: false,
-          errorMessage: promiseResult.data.meta.error_message,
-        });
-      }
-    }
-    returnFlipDashboardStat();
-  }, []);
+  const { error, streak, flipDashboardStat } = useDashboardStat();
 
   return (
     <Container sx={{ mt: 5, mb: 10 }}>

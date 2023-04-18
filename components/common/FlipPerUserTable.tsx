@@ -1,25 +1,8 @@
-import { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
-import { getFlipPerUser } from "libs/apis/statisticapi";
+import { useDashboardStat } from "hooks/useDashboardStat";
 
 type Props = {};
-
-function matchValue(str: string): any {
-  const matches = str.match(/\d+/g);
-  if (matches != null) {
-    const value = matches.length > 1 ? matches[1] : matches[0];
-    return value;
-  }
-}
-
-function sortFunction([a]: any, [b]: any) {
-  if (matchValue(a) - matchValue(b) > 0) {
-    return 1;
-  } else {
-    return -1;
-  }
-}
 
 function RowItems({
   userPerFlip,
@@ -122,39 +105,7 @@ function RowItems({
 }
 
 export function FlipPerUserTable({}: Props) {
-  const [error, setError] = useState({
-    haveFlipped: true,
-    errorMessage: "",
-  });
-  const [userPerFlip, setUserPerFlip] = useState([]);
-  const [totalUser, setTotalUser] = useState(0);
-
-  useEffect(() => {
-    async function returnFlipPerUser() {
-      const promiseResult = await getFlipPerUser();
-      console.log(promiseResult);
-      const data = promiseResult.data.data;
-      if (data != null) {
-        const sortedFlip = (Object.entries(data.userPerFlip) as any).toSorted(
-          sortFunction
-        );
-        setUserPerFlip(sortedFlip);
-        setTotalUser(data.totalUser);
-        setError((prev) => {
-          return {
-            ...prev,
-            haveFlipped: true,
-          };
-        });
-      } else {
-        setError({
-          haveFlipped: false,
-          errorMessage: promiseResult.data.meta.error_message,
-        });
-      }
-    }
-    returnFlipPerUser();
-  }, []);
+  const { userPerFlip, totalUser, error } = useDashboardStat();
 
   return (
     <Box
