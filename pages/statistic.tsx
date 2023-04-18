@@ -33,6 +33,10 @@ function TitleTextAbsolute({ text }: { text: string }) {
 }
 
 export default function Statistic() {
+  const [error, setError] = useState({
+    haveFlipped: true,
+    errorMessage: "",
+  });
   const [streak, setStreak] = useState({
     winStreak: 0,
     lossStreak: 0,
@@ -44,11 +48,24 @@ export default function Statistic() {
     async function returnStreakToday() {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
-      setStreak({
-        winStreak: data.highestWinStreak.currentStreakLength,
-        lossStreak: data.highestLossStreak.currentStreakLength,
-        username: data.highestWinStreak.username,
-      });
+      if (data != null) {
+        setStreak({
+          winStreak: data.highestWinStreak.currentStreakLength,
+          lossStreak: data.highestLossStreak.currentStreakLength,
+          username: data.highestWinStreak.username,
+        });
+        setError((prev) => {
+          return {
+            ...prev,
+            haveFlipped: true,
+          };
+        });
+      } else {
+        setError({
+          haveFlipped: false,
+          errorMessage: promiseResult.data.meta.error_message,
+        });
+      }
     }
     returnStreakToday();
   });
@@ -60,6 +77,17 @@ export default function Statistic() {
       const data = promiseResult.data.data;
       if (data != null) {
         setFlipDashboardStat(data);
+        setError((prev) => {
+          return {
+            ...prev,
+            haveFlipped: true,
+          };
+        });
+      } else {
+        setError({
+          haveFlipped: false,
+          errorMessage: promiseResult.data.meta.error_message,
+        });
       }
     }
     returnFlipDashboardStat();
@@ -89,18 +117,12 @@ export default function Statistic() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              {streak.winStreak ? (
-                <>
-                  <Typography variant="h1">
-                    {streak.winStreak < 10 && streak.winStreak >= 1
-                      ? `0${streak.winStreak}`
-                      : streak.winStreak}
-                  </Typography>
-                  <Typography>{streak.username}</Typography>
-                </>
-              ) : (
-                <Typography variant="h1">0</Typography>
-              )}
+              <Typography variant="h1">
+                {streak.winStreak < 10 && streak.winStreak >= 1
+                  ? `0${streak.winStreak}`
+                  : streak.winStreak}
+              </Typography>
+              <Typography>{streak.username}</Typography>
             </Box>
           </DashboardCard>
         </Grid>
@@ -116,15 +138,11 @@ export default function Statistic() {
             }}
           >
             <TitleTextAbsolute text="highest loss streak" />
-            {streak.lossStreak ? (
-              <Typography variant="h1">
-                {streak.lossStreak < 10 && streak.lossStreak >= 1
-                  ? `0${streak.lossStreak}`
-                  : streak.lossStreak}
-              </Typography>
-            ) : (
-              <Typography variant="h1">0</Typography>
-            )}
+            <Typography variant="h1">
+              {streak.lossStreak < 10 && streak.lossStreak >= 1
+                ? `0${streak.lossStreak}`
+                : streak.lossStreak}
+            </Typography>
           </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
@@ -141,84 +159,79 @@ export default function Statistic() {
             >
               flip result
             </Typography>
-            {flipDashboardStat ? (
-              <>
-                <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
-                  <Image src={coin0} width={24} height={24} alt="coin-icon" />
-                  <Box>
-                    <Typography
-                      variant="h3"
-                      color={"secondary.main"}
-                      textTransform={"uppercase"}
-                    >
-                      head
-                    </Typography>
-                    <Typography textTransform={"uppercase"} variant="body2">
-                      {flipDashboardStat.headResult} times{" "}
-                      <Typography variant="caption" component={"span"}>
-                        ({flipDashboardStat.headResultPercentage}%)
-                      </Typography>
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{ width: "10rem" }}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  position={"relative"}
+            <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
+              <Image src={coin0} width={24} height={24} alt="coin-icon" />
+              <Box>
+                <Typography
+                  variant="h3"
+                  color={"secondary.main"}
+                  textTransform={"uppercase"}
                 >
-                  <Box
-                    position={"absolute"}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    alignItems={"center"}
-                  >
-                    <Typography variant="h2" fontWeight={"700"}>
-                      {flipDashboardStat.numberFlipToday < 10
-                        ? "0" + flipDashboardStat.numberFlipToday
-                        : flipDashboardStat.numberFlipToday}
-                    </Typography>
-                    <Typography variant="body2" textTransform={"uppercase"}>
-                      times
-                    </Typography>
-                  </Box>
-                  <Donut
-                    data={[
-                      flipDashboardStat.tailResult,
-                      flipDashboardStat.headResult,
-                    ]}
-                  />
-                </Box>
-                <Box
-                  display={"flex"}
-                  textAlign={"end"}
-                  alignSelf={"flex-end"}
-                  gap={1}
+                  head
+                </Typography>
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.headResult} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.headResultPercentage}%)
+                  </Typography>
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{ width: "10rem" }}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              position={"relative"}
+            >
+              <Box
+                position={"absolute"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <Typography variant="h2" fontWeight={"700"}>
+                  {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
+                  {!error.haveFlipped
+                    ? "0"
+                    : flipDashboardStat.numberFlipToday < 10
+                    ? "0" + flipDashboardStat.numberFlipToday
+                    : flipDashboardStat.numberFlipToday}
+                </Typography>
+                <Typography variant="body2" textTransform={"uppercase"}>
+                  times
+                </Typography>
+              </Box>
+              <Donut
+                data={[
+                  flipDashboardStat.tailResult,
+                  flipDashboardStat.headResult,
+                ]}
+              />
+            </Box>
+            <Box
+              display={"flex"}
+              textAlign={"end"}
+              alignSelf={"flex-end"}
+              gap={1}
+            >
+              <Box>
+                <Typography
+                  variant="h3"
+                  color={"error.100"}
+                  textTransform={"uppercase"}
                 >
-                  <Box>
-                    <Typography
-                      variant="h3"
-                      color={"error.100"}
-                      textTransform={"uppercase"}
-                    >
-                      tail
-                    </Typography>
-                    <Typography textTransform={"uppercase"} variant="body2">
-                      {flipDashboardStat.tailResult} times{" "}
-                      <Typography variant="caption" component={"span"}>
-                        ({flipDashboardStat.tailResultPercentage}%)
-                      </Typography>
-                    </Typography>
-                  </Box>
-                  <Image src={coin6} width={24} height={24} alt="coin-icon" />
-                </Box>
-              </>
-            ) : (
-              <Typography variant="body2">
-                Users have not flipped yet
-              </Typography>
-            )}
+                  tail
+                </Typography>
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.tailResult} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.tailResultPercentage}%)
+                  </Typography>
+                </Typography>
+              </Box>
+              <Image src={coin6} width={24} height={24} alt="coin-icon" />
+            </Box>
           </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
@@ -235,84 +248,79 @@ export default function Statistic() {
             >
               user&apos;s flip choice
             </Typography>
-            {flipDashboardStat ? (
-              <>
-                <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
-                  <Image src={coin0} width={24} height={24} alt="coin-icon" />
-                  <Box>
-                    <Typography
-                      variant="h3"
-                      color={"secondary.main"}
-                      textTransform={"uppercase"}
-                    >
-                      head
-                    </Typography>
-                    <Typography textTransform={"uppercase"} variant="body2">
-                      {flipDashboardStat.headChoice} times{" "}
-                      <Typography variant="caption" component={"span"}>
-                        ({flipDashboardStat.headChoicePercentage}%)
-                      </Typography>
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{ width: "10rem" }}
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  position={"relative"}
+            <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
+              <Image src={coin0} width={24} height={24} alt="coin-icon" />
+              <Box>
+                <Typography
+                  variant="h3"
+                  color={"secondary.main"}
+                  textTransform={"uppercase"}
                 >
-                  <Box
-                    position={"absolute"}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    alignItems={"center"}
-                  >
-                    <Typography variant="h2" fontWeight={"700"}>
-                      {flipDashboardStat.numberFlipToday < 10
-                        ? "0" + flipDashboardStat.numberFlipToday
-                        : flipDashboardStat.numberFlipToday}
-                    </Typography>
-                    <Typography variant="body2" textTransform={"uppercase"}>
-                      times
-                    </Typography>
-                  </Box>
-                  <Donut
-                    data={[
-                      flipDashboardStat.tailChoicePercentage,
-                      flipDashboardStat.headChoicePercentage,
-                    ]}
-                  />
-                </Box>
-                <Box
-                  display={"flex"}
-                  textAlign={"end"}
-                  alignSelf={"flex-end"}
-                  gap={1}
+                  head
+                </Typography>
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.headChoice} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.headChoicePercentage}%)
+                  </Typography>
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{ width: "10rem" }}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              position={"relative"}
+            >
+              <Box
+                position={"absolute"}
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <Typography variant="h2" fontWeight={"700"}>
+                  {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
+                  {!error.haveFlipped
+                    ? "0"
+                    : flipDashboardStat.numberFlipToday < 10
+                    ? "0" + flipDashboardStat.numberFlipToday
+                    : flipDashboardStat.numberFlipToday}
+                </Typography>
+                <Typography variant="body2" textTransform={"uppercase"}>
+                  times
+                </Typography>
+              </Box>
+              <Donut
+                data={[
+                  flipDashboardStat.tailChoicePercentage,
+                  flipDashboardStat.headChoicePercentage,
+                ]}
+              />
+            </Box>
+            <Box
+              display={"flex"}
+              textAlign={"end"}
+              alignSelf={"flex-end"}
+              gap={1}
+            >
+              <Box>
+                <Typography
+                  variant="h3"
+                  color={"error.100"}
+                  textTransform={"uppercase"}
                 >
-                  <Box>
-                    <Typography
-                      variant="h3"
-                      color={"error.100"}
-                      textTransform={"uppercase"}
-                    >
-                      tail
-                    </Typography>
-                    <Typography textTransform={"uppercase"} variant="body2">
-                      {flipDashboardStat.tailChoice} times{" "}
-                      <Typography variant="caption" component={"span"}>
-                        ({flipDashboardStat.tailChoicePercentage}%)
-                      </Typography>
-                    </Typography>
-                  </Box>
-                  <Image src={coin6} width={24} height={24} alt="coin-icon" />
-                </Box>
-              </>
-            ) : (
-              <Typography variant="body2">
-                Users have not flipped yet
-              </Typography>
-            )}
+                  tail
+                </Typography>
+                <Typography textTransform={"uppercase"} variant="body2">
+                  {flipDashboardStat.tailChoice} times{" "}
+                  <Typography variant="caption" component={"span"}>
+                    ({flipDashboardStat.tailChoicePercentage}%)
+                  </Typography>
+                </Typography>
+              </Box>
+              <Image src={coin6} width={24} height={24} alt="coin-icon" />
+            </Box>
           </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
@@ -331,7 +339,7 @@ export default function Statistic() {
               gap={2}
             >
               <Image src={coin0} width={80} height={80} alt="coin-img" />
-              {flipDashboardStat ? (
+              {error.haveFlipped ? (
                 <>
                   <Typography variant="h1">
                     {flipDashboardStat.numberFlipToday < 10
@@ -358,7 +366,7 @@ export default function Statistic() {
                   </Typography>
                 </>
               ) : (
-                <Typography variant="h1"></Typography>
+                <Typography variant="body2">{error.errorMessage}</Typography>
               )}
             </Box>
           </DashboardCard>
@@ -378,7 +386,7 @@ export default function Statistic() {
             position={"relative"}
           >
             <TitleTextAbsolute text="fee total" />
-            {flipDashboardStat ? (
+            {error.haveFlipped ? (
               <Box>
                 <Typography mt={4} variant="h1">
                   {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
@@ -415,7 +423,7 @@ export default function Statistic() {
                 </Typography>
               </Box>
             ) : (
-              <Typography variant="h1">0</Typography>
+              <Typography variant="body2">{error.errorMessage}</Typography>
             )}
           </DashboardCard>
 
@@ -425,7 +433,7 @@ export default function Statistic() {
             position={"relative"}
           >
             <TitleTextAbsolute text="bnb total" />
-            {flipDashboardStat ? (
+            {error.haveFlipped ? (
               <Box>
                 <Typography mt={4} variant="h1">
                   {
@@ -464,7 +472,7 @@ export default function Statistic() {
                 </Typography>
               </Box>
             ) : (
-              <Typography variant="h1">0</Typography>
+              <Typography variant="body2">{error.errorMessage}</Typography>
             )}
           </DashboardCard>
         </Grid>
@@ -491,7 +499,7 @@ export default function Statistic() {
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
               <Typography variant="h1">
-                {flipDashboardStat ? flipDashboardStat.flipWinPercentage : "0"}
+                {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
                 <Typography variant="h2" component={"span"}>
                   %
                 </Typography>
@@ -509,7 +517,7 @@ export default function Statistic() {
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <MobileIcon fill={Colors.primary} width={"2.5rem"} />
               <Typography variant="h1">
-                49
+                {error.haveFlipped ? "49" : "0"}
                 <Typography variant="h2" component={"span"}>
                   %
                 </Typography>

@@ -122,12 +122,17 @@ function RowItems({
 }
 
 export function FlipPerUserTable({}: Props) {
+  const [error, setError] = useState({
+    haveFlipped: true,
+    errorMessage: "",
+  });
   const [userPerFlip, setUserPerFlip] = useState([]);
   const [totalUser, setTotalUser] = useState(0);
 
   useEffect(() => {
     async function returnFlipPerUser() {
       const promiseResult = await getFlipPerUser();
+      console.log(promiseResult);
       const data = promiseResult.data.data;
       if (data != null) {
         const sortedFlip = (Object.entries(data.userPerFlip) as any).toSorted(
@@ -135,6 +140,17 @@ export function FlipPerUserTable({}: Props) {
         );
         setUserPerFlip(sortedFlip);
         setTotalUser(data.totalUser);
+        setError((prev) => {
+          return {
+            ...prev,
+            haveFlipped: true,
+          };
+        });
+      } else {
+        setError({
+          haveFlipped: false,
+          errorMessage: promiseResult.data.meta.error_message,
+        });
       }
     }
     returnFlipPerUser();
@@ -167,10 +183,12 @@ export function FlipPerUserTable({}: Props) {
         </Typography>
       </Box>
 
-      {userPerFlip ? (
+      {error.haveFlipped ? (
         <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
       ) : (
-        <Typography variant="body2">Users have no flipped yet!</Typography>
+        <Typography variant="h2" textAlign={"center"}>
+          {error.errorMessage}
+        </Typography>
       )}
     </Box>
   );
