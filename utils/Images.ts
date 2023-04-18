@@ -14,7 +14,10 @@ export const LogoHeadImage = '/assets/icons/head.svg'
 export const LoyaltyImage = '/assets/images/bgloyalty.png'
 export const Loyalty2Image = '/assets/images/bgloyalty2.png'
 
+export const VolumnImage = '/assets/icons/volume-high.svg'
 export const BnbImage = '/assets/icons/binance-coin.svg'
+export const MoneyBagImage = '/assets/images/money-bag_1.png'
+export const LotteryImage = '/assets/images/balls_1.png'
 export const MapIcon: { [key: string]: string } = {
     'BNB': BnbImage,
     'Bronze': BronzeImage,

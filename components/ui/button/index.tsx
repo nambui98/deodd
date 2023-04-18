@@ -28,6 +28,16 @@ export const ButtonTertiary: React.FC<ButtonProps> = (props) => {
 export const ButtonSecond: React.FC<IProps & ButtonProps> = ({ children, onClick, active, sx, disable }) => {
   return <Button onClick={onClick} color="secondary" variant="outlined" disabled={disable} sx={sx}>{children}</Button>
 }
+export const ButtonSecondRemex: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} color="secondary" variant="contained" >{props.children}</Button>
+}
+export const ButtonSecondRemex2: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} color="secondary" variant="contained" sx={{
+    svg: {
+      stroke: ''
+    }
+  }} >{props.children}</Button>
+}
 // export const ButtonIcon: React.FC<ButtonProps & { children: React.Component }> = (props) => {
 //   const { children } = props;
 //   return <Button  {...props}>

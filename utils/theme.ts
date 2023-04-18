@@ -1,5 +1,5 @@
 import { red } from '@mui/material/colors';
-import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { PaletteColor, createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 // Create a theme instance.
 export const lightTheme = responsiveFontSizes(createTheme({
@@ -114,19 +114,55 @@ export const lightTheme = responsiveFontSizes(createTheme({
 		values: { xs: 0, sm: 600, md: 960, lg: 1200, xl: 1440 },
 	},
 }), {});
+declare module '@mui/material/styles' {
+	interface Palette {
+		neutral: Palette['primary'];
+		border: Palette['primary'];
+	}
+
+	// allow configuration using `createTheme`
+	interface PaletteOptions {
+		neutral?: PaletteOptions['primary'];
+		border?: PaletteOptions['primary'];
+	}
+}
+
+// Update the Button's color prop options
+declare module '@mui/material/Button' {
+	interface ButtonPropsColorOverrides {
+		neutral: true;
+		border: true;
+	}
+}
+
 export const darkTheme = responsiveFontSizes(createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
-			main: "#556cd6",
-			light: "#f1f5f9",
+			main: "#fff",
+			light: "#fff",
+			'100': '#2A2D3E',
+			'200': '#11131A'
 
 		},
 		secondary: {
 			main: "#FEF156",
 			"100": "#7071b3",
 			"200": "#A7ACB8",
-			'300': "#25244B"
+			'300': "#25244B",
+			'400': "#FF5870",
+			'500': '#E4EDF4'
+
+		},
+		neutral: {
+			main: ' #2A2D3E',
+			A100: '#48505F',
+
+			contrastText: '#fff',
+		},
+		border: {
+			main: '#FEF156',
+			dark: '#FEF156'
 
 		},
 		// neure:{},
@@ -136,13 +172,15 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			"200": '#ff6f61'
 		},
 		background: {
-			default: "#1C1B3E",
-			paper: "#181536"
+			default: "#1E1E1E",
+			paper: "#11131A",
+
 		},
 		text: {
 
 			primary: "#fff",
 			secondary: "#FEF156",
+			disabled: '#96A5C0'
 			// disabled: '#7071b3'
 		},
 
@@ -222,6 +260,30 @@ export const darkTheme = responsiveFontSizes(createTheme({
 							'&:hover': {
 								color: darkTheme.palette.background.default,
 							}
+						}
+
+					}
+				},
+				{
+					props: { variant: 'contained' },
+					style: () => {
+						return {
+							backgroundColor: darkTheme.palette.neutral.main,
+							boxShadow: 'none',
+							border: `2px solid transparent`,
+							'svg': {
+								stroke: darkTheme.palette.secondary.main
+							},
+							'&:hover': {
+								borderColor: darkTheme.palette.border.dark,
+								color: darkTheme.palette.background.paper,
+								// color: darkTheme.palette.background.default,
+							},
+							'&:hover svg': {
+
+								stroke: darkTheme.palette.background.paper
+							}
+
 						}
 
 					}

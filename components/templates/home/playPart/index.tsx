@@ -97,7 +97,6 @@ export const PlayPart: React.FC<any> = () => {
       })
     }
     else {
-      debugger
       if (!statusLoadingFlip) {
         setStatusLoadingFlip(true);
         setIsFinish(false);
@@ -109,6 +108,7 @@ export const PlayPart: React.FC<any> = () => {
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
             setIsFinish(true);
+            debugger
             const res = await handleFlipToken(
               dataSelect?.index || 0,
               dataSelect?.coinSide || 0,
