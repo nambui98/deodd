@@ -117,12 +117,18 @@ export default function Statistic() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-              <Typography variant="h1">
-                {streak.winStreak < 10 && streak.winStreak >= 1
-                  ? `0${streak.winStreak}`
-                  : streak.winStreak}
-              </Typography>
-              <Typography>{streak.username}</Typography>
+              {error.haveFlipped ? (
+                <>
+                  <Typography variant="h1">
+                    {streak.winStreak < 10 && streak.winStreak >= 1
+                      ? `0${streak.winStreak}`
+                      : streak.winStreak}
+                  </Typography>
+                  <Typography>{streak.username}</Typography>
+                </>
+              ) : (
+                <Typography variant="h3">{error.errorMessage}</Typography>
+              )}
             </Box>
           </DashboardCard>
         </Grid>
@@ -138,11 +144,15 @@ export default function Statistic() {
             }}
           >
             <TitleTextAbsolute text="highest loss streak" />
-            <Typography variant="h1">
-              {streak.lossStreak < 10 && streak.lossStreak >= 1
-                ? `0${streak.lossStreak}`
-                : streak.lossStreak}
-            </Typography>
+            {error.haveFlipped ? (
+              <Typography variant="h1">
+                {streak.lossStreak < 10 && streak.lossStreak >= 1
+                  ? `0${streak.lossStreak}`
+                  : streak.lossStreak}
+              </Typography>
+            ) : (
+              <Typography variant="h3">{error.errorMessage}</Typography>
+            )}
           </DashboardCard>
         </Grid>
         <Grid item md={4} xs={12}>
