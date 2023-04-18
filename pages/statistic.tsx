@@ -311,7 +311,8 @@ export default function Statistic() {
                     ) : (
                       <ArrowUpIcon fill={Colors.increase} />
                     )}
-                    40%
+                    {Math.abs(flipDashboardStat.flipCompareYesterdayPercentage)}
+                    %
                   </Typography>
                 </>
               ) : (
