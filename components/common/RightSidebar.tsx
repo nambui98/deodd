@@ -37,10 +37,10 @@ function RightSidebar({ open }: Props) {
             </Box>
 
             <Divider />
-            <Box p={2} overflow={'auto'} ref={refContainerChat}>
+            <Box p={2} overflow={'auto'} sx={{ transition: '.3s all', opacity: open ? 1 : 0 }} ref={refContainerChat}>
                 {
                     Array.from(Array(100).keys()).map((item, key) =>
-                        <ChatItem />
+                        <ChatItem key={key} />
                     )
                 }
 
