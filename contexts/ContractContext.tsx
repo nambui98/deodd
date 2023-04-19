@@ -7,7 +7,7 @@ import { useWalletContext } from './WalletContext';
 import { getUserByPublicAddress } from '../libs/apis/flipCoin';
 import { FlipResultType } from '../libs/types';
 import { useContractEvent } from 'wagmi';
-import { watchContractEvent } from '@wagmi/core'
+// import { watchContractEvent } from '@wagmi/core'
 // import { Contract, EventData, providers } from '@wagmi/contract';
 
 interface IProps {
