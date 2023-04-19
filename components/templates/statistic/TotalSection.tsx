@@ -12,10 +12,17 @@ type TotalPropsType = {
     haveFlipped: boolean;
     errorMessage: string;
   };
+  userPerFlip: any;
+  totalUser: number;
   flipDashboardStat: any;
 };
 
-export function TotalSection({ flipDashboardStat, error }: TotalPropsType) {
+export function TotalSection({
+  flipDashboardStat,
+  error,
+  userPerFlip,
+  totalUser,
+}: TotalPropsType) {
   return (
     <>
       <Grid
@@ -125,7 +132,11 @@ export function TotalSection({ flipDashboardStat, error }: TotalPropsType) {
           >
             flip per user
           </Typography>
-          <FlipPerUserTable />
+          <FlipPerUserTable
+            userPerFlip={userPerFlip}
+            totalUser={totalUser}
+            error={error}
+          />
         </DashboardCard>
       </Grid>
       <Grid item md={4} xs={12}>

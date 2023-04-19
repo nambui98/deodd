@@ -1,112 +1,66 @@
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
-import { useDashboardStat } from "hooks/useDashboardStat";
 
-type Props = {};
-
-function RowItems({
-  userPerFlip,
+function RowItem({
   totalUser,
+  times,
+  percentage,
 }: {
-  userPerFlip: any;
   totalUser: number;
+  times: string;
+  percentage: number;
 }) {
   return (
     <Box
-      display={"flex"}
-      flexGrow={"1"}
       sx={{
-        gap: {
-          xs: 2,
-          sm: 3,
-        },
+        gap: { xs: 1, sm: 2, md: 3 },
       }}
+      width={1}
+      display={"flex"}
+      gap={1}
+      justifyContent={"space-between"}
+      alignItems={"center"}
     >
-      <Box
-        display={"flex"}
-        width={"100%"}
-        sx={{
-          gap: {
-            xs: 1,
-            sm: 3,
-          },
-        }}
-      >
+      <Typography variant="body2" minWidth={"3rem"}>
+        {times}
+      </Typography>
+      <Box height={1} width={1}>
         <Box
-          minWidth={"fit-content"}
-          display={"flex"}
-          flexDirection={"column"}
-          gap={3}
+          width={1}
+          height={"0.25rem"}
+          bgcolor={Colors.secondary}
+          borderRadius={"100vh"}
         >
-          {userPerFlip.map(([property]: [string], index: number) => {
-            return (
-              <Typography key={index} variant="body2">
-                {property}
-              </Typography>
-            );
-          })}
-        </Box>
-        <Box
-          width={"100%"}
-          height={"100%"}
-          display={"flex"}
-          flexDirection={"column"}
-          gap={3}
-        >
-          {userPerFlip.map(([, value]: [string, number], index: number) => {
-            return (
-              <Box
-                key={index}
-                display={"flex"}
-                height={"100%"}
-                alignItems={"center"}
-              >
-                <Box
-                  width={"100%"}
-                  height={"0.25rem"}
-                  bgcolor={Colors.secondaryDark}
-                  borderRadius={"100vh"}
-                >
-                  <Box
-                    width={`${value}%`}
-                    bgcolor={Colors.primaryDark}
-                    height={"100%"}
-                    borderRadius={"100vh"}
-                  ></Box>
-                </Box>
-              </Box>
-            );
-          })}
+          <Box
+            width={`${percentage}%`}
+            bgcolor={Colors.primaryDark}
+            height={1}
+            borderRadius={"100vh"}
+          ></Box>
         </Box>
       </Box>
-
-      <Box minWidth={"fit-content"} display={"flex"} gap={2} textAlign="right">
-        <Box display={"flex"} flexDirection={"column"} gap={3}>
-          {userPerFlip.map(([], index: number) => {
-            return (
-              <Typography key={index} variant="body2" width={1}>
-                {totalUser}
-              </Typography>
-            );
-          })}
-        </Box>
-        <Box display={"flex"} flexDirection={"column"} gap={3}>
-          {userPerFlip.map(([, value]: [string, number], index: number) => {
-            return (
-              <Typography key={index} variant="body2" minWidth={"fit-content"}>
-                {value.toFixed(0)}%
-              </Typography>
-            );
-          })}
-        </Box>
-      </Box>
+      <Typography variant="body2">{totalUser}</Typography>
+      <Typography variant="body2" minWidth={"2.3rem"} textAlign={"right"}>
+        {percentage}%
+      </Typography>
     </Box>
   );
 }
 
-export function FlipPerUserTable({}: Props) {
-  const { userPerFlip, totalUser, error } = useDashboardStat();
+type FlipPerUserType = {
+  error: {
+    haveFlipped: boolean;
+    errorMessage: string;
+  };
+  userPerFlip: any;
+  totalUser: number;
+};
 
+export function FlipPerUserTable({
+  userPerFlip,
+  totalUser,
+  error,
+}: FlipPerUserType) {
   return (
     <Box
       sx={{
@@ -134,13 +88,32 @@ export function FlipPerUserTable({}: Props) {
         </Typography>
       </Box>
 
-      {error.haveFlipped ? (
-        <RowItems totalUser={totalUser} userPerFlip={userPerFlip} />
-      ) : (
-        <Typography variant="h2" textAlign={"center"}>
-          {error.errorMessage}
-        </Typography>
-      )}
+      <Box
+        width={1}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        gap={3}
+      >
+        {error.haveFlipped ? (
+          userPerFlip.map(
+            ([property, value]: [string, number], index: number) => {
+              return (
+                <RowItem
+                  key={index}
+                  totalUser={totalUser}
+                  times={property}
+                  percentage={value}
+                />
+              );
+            }
+          )
+        ) : (
+          <Typography variant="h2" textAlign={"center"}>
+            {error.errorMessage}
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 }
