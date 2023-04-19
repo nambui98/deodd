@@ -43,77 +43,82 @@ export function useDashboardStat() {
 
   useEffect(() => {
     async function getData() {
-      const [streakResult, statResult, flipResult] = await Promise.all([
-        getTopStreakToday(),
-        getFlipDashboardStat(),
-        getFlipPerUser(),
-      ]);
-      // Streak data
-      const streakData = streakResult.data.data;
-      if (streakData != null) {
-        setStatistic((prev) => ({
-          ...prev,
-          streak: {
-            winStreak: streakData.highestWinStreak.currentStreakLength,
-            lossStreak: streakData.highestLossStreak.currentStreakLength,
-            username: streakData.highestWinStreak.username,
-          },
-          error: {
-            ...prev.error,
-            haveFlipped: true,
-          },
-        }));
-      } else {
-        setStatistic((prev) => ({
-          ...prev,
-          error: {
-            ...prev.error,
-            errorMessage: streakResult.data.meta.error_message,
-          },
-        }));
+      try {
+        const [streakResult, statResult, flipResult] = await Promise.all([
+          getTopStreakToday(),
+          getFlipDashboardStat(),
+          getFlipPerUser(),
+        ]);
+        // Streak data
+        const streakData = streakResult.data.data;
+        if (streakData != null) {
+          setStatistic((prev) => ({
+            ...prev,
+            streak: {
+              winStreak: streakData.highestWinStreak.currentStreakLength,
+              lossStreak: streakData.highestLossStreak.currentStreakLength,
+              username: streakData.highestWinStreak.username,
+            },
+            error: {
+              ...prev.error,
+              haveFlipped: true,
+            },
+          }));
+        } else {
+          setStatistic((prev) => ({
+            ...prev,
+            error: {
+              ...prev.error,
+              errorMessage: streakResult.data.meta.error_message,
+            },
+          }));
+        }
+        // Stat data
+        const statData = statResult.data.data;
+        if (statData != null) {
+          setStatistic((prev) => ({
+            ...prev,
+            flipDashboardStat: statData,
+            error: { ...prev.error, haveFlipped: true },
+          }));
+        } else {
+          setStatistic((prev) => ({
+            ...prev,
+            error: {
+              ...prev.error,
+              errorMessage: statResult.data.meta.error_message,
+            },
+          }));
+        }
+        // Flip data
+        const flipData = flipResult.data.data;
+        if (flipData != null) {
+          const sortedFlip = (
+            Object.entries(flipData.userPerFlip) as any
+          ).toSorted(sortFunction);
+          setStatistic((prev) => ({
+            ...prev,
+            userPerFlip: sortedFlip,
+            totalUser: flipData.totalUser,
+            error: {
+              ...prev.error,
+              haveFlipped: true,
+            },
+          }));
+        } else {
+          setStatistic((prev) => ({
+            ...prev,
+            error: {
+              ...prev.error,
+              errorMessage: flipResult.data.meta.error_message,
+            },
+          }));
+        }
+      } catch (err) {
+        throw new Error("Something went wrong", { cause: err });
+      } finally {
+        setIsLoading(false);
       }
-      // Stat data
-      const statData = statResult.data.data;
-      if (statData != null) {
-        setStatistic((prev) => ({
-          ...prev,
-          flipDashboardStat: statData,
-          error: { ...prev.error, haveFlipped: true },
-        }));
-      } else {
-        setStatistic((prev) => ({
-          ...prev,
-          error: {
-            ...prev.error,
-            errorMessage: statResult.data.meta.error_message,
-          },
-        }));
-      }
-      // Flip data
-      const flipData = flipResult.data.data;
-      if (flipData != null) {
-        const sortedFlip = (
-          Object.entries(flipData.userPerFlip) as any
-        ).toSorted(sortFunction);
-        setStatistic((prev) => ({
-          ...prev,
-          userPerFlip: sortedFlip,
-          totalUser: flipData.totalUser,
-          error: {
-            ...prev.error,
-            haveFlipped: true,
-          },
-        }));
-      } else {
-        setStatistic((prev) => ({
-          ...prev,
-          error: {
-            ...prev.error,
-            errorMessage: flipResult.data.meta.error_message,
-          },
-        }));
-      }
-      setIsLoading(false);
     }
 
     setIsLoading(true);
