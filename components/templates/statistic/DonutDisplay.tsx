@@ -32,7 +32,7 @@ export function DonutDisplay({
         flexDirection={"column"}
         alignItems={"center"}
       >
-        <Typography variant="h2" fontWeight={"700"}>
+        <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"}>
           {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
           {!error.haveFlipped
             ? "0"

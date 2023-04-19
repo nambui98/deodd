@@ -41,12 +41,13 @@ export function TotalSection({
           <TitleTextAbsolute text="fee total" />
           {error.haveFlipped ? (
             <Box>
-              <Typography mt={4} variant="h1">
+              <Typography mt={4} variant="h1" fontSize={"3rem"}>
                 {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
                   variant="h2"
                   textTransform={"uppercase"}
+                  fontSize={"1.5rem"}
                 >
                   bnb
                 </Typography>
@@ -86,12 +87,13 @@ export function TotalSection({
           <TitleTextAbsolute text="bnb total" />
           {error.haveFlipped ? (
             <Box>
-              <Typography mt={4} variant="h1">
+              <Typography mt={4} variant="h1" fontSize={"3rem"}>
                 {+(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
                   variant="h2"
                   textTransform={"uppercase"}
+                  fontSize={"1.5rem"}
                 >
                   bnb
                 </Typography>
@@ -148,9 +150,9 @@ export function TotalSection({
           <TitleTextAbsolute text="win percentage" />
           <Box display={"flex"} alignItems={"center"} gap={1}>
             <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
-            <Typography variant="h1">
+            <Typography variant="h1" fontSize={"3rem"}>
               {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
-              <Typography variant="h2" component={"span"}>
+              <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
                 %
               </Typography>
             </Typography>
@@ -166,9 +168,9 @@ export function TotalSection({
           <TitleTextAbsolute text="mobile flips" />
           <Box display={"flex"} alignItems={"center"} gap={1}>
             <MobileIcon fill={Colors.primary} width={"2.5rem"} />
-            <Typography variant="h1">
+            <Typography variant="h1" fontSize={"3rem"}>
               {error.haveFlipped ? "49" : "0"}
-              <Typography variant="h2" component={"span"}>
+              <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
                 %
               </Typography>
             </Typography>
