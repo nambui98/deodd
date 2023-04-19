@@ -1,5 +1,6 @@
 import { Avatar, Box, Divider, Stack, Typography } from '@mui/material'
 import { Drawer } from 'components/ui/drawer'
+// import { DRAWER_WIDTH } from 'constants'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { ChatBoxIcon } from 'utils/Icons'
 import { Avatar2Image } from 'utils/Images'
@@ -35,7 +36,6 @@ function RightSidebar({ open }: Props) {
                     <Typography variant='h3' fontWeight={600}>Chat Box</Typography>
                 </Stack>
             </Box>
-
             <Divider />
             <Box p={2} overflow={'auto'} sx={{ transition: '.3s all', opacity: open ? 1 : 0 }} ref={refContainerChat}>
                 {
@@ -43,7 +43,6 @@ function RightSidebar({ open }: Props) {
                         <ChatItem key={key} />
                     )
                 }
-
             </Box>
         </Drawer>
     )

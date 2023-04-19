@@ -11,7 +11,7 @@ import { ButtonMain } from "../ui/button";
 
 export const ConnectWallet = () => {
 	const { handleConnectWallet } = useWalletContext();
-	return <Wrap>
+	return <Box mt={15}>
 		<BoxConnect>
 			<Typography mb={{ xs: 3, md: 5 }} variant="h2" fontWeight={500} textTransform={'uppercase'}>Feel lucky today?</Typography>
 			<div style={{ marginBottom: '35px' }}><img alt="" width={144} src="assets/icons/head.svg" /></div>
@@ -20,15 +20,10 @@ export const ConnectWallet = () => {
 			}} />
 		</BoxConnect>
 
-	</Wrap>
+	</Box>
 }
 
-const Wrap = styled(Box)({
-	display: 'flex',
-	flexDirection: 'column',
-	justifyContent: 'space-between',
-	// marginLeft: 60
-})
+
 const BoxConnect = styled(Box)({
 	display: 'flex',
 	flexDirection: 'column',

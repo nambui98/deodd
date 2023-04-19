@@ -3,6 +3,8 @@ import { useColorModeContext } from "../../../contexts/ColorModeContext";
 import { propsTheme } from "../../../pages/homepage";
 import { TEXT_STYLE } from "../../../styles/common";
 import { ReactElement } from "react";
+import { LoadingButton, LoadingButtonProps } from "@mui/lab";
+import { Colors } from "constants/index";
 
 interface IProps {
   title: any
@@ -38,16 +40,60 @@ export const ButtonSecondRemex2: React.FC<ButtonProps> = (props) => {
     }
   }} >{props.children}</Button>
 }
-// export const ButtonIcon: React.FC<ButtonProps & { children: React.Component }> = (props) => {
-//   const { children } = props;
-//   return <Button  {...props}>
-//     {children}
-//   </Button>
-// }
-const Wrap = styled(Button)((props: propsTheme) => ({
-  filter: props.themelight ? 'none' : 'drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.25))',
-  ...TEXT_STYLE(16, 700),
-  textAlign: 'center',
-  cursor: 'pointer',
-  textTransform: 'uppercase',
-}))
+export const ButtonLoading: React.FC<LoadingButtonProps> = (props) => {
+  return <LoadingButton
+    {...props}
+    sx={{
+      width: '100%', borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main', '&:hover': {
+        backgroundColor: "secondary.main",
+        border: '1px solid',
+        borderColor: "secondary.main",
+
+      }, ...props.sx
+    }}
+
+    variant="outlined"
+  >
+    {props.children}
+  </LoadingButton>
+  // return <Button  {...props}>
+  //   {children}
+  // </Button>
+}
+export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolean }> = ({ active, ...props }) => {
+  return <LoadingButton
+    {...props}
+    sx={{
+      width: '100%',
+      borderRadius: 2,
+      py: '13px',
+      color: active ? 'secondary.main' : 'primary.main',
+      boxShadow: active && '0px 2px 16px rgba(254, 241, 86, 0.5)',
+      backgroundColor: "primary.100",
+      border: '1px solid transparent',
+      borderColor: active && "secondary.main",
+      svg: {
+        fill: active ? Colors.secondaryDark : "#fff"
+      },
+      '&:hover, &:active, &:focus, &:focus-within': {
+        color: 'secondary.main',
+        boxShadow: '0px 2px 16px rgba(254, 241, 86, 0.5)',
+        backgroundColor: "primary.100",
+        border: '1px solid',
+        borderColor: "secondary.main",
+        svg: {
+          fill: Colors.secondaryDark
+        }
+      },
+
+    }}
+
+    variant="outlined"
+  >
+    {props.children}
+  </LoadingButton>
+  // return <Button  {...props}>
+  //   {children}
+  // </Button>
+}
+

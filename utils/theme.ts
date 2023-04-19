@@ -265,6 +265,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 				},
 			},
 		},
+
 		MuiButton: {
 			defaultProps: { variant: 'contained', size: 'large' },
 			styleOverrides: {
@@ -284,6 +285,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 					}
 				},
 			},
+
 			variants: [
 				{
 					props: { variant: 'outlined' },

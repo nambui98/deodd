@@ -1,7 +1,7 @@
-import { Box, Stack, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Container, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useWalletContext } from "../../contexts/WalletContext";
-import { Container, TEXT_STYLE } from "../../styles/common";
+import { TEXT_STYLE } from "../../styles/common";
 import { Popup } from "./popup";
 // import { Button } from "../ui/button";
 import { ButtonSecondRemex } from "components/ui/button";
@@ -69,7 +69,7 @@ function Header({ }: Props) {
         aria-label="open drawer"
         onClick={() => { }}
         sx={{
-          padding: .5, minWidth: 0, borderRadius: 1,
+          padding: 1.5, minWidth: 0, borderRadius: 2,
           img: {
             transition: '.3s all'
           },
