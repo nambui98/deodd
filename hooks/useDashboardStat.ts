@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { getFlipPerUser } from "libs/apis/statisticapi";
 import {
   getTopStreakToday,
@@ -25,7 +25,7 @@ function sortFunction([a]: any, [b]: any) {
 // -----
 
 export function useDashboardStat() {
-  const { isLoading, setIsLoading } = useSiteContext();
+  const { setIsLoading } = useSiteContext();
   const [statistic, setStatistic] = useState({
     error: {
       haveFlipped: true,
@@ -123,7 +123,7 @@ export function useDashboardStat() {
 
     setIsLoading(true);
     getData();
-  }, []);
+  }, [setIsLoading]);
 
   return { ...statistic };
 }
