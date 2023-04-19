@@ -40,16 +40,21 @@ export function useDashboardStat() {
   });
 
   useEffect(() => {
-    async function returnStreakToday() {
-      const promiseResult = await getTopStreakToday();
-      const data = promiseResult.data.data;
-      if (data != null) {
+    async function getData() {
+      const [streakResult, statResult, flipResult] = await Promise.all([
+        getTopStreakToday(),
+        getFlipDashboardStat(),
+        getFlipPerUser(),
+      ]);
+      // Streak data
+      const streakData = streakResult.data.data;
+      if (streakData != null) {
         setStatistic((prev) => ({
           ...prev,
           streak: {
-            winStreak: data.highestWinStreak.currentStreakLength,
-            lossStreak: data.highestLossStreak.currentStreakLength,
-            username: data.highestWinStreak.username,
+            winStreak: streakData.highestWinStreak.currentStreakLength,
+            lossStreak: streakData.highestLossStreak.currentStreakLength,
+            username: streakData.highestWinStreak.username,
           },
           error: {
             ...prev.error,
@@ -61,20 +66,16 @@ export function useDashboardStat() {
           ...prev,
           error: {
             ...prev.error,
-            errorMessage: promiseResult.data.meta.error_message,
+            errorMessage: streakResult.data.meta.error_message,
           },
         }));
       }
-    }
-    returnStreakToday();
-
-    async function returnFlipDashboardStat() {
-      const promiseResult = await getFlipDashboardStat();
-      const data = promiseResult.data.data;
-      if (data != null) {
+      // Stat data
+      const statData = statResult.data.data;
+      if (statData != null) {
         setStatistic((prev) => ({
           ...prev,
-          flipDashboardStat: data,
+          flipDashboardStat: statData,
           error: { ...prev.error, haveFlipped: true },
         }));
       } else {
@@ -82,24 +83,20 @@ export function useDashboardStat() {
           ...prev,
           error: {
             ...prev.error,
-            errorMessage: promiseResult.data.meta.error_message,
+            errorMessage: statResult.data.meta.error_message,
           },
         }));
       }
-    }
-    returnFlipDashboardStat();
-
-    async function returnFlipPerUser() {
-      const promiseResult = await getFlipPerUser();
-      const data = promiseResult.data.data;
-      if (data != null) {
-        const sortedFlip = (Object.entries(data.userPerFlip) as any).toSorted(
-          sortFunction
-        );
+      // Flip data
+      const flipData = flipResult.data.data;
+      if (flipData != null) {
+        const sortedFlip = (
+          Object.entries(flipData.userPerFlip) as any
+        ).toSorted(sortFunction);
         setStatistic((prev) => ({
           ...prev,
           userPerFlip: sortedFlip,
-          totalUser: data.totalUser,
+          totalUser: flipData.totalUser,
           error: {
             ...prev.error,
             haveFlipped: true,
@@ -110,12 +107,13 @@ export function useDashboardStat() {
           ...prev,
           error: {
             ...prev.error,
-            errorMessage: promiseResult.data.meta.error_message,
+            errorMessage: flipResult.data.meta.error_message,
           },
         }));
       }
     }
-    returnFlipPerUser();
+
+    getData();
   }, []);
 
   return { ...statistic };
