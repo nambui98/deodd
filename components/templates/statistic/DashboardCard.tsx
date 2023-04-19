@@ -1,20 +1,7 @@
 import { Box } from "@mui/material";
+import { BoxProps } from "@mui/material";
 
-type CardProps = {
-  justifyContent?: any;
-  position?: any;
-  flexDirection?: any;
-  sx?: {
-    backgroundImage: string;
-    backgroundSize?: string;
-    backgroundRepeat?: string;
-    backgroundPosition?: string;
-  };
-  height: string;
-  children?: React.ReactNode;
-};
-
-export function DashboardCard(props: CardProps) {
+export function DashboardCard(props: BoxProps) {
   return (
     <Box
       p={2}
