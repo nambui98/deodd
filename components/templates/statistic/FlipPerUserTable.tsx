@@ -12,9 +12,12 @@ function RowItem({
 }) {
   return (
     <Box
+      sx={{
+        gap: { xs: 1, sm: 2, md: 3 },
+      }}
       width={1}
       display={"flex"}
-      gap={3}
+      gap={1}
       justifyContent={"space-between"}
       alignItems={"center"}
     >
