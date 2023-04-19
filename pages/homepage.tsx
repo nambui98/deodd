@@ -51,44 +51,41 @@ const HomePage: React.FC = () => {
   }
 
   return <Box>
-    <Box >
-      <Container>
-        <Box ></Box>
-        <Stack justifyContent={'space-between'} columnGap={{ xs: 0, sm: 3, md: 4, lg: 15 }} direction={{ xs: 'column', md: 'row' }}>
-          <Stack textAlign='center'
-            justifyContent='space-between'
-            mb={{ xs: 0, md: 6 }}
-            mt={{ xs: 3.5, md: 8 }}
-            width={"100%"}
+    <Container>
+      <Stack justifyContent={'space-between'} columnGap={{ xs: 0, sm: 3, md: 4, lg: 15 }} direction={{ xs: 'column', md: 'row' }}>
+        <Stack textAlign='center'
+          justifyContent='space-between'
+          mb={{ xs: 0, md: 6 }}
+          mt={{ xs: 3.5, md: 8 }}
+          width={"100%"}
 
-          >
-            {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
+        >
+          {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
 
-            {statusGame === StatusGame.flip && <Stack direction={'row'} mt={10} display={{ xs: 'none', md: 'flex' }} justifyContent={'center'} >
-              <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-              <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-              <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-            </Stack>}
-            <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
-              <Box sx={{ maxWidth: '304px' }}>
-                <TitlePopup themelight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
-                <BodyPopup themelight={!darkMode}>{CONTENT[statusPopupType].body}</BodyPopup>
-                <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
-              </Box>
-            </Box>} />
-          </Stack>
-          {statusGame === StatusGame.flip && <Box mt={{ xs: 6, md: 0 }} width={"100%"}>
+          {statusGame === StatusGame.flip && <Stack direction={'row'} mt={10} display={{ xs: 'none', md: 'flex' }} justifyContent={'center'} >
+            <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
+            <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
+            <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+          </Stack>}
+          <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
+            <Box sx={{ maxWidth: '304px' }}>
+              <TitlePopup themelight={!darkMode}>{CONTENT[statusPopupType].title}</TitlePopup>
+              <BodyPopup themelight={!darkMode}>{CONTENT[statusPopupType].body}</BodyPopup>
+              <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
+            </Box>
+          </Box>} />
+        </Stack>
+        {/* {statusGame === StatusGame.flip && <Box mt={{ xs: 6, md: 0 }} width={"100%"}>
             <TopList />
             <Stack direction={'row'} justifyContent={'center'} mt={4} mb={3} display={{ sm: 'flex', md: 'none' }}>
               <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
               <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
               <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </Stack>
-          </Box>}
+          </Box>} */}
 
-        </Stack>
-      </Container>
-    </Box>
+      </Stack>
+    </Container>
   </Box>
 }
 
