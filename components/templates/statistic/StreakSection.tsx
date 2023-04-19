@@ -39,7 +39,9 @@ export function StreakSection({ error, streak }: StreakPropsType) {
                     ? `0${streak.winStreak}`
                     : streak.winStreak}
                 </Typography>
-                <Typography>{streak.username}</Typography>
+                <Typography>
+                  {streak.username ? streak.username : "Unknown"}
+                </Typography>
               </>
             ) : (
               <Typography variant="h3">{error.errorMessage}</Typography>
