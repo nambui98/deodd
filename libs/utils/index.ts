@@ -15,15 +15,15 @@ export const Utils = {
         }),
         overflowX: 'hidden',
     }),
-    closedMixin: (theme: Theme): CSSObject => ({
+    closedMixin: (theme: Theme, isWidthNone: boolean = false): CSSObject => ({
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
-        width: `calc(${theme.spacing(7)} + 1px)`,
+        width: isWidthNone ? 0 : `calc(${theme.spacing(7)} + 1px)`,
         [theme.breakpoints.up('sm')]: {
-            width: `calc(${theme.spacing(8.5)})`,
+            width: isWidthNone ? 0 : `calc(${theme.spacing(8.5)})`,
         },
     }),
 }

@@ -27,7 +27,9 @@ import ShopIcon from "public/assets/icons/shop.svg";
 import DiscordIcon from "public/assets/icons/ic_baseline-discord.svg";
 import TelegramIcon from "public/assets/icons/ic_sharp-telegram.svg";
 import TwitterIcon from "public/assets/icons/mdi_twitter.svg";
+import ChatBoxIcon from "public/assets/icons/bubble-chat_1.svg";
 export {
+  ChatBoxIcon,
   DiscordIcon,
   TelegramIcon,
   TwitterIcon,

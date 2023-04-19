@@ -13,9 +13,9 @@ import LeftSidebar from './LeftSidebar'
 import RightSidebar from './RightSidebar'
 import { ButtonSecondRemex } from 'components/ui/button'
 import { DRAWER_WIDTH } from 'constants/index'
-import { AppBar } from 'components/ui/appbar';
 import { Main } from 'components/ui/main';
 import { DrawerHeader } from 'components/ui/drawer';
+import AppBar from 'components/ui/appbar';
 
 
 const Layout = ({ children }: IProps) => {
@@ -30,37 +30,9 @@ const Layout = ({ children }: IProps) => {
         setLeftOpen((prev) => !prev);
     };
 
-    const handleDrawerCloseRight = () => {
-        setRightOpen(false);
-    };
-    const handleDrawerCloseLeft = () => {
-        setLeftOpen(false);
-    };
     return (
         <Box sx={{ display: "flex", position: 'relative' }}>
-            <AppBar position="fixed" leftOpen={leftOpen} rightOpen={rightOpen}>
-                <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: { md: 0 }, paddingRight: { md: 0 } }}>
-                    <ButtonSecondRemex
-                        aria-label="open drawer"
-                        onClick={handleDrawerLeft}
-                        sx={{ padding: .5, minWidth: 0, mt: 2, borderRadius: '0px 4px 4px 0px' }}
-                    >
-                        {
-                            leftOpen ? <LeftIcon /> : <RightIcon />
-                        }
-                    </ButtonSecondRemex>
-                    <Header />
-                    <ButtonSecondRemex
-                        aria-label="open drawer"
-                        onClick={handleDrawerRight}
-                        sx={{ padding: .5, minWidth: 0, mt: 2, borderRadius: '4px 0px 0px 4px' }}
-                    >
-                        {
-                            rightOpen ? <RightIcon /> : <LeftIcon />
-                        }
-                    </ButtonSecondRemex>
-                </Toolbar>
-            </AppBar>
+            <AppBar leftOpen={leftOpen} rightOpen={rightOpen} handleDrawerLeft={handleDrawerLeft} handleDrawerRight={handleDrawerRight} />
             <LeftSidebar open={leftOpen} />
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />

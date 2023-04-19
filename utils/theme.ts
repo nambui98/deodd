@@ -142,23 +142,25 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			main: "#fff",
 			light: "#fff",
 			'100': '#2A2D3E',
-			'200': '#11131A'
+			'200': '#11131A',
+			'300': '#161821',
 
 		},
 		secondary: {
 			main: "#FEF156",
-			"100": "#7071b3",
+			"100": "#96A5C0",
 			"200": "#A7ACB8",
-			'300': "#25244B",
+			'300': "#2A2D3E",
 			'400': "#FF5870",
-			'500': '#E4EDF4'
+			'500': '#E4EDF4',
+			'600': '#F5F5FA',
+			'700': '#677286',
+
 
 		},
 		neutral: {
 			main: ' #2A2D3E',
 			A100: '#48505F',
-
-			contrastText: '#fff',
 		},
 		border: {
 			main: '#FEF156',
@@ -172,15 +174,14 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			"200": '#ff6f61'
 		},
 		background: {
-			default: "#1E1E1E",
+			default: "#161821",
 			paper: "#11131A",
 
 		},
 		text: {
-
 			primary: "#fff",
 			secondary: "#FEF156",
-			disabled: '#96A5C0'
+			disabled: '#96A5C0',
 			// disabled: '#7071b3'
 		},
 
@@ -234,7 +235,36 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			fontWeight: 500
 		}
 	},
+
 	components: {
+		MuiCssBaseline: {
+			styleOverrides: {
+				body: {
+					scrollbarColor: "#6b6b6b #2b2b2b",
+					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+						backgroundColor: "transparent",
+					},
+					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+						borderRadius: 8,
+						backgroundColor: "#6b6b6b",
+						minHeight: 24,
+						border: "3px solid #2b2b2b",
+					},
+					"&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
+						backgroundColor: "#959595",
+					},
+					"&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
+						backgroundColor: "#959595",
+					},
+					"&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
+						backgroundColor: "#959595",
+					},
+					"&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
+						backgroundColor: "#2b2b2b",
+					},
+				},
+			},
+		},
 		MuiButton: {
 			defaultProps: { variant: 'contained', size: 'large' },
 			styleOverrides: {
@@ -275,12 +305,14 @@ export const darkTheme = responsiveFontSizes(createTheme({
 							backgroundColor: darkTheme.palette.neutral.main,
 							boxShadow: 'none',
 							border: `2px solid transparent`,
+							color: darkTheme.palette.secondary.main,
 							'svg': {
 								stroke: darkTheme.palette.secondary.main
 							},
 							'&:hover': {
 								borderColor: darkTheme.palette.border.dark,
 								color: darkTheme.palette.background.paper,
+
 								// color: darkTheme.palette.background.default,
 							},
 							'&:hover svg': {

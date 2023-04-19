@@ -17,7 +17,6 @@ import MadalError from 'components/common/MadalError';
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
   const [mounted, setMounted] = useState(false);
-  const { isLoading } = useWalletContext();
   useEffect(() => setMounted(true), []);
   return (
     <WagmiConfig client={wagmiClient}>

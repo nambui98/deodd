@@ -5,6 +5,7 @@ import { Colors } from 'constants/index';
 import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyIcon, Ref2EarnIcon, ShopIcon } from 'utils/Icons';
 import { LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
+import Link from 'next/link';
 
 type Props = {
     open: boolean;
@@ -33,7 +34,7 @@ const SIDE_BAR_LEFT = [
     }, {
         icon: <DashboardIcon />,
         title: 'Dashboard',
-        path: '/',
+        path: '/statistic',
     }, {
         icon: <FlipIcon />,
         title: 'Flip',
@@ -41,15 +42,15 @@ const SIDE_BAR_LEFT = [
     }, {
         icon: <CampaignIcon />,
         title: 'Campaign',
-        path: '/',
+        path: '/campaign',
     }, {
         icon: <Ref2EarnIcon />,
         title: 'Ref 2 Earn',
-        path: '/',
+        path: '/referral',
     }, {
         icon: <LoyaltyIcon />,
         title: 'Loyalty',
-        path: '/',
+        path: '/loyalty',
     },
     {
         icon: <ShopIcon />,
@@ -118,28 +119,33 @@ function LeftSidebar({ open }: Props) {
             <List>
                 {SIDE_BAR_LEFT.map((item, index) => (
                     <ListItem key={item.path + index} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={styleButton(item, open)}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 2 : 'auto',
-                                    justifyContent: 'center',
-                                }}
+                        <Link href={item.path}>
+                            <ListItemButton
+                                // href={item.path}
+                                sx={styleButton(item, open)}
                             >
-                                {item.icon}
-                            </ListItemIcon>
-                            {
-                                item.child && <Stack width={'100%'} display={open ? 'block' : 'none'}>
-                                    {item.child}
-                                </Stack>
-                            }
-                            {
-                                item.title &&
-                                <ListItemText primary={<Typography variant='body2' fontSize={item.hightLightText ? 16 : 14}  >{item.title}</Typography>} sx={{ opacity: open ? 1 : 0 }} />
-                            }
-                        </ListItemButton>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 2 : 'auto',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    {item.icon}
+                                </ListItemIcon>
+                                {
+                                    item.child && <Stack width={'100%'} display={open ? 'block' : 'none'}>
+                                        {item.child}
+                                    </Stack>
+
+                                }
+                                {
+                                    item.title &&
+                                    <ListItemText primary={<Typography variant='body2' fontSize={item.hightLightText ? 16 : 14}  >{item.title}</Typography>} sx={{ opacity: open ? 1 : 0 }} />
+                                }
+                            </ListItemButton>
+
+                        </Link>
                     </ListItem>
                 ))}
 
@@ -147,6 +153,7 @@ function LeftSidebar({ open }: Props) {
                 {SIDE_BAR_LEFT_BOTTOM.map((item, index) => (
                     <ListItem key={item.path + index} disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
+                            // href={item.path}
                             sx={{ ...styleButton(item, open), mt: index !== 0 ? 1 : 0, py: 3 }}
                         >
                             <ListItemIcon

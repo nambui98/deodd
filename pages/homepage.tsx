@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import Modal from '@mui/material/Modal';
 import { useEffect, useState } from "react";
 // import { Button } from "../components/ui/button"
@@ -12,7 +12,7 @@ import { CONTENT } from "../constants/connectWallet";
 import { useColorModeContext } from "../contexts/ColorModeContext";
 import { useContractContext } from "../contexts/ContractContext";
 import { useWalletContext } from "../contexts/WalletContext";
-import { TEXT_STYLE } from "../styles/common";
+import { Container, TEXT_STYLE } from "../styles/common";
 
 export enum StatusGame {
   flip,
@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
   }
 
   return <Box>
-    <Body >
+    <Box >
       <Container>
         <Box ></Box>
         <Stack justifyContent={'space-between'} columnGap={{ xs: 0, sm: 3, md: 4, lg: 15 }} direction={{ xs: 'column', md: 'row' }}>
@@ -88,7 +88,7 @@ const HomePage: React.FC = () => {
 
         </Stack>
       </Container>
-    </Body>
+    </Box>
   </Box>
 }
 
@@ -97,15 +97,6 @@ export default HomePage;
 export type propsTheme = {
   themelight: boolean,
 }
-
-
-const Body = styled(Box)({
-  marginTop: 14,
-  // background: 'primary',
-  '@media (min-width: 800px)': {
-    marginTop: 19,
-  }
-})
 
 
 const ItemPopup = styled(Box)((props: propsTheme) => ({
