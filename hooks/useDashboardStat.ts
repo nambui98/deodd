@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { getFlipPerUser } from "libs/apis/statisticapi";
 import {
   getTopStreakToday,
@@ -23,44 +23,8 @@ function sortFunction([a]: any, [b]: any) {
 }
 // -----
 
-function reducer(state: any, action: any): any {
-  switch (action.type) {
-    case "set_flipped_true": {
-      return { ...state, error: { ...state.error, haveFlipped: true } };
-    }
-    case "set_flipped_false": {
-      return {
-        ...state,
-        error: { haveFlipped: false, errorMessage: action.payload },
-      };
-    }
-    case "set_streak": {
-      return {
-        ...state,
-        streak: {
-          winStreak: action.payload.winStreak,
-          lossStreak: action.payload.lossStreak,
-          username: action.payload.username,
-        },
-      };
-    }
-    case "set_dashboard_stats": {
-      return { ...state, flipDashboardStat: action.payload };
-    }
-    case "set_user_per_flip": {
-      return { ...state, userPerFlip: action.payload };
-    }
-    case "set_total_user": {
-      return { ...state, totalUser: action.payload };
-    }
-    default: {
-      return state;
-    }
-  }
-}
-
 export function useDashboardStat() {
-  const [stats, dispatch] = useReducer(reducer, {
+  const [statistic, setStatistic] = useState({
     error: {
       haveFlipped: true,
       errorMessage: "",
@@ -80,20 +44,26 @@ export function useDashboardStat() {
       const promiseResult = await getTopStreakToday();
       const data = promiseResult.data.data;
       if (data != null) {
-        dispatch({
-          type: "set_streak",
-          payload: {
+        setStatistic((prev) => ({
+          ...prev,
+          streak: {
             winStreak: data.highestWinStreak.currentStreakLength,
             lossStreak: data.highestLossStreak.currentStreakLength,
             username: data.highestWinStreak.username,
           },
-        });
-        dispatch({ type: "set_flipped_true" });
+          error: {
+            ...prev.error,
+            haveFlipped: true,
+          },
+        }));
       } else {
-        dispatch({
-          type: "set_flipped_false",
-          payload: promiseResult.data.meta.error_message,
-        });
+        setStatistic((prev) => ({
+          ...prev,
+          error: {
+            ...prev.error,
+            errorMessage: promiseResult.data.meta.error_message,
+          },
+        }));
       }
     }
     returnStreakToday();
@@ -102,13 +72,19 @@ export function useDashboardStat() {
       const promiseResult = await getFlipDashboardStat();
       const data = promiseResult.data.data;
       if (data != null) {
-        dispatch({ type: "set_dashboard_stats", payload: data });
-        dispatch({ type: "set_flipped_true" });
+        setStatistic((prev) => ({
+          ...prev,
+          flipDashboardStat: data,
+          error: { ...prev.error, haveFlipped: true },
+        }));
       } else {
-        dispatch({
-          type: "set_flipped_false",
-          payload: promiseResult.data.meta.error_message,
-        });
+        setStatistic((prev) => ({
+          ...prev,
+          error: {
+            ...prev.error,
+            errorMessage: promiseResult.data.meta.error_message,
+          },
+        }));
       }
     }
     returnFlipDashboardStat();
@@ -120,15 +96,27 @@ export function useDashboardStat() {
         const sortedFlip = (Object.entries(data.userPerFlip) as any).toSorted(
           sortFunction
         );
-        dispatch({ type: "set_user_per_flip", payload: sortedFlip });
-        dispatch({ type: "set_total_user", payload: data.totalUser });
-        dispatch({ type: "set_error_true" });
+        setStatistic((prev) => ({
+          ...prev,
+          userPerFlip: sortedFlip,
+          totalUser: data.totalUser,
+          error: {
+            ...prev.error,
+            haveFlipped: true,
+          },
+        }));
       } else {
-        dispatch({ type: "set_flipped_false" });
+        setStatistic((prev) => ({
+          ...prev,
+          error: {
+            ...prev.error,
+            errorMessage: promiseResult.data.meta.error_message,
+          },
+        }));
       }
     }
     returnFlipPerUser();
   }, []);
 
-  return { ...stats };
+  return { ...statistic };
 }
