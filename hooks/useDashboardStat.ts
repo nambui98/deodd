@@ -4,6 +4,7 @@ import {
   getTopStreakToday,
   getFlipDashboardStat,
 } from "libs/apis/statisticapi";
+import { useSiteContext } from "contexts/SiteContext";
 
 // This is sort function for userPerFlip
 function matchValue(str: string): any {
@@ -24,6 +25,7 @@ function sortFunction([a]: any, [b]: any) {
 // -----
 
 export function useDashboardStat() {
+  const { isLoading, setIsLoading } = useSiteContext();
   const [statistic, setStatistic] = useState({
     error: {
       haveFlipped: true,
@@ -111,8 +113,10 @@ export function useDashboardStat() {
           },
         }));
       }
+      setIsLoading(false);
     }
 
+    setIsLoading(true);
     getData();
   }, []);
 
