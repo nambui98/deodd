@@ -213,6 +213,10 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		button: {
 			fontSize: 16,
 		},
+		h1: {
+			fontSize: 48,
+			fontWeight: 500
+		},
 		h2: {
 			fontSize: 24,
 			fontWeight: 500

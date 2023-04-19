@@ -10,22 +10,28 @@ export const Rank2Image = "/assets/images/rank_gold.png";
 export const Rank3Image = "/assets/images/rank_silver.png";
 export const AvatarImage = "/assets/images/avatar.png";
 export const ReferralImage = "/assets/images/ref-banner.png";
-export const LogoHeadImage = '/assets/icons/head.svg'
-export const LoyaltyImage = '/assets/images/bgloyalty.png'
-export const Loyalty2Image = '/assets/images/bgloyalty2.png'
+export const LogoHeadImage = "/assets/icons/head.svg";
+export const LoyaltyImage = "/assets/images/bgloyalty.png";
+export const Loyalty2Image = "/assets/images/bgloyalty2.png";
 
-export const VolumnImage = '/assets/icons/volume-high.svg'
-export const BnbImage = '/assets/icons/binance-coin.svg'
-export const MoneyBagImage = '/assets/images/money-bag_1.png'
-export const LotteryImage = '/assets/images/balls_1.png'
+export const LogoImage = "/assets/logos/logo.svg";
+export const bgWinStreakImage = "/assets/images/bgwinstreak.png";
+export const bgLossStreakImage = "/assets/images/bglossstreak.png";
+export const coin0 = "/assets/images/coin/coin0.png";
+export const coin6 = "/assets/images/coin/coin6.png";
+
+export const VolumnImage = "/assets/icons/volume-high.svg";
+export const BnbImage = "/assets/icons/binance-coin.svg";
+export const MoneyBagImage = "/assets/images/money-bag_1.png";
+export const LotteryImage = "/assets/images/balls_1.png";
 export const MapIcon: { [key: string]: string } = {
-    'BNB': BnbImage,
-    'Bronze': BronzeImage,
-    'Gold': GoldImage,
-    'Diamond': DiamondImage,
-}
+  BNB: BnbImage,
+  Bronze: BronzeImage,
+  Gold: GoldImage,
+  Diamond: DiamondImage,
+};
 export const MapIconNFT: { [key: number]: string } = {
-    0: BronzeImage,
-    1: GoldImage,
-    2: DiamondImage,
-}
+  0: BronzeImage,
+  1: GoldImage,
+  2: DiamondImage,
+};

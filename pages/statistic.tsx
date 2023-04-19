@@ -1,11 +1,26 @@
-import React from 'react'
+import React from "react";
+import { Container, Typography, Grid } from "@mui/material";
+import { useDashboardStat } from "hooks/useDashboardStat";
+import { StreakSection } from "@/templates/statistic/StreakSection";
+import { FlipResultSection } from "@/templates/statistic/FlipResultSection";
+import { TotalSection } from "@/templates/statistic/TotalSection";
 
-type Props = {}
+export default function Statistic() {
+  const { error, flipDashboardStat, streak } = useDashboardStat();
 
-function Statistic({ }: Props) {
-    return (
-        <div>statistic</div>
-    )
+  return (
+    <Container sx={{ mt: 5, mb: 10 }}>
+      <Typography variant="h2" mb={3}>
+        Today stat
+      </Typography>
+      <Grid container spacing={2}>
+        <StreakSection error={error} streak={streak} />
+        <FlipResultSection
+          error={error}
+          flipDashboardStat={flipDashboardStat}
+        />
+        <TotalSection error={error} flipDashboardStat={flipDashboardStat} />
+      </Grid>
+    </Container>
+  );
 }
-
-export default Statistic
