@@ -88,8 +88,8 @@ export const Result = () => {
 
   let typeNFT: number | undefined = typeId.toNumber();
   return <Box>
-    <Coin><img alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
-    <Typography variant="h2" textTransform={'uppercase'} >{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <Typography component={'span'} variant="h2" style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</Typography>!</Typography>
+    <Box><img width={120} height={120} alt="" src={`assets/icons/${renderImage()}.svg`} /></Box>
+    <Typography variant="h2">{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} <Typography component={'span'} variant="h2" style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</Typography>!</Typography>
     <Box>
       <Box display={'flex'} justifyContent={"center"} alignItems={'flex-start'}>
         <Box>
