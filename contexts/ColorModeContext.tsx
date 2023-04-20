@@ -7,7 +7,7 @@ import { AppPropsCustom, ColorModeType } from "../libs/types";
 import { darkTheme, lightTheme } from "../utils/theme";
 
 export const ColorModeContext = createContext<ColorModeType>({
-    darkMode: false,
+    darkMode: true,
     setDarkMode: () => { }
 })
 
@@ -19,9 +19,9 @@ export const ColorModeProvider: React.FC<AppPropsCustom & IProps> = (props) => {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
     const [darkMode, setDarkMode] = useState<boolean>(prefersDarkMode);
     useEffect(() => {
-        const mode = localStorage.getItem("mode") === "true";
+        // const mode = localStorage.getItem("mode") === "true";
         // set mode
-        setDarkMode(mode);
+        setDarkMode(true);
     }, []);
     const _setDarkMode = (newmode: boolean) => {
         console.log(`set localStore ${newmode}`);
@@ -34,7 +34,8 @@ export const ColorModeProvider: React.FC<AppPropsCustom & IProps> = (props) => {
     }
     return <CacheProvider value={emotionCache}>
         <ColorModeContext.Provider value={value}>
-            <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+            {/* theme={darkMode ? darkTheme : lightTheme} */}
+            <ThemeProvider theme={darkTheme}>
                 {children}
             </ThemeProvider>
         </ColorModeContext.Provider>
