@@ -24,7 +24,7 @@ deploy_preview:
 deploy_production:
   stage: deploy
   script:
-    - ssh "$DEV_USER@$DEV_HOST" './killall-hub-process.sh || true'
+    - ssh "$DEV_USER@$DEV_HOST" './killall-deodd-frontend-process.sh || true'
     - ssh "$DEV_USER@$DEV_HOST" 'rm -rf ~/deodd || true'
     - ssh "$DEV_USER@$DEV_HOST" 'mkdir -p ~/deodd/ || true'
     - scp -r ./* "$DEV_USER@$DEV_HOST:~/deodd/"
