@@ -20,17 +20,20 @@ import { Avatar2Image } from "utils/Images";
 
 function FlipHistoryItem() {
   return (
-    <Stack gap={0.5}>
-      <Typography fontSize={"0.5rem"}>Claim all reward</Typography>
-      <Stack direction={"row"} justifyContent={"space-between"}>
-        <Typography fontSize={"0.875rem"} color={"text.disabled"}>
-          -100 BNB
-        </Typography>
-        <Typography fontSize={"0.75rem"} color={"text.disabled"}>
-          12 seconds ago
-        </Typography>
+    <>
+      <Stack gap={0.5} px={1}>
+        <Typography fontSize={"0.5rem"}>Claim all reward</Typography>
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          <Typography fontSize={"0.875rem"} color={"text.disabled"}>
+            -100 BNB
+          </Typography>
+          <Typography fontSize={"0.75rem"} color={"text.disabled"}>
+            12 seconds ago
+          </Typography>
+        </Stack>
       </Stack>
-    </Stack>
+      <Divider flexItem></Divider>
+    </>
   );
 }
 
@@ -73,7 +76,7 @@ export function UserInfo() {
               <BnbIcon fill={Colors.primaryDark} />
             </Stack>
 
-            <Stack direction={"row"} spacing={1}>
+            <Stack direction={"row"} spacing={1} paddingRight={1}>
               <Typography fontSize={"0.875rem"}>0xC90...fbF1</Typography>
               <Box
                 sx={{
@@ -120,11 +123,7 @@ export function UserInfo() {
           <Typography fontSize={"0.875rem"} color={"text.disabled"}>
             Flipping History
           </Typography>
-          <Stack
-            p={1}
-            gap={1}
-            divider={<Divider flexItem sx={{ backgroundColor: "white" }} />}
-          >
+          <Stack gap={1}>
             <FlipHistoryItem />
             <FlipHistoryItem />
             <FlipHistoryItem />
