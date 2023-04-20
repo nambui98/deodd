@@ -1,4 +1,5 @@
 import { EmotionCache } from "@emotion/cache";
+import { BigNumber } from "ethers";
 import { AppProps } from "next/app";
 
 export type AppPropsCustom = AppProps & {
@@ -7,4 +8,35 @@ export type AppPropsCustom = AppProps & {
 export type ColorModeType = {
     darkMode: boolean,
     setDarkMode: (value: boolean) => void
+}
+export type SiteContextType = {
+    isLoading: boolean,
+    setIsLoading: (value: boolean) => void,
+    isError: boolean,
+    setIsError: (value: boolean) => void;
+    titleError: string;
+    setTitleError: (value: string) => void;
+    isSuccess: boolean,
+    setIsSuccess: (value: boolean) => void;
+    titleSuccess: string;
+    setTitleSuccess: (value: string) => void;
+}
+
+
+export type FlipResultType = {
+    amount: BigNumber,
+    fId: BigNumber,
+    flipChoice: BigNumber,
+    jackpotReward: BigNumber,
+    playerWin: BigNumber,
+    timestamp: BigNumber,
+    tokenId: BigNumber,
+    tpoint: BigNumber,
+    typeId: BigNumber,
+    wallet: string
+}
+export enum EnumNFT {
+    BRONZE,
+    GOLD,
+    DIAMOND
 }

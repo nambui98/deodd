@@ -1,10 +1,13 @@
 import axios from 'axios';
 // import { getLocalRefreshToken, updateLocalRefreshToken } from '../../services/token.service';
 
+const apiRouter = 'https://testapi.befitter.io/deodd'
 const vhIdRequest = axios.create({
+  baseURL: apiRouter,
   headers: {
     "Content-Type": "application/json",
   },
+
 })
 
 vhIdRequest.interceptors.request.use(

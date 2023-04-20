@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/material";
 import Image from "next/image"
-import { getRecentFlipping, getTopStreak } from "../../../../libs/apis/flipCoin";
+import { getRecentFlipping, getTopNetGains, getTopStreak } from "../../../../libs/apis/flipCoin";
 // import { convertTimeStamp, convertWalletAddress } from "../../../../libs/utils/utils";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { ethers } from "ethers";
@@ -10,28 +10,48 @@ import { propsTheme } from "../../../../pages/homepage";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
 import { Convert } from "../../../../utils/convert";
 import { RankingIcon } from "../../../common/icons";
-// import Ranking from 'assets/icons/ranking.svg'
-
+type tabsType = tabsEnum;
+enum tabsEnum {
+  RECENT,
+  TOPSTREAK,
+  TOPNETGAINS
+}
 export const TopList = () => {
-  const { walletAccount, userInfo, ethersSigner, refresh } = useWalletContext()
+  const { walletAddress, userInfo, refresh } = useWalletContext()
   const { darkMode } = useColorModeContext();
-  const [currentTab, setCurrentTab] = useState<'recent' | 'leaderboard' | 'top'>('recent')
-  const [recentData, setRecentData] = useState<any[]>([])
-  const [topData, setTopData] = useState<any[]>([])
+  const [currentTab, setCurrentTab] = useState<tabsType>(tabsEnum.RECENT)
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getDataList = async (type: 'recent' | 'top' | 'leaderboard') => {
-    const res = type === 'recent' ? await getRecentFlipping(0) : await getTopStreak(0)
-    if (res.status === 200 && res.data.data.length) {
-      type === 'recent' ? setRecentData(res.data.data) : setTopData(res.data.data)
+
+  useEffect(() => {
+    setIsLoading(true);
+    const getData = async () => {
+      let res: any;
+      if (currentTab === tabsEnum.RECENT) {
+        res = await getRecentFlipping();
+      } else if (currentTab === tabsEnum.TOPSTREAK) {
+        res = await getTopStreak();
+      } else {
+        res = await getTopNetGains();
+      }
+      setIsLoading(false);
+      if (res.status === 200) {
+        setData(res.data.data);
+      } else {
+        setData([]);
+      }
     }
-  }
+    getData();
+  }, [currentTab, refresh])
+
 
   const renderSubtitleData = (item: any) => {
-    if (currentTab === 'recent') {
-      return item.flipResult ? (`flipped ${ethers.utils.formatUnits(item.amount.toString())} and `) : `${ethers.utils.formatUnits(item.amount.toString())} was flipped and slipped`
+    if (currentTab === tabsEnum.RECENT) {
+      return item.flipResult ? (`flipped ${ethers.utils.formatUnits((item.amount ?? 0).toString())} and `) : `${ethers.utils.formatUnits((item.amount ?? 0).toString())} was flipped and slipped`
     }
-    if (currentTab === 'top') {
-      return `flipped ${ethers.utils.formatUnits(item.streakAmount.toString())} and got a double ${item.maxStreakLength} times in a row`
+    if (currentTab === tabsEnum.TOPSTREAK) {
+      return `flipped ${ethers.utils.formatUnits((item.streakAmount ?? 0).toString())} and got a double ${item.maxStreakLength} times in a row`
     }
   }
 
@@ -45,49 +65,40 @@ export const TopList = () => {
     }
   }
 
-  useEffect(() => {
-    getDataList(currentTab)
-  }, [currentTab, ethersSigner, refresh])
-
-  useEffect(() => {
-    getDataList('top')
-  }, [])
-
   const MyhighestStreak = () => {
-    const data = topData.length ? topData.filter((item: any) => item.walletAddress === walletAccount) : []
-    return data.length ? data[0].maxStreakLength : 0
+    const myData = data.length && !isLoading ? data.find((item: any) => item.wallet === walletAddress) : null;
+    return myData ? myData.maxStreakLength : 0
   }
 
   return <Wrap>
-    <TabTitle themeLight={!darkMode}>
-      <TabTitleItem themeLight={!darkMode} active={currentTab === 'leaderboard'} onClick={() => setCurrentTab('leaderboard')} style={{ marginRight: '8px' }}><RankingIcon fill={"#7071B3"} /> Leaderboard</TabTitleItem>
-
-      <TabTitleItem themeLight={!darkMode} active={currentTab === 'recent'} onClick={() => setCurrentTab('recent')} style={{ marginRight: '8px' }}><Image alt="" src="assets/icons/clock.svg" /> Recent</TabTitleItem>
-      <TabTitleItem themeLight={!darkMode} active={currentTab === 'top'} onClick={() => setCurrentTab('top')}><Image alt="" src={`assets/icons/cup${!darkMode ? '-light' : ''}.svg`} /> Top streak</TabTitleItem>
+    <TabTitle themelight={!darkMode}>
+      <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.RECENT} onClick={() => setCurrentTab(tabsEnum.RECENT)} style={{ marginRight: '8px' }}> <img alt="" src="assets/icons/clock.svg" /> Recent</TabTitleItem>
+      <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.TOPSTREAK} onClick={() => setCurrentTab(tabsEnum.TOPSTREAK)} style={{ marginRight: '8px' }}><img alt="" src={`assets/icons/cup${!darkMode ? '-light' : ''}.svg`} />Top streak</TabTitleItem>
+      <TabTitleItem themelight={!darkMode} active={currentTab === tabsEnum.TOPNETGAINS} onClick={() => setCurrentTab(tabsEnum.TOPNETGAINS)}><RankingIcon fill={"#7071B3"} />  Top net gains</TabTitleItem>
     </TabTitle>
-    <TabBody themeLight={!darkMode}>
-      {recentData.length || topData.length ? (currentTab === 'recent' ? recentData : topData).map((item: any, index) => (
-        <TabItem themeLight={!darkMode} key={index}>
+    <TabBody position={"relative"} themelight={!darkMode}>
+      {data.length && !isLoading ? data.map((item: any, index) => (
+        <TabItem themelight={!darkMode} key={index}>
           <AvtItem>
-            {currentTab === 'recent' ? <Image alt="" src={`assets/images/${checkAvatar((walletAccount && item.player === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} /> :
-              <Image alt="" src={`assets/images/${checkAvatar((walletAccount && item.walletAddress === walletAccount) ? userInfo.avatar : item.avatarId.toString())}.png`} />}
+            {currentTab === tabsEnum.RECENT ? <img alt="" src={`assets/images/${checkAvatar(item.avatarId?.toString())}.png`} /> :
+              <img alt="" src={`assets/images/${checkAvatar(item.avatarId?.toString())}.png`} />}
           </AvtItem>
           <div>
-            <TitleItem themeLight={!darkMode}>{item.playerName ? item.playerName : Convert.convertWalletAddress((currentTab === 'recent' ? item.player : item.walletAddress), 6, 3)}</TitleItem>
-            <SubtitleItem themeLight={!darkMode}>{renderSubtitleData(item)} {item.flipResult && currentTab === 'recent' && <span>doubled</span>}</SubtitleItem>
+            <TitleItem themelight={!darkMode}>{item.userName ? item.userName : Convert.convertWalletAddress((item.wallet), 6, 3)}</TitleItem>
+            <SubtitleItem themelight={!darkMode}>{renderSubtitleData(item)} {item.flipResult && currentTab === tabsEnum.RECENT && <span>doubled</span>}</SubtitleItem>
           </div>
           <TimeItem>{item.blockTimestamp && Convert.convertTimeStamp(item.blockTimestamp)}</TimeItem>
         </TabItem>
       )) : <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 'auto' }}>
-        <Image alt="" src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
+        <img alt="" src={`assets/images/coin-empty${!darkMode ? '-light' : ''}.png`} />
         <Typography sx={{ ...TEXT_STYLE(16, 500, '#7071B3'), marginTop: '40px' }}>It’s look quiet here...</Typography>
       </Box>}
-      {(recentData.length || topData.length) && walletAccount && <YourHighest themeLight={!darkMode}>
-        <Image alt="" src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
+      {!isLoading && data.length && walletAddress && <YourHighest themelight={!darkMode}>
+        <img alt="" src={`/assets/images/${checkAvatar(userInfo.avatar)}.png`} />
         <Box>
           My highest streak
           <Box>
-            {MyhighestStreak()} <Image alt="" src="/assets/icons/cup-black.svg" />
+            {MyhighestStreak()} <img alt="" src="/assets/icons/cup-black.svg" />
           </Box>
         </Box>
       </YourHighest>}
@@ -101,7 +112,7 @@ const Wrap = styled(Box)({
 const TabTitle = styled(Box)((props: propsTheme) => ({
   display: 'flex',
   marginBottom: 8,
-  backgroundColor: props.themeLight ? '#F8F9FB' : '#181536',
+  backgroundColor: props.themelight ? '#F8F9FB' : '#181536',
   // maxWidth: 306,
   borderRadius: 8,
   marginRight: 'auto',
@@ -114,16 +125,16 @@ const TabTitle = styled(Box)((props: propsTheme) => ({
 }))
 type tabTitleItemProp = {
   active: boolean,
-  themeLight: boolean,
+  themelight: boolean,
 }
 const TabTitleItem = styled(Box)((props: tabTitleItemProp) => ({
   padding: '8px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: props.themeLight ? `${props.active ? '#25244B' : '#F8F9FB'}` : `${props.active ? '#25244B' : '#181536'}`,
+  background: props.themelight ? `${props.active ? '#25244B' : '#F8F9FB'}` : `${props.active ? '#25244B' : '#181536'}`,
   borderRadius: 8,
-  ...TEXT_STYLE(14, 500, props.themeLight ? props.active ? '#FFFFFF' : '#181536' : props.active ? '#FFFFFF' : '#7071B3'),
+  ...TEXT_STYLE(14, 500, props.themelight ? props.active ? '#FFFFFF' : '#181536' : props.active ? '#FFFFFF' : '#7071B3'),
   width: 149,
   cursor: 'pointer',
   '& img': {
@@ -135,13 +146,13 @@ const TabTitleItem = styled(Box)((props: tabTitleItemProp) => ({
   }
 }))
 const TabBody = styled(Box)((props: propsTheme & BoxProps) => ({
-  background: props.themeLight ? '#FFFFFF' : '#181536',
+  background: props.themelight ? '#FFFFFF' : '#181536',
   padding: 16,
   borderRadius: 12,
   display: 'flex',
   alignItems: 'center',
   flexDirection: 'column',
-  border: props.themeLight ? '2px solid #E9EAEF' : 0,
+  border: props.themelight ? '2px solid #E9EAEF' : 0,
   maxHeight: "664px",
   overflowY: 'auto',
   '&::-webkit-scrollbar': {
@@ -151,7 +162,7 @@ const TabBody = styled(Box)((props: propsTheme & BoxProps) => ({
     // '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
   },
   '&::-webkit-scrollbar-thumb': {
-    backgroundColor: props.themeLight ? '#5A6178' : '#fff',
+    backgroundColor: props.themelight ? '#5A6178' : '#fff',
 
     // outline: '1px solid slategrey',
     borderRadius: '16px'
@@ -166,7 +177,7 @@ const TabItem = styled(Box)((props: propsTheme) => ({
   display: 'flex',
   width: '100%',
   alignItems: 'center',
-  background: props.themeLight ? '#F8F9FB' : '#25244B',
+  background: props.themelight ? '#F8F9FB' : '#25244B',
   marginBottom: 8,
   '&:last-of-type': {
     marginBottom: 0
@@ -179,13 +190,13 @@ const AvtItem = styled(Box)({
   }
 })
 const TitleItem = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(16, 500, props.themeLight ? '#181536' : '#FFFFFF'),
+  ...TEXT_STYLE(16, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 4
 }))
 const SubtitleItem = styled(Typography)((props: propsTheme) => ({
   ...TEXT_STYLE(14, 500, '#A7ACB8'),
   '& span': {
-    color: props.themeLight ? '#FC753F' : '#FEF156'
+    color: props.themelight ? '#FC753F' : '#FEF156'
   }
 }))
 const TimeItem = styled(Typography)({
@@ -193,14 +204,15 @@ const TimeItem = styled(Typography)({
   marginLeft: 'auto'
 })
 type yourHighest = {
-  themeLight: boolean
+  themelight: boolean
 }
 const YourHighest = styled(Box)((props: yourHighest) => ({
   width: '100%',
   padding: 4,
   borderRadius: 8,
-  background: props.themeLight ? '#FC753F' : '#FEF156',
+  background: props.themelight ? '#FC753F' : '#FEF156',
   display: 'flex',
+  bottom: 0,
   justifyContent: 'center',
   alignItems: 'center',
   '& > img': {
@@ -209,16 +221,16 @@ const YourHighest = styled(Box)((props: yourHighest) => ({
   },
   '& > div': {
     textAlign: 'center',
-    ...TEXT_STYLE(12, 500, props.themeLight ? '#ffffff' : '#25244B'),
+    ...TEXT_STYLE(12, 500, props.themelight ? '#ffffff' : '#25244B'),
     '& div': {
-      ...TEXT_STYLE(24, 500, props.themeLight ? '#ffffff' : '#181536'),
+      ...TEXT_STYLE(24, 500, props.themelight ? '#ffffff' : '#181536'),
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       '& img': {
         marginLeft: 4,
         maxWidth: 20,
-        filter: props.themeLight ? 'invert(100%) sepia(0%) saturate(7446%) hue-rotate(1deg) brightness(116%) contrast(114%)' : 'none'
+        filter: props.themelight ? 'invert(100%) sepia(0%) saturate(7446%) hue-rotate(1deg) brightness(116%) contrast(114%)' : 'none'
       }
     }
   }
