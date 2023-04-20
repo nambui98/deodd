@@ -47,7 +47,7 @@ const Layout = ({ children }: IProps) => {
                 <Footer />
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
-            <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+            <Paper sx={{ display: { md: 'none', xs: 'block' }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <MyBottomNavigation />
             </Paper>
         </Box>
