@@ -38,13 +38,7 @@ export const Result = () => {
     winningStreakLength,
     tossPoints,
     jackpotWin
-  } = gameResult || {
-    coinSide: 1,
-    flipResult: 1,
-    amount: '0.5',
-    typeId: BigNumber.from(0),
-    tokenId: BigNumber.from(0)
-  };
+  } = gameResult!;
   const renderImage = () => {
     if (coinSide === flipResult) {
       if (coinSide === 0) {

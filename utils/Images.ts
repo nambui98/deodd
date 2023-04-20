@@ -26,6 +26,9 @@ export const MoneyBagImage = "/assets/images/money-bag_1.png";
 export const LotteryImage = "/assets/images/balls_1.png";
 export const Avatar2Image = "/assets/images/avatar2.png";
 export const TestailCoinImage = "/assets/images/testail_coin.png";
+
+export const HeadCoinImage= "/assets/icons/head.svg";
+export const TailCoinImage = "/assets/icons/tail.svg";
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,

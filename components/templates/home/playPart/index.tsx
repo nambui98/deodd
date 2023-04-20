@@ -234,6 +234,8 @@ export const PlayPart: React.FC<any> = () => {
   }
 
   const RenderPlayPart = () => {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
     return <Box>
       <CoinAnimation width={160} height={160} mx={'auto'} textAlign={'center'} />
       <Box width={544} mx="auto" textAlign={'left'}>
@@ -272,10 +274,14 @@ export const PlayPart: React.FC<any> = () => {
     statusGame: StatusGame,
     dataSelect: DataSelected
   }) => {
+    return <Result />
     switch (statusGame) {
-      case 0: return <RenderPlayPart />
-      case 1: return <Flipping amount={`${dataSelect?.amount}`} />
-      case 2: return <Result />
+      case 0:
+        return <RenderPlayPart />
+      case 1:
+        return <Flipping isHead={dataSelect?.coinSide === 0} amount={`${dataSelect?.amount}`} />
+      case 2:
+        return <Result />
       default: return <Box></Box>
     }
   }

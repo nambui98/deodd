@@ -82,7 +82,6 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       },
       '&:hover, &:active, &:focus, &:focus-within': {
         color: 'secondary.main',
-        boxShadow: '0px 2px 16px rgba(254, 241, 86, 0.5)',
         backgroundColor: "primary.100",
         border: '1px solid',
         borderColor: "secondary.main",
