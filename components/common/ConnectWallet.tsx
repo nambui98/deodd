@@ -8,7 +8,7 @@ import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/mate
 import { propsTheme } from "../../pages/homepage";
 import { useColorModeContext } from "../../contexts/ColorModeContext";
 import { ButtonMain } from "../ui/button";
-import { CoinAnimation } from "./CoinAnimation";
+import CoinAnimation from "./CoinAnimation";
 
 export const ConnectWallet = () => {
 	const { handleConnectWallet } = useWalletContext();

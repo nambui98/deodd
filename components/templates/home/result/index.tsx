@@ -87,7 +87,7 @@ export const Result = () => {
   // }, [flipResult, coinSide])
 
   let typeNFT: number | undefined = typeId.toNumber();
-  return <Wrap>
+  return <Box>
     <Coin><img alt="" src={`assets/icons/${renderImage()}.svg`} /></Coin>
     <Typography variant="h2" textTransform={'uppercase'} >{coinSide === flipResult ? 'Congrats! YOU WON' : 'WHOOPS! YOU LOST'} <Typography component={'span'} variant="h2" style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</Typography>!</Typography>
     <Box>
@@ -157,16 +157,10 @@ export const Result = () => {
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
     </Box>} />
-  </Wrap>
+  </Box>
 }
 
-const Wrap = styled(Box)({
 
-})
-
-const Coin = styled(Box)({
-  marginBottom: 24
-})
 
 const Title = styled(Typography)((props: propsTheme) => ({
   ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
