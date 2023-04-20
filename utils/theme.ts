@@ -161,6 +161,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		neutral: {
 			main: ' #2A2D3E',
 			A100: '#48505F',
+			A200:'#11131A'
 		},
 		border: {
 			main: '#FEF156',
@@ -175,7 +176,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		},
 		background: {
 			default: "#161821",
-			paper: "#11131A",
+			paper: "#2A2D3E",
 
 		},
 		text: {
@@ -243,12 +244,13 @@ export const darkTheme = responsiveFontSizes(createTheme({
 					scrollbarColor: "#6b6b6b #2b2b2b",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
 						backgroundColor: "transparent",
+						width:'10px'
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,
 						backgroundColor: "#6b6b6b",
-						minHeight: 24,
-						border: "3px solid #2b2b2b",
+						minHeight: 20,
+						// border: "3px solid #2b2b2b",
 					},
 					"&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
 						backgroundColor: "#959595",
@@ -313,13 +315,12 @@ export const darkTheme = responsiveFontSizes(createTheme({
 							},
 							'&:hover': {
 								borderColor: darkTheme.palette.border.dark,
-								color: darkTheme.palette.background.paper,
-
+								color: (darkTheme.palette.neutral as any).A200
 								// color: darkTheme.palette.background.default,
 							},
 							'&:hover svg': {
 
-								stroke: darkTheme.palette.background.paper
+								stroke: (darkTheme.palette.neutral as any).A200
 							}
 
 						}

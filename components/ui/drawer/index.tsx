@@ -1,7 +1,7 @@
 import { Utils } from '@/utils/index';
 import MuiDrawer, { DrawerProps } from '@mui/material/Drawer';
 
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { DRAWER_WIDTH } from 'constants/index';
 export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open, isWidthNone }: DrawerProps & { theme?: any, isWidthNone?: boolean }) => ({
@@ -9,7 +9,13 @@ export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+
+
+        backgroundColor: 'primary.200',
+        border: 'none',
+
         ...(open && {
+
             ...Utils.openedMixin(theme),
             '& .MuiDrawer-paper': Utils.openedMixin(theme),
         }),
@@ -17,6 +23,7 @@ export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
             ...Utils.closedMixin(theme, isWidthNone),
             '& .MuiDrawer-paper': Utils.closedMixin(theme, isWidthNone),
         }),
+
     }),
 );
 export const DrawerHeader = styled("div")(({ theme }) => ({

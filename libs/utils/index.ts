@@ -1,3 +1,4 @@
+import { Color } from '@mui/material';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import { DRAWER_WIDTH } from 'constants/index';
 import { EnumNFT } from "libs/types";
@@ -13,6 +14,8 @@ export const Utils = {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+        backgroundColor: (theme.palette.primary as any )[200] ,
+        border:'none',
         overflowX: 'hidden',
     }),
     closedMixin: (theme: Theme, isWidthNone: boolean = false): CSSObject => ({
@@ -20,6 +23,8 @@ export const Utils = {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        border:'none',
+        backgroundColor: (theme.palette.primary as any )[200] ,
         overflowX: 'hidden',
         width: isWidthNone ? 0 : `calc(${theme.spacing(7)} + 1px)`,
         [theme.breakpoints.up('sm')]: {

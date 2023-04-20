@@ -153,12 +153,13 @@ const HomePage: React.FC = () => {
 }
 
 function UserActivity() {
-  return <Box bgcolor={'primary.300'} width={226} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} px={2} py={1}>
+  return <Box bgcolor={'primary.100'} width={226} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} pl={2} py={1}>
     <Stack direction={'row'} gap={1}>
       <Avatar sx={{ width: 32, height: 32 }} alt="Remy Sharp" src={Avatar2Image} />
-      <Stack alignItems={'baseLine'} gap={1} mt={.5}>
+      <Stack alignItems={'baseLine'} columnGap={1} mt={.5}>
         <Typography variant='body2' fontWeight={500} >Nam</Typography>
         <Typography whiteSpace={'normal'} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100">flipped 0.5 and doubles</Typography>
+        <Typography variant='caption' fontWeight={400} color="secondary.100">17 sec ago</Typography>
       </Stack>
     </Stack>
 

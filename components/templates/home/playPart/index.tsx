@@ -239,7 +239,7 @@ export const PlayPart: React.FC<any> = () => {
     return <Box>
       <CoinAnimation width={160} height={160} mx={'auto'} textAlign={'center'} />
       <Box width={544} mx="auto" textAlign={'left'}>
-        <Typography variant="h3" fontWeight={600} mt={{ md: 5 }} mb={2}>Bet amount</Typography>
+        <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
         <Stack direction={'row'} justifyContent={'space-between'} gap={1.5}>
           {amounts?.map((item, index) => (
             <Box flexBasis={'auto'} flexGrow={1} flexShrink={0} key={index}>
@@ -274,7 +274,6 @@ export const PlayPart: React.FC<any> = () => {
     statusGame: StatusGame,
     dataSelect: DataSelected
   }) => {
-    return <Result />
     switch (statusGame) {
       case 0:
         return <RenderPlayPart />
@@ -309,7 +308,7 @@ export const PlayPart: React.FC<any> = () => {
 
   }, [userInfo.avatar])
 
-  return <Box mt={10} position={'relative'}>
+  return <Box mt={{ xl: 10, md: 3 }} position={'relative'}>
     <RenderUi statusGame={statusGame} dataSelect={dataSelect} />
     <Stack position={'absolute'} top={0} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>

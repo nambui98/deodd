@@ -19,11 +19,14 @@ interface IProps {
 export const ButtonMain: React.FC<IProps> = ({ title, customStyle, onClick, active, disable }) => {
   const { darkMode } = useColorModeContext();
   return <Button onClick={onClick} sx={{
+    minHeight: 1,
     borderColor: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
     color: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
     pointerEvents: disable === undefined || !disable ? 'auto' : 'none',
+    textTransform: 'uppercase',
+    fontSize: 16,
     ...customStyle
-  }} color="secondary" variant="outlined" textTransform="none" fontSize={16} disabled={disable} > {title} </Button>
+  }} color="secondary" variant="outlined" disabled={disable} > {title} </Button>
 }
 // type ButtonProps2 = React.ButtonHTMLAttributes<HTMLButtonElement>;
 export const ButtonTertiary: React.FC<ButtonProps> = (props) => {
@@ -60,9 +63,6 @@ export const ButtonLoading: React.FC<LoadingButtonProps> = (props) => {
   >
     {props.children}
   </LoadingButton>
-  // return <Button  {...props}>
-  //   {children}
-  // </Button>
 }
 export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolean }> = ({ active, ...props }) => {
   return <LoadingButton
@@ -73,10 +73,10 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       py: '13px',
       px: 0,
       color: active ? 'secondary.main' : 'primary.main',
-      boxShadow: active && '0px 2px 16px rgba(254, 241, 86, 0.5)',
+      boxShadow: active ? '0px 2px 16px rgba(254, 241, 86, 0.5)' : 'none',
       backgroundColor: "primary.100",
       border: '1px solid transparent',
-      borderColor: active && "secondary.main",
+      borderColor: active ? "secondary.main" : 'transparent',
       svg: {
         fill: active ? Colors.secondaryDark : "#fff"
       },
@@ -89,15 +89,11 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
           fill: Colors.secondaryDark
         }
       },
-
-    }}
-
+    }
+    }
     variant="outlined"
   >
     {props.children}
   </LoadingButton>
-  // return <Button  {...props}>
-  //   {children}
-  // </Button>
 }
 
