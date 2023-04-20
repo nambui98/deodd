@@ -19,6 +19,7 @@ interface IProps {
 export const ButtonMain: React.FC<IProps> = ({ title, customStyle, onClick, active, disable }) => {
   const { darkMode } = useColorModeContext();
   return <Button onClick={onClick} sx={{
+    minHeight: 1,
     borderColor: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
     color: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
     pointerEvents: disable === undefined || !disable ? 'auto' : 'none',

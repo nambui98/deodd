@@ -12,7 +12,7 @@ import { BigNumber, ethers } from "ethers";
 import { Format } from "../../../../utils/format";
 import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
 import { useDeoddContract } from "hooks/useDeoddContract";
-import { BnbImage } from "utils/Images";
+import { BnbImage, GoldCupImage } from "utils/Images";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
@@ -44,10 +44,14 @@ export const Result = () => {
     flipResult: 1,
     amount: '0.5',
     typeId: BigNumber.from(0),
-    tokenId: BigNumber.from(0),
+    tokenId: BigNumber.from(2),
     tossPoints: BigNumber.from(4),
-    winningStreakLength: 1
+    winningStreakLength: 1,
+    // jackpotWin: BigNumber.from(2)
   };
+  console.log(!jackpotWin)
+  // console.log();
+
   const renderImage = () => {
     if (coinSide === flipResult) {
       if (coinSide === 0) {
@@ -104,24 +108,28 @@ export const Result = () => {
 
     <Box mt={3} mb={5}>
       <Stack direction={'row'} justifyContent={'center'} columnGap={20.875} alignItems={'flex-start'}>
-        <Box>
-          <Stack alignItems={'center'}>
+        <Stack>
+          <Stack alignItems={'center'} rowGap={1}>
             <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{winningStreakLength}</Typography>
-            <Typography variant="h3">
+            <Typography variant="h3" >
               WIN STREAK
             </Typography>
           </Stack>
           {
-            tokenId.gt(BigNumber.from(0)) && <>
-              <Image width={47} height={48} src={dataTypeNFT[typeNFT || 0]} alt="" />
-              <Typography mt={1} mb={4} textAlign={'center'} variant="h5" style={{ ...TEXT_STYLE(24, 500), textTransform: 'uppercase' }}>NFT ITEM</Typography>
-            </>
+            tokenId.gt(BigNumber.from(0)) &&
+            jackpotWin?.gt(BigNumber.from(0)) &&
+            <Box mt={3} >
+              <Stack alignItems={'center'} rowGap={1}>
+                <Image width={32} height={32} src={dataTypeNFT[typeNFT || 0]} alt="" />
+                <Typography textAlign={'center'} fontWeight={500} variant="body2">NFT Item</Typography>
+              </Stack>
+            </Box>
           }
-        </Box>
+        </Stack>
         <Box>
           {
             tossPoints?.gt(BigNumber.from(0)) &&
-            <Stack alignItems={'center'}>
+            <Stack alignItems={'center'} rowGap={1}>
               <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{tossPoints?.toNumber()}</Typography>
               <Typography variant="h3">
 
@@ -129,49 +137,90 @@ export const Result = () => {
               </Typography>
             </Stack>
           }
-          {
-            jackpotWin?.gt(BigNumber.from(0)) &&
-            <Stack alignItems={'center'}>
-              <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{Format.formatMoney(ethers.utils.formatUnits(jackpotWin ?? BigNumber.from(0)))}</Typography>
-              <Typography variant="h3">
 
-                JACKPOT WIN (BNB)
-              </Typography>
+          {
+
+            jackpotWin?.gt(BigNumber.from(0)) &&
+            tokenId?.gt(BigNumber.from(0)) &&
+            <Stack mt={3} alignItems={'center'} rowGap={1}>
+              <Stack gap={1} direction={'row'} alignItems={'center'}>
+                <Image width={32} height={32} src={GoldCupImage} alt="" />
+                <Typography textAlign={'center'} fontWeight={700} color={'secondary.main'} variant="h2">1,242</Typography>
+                <Image width={24} height={24} src={BnbImage} alt="" />
+              </Stack>
+              <Typography textAlign={'center'} fontWeight={500} variant="body2">JackPot Win</Typography>
             </Stack>
           }
+
         </Box>
       </Stack>
       {
 
-        (jackpotWin?.gt(BigNumber.from(0)) ||
-          tokenId.gt(BigNumber.from(0))) &&
-        <ButtonMain title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "CLAIM ALL"} active={bnbAssets.gt(BigNumber.from(0)) ? true : false} onClick={handleClaim} customStyle={{
-          padding: '13.5px',
-          maxWidth: '225px',
-          width: '100%',
-          marginBottom: '24px'
-        }} />
+        (tokenId.lte(BigNumber.from(0)) || !jackpotWin ||
+          jackpotWin?.lte(BigNumber.from(0))) && <Stack direction={'row'} justifyContent={'center'} mt={3}>
+          {
+            tokenId.gt(BigNumber.from(0)) &&
+            <Stack alignItems={'center'} rowGap={1}>
+              <Image width={32} height={32} src={dataTypeNFT[typeNFT || 0]} alt="" />
+              <Typography textAlign={'center'} fontWeight={500} variant="body2">NFT Item</Typography>
+            </Stack>
+          }
+          {
 
+            jackpotWin?.gt(BigNumber.from(0)) &&
+            <Stack alignItems={'center'} rowGap={1}>
+              <Stack gap={1} direction={'row'} alignItems={'center'}>
+                <Image width={32} height={32} src={GoldCupImage} alt="" />
+                <Typography textAlign={'center'} fontWeight={700} color={'secondary.main'} variant="h2">1,242</Typography>
+                <Image width={24} height={24} src={BnbImage} alt="" />
+              </Stack>
+              <Typography textAlign={'center'} fontWeight={500} variant="body2">JackPot Win</Typography>
+            </Stack>
+          }
+        </Stack>
       }
+
     </Box>
-    {coinSide !== flipResult && <Typography variant="h3" mb={2}>Fall where, double there, don’t give up</Typography>}
-    <Box sx={{
-      display: 'flex',
-      justifyContent: 'center'
-    }}>
+    <Stack
+      direction={'row'}
+      gap={3}
+      mb={3}
+      justifyContent='center'
+    >
 
       <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
         setStatusGame(StatusGame.flip);
       }} customStyle={{
+
         padding: '13.5px',
         maxWidth: '225px',
         width: '100%',
+
+        // maxWidth: 216,
+        // width: '100%',
       }} />
-    </Box>
+      {
+        (jackpotWin?.gt(BigNumber.from(0)) ||
+          tokenId.gt(BigNumber.from(0))) &&
+        <ButtonMain
+          active
+          title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} customStyle={{
+            padding: '13.5px',
+            maxWidth: '225px',
+            width: '100%',
+            borderColor: "primary.main",
+            color: "primary.main",
+
+          }} />
+
+      }
+    </Stack>
+
+    {coinSide !== flipResult && <Typography variant="h3" mb={2}>Fall where, double there, don’t give up</Typography>}
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
     </Box>} />
-  </Box>
+  </Box >
 }
 
 
