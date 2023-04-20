@@ -22,12 +22,22 @@ function FlipHistoryItem() {
   return (
     <>
       <Stack gap={0.5} px={1}>
-        <Typography fontSize={"0.5rem"}>Claim all reward</Typography>
+        <Typography variant="body2" fontSize={"0.75rem"}>
+          Claim all reward
+        </Typography>
         <Stack direction={"row"} justifyContent={"space-between"}>
-          <Typography fontSize={"0.875rem"} color={"text.disabled"}>
+          <Typography
+            variant="body2"
+            fontSize={"0.875rem"}
+            color={"text.disabled"}
+          >
             -100 BNB
           </Typography>
-          <Typography fontSize={"0.75rem"} color={"text.disabled"}>
+          <Typography
+            variant="body2"
+            fontSize={"0.75rem"}
+            color={"text.disabled"}
+          >
             12 seconds ago
           </Typography>
         </Stack>
@@ -64,20 +74,30 @@ export function UserInfo() {
               />
             }
           >
-            <Stack direction={"row"} spacing={1}>
+            <Stack direction={"row"} alignItems={"center"} spacing={1}>
               <Typography
+                variant="h3"
                 fontSize={"0.75rem"}
                 textTransform={"uppercase"}
                 color={"text.disabled"}
               >
                 balance
               </Typography>
-              <Typography fontSize={"0.875rem"}>1.534</Typography>
+              <Typography fontSize={"0.875rem"} variant="h3">
+                1.534
+              </Typography>
               <BnbIcon fill={Colors.primaryDark} />
             </Stack>
 
-            <Stack direction={"row"} spacing={1} paddingRight={1}>
-              <Typography fontSize={"0.875rem"}>0xC90...fbF1</Typography>
+            <Stack
+              direction={"row"}
+              spacing={1}
+              alignItems={"center"}
+              paddingRight={1}
+            >
+              <Typography fontSize={"0.875rem"} variant="h3">
+                0xC90...fbF1
+              </Typography>
               <Box
                 sx={{
                   borderRadius: "50%",
@@ -102,6 +122,8 @@ export function UserInfo() {
                 width: "50%",
                 color: "secondary.100",
                 backgroundColor: "#3F4251",
+                fontSize: "0.875rem",
+                fontWeight: "400",
               }}
               startIcon={<ProfileCircleIcon />}
             >
@@ -113,6 +135,8 @@ export function UserInfo() {
                 width: "50%",
                 color: "secondary.100",
                 backgroundColor: "#3F4251",
+                fontSize: "0.875rem",
+                fontWeight: "400",
               }}
               startIcon={<ArchiveIcon />}
             >
@@ -120,7 +144,11 @@ export function UserInfo() {
             </Button>
           </Stack>
           <Divider></Divider>
-          <Typography fontSize={"0.875rem"} color={"text.disabled"}>
+          <Typography
+            variant="h3"
+            fontSize={"0.875rem"}
+            color={"text.disabled"}
+          >
             Flipping History
           </Typography>
           <Stack gap={1}>
