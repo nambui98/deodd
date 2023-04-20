@@ -7,6 +7,7 @@ import {
   Box,
   Divider,
   Button,
+  // Link,
 } from "@mui/material";
 import {
   ArchiveIcon,
@@ -14,9 +15,10 @@ import {
   BnbIcon,
   ProfileCircleIcon,
 } from "utils/Icons";
-import { Colors } from "constants";
+import { Colors } from "constants/index";
 import Image from "next/image";
 import { Avatar2Image } from "utils/Images";
+import Link from "next/link";
 
 function FlipHistoryItem() {
   return (
@@ -130,6 +132,9 @@ export function UserInfo() {
               Profile
             </Button>
             <Button
+              type="button"
+              LinkComponent={Link}
+              href={"/assets"}
               variant="contained"
               sx={{
                 width: "50%",
@@ -142,6 +147,7 @@ export function UserInfo() {
             >
               Assets
             </Button>
+
           </Stack>
           <Divider></Divider>
           <Typography

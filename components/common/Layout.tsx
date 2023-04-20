@@ -1,22 +1,30 @@
-import { Box } from '@mui/material';
-import React from 'react';
+import { Box, Paper } from "@mui/material";
+import React, { useState } from "react";
 
-import { useTheme } from '@mui/material/styles';
-import { IProps } from '../../libs/interfaces';
-import Footer from './Footer';
+import { useTheme } from "@mui/material/styles";
+import { IProps } from "../../libs/interfaces";
+import Footer from "./Footer";
 
-import AppBar from 'components/ui/appbar';
-import { DrawerHeader } from 'components/ui/drawer';
-import { Main } from 'components/ui/main';
-import LeftSidebar from './LeftSidebar';
-import RightSidebar from './RightSidebar';
-
+import AppBar from "components/ui/appbar";
+import { DrawerHeader } from "components/ui/drawer";
+import { Main } from "components/ui/main";
+import LeftSidebar from "./LeftSidebar";
+import RightSidebar from "./RightSidebar";
+import MyBottomNavigation from "./BottomNavigation";
 
 const Layout = ({ children }: IProps) => {
-    const theme = useTheme();
-    const [rightOpen, setRightOpen] = React.useState(true);
-    const [leftOpen, setLeftOpen] = React.useState(true);
+    const [rightOpen, setRightOpen] = useState(true);
+    const [leftOpen, setLeftOpen] = useState(true);
 
+    const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
+    const [mobileOpenRight, setMobileOpenRight] = useState(true);
+
+    const handleDrawerToggleLeft = () => {
+        setMobileOpenLeft(!mobileOpenLeft);
+    };
+    const handleDrawerToggleRight = () => {
+        setMobileOpenRight(!mobileOpenRight);
+    };
     const handleDrawerRight = () => {
         setRightOpen((prev) => !prev);
     };
@@ -25,19 +33,25 @@ const Layout = ({ children }: IProps) => {
     };
 
     return (
-        <Box sx={{ display: "flex", position: 'relative' }}>
-            <AppBar leftOpen={leftOpen} rightOpen={rightOpen} handleDrawerLeft={handleDrawerLeft} handleDrawerRight={handleDrawerRight} />
-            <LeftSidebar open={leftOpen} />
-            <Main rightOpen={rightOpen} leftOpen={leftOpen} >
+        <Box sx={{ display: "flex", position: "relative" }}>
+            <AppBar
+                leftOpen={leftOpen}
+                rightOpen={rightOpen}
+                handleDrawerLeft={handleDrawerLeft}
+                handleDrawerRight={handleDrawerRight}
+            />
+            <LeftSidebar mobileOpen={mobileOpenLeft} handleDrawerToggle={handleDrawerToggleLeft} open={leftOpen} />
+            <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main> {children} </main>
                 <Footer />
             </Main>
-            <RightSidebar open={rightOpen} />
+            <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
+            <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                <MyBottomNavigation />
+            </Paper>
         </Box>
-    )
-}
+    );
+};
 
-export default Layout
-
-
+export default Layout;

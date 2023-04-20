@@ -1,5 +1,6 @@
-import { Avatar, Box, Divider, Stack, Typography } from '@mui/material'
+import { Avatar, Drawer as DrawerMobile, Box, Divider, Stack, Typography } from '@mui/material'
 import { Drawer } from 'components/ui/drawer'
+import { DRAWER_WIDTH } from 'constants/index'
 // import { DRAWER_WIDTH } from 'constants'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { ChatBoxIcon } from 'utils/Icons'
@@ -7,9 +8,11 @@ import { Avatar2Image } from 'utils/Images'
 
 type Props = {
     open: boolean;
-
+    mobileOpen: boolean;
+    handleDrawerToggle: VoidFunction;
+    window?: () => Window;
 }
-function RightSidebar({ open }: Props) {
+function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const refContainerChat = useRef<HTMLElement>(null);
     useEffect(() => {
         if (refContainerChat.current) {
@@ -19,17 +22,9 @@ function RightSidebar({ open }: Props) {
         }
     }, [refContainerChat])
 
-    return (
-        <Drawer
-            sx={{
-                bgcolor: 'primary.200',
-
-            }}
-            variant="permanent"
-            anchor="right"
-            open={open}
-            isWidthNone={true}
-        >
+    const container = window !== undefined ? () => window().document.body : undefined;
+    const drawer = (
+        <>
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
                 <Stack height={72} justifyContent={'center'} direction={'row'} alignItems={'center'} columnGap={2}>
                     <ChatBoxIcon />
@@ -44,8 +39,51 @@ function RightSidebar({ open }: Props) {
                     )
                 }
             </Box>
-        </Drawer>
+
+        </>
+    );
+    return (
+        <Box
+            component="nav"
+            sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+            aria-label="mailbox folders"
+        >
+            <DrawerMobile
+                container={container}
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                anchor='right'
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                }}
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': {
+                        boxShadow: '4px 0px 24px rgba(0, 0, 0, 0.25)',
+                        boxSizing: 'border-box', width: DRAWER_WIDTH, bgcolor: 'primary.200', backgroundImage: 'none'
+                    },
+                }}
+            >
+                {drawer}
+            </DrawerMobile>
+
+            <Drawer
+                sx={{
+                    bgcolor: 'primary.200',
+                    display: { xs: 'none', md: 'block' },
+                }}
+                variant="permanent"
+                anchor="right"
+                open={open}
+                isWidthNone={true}
+            >
+                {drawer}
+            </Drawer>
+        </Box>
+
     )
+
 }
 function ChatItem() {
     return <Box bgcolor={'primary.300'} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} px={2} py={1} mb={1}>

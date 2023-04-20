@@ -7,15 +7,8 @@ type Props = {};
 
 function referral({ }: Props) {
     return (
-        <Box>
+        <Box mt={10}>
             <Suspense fallback={<Loader isLoadingProps={true} />}>
-                <Box bgcolor={"background.paper"} p={"35px 0px"}>
-                    <Container>
-                        <Typography variant="h2" textTransform={"uppercase"}>
-                            Ref 2 earn
-                        </Typography>
-                    </Container>
-                </Box>
                 <Content />
             </Suspense>
 

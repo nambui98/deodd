@@ -39,7 +39,8 @@ export const Result = () => {
     winningStreakLength,
     tossPoints,
     jackpotWin
-  } = gameResult || {
+  } = gameResult 
+  || {
     coinSide: 1,
     flipResult: 1,
     amount: '0.5',
@@ -47,7 +48,7 @@ export const Result = () => {
     tokenId: BigNumber.from(2),
     tossPoints: BigNumber.from(4),
     winningStreakLength: 1,
-    // jackpotWin: BigNumber.from(2)
+    jackpotWin: BigNumber.from(2)
   };
   console.log(!jackpotWin)
   // console.log();
@@ -191,13 +192,9 @@ export const Result = () => {
       <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
         setStatusGame(StatusGame.flip);
       }} customStyle={{
-
-        padding: '13.5px',
-        maxWidth: '225px',
+        py: 2,
         width: '100%',
-
-        // maxWidth: 216,
-        // width: '100%',
+        maxWidth: 216,
       }} />
       {
         (jackpotWin?.gt(BigNumber.from(0)) ||
@@ -205,8 +202,8 @@ export const Result = () => {
         <ButtonMain
           active
           title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} customStyle={{
-            padding: '13.5px',
-            maxWidth: '225px',
+            py: 2,
+            maxWidth: 216,
             width: '100%',
             borderColor: "primary.main",
             color: "primary.main",
@@ -222,32 +219,3 @@ export const Result = () => {
     </Box>} />
   </Box >
 }
-
-
-
-const Title = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
-  fontFamily: 'BeVietnamPro',
-  textTransform: 'uppercase',
-  marginBottom: 40,
-  '& span': {
-    color: props.themelight ? '#FC753F' : '#FEF156'
-  }
-}))
-const BoxAmount = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between'
-})
-// const WinStreak = styled(Box)((props: propsTheme) => ({
-//   ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
-//   marginBottom: 40,
-//   padding: '0 21.5px',
-//   '& div': {
-//     ...TEXT_STYLE(40, 500, props.themelight ? '#FC753F' : '#FEF156'),
-//     marginBottom: 8
-//   }
-// }))
-const TextFail = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(16, 500, props.themelight ? '#181536' : '#FFFFFF'),
-  marginBottom: 24
-}))

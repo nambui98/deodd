@@ -30,6 +30,9 @@ import TwitterIcon from "public/assets/icons/mdi_twitter.svg";
 import ChatBoxIcon from "public/assets/icons/bubble-chat_1.svg";
 import ProfileCircleIcon from "public/assets/icons/profile-circle.svg";
 import ArchiveIcon from "public/assets/icons/archive.svg";
+import HeadCoinIcon from "public/assets/icons/head.svg";
+import TailCoinIcon from "public/assets/icons/tail.svg";
+
 export {
   HeadCoinIcon,
   TailCoinIcon,

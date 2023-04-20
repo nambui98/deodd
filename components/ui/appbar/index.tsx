@@ -21,10 +21,14 @@ function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Pr
     return (
         <AppBarCus position="fixed" leftOpen={leftOpen} rightOpen={rightOpen}>
             <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: { md: 0 }, paddingRight: { md: 0 } }}>
+
                 <ButtonSecondRemex
                     aria-label="open drawer"
                     onClick={handleDrawerLeft}
-                    sx={{ padding: .5, minWidth: 0, mt: 2, borderRadius: '0px 4px 4px 0px' }}
+                    sx={{
+                        display: { md: 'flex', xs: 'none' },
+                        padding: .5, minWidth: 0, mt: 2, borderRadius: '0px 4px 4px 0px'
+                    }}
                 >
                     {
                         leftOpen ? <LeftIcon /> : <RightIcon />
@@ -34,7 +38,11 @@ function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Pr
                 <ButtonSecondRemex
                     aria-label="open drawer"
                     onClick={handleDrawerRight}
-                    sx={{ padding: .5, minWidth: 0, mt: 2, borderRadius: '4px 0px 0px 4px', color: 'secondary.600', '&:hover': { color: '#000' } }}
+                    sx={{
+
+                        display: { md: 'flex', xs: 'none' },
+                        padding: .5, minWidth: 0, mt: 2, borderRadius: '4px 0px 0px 4px', color: 'secondary.600', '&:hover': { color: '#000' }
+                    }}
                 >
                     {
                         rightOpen ? <RightIcon /> : <Stack direction={'row'} columnGap={1} alignItems={'center'}> <LeftIcon /><Typography variant='caption' component={'span'} textTransform={'capitalize'} >Chat</Typography></Stack>
@@ -62,15 +70,10 @@ const openedMixin = ({ theme, open, countOpen }: {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
     }),
-
-    width: `calc(100% - ${theme.spacing((2 - countOpen) * 7) + ' - ' + countOpen * DRAWER_WIDTH}px)`,
-    marginLeft: open.leftOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(7)})`,
-    marginRight: open.rightOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(7)})`,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
         width: `calc(100% - ${(!open.leftOpen ? theme.spacing(8.5) : '0px') + ' - ' + countOpen * DRAWER_WIDTH}px)`,
         marginLeft: open.leftOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(8.5)})`,
         marginRight: open.rightOpen ? `${DRAWER_WIDTH}px` : 0,
-
     },
 });
 

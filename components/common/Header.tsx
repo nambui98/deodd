@@ -90,8 +90,9 @@ function Header({ }: Props) {
           <img width={106} height={64} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
         </Link>
       </Box>
-
+      <Box display={{ md: 'block', xs: 'none' }} >
         <UserInfo />
+      </Box>
     </Stack>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
