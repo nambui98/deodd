@@ -23,8 +23,16 @@ deploy_preview:
 
 deploy_production:
   stage: deploy
+  before_script:
+    - command -v ssh-agent > /dev/null
+    - eval $(ssh-agent -s)
+    - echo "$DEV_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$DEV_SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh "$DEV_USER@$DEV_HOST" './killall-hub-process.sh || true'
+    - ssh "$DEV_USER@$DEV_HOST" './killall-deodd-frontend-process.sh || true'
     - ssh "$DEV_USER@$DEV_HOST" 'rm -rf ~/deodd || true'
     - ssh "$DEV_USER@$DEV_HOST" 'mkdir -p ~/deodd/ || true'
     - scp -r ./* "$DEV_USER@$DEV_HOST:~/deodd/"
