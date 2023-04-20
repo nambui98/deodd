@@ -13,6 +13,7 @@ import { LeftIcon } from "utils/Icons";
 import { VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
+import { UserInfo } from "components/ui/userInfo";
 
 type Props = {}
 
@@ -89,13 +90,8 @@ function Header({ }: Props) {
           <img width={106} height={64} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
         </Link>
       </Box>
-      <ButtonSecondRemex
-        aria-label="open drawer"
-        onClick={() => { }}
-        sx={{ padding: .5, minWidth: 0, borderRadius: '0px 4px 4px 0px' }}
-      >
-        <LeftIcon />
-      </ButtonSecondRemex>
+
+        <UserInfo />
     </Stack>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}

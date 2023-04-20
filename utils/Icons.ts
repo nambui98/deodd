@@ -28,8 +28,8 @@ import DiscordIcon from "public/assets/icons/ic_baseline-discord.svg";
 import TelegramIcon from "public/assets/icons/ic_sharp-telegram.svg";
 import TwitterIcon from "public/assets/icons/mdi_twitter.svg";
 import ChatBoxIcon from "public/assets/icons/bubble-chat_1.svg";
-import HeadCoinIcon from "public/assets/icons/head.svg";
-import TailCoinIcon from "public/assets/icons/tail.svg";
+import ProfileCircleIcon from "public/assets/icons/profile-circle.svg";
+import ArchiveIcon from "public/assets/icons/archive.svg";
 export {
   HeadCoinIcon,
   TailCoinIcon,
@@ -63,4 +63,6 @@ export {
   RightIcon,
   VolumnIcon,
   MobileIcon,
+  ProfileCircleIcon,
+  ArchiveIcon,
 };
