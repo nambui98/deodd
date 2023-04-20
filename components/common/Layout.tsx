@@ -1,21 +1,15 @@
-import { Box, Button, IconButton, Toolbar } from '@mui/material'
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar"
-import React from 'react'
+import { Box } from '@mui/material';
+import React from 'react';
 
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import { IProps } from '../../libs/interfaces'
-import { Contact } from './Contact'
-import Footer from './Footer'
-import Header from './Header'
+import { useTheme } from '@mui/material/styles';
+import { IProps } from '../../libs/interfaces';
+import Footer from './Footer';
 
-import { LeftIcon, RightIcon } from 'utils/Icons'
-import LeftSidebar from './LeftSidebar'
-import RightSidebar from './RightSidebar'
-import { ButtonSecondRemex } from 'components/ui/button'
-import { DRAWER_WIDTH } from 'constants/index'
-import { Main } from 'components/ui/main';
-import { DrawerHeader } from 'components/ui/drawer';
 import AppBar from 'components/ui/appbar';
+import { DrawerHeader } from 'components/ui/drawer';
+import { Main } from 'components/ui/main';
+import LeftSidebar from './LeftSidebar';
+import RightSidebar from './RightSidebar';
 
 
 const Layout = ({ children }: IProps) => {
@@ -34,9 +28,9 @@ const Layout = ({ children }: IProps) => {
         <Box sx={{ display: "flex", position: 'relative' }}>
             <AppBar leftOpen={leftOpen} rightOpen={rightOpen} handleDrawerLeft={handleDrawerLeft} handleDrawerRight={handleDrawerRight} />
             <LeftSidebar open={leftOpen} />
-            <Main rightOpen={rightOpen} leftOpen={leftOpen}>
+            <Main rightOpen={rightOpen} leftOpen={leftOpen} >
                 <DrawerHeader />
-                <main>{children}</main>
+                <main> {children} </main>
                 <Footer />
             </Main>
             <RightSidebar open={rightOpen} />

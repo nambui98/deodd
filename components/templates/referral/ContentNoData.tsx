@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
-import { CoinAnimation } from 'components/common/CoinAnimation'
+import CoinAnimation from 'components/common/CoinAnimation'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonTertiary } from 'components/ui/button'
 import { Colors } from 'constants/index'
