@@ -1,6 +1,6 @@
 import { Box, Stack, styled, Typography } from "@mui/material";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
-import { CoinAnimation } from "components/common/CoinAnimation";
+import CoinAnimation from "components/common/CoinAnimation";
 interface IProps {
   amount: string
 }

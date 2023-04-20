@@ -8,15 +8,18 @@ import { Box, BoxProps, ButtonProps, Stack, styled, Typography } from "@mui/mate
 import { propsTheme } from "../../pages/homepage";
 import { useColorModeContext } from "../../contexts/ColorModeContext";
 import { ButtonMain } from "../ui/button";
+import { CoinAnimation } from "./CoinAnimation";
 
 export const ConnectWallet = () => {
 	const { handleConnectWallet } = useWalletContext();
 	return <Box mt={15}>
 		<BoxConnect>
-			<Typography mb={{ xs: 3, md: 5 }} variant="h2" fontWeight={500} textTransform={'uppercase'}>Feel lucky today?</Typography>
-			<div style={{ marginBottom: '35px' }}><img alt="" width={144} src="assets/icons/head.svg" /></div>
+			<Typography variant="h2" fontWeight={700} textTransform={'uppercase'}>Feel lucky today?</Typography>
+			<Box my={5}>
+				<CoinAnimation width={144} height={144} />
+			</Box>
 			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
-				width: 213
+				px: 5, py: 2, textTransform: 'none', fontSize: 16
 			}} />
 		</BoxConnect>
 

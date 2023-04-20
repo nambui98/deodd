@@ -31,16 +31,17 @@ const Layout = ({ children }: IProps) => {
     };
 
     return (
-        <Box sx={{ display: "flex", position: 'relative' }}>
-            <AppBar leftOpen={leftOpen} rightOpen={rightOpen} handleDrawerLeft={handleDrawerLeft} handleDrawerRight={handleDrawerRight} />
-            <LeftSidebar open={leftOpen} />
-            <Main rightOpen={rightOpen} leftOpen={leftOpen}>
+        <Box sx= {{ display: "flex", position: 'relative' }
+}>
+    <AppBar leftOpen={ leftOpen } rightOpen = { rightOpen } handleDrawerLeft = { handleDrawerLeft } handleDrawerRight = { handleDrawerRight } />
+        <LeftSidebar open={ leftOpen } />
+            < Main rightOpen = { rightOpen } leftOpen = { leftOpen } >
                 <DrawerHeader />
-                <main>{children}</main>
-                <Footer />
-            </Main>
-            <RightSidebar open={rightOpen} />
-        </Box>
+                < main > { children } < /main>
+                < Footer />
+                </Main>
+                < RightSidebar open = { rightOpen } />
+                    </Box>
     )
 }
 

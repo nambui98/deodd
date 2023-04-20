@@ -7,7 +7,7 @@ import { useWalletContext } from "../../../../contexts/WalletContext"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Flipping } from "../flipping"
 import { Result } from "../result"
-import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
+import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, StackProps, styled, Typography } from "@mui/material";
 import { propsTheme, StatusGame } from "../../../../pages/homepage"
 import { Popup } from "../../../common/popup"
 import { useColorModeContext } from "../../../../contexts/ColorModeContext"
@@ -20,8 +20,9 @@ import { useContractContext } from "contexts/ContractContext"
 import { DeoddService } from "libs/apis"
 import { useProfileContract } from "hooks/useProfileContract"
 import { useDisconnect } from "wagmi"
-import { CoinAnimation } from "components/common/CoinAnimation"
-import { BnbIcon } from "utils/Icons";
+import { BnbIcon, HeadCoinIcon } from "utils/Icons";
+import CoinAnimation from "components/common/CoinAnimation";
+import { TestailCoinImage } from "utils/Images";
 
 const amounts = [0.1, 0.5, 1, 2, 5, 10]
 
@@ -37,6 +38,12 @@ interface IProps {
   statusGame: StatusGame
   setStatusGame: (status: StatusGame) => any
 }
+type DataSelected = {
+  coinSide?: 0 | 1,
+  amount?: number,
+  index?: number,
+
+} | undefined
 
 export const PlayPart: React.FC<any> = () => {
   const { walletAddress, refresh, setRefresh, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
@@ -50,11 +57,7 @@ export const PlayPart: React.FC<any> = () => {
     body: <></>
   })
   const [currentProfile, setCurrentProfile] = useState<{ username: any, avatar: any }>({ username: null, avatar: userInfo.avatar || 0 })
-  const [dataSelect, setDataSelect] = useState<{
-    coinSide?: 0 | 1,
-    amount?: number,
-    index?: number,
-  }>()
+  const [dataSelect, setDataSelect] = useState<DataSelected>()
 
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
@@ -237,8 +240,7 @@ export const PlayPart: React.FC<any> = () => {
         <Typography variant="h3" fontWeight={600} mt={{ md: 5 }} mb={2}>Bet amount</Typography>
         <Stack direction={'row'} justifyContent={'space-between'} gap={1.5}>
           {amounts?.map((item, index) => (
-            <Box flexBasis={'auto'} flexGrow={0} flexShrink={0} key={index}>
-
+            <Box flexBasis={'auto'} flexGrow={1} flexShrink={0} key={index}>
               <ButtonLoadingShadow active={index === dataSelect?.index} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })}>
                 <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
                 <BnbIcon />
@@ -257,31 +259,24 @@ export const PlayPart: React.FC<any> = () => {
         <Box mt={3}>
           <ButtonLoading
             onClick={handleFlip}
-            disabled={dataSelect?.coinSide >= 0 && dataSelect.amount ? false : true}
+            disabled={dataSelect?.coinSide !== undefined && dataSelect?.coinSide >= 0 && dataSelect?.amount ? false : true}
             loading={statusLoadingFlip}>
             <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
           </ButtonLoading>
         </Box>
-        {/* <ButtonMain
-          disable={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? false : true}
-          active={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? true : false}
-          title={statusLoadingFlip ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'double or nothing'}
-          onClick={handleFlip} customStyle={{
-            padding: '13.5px 0',
-            width: "100%",
-            marginTop: 4
-          }} /> */}
-
       </Box>
     </Box>
   }
 
-  const renderUi = () => {
+  const RenderUi = ({ statusGame, dataSelect }: {
+    statusGame: StatusGame,
+    dataSelect: DataSelected
+  }) => {
     switch (statusGame) {
       case 0: return <RenderPlayPart />
       case 1: return <Flipping amount={`${dataSelect?.amount}`} />
-      case 2: return <Result
-      />
+      case 2: return <Result />
+      default: return <Box></Box>
     }
   }
 
@@ -308,47 +303,100 @@ export const PlayPart: React.FC<any> = () => {
 
   }, [userInfo.avatar])
 
-  return <Box mt={10}>
-    {renderUi()}
+  return <Box mt={10} position={'relative'}>
+    <RenderUi statusGame={statusGame} dataSelect={dataSelect} />
+    <Stack position={'absolute'} top={0} right={0} direction={'row'} gap={1} alignItems={'center'}>
+      <Stack alignItems={'flex-end'}>
+
+        <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
+        <Typography variant="h3" fontWeight={600}>124</Typography>
+      </Stack>
+      <img width={40} src={TestailCoinImage} alt="" />
+
+    </Stack>
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
       {popup.body}
     </Box>} />
   </Box>
 }
 
-const SideCoin: React.FC<StackProps & { isHead: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
+(<Stack
+  direction="row"
+  gap={3}
+  borderRadius={2}
+  width={256}
+  py={3}
+  justifyContent={"center"}
+  border={isSelected ? " 1px solid #FEF156" : "1px solid transparent"}
+  boxShadow={isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)"}
+  alignItems={'center'}
+  sx={{
+    transition: ".3s all",
+    backgroundColor: "primary.100",
+    cursor: 'pointer',
+    color: isSelected ? 'secondary.main' : "secondary.700",
+    '.disabled, .enabled': {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 1,
+      transition: "all .3s",
+      opacity: 1
+    },
+    '.enabled': {
+      zIndex: isSelected ? 1 : 0,
+      opacity: isSelected ? 1 : 0,
+    },
+    '&:hover': {
+      border: "1px solid #FEF156",
+      color: 'secondary.main',
+      '.disabled': {
+        zIndex: 0,
+        opacity: 0,
+      },
+      '.enabled': {
+        zIndex: 1,
+        opacity: 1
+      },
+    },
+  }}
+>
+  {
+    isHead ?
+      <>
+        <Box position={'relative'} height={64} width={64}>
+          <Box className="disabled" >
+            <img width="64px" alt="" src={`assets/icons/head-disable.svg`} />
+          </Box>
+          <Box className="enabled" >
+            <img width="64px" alt="" src={`assets/icons/head.svg`} />
+          </Box>
+        </Box>
 
-  <Stack
-    direction="row"
-    gap={3}
-    backgroundColor={"primary.100"}
-    borderRadius={2}
-    boxShadow="0px 2px 4px rgba(0, 0, 0, 0.15)"
-    width={256}
-    py={3}
-    justifyContent={"center"}
-    transition=".3s all"
-    border={isSelected && " 1px solid #FEF156"}
-    boxShadow={isSelected && "0px 2px 16px rgba(254, 241, 86, 0.5)"}
-    alignItems={'center'}>
-    {
-      isHead ?
-        <>
-          <img width="64px" alt="" src={`assets/icons/head${isSelected ? '' : '-disable'}.svg`} />
-          <Typography variant="body2" fontSize={40} fontWeight={700} color="secondary.700" color={isSelected ? 'secondary.main' : "secondary.700"}>
-            HEAD
-          </Typography>
-        </>
-        : <>
-          <img width="64px" alt="" src={`assets/icons/tail${isSelected ? '' : '-disable'}.svg`} />
-          <Typography variant="body2" fontSize={40} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
-            TAIL
-          </Typography>
-        </>
-    }
+        <Typography variant="body2" fontSize={40} fontWeight={700} >
+          HEAD
+        </Typography>
+      </>
+      : <>
+        <Box position={'relative'} height={64} width={64}>
+          <Box className="disabled" >
+
+            <img width="64px" alt="" src={`assets/icons/tail-disable.svg`} />
+          </Box>
+          <Box className="enabled" >
+
+            <img width="64px" alt="" src={`assets/icons/tail.svg`} />
+          </Box>
+        </Box>
 
 
-  </Stack>
+        <Typography variant="body2" fontSize={40} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
+          TAIL
+        </Typography>
+      </>
+  }
+</Stack>
+)
 
 
 
