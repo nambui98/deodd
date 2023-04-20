@@ -12,6 +12,7 @@ import { BigNumber, ethers } from "ethers";
 import { Format } from "../../../../utils/format";
 import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
 import { useDeoddContract } from "hooks/useDeoddContract";
+import { BnbImage } from "utils/Images";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
@@ -43,7 +44,9 @@ export const Result = () => {
     flipResult: 1,
     amount: '0.5',
     typeId: BigNumber.from(0),
-    tokenId: BigNumber.from(0)
+    tokenId: BigNumber.from(0),
+    tossPoints: BigNumber.from(4),
+    winningStreakLength: 1
   };
   const renderImage = () => {
     if (coinSide === flipResult) {
@@ -89,16 +92,25 @@ export const Result = () => {
   let typeNFT: number | undefined = typeId.toNumber();
   return <Box>
     <Box><img width={120} height={120} alt="" src={`assets/icons/${renderImage()}.svg`} /></Box>
-    <Typography variant="h2">{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} <Typography component={'span'} variant="h2" style={{ color: !darkMode ? coinSide === flipResult ? '#FC753F' : '#FF6F61' : coinSide === flipResult ? '#FEF156' : '#FF6F61' }}>{amount} BNB</Typography>!</Typography>
-    <Box>
-      <Box display={'flex'} justifyContent={"center"} alignItems={'flex-start'}>
+    <Stack direction={'row'} mt={5} justifyContent={'center'}>
+
+      <Typography variant="h2">{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
+      <Stack ml={1} gap={1} direction={'row'}>
+
+        <Typography variant="h2" color="secondary.main">{amount} </Typography>
+        <img src={BnbImage} alt="" width={24} height={24} />
+      </Stack>
+    </Stack>
+
+    <Box mt={3} mb={5}>
+      <Stack direction={'row'} justifyContent={'center'} columnGap={20.875} alignItems={'flex-start'}>
         <Box>
-          <WinStreak themelight={!darkMode}>
-            <div>{winningStreakLength}</div>
+          <Stack alignItems={'center'}>
+            <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{winningStreakLength}</Typography>
             <Typography variant="h3">
               WIN STREAK
             </Typography>
-          </WinStreak>
+          </Stack>
           {
             tokenId.gt(BigNumber.from(0)) && <>
               <Image width={47} height={48} src={dataTypeNFT[typeNFT || 0]} alt="" />
@@ -109,24 +121,26 @@ export const Result = () => {
         <Box>
           {
             tossPoints?.gt(BigNumber.from(0)) &&
-            <WinStreak themelight={!darkMode}>
-              <div>{tossPoints?.toNumber()}</div>
+            <Stack alignItems={'center'}>
+              <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{tossPoints?.toNumber()}</Typography>
               <Typography variant="h3">
+
                 TOSSPOINT
               </Typography>
-            </WinStreak>
+            </Stack>
           }
           {
             jackpotWin?.gt(BigNumber.from(0)) &&
-            <WinStreak sx={{ mt: 0 }} themelight={!darkMode}>
-              <div>{Format.formatMoney(ethers.utils.formatUnits(jackpotWin ?? BigNumber.from(0)))}</div>
+            <Stack alignItems={'center'}>
+              <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{Format.formatMoney(ethers.utils.formatUnits(jackpotWin ?? BigNumber.from(0)))}</Typography>
               <Typography variant="h3">
+
                 JACKPOT WIN (BNB)
               </Typography>
-            </WinStreak>
+            </Stack>
           }
         </Box>
-      </Box>
+      </Stack>
       {
 
         (jackpotWin?.gt(BigNumber.from(0)) ||
@@ -175,15 +189,15 @@ const BoxAmount = styled(Box)({
   display: 'flex',
   justifyContent: 'space-between'
 })
-const WinStreak = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
-  marginBottom: 40,
-  padding: '0 21.5px',
-  '& div': {
-    ...TEXT_STYLE(40, 500, props.themelight ? '#FC753F' : '#FEF156'),
-    marginBottom: 8
-  }
-}))
+// const WinStreak = styled(Box)((props: propsTheme) => ({
+//   ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
+//   marginBottom: 40,
+//   padding: '0 21.5px',
+//   '& div': {
+//     ...TEXT_STYLE(40, 500, props.themelight ? '#FC753F' : '#FEF156'),
+//     marginBottom: 8
+//   }
+// }))
 const TextFail = styled(Typography)((props: propsTheme) => ({
   ...TEXT_STYLE(16, 500, props.themelight ? '#181536' : '#FFFFFF'),
   marginBottom: 24
