@@ -94,7 +94,7 @@ function Header({ }: Props) {
           </Box>
         </Link>
       </Box>
-      <Box display={{ md: 'block', xs: 'none' }} >
+      <Box  >
         <UserInfo />
       </Box>
     </Stack>

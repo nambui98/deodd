@@ -38,9 +38,11 @@ import LotteryIcon from "public/assets/icons/fluent_lottery-24-regular.svg";
 import Flip2Icon from "public/assets/icons/flipicon.svg";
 import Close2Icon from "public/assets/icons/close.svg";
 import SendIcon from "public/assets/icons/send.svg";
+import LogoutIcon from "public/assets/icons/logout.svg";
 // import Icon from "public/assets/icons/.svg";
 
 export {
+  LogoutIcon,
   SendIcon,
   Close2Icon,
   Flip2Icon,

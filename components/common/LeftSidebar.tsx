@@ -25,7 +25,8 @@ type TypeSideBarItem = {
     disabledHover?: boolean,
     child?: JSX.Element,
     comming?: boolean,
-    isOnlyComponent?: boolean
+    isOnlyComponent?: boolean,
+    isActive?: boolean,
 }
 const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     {
@@ -130,16 +131,16 @@ const styleButton = (item: TypeSideBarItem, open: boolean) => {
         boxShadow: item.highLight ? '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px',
         mx: item.highLight ? 2 : 0,
         mt: 1,
-        color: item.highLightText ? 'text.primary' : 'text.disabled',
+        color: item.isActive ? 'secondary.main' : item.highLightText ? 'text.primary' : 'text.disabled',
         transition: '.3s all',
         svg: {
-            fill: Colors.secondary
+            fill: item.isActive ? Colors.secondaryDark : Colors.secondary
         },
         '&::before': {
             content: '""',
             position: 'absolute',
             inset: 0,
-            width: 0,
+            width: item.isActive ? 1 : 0,
             backgroundImage: 'linear-gradient(90deg, rgba(254, 241, 86, 0.3) 0%, rgba(254, 241, 86, 0) 100%);',
             transition: '.3s all',
         },
@@ -179,53 +180,56 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const drawer = (
         <>
             <List>
-                {SIDE_BAR_LEFT.map((item, index) => (
-                    item.isOnlyComponent ? item.child :
-                        <ListItem
-                            key={item.path ?? '' + index}
-                            disablePadding
-                            sx={{ display: "block" }}
-                        >
-                            <ListItemButton LinkComponent={Link} href={item?.path ?? ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: open ? 2 : "auto",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    {item.icon}
-                                </ListItemIcon>
-                                {item.child && (
-                                    <Stack width={"100%"} display={open ? "block" : "none"}>
-                                        {item.child}
-                                    </Stack>
-                                )}
-                                {item.title && (
-                                    <ListItemText
-                                        primary={
-                                            <Typography
-                                                variant="body2"
-                                                fontSize={item.highLightText ? 16 : 14}
-                                            >
-                                                {item.title}
-                                            </Typography>
-                                        }
-                                        sx={{ opacity: open ? 1 : 0 }}
-                                    />
-                                )}
-                            </ListItemButton>
-                            {
-                                item?.comming &&
-                                <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
-                                    transform: 'translateY(-50%)'
-                                }}>
-                                    <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
-                                </Box>
-                            }
+                {SIDE_BAR_LEFT.map((item, index) => {
+                    item.isActive = idActive === item.id;
+                    return (
+                        item.isOnlyComponent ? item.child :
+                            <ListItem
+                                key={item.path ?? '' + index}
+                                disablePadding
+                                sx={{ display: "block" }}
+                            >
+                                <ListItemButton LinkComponent={Link} href={item?.path ?? ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            mr: open ? 2 : "auto",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    {item.child && (
+                                        <Stack width={"100%"} display={open ? "block" : "none"}>
+                                            {item.child}
+                                        </Stack>
+                                    )}
+                                    {item.title && (
+                                        <ListItemText
+                                            primary={
+                                                <Typography
+                                                    variant="body2"
+                                                    fontSize={item.highLightText ? 16 : 14}
+                                                >
+                                                    {item.title}
+                                                </Typography>
+                                            }
+                                            sx={{ opacity: open ? 1 : 0 }}
+                                        />
+                                    )}
+                                </ListItemButton>
+                                {
+                                    item?.comming &&
+                                    <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
+                                        transform: 'translateY(-50%)'
+                                    }}>
+                                        <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
+                                    </Box>
+                                }
 
-                        </ListItem>
-                ))}
+                            </ListItem>
+                    )
+                })}
 
             </List>
             <Box mt={"auto"} width="100%">
