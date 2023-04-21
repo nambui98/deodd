@@ -32,8 +32,21 @@ import ProfileCircleIcon from "public/assets/icons/profile-circle.svg";
 import ArchiveIcon from "public/assets/icons/archive.svg";
 import HeadCoinIcon from "public/assets/icons/head.svg";
 import TailCoinIcon from "public/assets/icons/tail.svg";
+import MessageIcon from "public/assets/icons/message.svg";
+import MenuIcon from "public/assets/icons/menu.svg";
+import LotteryIcon from "public/assets/icons/fluent_lottery-24-regular.svg";
+import Flip2Icon from "public/assets/icons/flipicon.svg";
+import Close2Icon from "public/assets/icons/close.svg";
+import SendIcon from "public/assets/icons/send.svg";
+// import Icon from "public/assets/icons/.svg";
 
 export {
+  SendIcon,
+  Close2Icon,
+  Flip2Icon,
+  MessageIcon,
+  MenuIcon,
+  LotteryIcon,
   HeadCoinIcon,
   TailCoinIcon,
   ChatBoxIcon,

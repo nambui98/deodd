@@ -24,7 +24,9 @@ export const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open
     //     [theme.breakpoints.up('sm')]: {
     //         width: `calc(100% - ${theme.spacing((2 - countOpen) * 8.5) + ' - ' + countOpen * DRAWER_WIDTH}px)`,
     //         marginLeft: open.leftOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(8.5)})`,
+
     //         marginRight: open.rightOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(8.5)})`,
+    paddingBottom: theme.spacing(8),
     ...((leftOpen) && {
         transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.easeOut,

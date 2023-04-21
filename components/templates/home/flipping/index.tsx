@@ -12,7 +12,7 @@ interface IProps {
 export const Flipping: React.FC<IProps> = ({ amount, isHead }) => {
   return <Box textAlign={'center'} >
     <Box>
-      <CoinAnimation width={160} height={160} />
+      <CoinAnimation mx="auto" width={160} height={160} />
       <Stack my={5} direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
 
         <Stack direction={'row'} alignItems={'center'} gap={1}>

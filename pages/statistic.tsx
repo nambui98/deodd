@@ -10,8 +10,8 @@ export default function Statistic() {
     useDashboardStat();
 
   return (
-    <Container sx={{ mt: 5, mb: 10 }}>
-      <Typography variant="h2" mb={3}>
+    <Container sx={{ mt: { md: 5, xs: 2 }, mb: { md: 10, xs: 8.125 } }}>
+      <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
         Today stat
       </Typography>
       <Grid container spacing={2}>

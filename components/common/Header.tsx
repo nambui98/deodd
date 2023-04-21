@@ -14,6 +14,7 @@ import { VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
 import { UserInfo } from "components/ui/userInfo";
+import Image from "next/image";
 
 type Props = {}
 
@@ -65,7 +66,7 @@ function Header({ }: Props) {
   }, [statusLoading, bodyBalance])
 
   return <Container>
-    <Stack height={112} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+    <Stack height={{ md: 112, xs: 72 }} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <ButtonSecondRemex
         aria-label="open drawer"
         onClick={() => { }}
@@ -87,7 +88,10 @@ function Header({ }: Props) {
       </ButtonSecondRemex>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>
-          <img width={106} height={64} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
+          <Box position={'relative'} width={{ md: 105.19, xs: 65.5 }} height={{ md: 64, xs: 40 }} >
+
+            <Image fill style={{ objectFit: "contain" }} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
+          </Box>
         </Link>
       </Box>
       <Box display={{ md: 'block', xs: 'none' }} >

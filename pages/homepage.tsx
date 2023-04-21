@@ -75,10 +75,8 @@ const HomePage: React.FC = () => {
   const showCursor = () => {
   };
 
-  return <Container sx={{
-    position: 'relative',
-  }}>
-    <Stack height={'calc(100vh - 112px)'} maxHeight={'calc(100vh - 112px)'} >
+  return <Container >
+    <Stack mt={2} height={{ md: 'calc(100vh - 112px  - 16px)', xs: 'calc(100vh - 72px - 65px  - 16px)' }} maxHeight={{ md: 'calc(100vh - 112px  - 16px)', xs: '100%' }} >
       <Box overflow={'hidden'}>
         <Box display={'flex'} flexDirection={'row'} columnGap={1} ref={refContainer} overflow={'auto'} sx={{
           // overflow: "hidden",
@@ -132,7 +130,13 @@ const HomePage: React.FC = () => {
               <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
             </Stack>
           </Box>} */}
-      {statusGame === StatusGame.flip && <Stack direction={'row'} mt={"auto"} mb={3} display={{ xs: 'none', md: 'flex' }} justifyContent={'center'} >
+      {statusGame === StatusGame.flip && <Stack
+        sx={{
+          transform: 'translateX(-50%)',
+          width: '100%'
+        }}
+        direction={'row'} mt={"auto"} position={'absolute'} left={"50%"} bottom={{ md: 3, xs: 89 }} mb={{ md: 3, xs: 0 }} justifyContent={'center'}
+      >
         <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
         <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
         <ItemPopup themelight={!darkMode} style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
@@ -149,14 +153,14 @@ const HomePage: React.FC = () => {
 
 
     </Stack>
-  </Container>
+  </Container >
 }
 
 function UserActivity() {
   return <Box bgcolor={'primary.100'} width={226} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} pl={2} py={1}>
     <Stack direction={'row'} gap={1}>
       <Avatar sx={{ width: 32, height: 32 }} alt="Remy Sharp" src={Avatar2Image} />
-      <Stack alignItems={'baseLine'} columnGap={1} mt={.5}>
+      <Stack alignItems={'baseLine'} columnGap={1}>
         <Typography variant='body2' fontWeight={500} >Nam</Typography>
         <Typography whiteSpace={'normal'} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100">flipped 0.5 and doubles</Typography>
         <Typography variant='caption' fontWeight={400} color="secondary.100">17 sec ago</Typography>
