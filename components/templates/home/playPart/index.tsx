@@ -235,9 +235,7 @@ export const PlayPart: React.FC<any> = () => {
   }
 
   const RenderPlayPart = () => {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-    return <Box mt={{ xs: 3, md: 0 }}>
+    return <Box>
       <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
       <Box maxWidth={544} mx="auto" textAlign={'left'}>
 
@@ -276,8 +274,6 @@ export const PlayPart: React.FC<any> = () => {
     statusGame: StatusGame,
     dataSelect: DataSelected
   }) => {
-
-    return <Flipping isHead={dataSelect?.coinSide === 0} amount={`${dataSelect?.amount}`} />
     switch (statusGame) {
       case 0:
         return <RenderPlayPart />
@@ -312,7 +308,7 @@ export const PlayPart: React.FC<any> = () => {
 
   }, [userInfo.avatar])
 
-  return <Box mt={{ xl: 10, md: 3 }} position={'relative'}>
+  return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
     <RenderUi statusGame={statusGame} dataSelect={dataSelect} />
     <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>

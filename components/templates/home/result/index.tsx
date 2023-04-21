@@ -13,6 +13,7 @@ import { Format } from "../../../../utils/format";
 import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
 import { useDeoddContract } from "hooks/useDeoddContract";
 import { BnbImage, GoldCupImage } from "utils/Images";
+import MyImage from "components/ui/image";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
@@ -39,17 +40,17 @@ export const Result = () => {
     winningStreakLength,
     tossPoints,
     jackpotWin
-  } = gameResult 
-  || {
-    coinSide: 1,
-    flipResult: 1,
-    amount: '0.5',
-    typeId: BigNumber.from(0),
-    tokenId: BigNumber.from(2),
-    tossPoints: BigNumber.from(4),
-    winningStreakLength: 1,
-    jackpotWin: BigNumber.from(2)
-  };
+  } = gameResult!
+  // || {
+  //   coinSide: 1,
+  //   flipResult: 1,
+  //   amount: '0.5',
+  //   typeId: BigNumber.from(0),
+  //   tokenId: BigNumber.from(2),
+  //   tossPoints: BigNumber.from(4),
+  //   winningStreakLength: 1,
+  //   jackpotWin: BigNumber.from(2)
+  // };
   console.log(!jackpotWin)
   // console.log();
 
@@ -70,6 +71,7 @@ export const Result = () => {
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
+
         <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
@@ -96,14 +98,14 @@ export const Result = () => {
 
   let typeNFT: number | undefined = typeId.toNumber();
   return <Box>
-    <Box><img width={120} height={120} alt="" src={`assets/icons/${renderImage()}.svg`} /></Box>
+    <MyImage mx="auto" width={120} height={120} alt="" src={`/assets/icons/${renderImage()}.svg`} />
     <Stack direction={'row'} mt={5} justifyContent={'center'}>
 
-      <Typography variant="h2">{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
+      <Typography variant="h2" fontWeight={700}>{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
       <Stack ml={1} gap={1} direction={'row'}>
 
         <Typography variant="h2" color="secondary.main">{amount} </Typography>
-        <img src={BnbImage} alt="" width={24} height={24} />
+        <MyImage src={BnbImage} alt="" width={24} height={24} />
       </Stack>
     </Stack>
 
@@ -112,7 +114,7 @@ export const Result = () => {
         <Stack>
           <Stack alignItems={'center'} rowGap={1}>
             <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{winningStreakLength}</Typography>
-            <Typography variant="h3" >
+            <Typography variant="h3" fontSize={{ md: 16, xs: 14 }} >
               WIN STREAK
             </Typography>
           </Stack>
@@ -132,7 +134,7 @@ export const Result = () => {
             tossPoints?.gt(BigNumber.from(0)) &&
             <Stack alignItems={'center'} rowGap={1}>
               <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{tossPoints?.toNumber()}</Typography>
-              <Typography variant="h3">
+              <Typography variant="h3" fontSize={{ md: 16, xs: 14 }}>
 
                 TOSSPOINT
               </Typography>
@@ -184,30 +186,37 @@ export const Result = () => {
     </Box>
     <Stack
       direction={'row'}
-      gap={3}
+      maxWidth={456}
+      mx="auto"
+      gap={{ md: 3, xs: 2 }}
       mb={3}
       justifyContent='center'
+      flexWrap={{ xs: 'wrap', md: 'nowrap' }}
     >
 
       <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
         setStatusGame(StatusGame.flip);
       }} customStyle={{
         py: 2,
-        width: '100%',
-        maxWidth: 216,
+        px: 0,
+        // width: '100%',
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: { md: '50%', xs: '100%' }
       }} />
       {
-        (jackpotWin?.gt(BigNumber.from(0)) ||
-          tokenId.gt(BigNumber.from(0))) &&
+        tokenId.gt(BigNumber.from(0)) &&
         <ButtonMain
           active
           title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} customStyle={{
             py: 2,
-            maxWidth: 216,
-            width: '100%',
+            px: 0,
+            // width: '100%',
             borderColor: "primary.main",
             color: "primary.main",
-
+            flexGrow: 1,
+            flexShrink: 1,
+            flexBasis: { md: '50%', xs: '100%' }
           }} />
 
       }

@@ -76,7 +76,7 @@ const HomePage: React.FC = () => {
   };
 
   return <Container >
-    <Stack mt={2} height={{ md: 'calc(100vh - 112px  - 16px)', xs: 'calc(100vh - 72px - 65px  - 16px)' }} maxHeight={{ md: 'calc(100vh - 112px  - 16px)', xs: '100%' }} >
+    <Stack mt={2} height={{ md: 'calc(100vh - 112px  - 80px)', xs: 'calc(100vh - 72px - 65px  - 16px)' }} maxHeight={{ md: 'calc(100vh - 112px  - 80px)', xs: '100%' }} >
       <Box overflow={'hidden'}>
         <Box display={'flex'} flexDirection={'row'} columnGap={1} ref={refContainer} overflow={'auto'} sx={{
           // overflow: "hidden",

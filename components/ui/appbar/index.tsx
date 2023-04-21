@@ -20,7 +20,7 @@ type Props = {
 function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Props) {
     return (
         <AppBarCus position="fixed" leftOpen={leftOpen} rightOpen={rightOpen}>
-            <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: { md: 0 }, paddingRight: { md: 0 } }}>
+            <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
 
                 <ButtonSecondRemex
                     aria-label="open drawer"
