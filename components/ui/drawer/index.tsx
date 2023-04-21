@@ -31,6 +31,9 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
     alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    height: 112,
-    justifyContent: "flex-end"
+    height: 72,
+    justifyContent: "flex-end",
+    [theme.breakpoints.up('md')]: {
+        height: 112
+    }
 }));

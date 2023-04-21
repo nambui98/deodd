@@ -6,6 +6,8 @@ import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyI
 import { LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 
 type Props = {
     open: boolean;
@@ -14,6 +16,7 @@ type Props = {
     window?: () => Window;
 }
 type TypeSideBarItem = {
+    id: number,
     icon?: JSX.Element,
     title?: string,
     path?: string,
@@ -26,17 +29,20 @@ type TypeSideBarItem = {
 }
 const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     {
+        id: 1,
         icon: <HomeIcon />,
         title: 'Home',
         path: '/',
     },
     {
+        id: 2,
         icon: <CoinFlipIcon />,
         title: 'Coin Flip',
         path: '/',
         highLightText: true
     },
     {
+        id: 3,
         icon: <img src={MoneyBagImage} alt="" />,
         title: '',
         path: '/',
@@ -48,40 +54,48 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         </Stack>
     },
     {
+        id: 4,
         icon: <DashboardIcon />,
         title: 'Dashboard',
         path: '/statistic',
     },
     {
+        id: 5,
         icon: <FlipIcon />,
         title: 'Flip',
         path: '/',
     },
     {
+        id: 6,
         icon: <CampaignIcon />,
         title: 'Campaign',
         path: '/campaign',
     },
     {
+        id: 7,
         icon: <Ref2EarnIcon />,
         title: 'Ref 2 Earn',
         path: '/referral',
     },
     {
+        id: 8,
         icon: <LoyaltyIcon />,
         title: 'Loyalty',
         path: '/loyalty',
     },
     {
+        id: 9,
         icon: <ShopIcon />,
         title: 'Shop',
         path: '/',
     },
     {
+        id: 10,
         isOnlyComponent: true,
         child: <Divider sx={{ mx: 3, mt: 3 }} />
     },
     {
+        id: 11,
         icon: <img src={LotteryImage} alt="" />,
         title: '',
         path: '/',
@@ -94,6 +108,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         </Stack>
     },
     {
+        id: 12,
         isOnlyComponent: true,
         child: <Divider sx={{ mx: 3, mt: 1 }} />
     }
@@ -145,8 +160,22 @@ const styleButton = (item: TypeSideBarItem, open: boolean) => {
 }
 
 function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
-
+    const [idActive, setIdActive] = useState<number | undefined>();
+    const route = useRouter();
+    const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.isReady])
     const container = window !== undefined ? () => window().document.body : undefined;
+    useEffect(() => {
+        if (idCurrentActive) {
+            setIdActive(idCurrentActive);
+        }
+    }, [idCurrentActive])
+
+    const handleSetActive = (id: number | undefined) => {
+        setIdActive(id);
+        handleDrawerToggle();
+    }
+
+
     const drawer = (
         <>
             <List>
@@ -157,46 +186,44 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                             disablePadding
                             sx={{ display: "block" }}
                         >
-                            <Link href={item?.path ?? '/'}>
-                                <ListItemButton sx={styleButton(item, open)}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 2 : "auto",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    {item.child && (
-                                        <Stack width={"100%"} display={open ? "block" : "none"}>
-                                            {item.child}
-                                        </Stack>
-                                    )}
-                                    {item.title && (
-                                        <ListItemText
-                                            primary={
-                                                <Typography
-                                                    variant="body2"
-                                                    fontSize={item.highLightText ? 16 : 14}
-                                                >
-                                                    {item.title}
-                                                </Typography>
-                                            }
-                                            sx={{ opacity: open ? 1 : 0 }}
-                                        />
-                                    )}
-                                </ListItemButton>
-                                {
-                                    item?.comming &&
-                                    <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
-                                        transform: 'translateY(-50%)'
-                                    }}>
-                                        <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
-                                    </Box>
-                                }
+                            <ListItemButton LinkComponent={Link} href={item?.path ?? ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
+                                <ListItemIcon
+                                    sx={{
+                                        minWidth: 0,
+                                        mr: open ? 2 : "auto",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    {item.icon}
+                                </ListItemIcon>
+                                {item.child && (
+                                    <Stack width={"100%"} display={open ? "block" : "none"}>
+                                        {item.child}
+                                    </Stack>
+                                )}
+                                {item.title && (
+                                    <ListItemText
+                                        primary={
+                                            <Typography
+                                                variant="body2"
+                                                fontSize={item.highLightText ? 16 : 14}
+                                            >
+                                                {item.title}
+                                            </Typography>
+                                        }
+                                        sx={{ opacity: open ? 1 : 0 }}
+                                    />
+                                )}
+                            </ListItemButton>
+                            {
+                                item?.comming &&
+                                <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
+                                    transform: 'translateY(-50%)'
+                                }}>
+                                    <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
+                                </Box>
+                            }
 
-                            </Link>
                         </ListItem>
                 ))}
 
@@ -222,8 +249,9 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                     keepMounted: true, // Better open performance on mobile.
                 }}
                 sx={{
-                    display: { xs: 'block', md: 'none' },
+                    display: { xs: 'block', md: 'none', },
                     '& .MuiDrawer-paper': {
+                        paddingBottom: 8,
                         boxShadow: '4px 0px 24px rgba(0, 0, 0, 0.25)',
                         boxSizing: 'border-box', width: DRAWER_WIDTH, bgcolor: 'primary.200', backgroundImage: 'none'
                     },

@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from "ethers"
 import { useEffect, useState } from "react"
 import LoadingButton from '@mui/lab/LoadingButton';
+import Image from 'next/image'
 // import { Button } from "../../../ui/button"
 import { useWalletContext } from "../../../../contexts/WalletContext"
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
@@ -234,15 +235,14 @@ export const PlayPart: React.FC<any> = () => {
   }
 
   const RenderPlayPart = () => {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
     return <Box>
-      <CoinAnimation width={160} height={160} mx={'auto'} textAlign={'center'} />
-      <Box width={544} mx="auto" textAlign={'left'}>
+      <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
+      <Box maxWidth={544} mx="auto" textAlign={'left'}>
+
         <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
-        <Stack direction={'row'} justifyContent={'space-between'} gap={1.5}>
+        <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
           {amounts?.map((item, index) => (
-            <Box flexBasis={'auto'} flexGrow={1} flexShrink={0} key={index}>
+            <Box flexBasis={{ md: 'auto', xs: "30%" }} flexGrow={1} flexShrink={0} key={index}>
               <ButtonLoadingShadow active={index === dataSelect?.index} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })}>
                 <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
                 <BnbIcon />
@@ -250,15 +250,15 @@ export const PlayPart: React.FC<any> = () => {
             </Box>
           ))}
         </Stack>
-        <Stack direction={'row'} mt={3.25} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-          <Box onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}>
+        <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
+          <Box flex={'1 1 50%'} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}>
             <SideCoin isHead isSelected={dataSelect?.coinSide === 0} />
           </Box>
-          <Box onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}>
+          <Box flex={'1 1 50%'} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}>
             <SideCoin isSelected={dataSelect?.coinSide === 1} />
           </Box>
         </Stack>
-        <Box mt={3}>
+        <Box mt={{ sm: 3, xs: 2 }}>
           <ButtonLoading
             onClick={handleFlip}
             disabled={dataSelect?.coinSide !== undefined && dataSelect?.coinSide >= 0 && dataSelect?.amount ? false : true}
@@ -308,9 +308,9 @@ export const PlayPart: React.FC<any> = () => {
 
   }, [userInfo.avatar])
 
-  return <Box mt={{ xl: 10, md: 3 }} position={'relative'}>
+  return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
     <RenderUi statusGame={statusGame} dataSelect={dataSelect} />
-    <Stack position={'absolute'} top={0} right={0} direction={'row'} gap={1} alignItems={'center'}>
+    <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>
 
         <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
@@ -330,8 +330,9 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
   direction="row"
   gap={3}
   borderRadius={2}
-  width={256}
-  py={3}
+  // maxWidth={256}
+  width={1}
+  py={{ sm: 3, xs: 2 }}
   justifyContent={"center"}
   border={isSelected ? " 1px solid #FEF156" : "1px solid transparent"}
   boxShadow={isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)"}
@@ -369,33 +370,29 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
   {
     isHead ?
       <>
-        <Box position={'relative'} height={64} width={64}>
-          <Box className="disabled" >
-            <img width="64px" alt="" src={`assets/icons/head-disable.svg`} />
+        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+          <Box className="disabled" width={1}>
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head-disable.svg`} />
           </Box>
-          <Box className="enabled" >
-            <img width="64px" alt="" src={`assets/icons/head.svg`} />
+          <Box className="enabled" width={1} >
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head.svg`} />
           </Box>
         </Box>
 
-        <Typography variant="body2" fontSize={40} fontWeight={700} >
+        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
           HEAD
         </Typography>
       </>
       : <>
-        <Box position={'relative'} height={64} width={64}>
-          <Box className="disabled" >
-
-            <img width="64px" alt="" src={`assets/icons/tail-disable.svg`} />
+        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+          <Box className="disabled" width={1} >
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail-disable.svg`} />
           </Box>
-          <Box className="enabled" >
-
-            <img width="64px" alt="" src={`assets/icons/tail.svg`} />
+          <Box className="enabled" width={1}>
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail.svg`} />
           </Box>
         </Box>
-
-
-        <Typography variant="body2" fontSize={40} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
+        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
           TAIL
         </Typography>
       </>

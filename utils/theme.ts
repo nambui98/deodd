@@ -199,6 +199,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 	typography: {
 		fontFamily: 'BeVietnamPro',
 		fontSize: 14,
+		
 		subtitle1: {
 			fontFamily: 'Electrofied',
 			lineHeight: 1.2,
@@ -353,7 +354,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 	breakpoints: {
 		values: {
 			xs: 0,
-			sm: 768,
+			sm: 600,
 			md: 900,
 			lg: 1200,
 			xl: 1536

@@ -12,11 +12,11 @@ import CoinAnimation from "./CoinAnimation";
 
 export const ConnectWallet = () => {
 	const { handleConnectWallet } = useWalletContext();
-	return <Box mt={15}>
+	return <Box mt={{ md: 15, xs: 8 }}>
 		<BoxConnect>
 			<Typography variant="h2" fontWeight={700} textTransform={'uppercase'}>Feel lucky today?</Typography>
 			<Box my={5}>
-				<CoinAnimation width={144} height={144} />
+				<CoinAnimation width={{ md: 144, xs: 160 }} height={{ md: 144, xs: 160 }} />
 			</Box>
 			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
 				px: 5, py: 2, textTransform: 'none', fontSize: 16

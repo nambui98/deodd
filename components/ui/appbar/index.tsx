@@ -20,7 +20,7 @@ type Props = {
 function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Props) {
     return (
         <AppBarCus position="fixed" leftOpen={leftOpen} rightOpen={rightOpen}>
-            <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: { md: 0 }, paddingRight: { md: 0 } }}>
+            <Toolbar sx={{ alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
 
                 <ButtonSecondRemex
                     aria-label="open drawer"
@@ -71,6 +71,7 @@ const openedMixin = ({ theme, open, countOpen }: {
         duration: theme.transitions.duration.enteringScreen,
     }),
     [theme.breakpoints.up('md')]: {
+        height: 112,
         width: `calc(100% - ${(!open.leftOpen ? theme.spacing(8.5) : '0px') + ' - ' + countOpen * DRAWER_WIDTH}px)`,
         marginLeft: open.leftOpen ? `${DRAWER_WIDTH}px` : `calc(${theme.spacing(8.5)})`,
         marginRight: open.rightOpen ? `${DRAWER_WIDTH}px` : 0,
@@ -87,7 +88,7 @@ const AppBarCus = styled(MuiAppBar, {
 
     return (
         {
-            height: 112,
+            height: 72,
             backgroundImage: 'none',
             boxShadow: 'none',
             backgroundColor: theme.palette.background.default,

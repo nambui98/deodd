@@ -17,13 +17,19 @@ const Layout = ({ children }: IProps) => {
     const [leftOpen, setLeftOpen] = useState(true);
 
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
-    const [mobileOpenRight, setMobileOpenRight] = useState(true);
+    const [mobileOpenRight, setMobileOpenRight] = useState(false);
 
     const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
+        if (mobileOpenRight) {
+            setMobileOpenRight(false);
+        }
     };
     const handleDrawerToggleRight = () => {
         setMobileOpenRight(!mobileOpenRight);
+        if (mobileOpenLeft) {
+            setMobileOpenLeft(false);
+        }
     };
     const handleDrawerRight = () => {
         setRightOpen((prev) => !prev);
@@ -44,11 +50,15 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main> {children} </main>
-                <Footer />
+                {/* <Footer /> */}
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
-            <Paper sx={{ display: { md: 'none', xs: 'block' }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-                <MyBottomNavigation />
+            <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                <MyBottomNavigation
+                    openLeft={mobileOpenLeft}
+                    openRight={mobileOpenRight}
+                    handleOpenLeftSidebar={handleDrawerToggleLeft}
+                    handleOpenRightSidebar={handleDrawerToggleRight} />
             </Paper>
         </Box>
     );
