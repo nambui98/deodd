@@ -9,6 +9,12 @@ export type ColorModeType = {
     darkMode: boolean,
     setDarkMode: (value: boolean) => void
 }
+export enum AudioPlay{
+    GET_READY,
+    WIN,
+    LOST,
+    STOP
+}
 export type SiteContextType = {
     isLoading: boolean,
     setIsLoading: (value: boolean) => void,
@@ -20,20 +26,26 @@ export type SiteContextType = {
     setIsSuccess: (value: boolean) => void;
     titleSuccess: string;
     setTitleSuccess: (value: string) => void;
+    audioPlayer:(value: AudioPlay) => void
 }
 
 
 export type FlipResultType = {
-    amount: BigNumber,
+    // amount: BigNumber,
+    // fId: BigNumber,
+    // flipChoice: BigNumber,
+    // jackpotReward: BigNumber,
+    // playerWin: BigNumber,
+    // timestamp: BigNumber,
+    // tokenId: BigNumber,
+    // tpoint: BigNumber,
+    // typeId: BigNumber,
+    // wallet: string
+
     fId: BigNumber,
-    flipChoice: BigNumber,
-    jackpotReward: BigNumber,
-    playerWin: BigNumber,
+    randomValue: BigNumber,
+    flipResult: BigNumber,
     timestamp: BigNumber,
-    tokenId: BigNumber,
-    tpoint: BigNumber,
-    typeId: BigNumber,
-    wallet: string
 }
 export enum EnumNFT {
     BRONZE,

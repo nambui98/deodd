@@ -15,12 +15,15 @@ import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
 import { UserInfo } from "components/ui/userInfo";
 import Image from "next/image";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
 
 type Props = {}
 
 function Header({ }: Props) {
   const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
+  const { audioPlayer } = useSiteContext();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
@@ -69,7 +72,7 @@ function Header({ }: Props) {
     <Stack height={{ md: 112, xs: 72 }} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <ButtonSecondRemex
         aria-label="open drawer"
-        onClick={() => { }}
+        onClick={() => { audioPlayer(AudioPlay.STOP) }}
         sx={{
           padding: 1.5, minWidth: 0, borderRadius: 2,
           img: {
