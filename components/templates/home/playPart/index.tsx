@@ -296,7 +296,7 @@ export const PlayPart: React.FC<any> = () => {
   useEffect(() => {
     if (localStorage.getItem('popupCreateProfile') !== walletAddress) {
       localStorage.setItem('popupCreateProfile', walletAddress)
-      localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
+      // localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
     }
   }, [walletAddress])
 

@@ -39,10 +39,13 @@ import Flip2Icon from "public/assets/icons/flipicon.svg";
 import Close2Icon from "public/assets/icons/close.svg";
 import SendIcon from "public/assets/icons/send.svg";
 import LogoutIcon from "public/assets/icons/logout.svg";
+import VolumeIcon from "public/assets/icons/volume-cross.svg";
 // import Icon from "public/assets/icons/.svg";
 
 export {
+  VolumeIcon,
   LogoutIcon,
+
   SendIcon,
   Close2Icon,
   Flip2Icon,

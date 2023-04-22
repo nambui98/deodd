@@ -157,6 +157,8 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				setStatusGame(StatusGame.result);
 				setRefresh(!refresh);
 				setIsFinish(false);
+
+				audioPlayer(AudioPlay.STOP);
 				if (BigNumber.from(dataSelected?.coinSide).eq(flipResult)) {
 					audioPlayer(AudioPlay.WIN);
 				} else {

@@ -26,7 +26,10 @@ export type SiteContextType = {
     setIsSuccess: (value: boolean) => void;
     titleSuccess: string;
     setTitleSuccess: (value: string) => void;
-    audioPlayer:(value: AudioPlay) => void
+    audioPlayer:(value: AudioPlay) => void,
+
+    isTurnOffAudio: boolean,
+    turnOffAudio: VoidFunction
 }
 
 

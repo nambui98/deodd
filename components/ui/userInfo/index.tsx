@@ -22,6 +22,10 @@ import { useState } from "react";
 import { Utils } from "@/utils/index";
 import { Convert } from "utils/convert";
 import { useWalletContext } from "contexts/WalletContext";
+import { ethers } from "ethers";
+import { Format } from "utils/format";
+import Link from "next/link";
+import { useDisconnect } from "wagmi";
 
 function FlipHistoryItem() {
   return (
@@ -54,7 +58,9 @@ function FlipHistoryItem() {
 
 export function UserInfo() {
   const [expanded, setExpanded] = useState<boolean>(false);
-  const { walletIsConnected, walletAddress } = useWalletContext();
+  const { walletIsConnected, walletAddress, bnbBalance } = useWalletContext();
+
+  const { disconnect } = useDisconnect()
   const handleChange = () => () => {
     setExpanded(!expanded);
   };
@@ -62,7 +68,7 @@ export function UserInfo() {
     return null;
   } else (walletIsConnected)
   return (
-    <Box position={"relative"} height={"3rem"} >
+    <Box position={"relative"} height={"3rem"} width={238} >
       <Accordion
         disableGutters
         expanded={expanded} onChange={handleChange()}
@@ -98,7 +104,8 @@ export function UserInfo() {
               </Typography>
 
               <Typography fontSize={"0.875rem"} variant="h3">
-                1.534
+                {/* 1.534 */}
+                {Format.formatMoneyFromBigNumberEther(bnbBalance)}
               </Typography>
               <BnbIcon fill={Colors.primaryDark} />
 
@@ -171,6 +178,8 @@ export function UserInfo() {
 
             <Button
               variant="contained"
+              LinkComponent={Link}
+              href="/assets"
               sx={{
                 width: "50%",
                 color: "secondary.100",
@@ -200,13 +209,15 @@ export function UserInfo() {
             Flipping History
           </Typography>
           <Stack gap={1}>
+            <Typography textAlign={'center'} variant="h3">Comming soon</Typography>
+            {/* <FlipHistoryItem />
             <FlipHistoryItem />
             <FlipHistoryItem />
-            <FlipHistoryItem />
-            <FlipHistoryItem />
+            <FlipHistoryItem /> */}
           </Stack>
           <Button
             variant="text"
+            onClick={() => { disconnect() }}
             startIcon={<LogoutIcon />}
             sx={{
               color: "secondary.400",
