@@ -21,6 +21,7 @@ export const coin0 = "/assets/images/coin/coin0.png";
 export const coin6 = "/assets/images/coin/coin6.png";
 
 export const VolumnImage = "/assets/icons/volume-high.svg";
+export const VolumeTurnOffImage = "/assets/icons/volume-cross.svg";
 export const BnbImage = "/assets/images/binance-coin-(bnb).png";
 export const MoneyBagImage = "/assets/images/money-bag_1.png";
 export const LotteryImage = "/assets/images/balls_1.png";

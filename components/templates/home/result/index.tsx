@@ -96,7 +96,7 @@ export const Result = () => {
   //   audio.play();
   // }, [flipResult, coinSide])
 
-  let typeNFT: number | undefined = typeId.toNumber();
+  let typeNFT: number | undefined = typeId?.toNumber();
   return <Box>
     <MyImage mx="auto" width={120} height={120} alt="" src={`/assets/icons/${renderImage()}.svg`} />
     <Stack direction={'row'} mt={5} justifyContent={'center'}>
@@ -112,14 +112,18 @@ export const Result = () => {
     <Box mt={3} mb={5}>
       <Stack direction={'row'} justifyContent={'center'} columnGap={20.875} alignItems={'flex-start'}>
         <Stack>
-          <Stack alignItems={'center'} rowGap={1}>
-            <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{winningStreakLength}</Typography>
-            <Typography variant="h3" fontSize={{ md: 16, xs: 14 }} >
-              WIN STREAK
-            </Typography>
-          </Stack>
           {
-            tokenId.gt(BigNumber.from(0)) &&
+            winningStreakLength &&
+            <Stack alignItems={'center'} rowGap={1}>
+              <Typography variant="h2" fontWeight={700} color={'secondary.main'}>{winningStreakLength}</Typography>
+              <Typography variant="h3" fontSize={{ md: 16, xs: 14 }} >
+                WIN STREAK
+              </Typography>
+            </Stack>
+          }
+
+          {
+            tokenId?.gt(BigNumber.from(0)) &&
             jackpotWin?.gt(BigNumber.from(0)) &&
             <Box mt={3} >
               <Stack alignItems={'center'} rowGap={1}>
@@ -159,10 +163,10 @@ export const Result = () => {
       </Stack>
       {
 
-        (tokenId.lte(BigNumber.from(0)) || !jackpotWin ||
+        (tokenId?.lte(BigNumber.from(0)) || !jackpotWin ||
           jackpotWin?.lte(BigNumber.from(0))) && <Stack direction={'row'} justifyContent={'center'} mt={3}>
           {
-            tokenId.gt(BigNumber.from(0)) &&
+            tokenId?.gt(BigNumber.from(0)) &&
             <Stack alignItems={'center'} rowGap={1}>
               <Image width={32} height={32} src={dataTypeNFT[typeNFT || 0]} alt="" />
               <Typography textAlign={'center'} fontWeight={500} variant="body2">NFT Item</Typography>
@@ -205,7 +209,7 @@ export const Result = () => {
         flexBasis: { md: '50%', xs: '100%' }
       }} />
       {
-        tokenId.gt(BigNumber.from(0)) &&
+        tokenId?.gt(BigNumber.from(0)) &&
         <ButtonMain
           active
           title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} customStyle={{

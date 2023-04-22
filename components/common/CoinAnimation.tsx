@@ -1,7 +1,7 @@
 import { Box, BoxProps } from "@mui/material"
 import { useAnimationFrame } from "hooks/useAnimationFrame"
 import Image from "next/image"
-import React from "react"
+import React, { Suspense } from "react"
 import { useState } from "react"
 type Props = BoxProps;
 
@@ -26,19 +26,23 @@ function CoinAnimation({ width, height, ...props }: Props) {
         setCount(prevCount => (prevCount + deltaTime * 0.01) % 11)
     })
 
-    return <Box {...props} width={width} height={height}>
-        {
-            listImage.map((image, index) =>
-                <Box key={image} width={1} height={1} position={'relative'} display={Math.round(count) === index ? 'block' : 'none'}>
-                    <Image
-                        // width={width} height={height}
-                        fill
-                        style={{ objectFit: "contain" }}
-                        src={image} alt="" />
-                </Box>
-            )
-        }
-    </Box>
+    return <Suspense>
+        <Box {...props} width={width} height={height}>
+            {
+                listImage.map((image, index) =>
+                    <Box key={image} width={1} height={1} position={'relative'} display={Math.round(count) === index ? 'block' : 'none'}>
+                        <Image
+                            // width={width} height={height}
+                            // onLoadingComplete={}
+                            fill
+                            style={{ objectFit: "contain" }}
+                            src={image} alt="" />
+                    </Box>
+                )
+            }
+        </Box>
+    </Suspense>
+
 }
 export default React.memo(CoinAnimation);
 // const CoinAnimationNotMemoize = ({ width, height, ...props }: Props) => {

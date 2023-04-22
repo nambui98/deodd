@@ -76,7 +76,13 @@ const HomePage: React.FC = () => {
   };
 
   return <Container >
-    <Stack mt={2} height={{ md: 'calc(100vh - 112px  - 80px)', xs: 'calc(100vh - 72px - 65px  - 16px)' }} maxHeight={{ md: 'calc(100vh - 112px  - 80px)', xs: '100%' }} >
+    <Stack mt={2}
+
+    // height={{ md: 'calc(100vh - 112px  - 80px)', xs: 'calc(100vh - 72px - 65px  - 16px)' }} maxHeight={{ md: 'calc(100vh - 112px  - 80px)', xs: '100%' }} 
+
+
+
+    >
       <Box overflow={'hidden'}>
         <Box display={'flex'} flexDirection={'row'} columnGap={1} ref={refContainer} overflow={'auto'} sx={{
           // overflow: "hidden",
@@ -132,10 +138,14 @@ const HomePage: React.FC = () => {
           </Box>} */}
       {statusGame === StatusGame.flip && <Stack
         sx={{
-          transform: 'translateX(-50%)',
-          width: '100%'
+          // transform: 'translateX(-50%)',
+          // width: '100%'
+          // position:{'absolute'} left:{"50%"} bottom:{ md: 3, xs: 89 } 
+          //  mt:{"auto"}
+          mt: 3,
+          mb: { md: 3, xs: 0 }
         }}
-        direction={'row'} mt={"auto"} position={'absolute'} left={"50%"} bottom={{ md: 3, xs: 89 }} mb={{ md: 3, xs: 0 }} justifyContent={'center'}
+        direction={'row'} justifyContent={'center'}
       >
         <ItemPopup themelight={!darkMode} style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
         <ItemPopup themelight={!darkMode} onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |

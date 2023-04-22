@@ -10,17 +10,21 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Link from "next/link";
 import { LeftIcon } from "utils/Icons";
-import { VolumnImage } from "utils/Images";
+import { VolumeTurnOffImage, VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
 import { UserInfo } from "components/ui/userInfo";
 import Image from "next/image";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
+import MyImage from "components/ui/image";
 
 type Props = {}
 
 function Header({ }: Props) {
   const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
+  const { audioPlayer, turnOffAudio, isTurnOffAudio } = useSiteContext();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
@@ -68,8 +72,10 @@ function Header({ }: Props) {
   return <Container>
     <Stack height={{ md: 112, xs: 72 }} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <ButtonSecondRemex
-        aria-label="open drawer"
-        onClick={() => { }}
+        aria-label="turn off, on audio"
+        onClick={() => {
+          turnOffAudio();
+        }}
         sx={{
           padding: 1.5, minWidth: 0, borderRadius: 2,
           img: {
@@ -84,7 +90,9 @@ function Header({ }: Props) {
           }
         }}
       >
-        <img src={VolumnImage} alt="" />
+        {
+          isTurnOffAudio ? <img src={VolumeTurnOffImage} alt="" /> : <img src={VolumnImage} alt="" />
+        }
       </ButtonSecondRemex>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>
@@ -94,7 +102,7 @@ function Header({ }: Props) {
           </Box>
         </Link>
       </Box>
-      <Box display={{ md: 'block', xs: 'none' }} >
+      <Box  >
         <UserInfo />
       </Box>
     </Stack>

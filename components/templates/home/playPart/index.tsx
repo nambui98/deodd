@@ -24,9 +24,11 @@ import { useDisconnect } from "wagmi"
 import { BnbIcon, HeadCoinIcon } from "utils/Icons";
 import CoinAnimation from "components/common/CoinAnimation";
 import { TestailCoinImage } from "utils/Images";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
 
-const amounts = [0.1, 0.5, 1, 2, 5, 10]
-
+// const amounts = [0.1, 0.5, 1, 2, 5, 10]
+const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
@@ -43,22 +45,22 @@ type DataSelected = {
   coinSide?: 0 | 1,
   amount?: number,
   index?: number,
-
 } | undefined
 
 export const PlayPart: React.FC<any> = () => {
   const { walletAddress, refresh, setRefresh, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
   const { disconnect } = useDisconnect()
-  const { setIsFinish, audio, statusGame, setStatusGame } = useContractContext();
+  const { setIsFinish, statusGame, setStatusGame, setDataSelected, dataSelected } = useContractContext();
   const { registerName } = useProfileContract();
   const { handleFlipToken } = useDeoddContract();
   const { darkMode } = useColorModeContext();
+  const { audioPlayer } = useSiteContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
     body: <></>
   })
   const [currentProfile, setCurrentProfile] = useState<{ username: any, avatar: any }>({ username: null, avatar: userInfo.avatar || 0 })
-  const [dataSelect, setDataSelect] = useState<DataSelected>()
+  // const [dataSelect, setDataSelect] = useState<DataSelected>()
 
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
@@ -81,15 +83,15 @@ export const PlayPart: React.FC<any> = () => {
   )
 
   const handleFlip = async () => {
-    console.log(ethers.utils.parseUnits(`${dataSelect?.amount}`));
+    console.log(ethers.utils.parseUnits(`${dataSelected?.amount}`));
 
     debugger
-    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
+    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
 
     debugger
     // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
     let complement: BigNumber = BigNumber.from(0);
-    let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelect!.amount!.toString()).add(fee);
+    let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelected!.amount!.toString()).add(fee);
     if (bnbAssets.gte(totalAmount)) {
       complement = BigNumber.from(0);
     }
@@ -108,17 +110,16 @@ export const PlayPart: React.FC<any> = () => {
         setStatusLoadingFlip(true);
         setIsFinish(false);
         try {
-          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
-          audio.loop = true;
-          audio.play();
+          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
+          audioPlayer(AudioPlay.GET_READY);
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
             setIsFinish(true);
             debugger
             const res = await handleFlipToken(
-              dataSelect?.index || 0,
-              dataSelect?.coinSide || 0,
+              dataSelected?.index || 0,
+              dataSelected?.coinSide || 0,
               complement
             )
             if (res.status) {
@@ -126,7 +127,7 @@ export const PlayPart: React.FC<any> = () => {
             }
           }
         } catch (error: any) {
-          audio.load();
+          audioPlayer(AudioPlay.STOP);
           setStatusLoadingFlip(false)
           setStatusGame(StatusGame.flip)
           setPopup({
@@ -243,7 +244,7 @@ export const PlayPart: React.FC<any> = () => {
         <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
           {amounts?.map((item, index) => (
             <Box flexBasis={{ md: 'auto', xs: "30%" }} flexGrow={1} flexShrink={0} key={index}>
-              <ButtonLoadingShadow active={index === dataSelect?.index} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })}>
+              <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
                 <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
                 <BnbIcon />
               </ButtonLoadingShadow>
@@ -251,17 +252,17 @@ export const PlayPart: React.FC<any> = () => {
           ))}
         </Stack>
         <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-          <Box flex={'1 1 50%'} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}>
-            <SideCoin isHead isSelected={dataSelect?.coinSide === 0} />
+          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 0 })}>
+            <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
           </Box>
-          <Box flex={'1 1 50%'} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}>
-            <SideCoin isSelected={dataSelect?.coinSide === 1} />
+          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 1 })}>
+            <SideCoin isSelected={dataSelected?.coinSide === 1} />
           </Box>
         </Stack>
         <Box mt={{ sm: 3, xs: 2 }}>
           <ButtonLoading
             onClick={handleFlip}
-            disabled={dataSelect?.coinSide !== undefined && dataSelect?.coinSide >= 0 && dataSelect?.amount ? false : true}
+            disabled={dataSelected?.coinSide !== undefined && dataSelected?.coinSide >= 0 && dataSelected?.amount ? false : true}
             loading={statusLoadingFlip}>
             <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
           </ButtonLoading>
@@ -270,15 +271,15 @@ export const PlayPart: React.FC<any> = () => {
     </Box>
   }
 
-  const RenderUi = ({ statusGame, dataSelect }: {
+  const RenderUi = ({ statusGame, dataSelected }: {
     statusGame: StatusGame,
-    dataSelect: DataSelected
+    dataSelected: DataSelected
   }) => {
     switch (statusGame) {
       case 0:
         return <RenderPlayPart />
       case 1:
-        return <Flipping isHead={dataSelect?.coinSide === 0} amount={`${dataSelect?.amount}`} />
+        return <Flipping isHead={dataSelected?.coinSide === 0} amount={`${dataSelected?.amount}`} />
       case 2:
         return <Result />
       default: return <Box></Box>
@@ -295,7 +296,7 @@ export const PlayPart: React.FC<any> = () => {
   useEffect(() => {
     if (localStorage.getItem('popupCreateProfile') !== walletAddress) {
       localStorage.setItem('popupCreateProfile', walletAddress)
-      localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
+      // localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
     }
   }, [walletAddress])
 
@@ -309,7 +310,7 @@ export const PlayPart: React.FC<any> = () => {
   }, [userInfo.avatar])
 
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
-    <RenderUi statusGame={statusGame} dataSelect={dataSelect} />
+    <RenderUi statusGame={statusGame} dataSelected={dataSelected} />
     <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>
 
