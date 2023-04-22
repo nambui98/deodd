@@ -51,7 +51,7 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
             value: 'avatar',
             icon: <Avatar sx={{ width: 32, height: 32 }} alt="" src={Avatar2Image} />,
             iconActive: <Avatar sx={{ width: 32, height: 32 }} alt="" src={Avatar2Image} />,
-            href: '',
+            href: '/profile',
             onClick: () => { }
         },
         {

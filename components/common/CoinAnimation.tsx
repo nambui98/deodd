@@ -21,27 +21,31 @@ const listImage = [
 ]
 function CoinAnimation({ width, height, ...props }: Props) {
     const [count, setCount] = useState(0)
+    const [imagesLoaded, setImagesLoaded] = useState<number>(0);
 
     useAnimationFrame((deltaTime: number) => {
         setCount(prevCount => (prevCount + deltaTime * 0.01) % 11)
     })
 
-    return <Suspense>
-        <Box {...props} width={width} height={height}>
-            {
-                listImage.map((image, index) =>
-                    <Box key={image} width={1} height={1} position={'relative'} display={Math.round(count) === index ? 'block' : 'none'}>
-                        <Image
-                            // width={width} height={height}
-                            // onLoadingComplete={}
-                            fill
-                            style={{ objectFit: "contain" }}
-                            src={image} alt="" />
-                    </Box>
-                )
-            }
-        </Box>
-    </Suspense>
+    return <Box {...props} width={width} height={height}>
+        {
+
+            listImage.map((image, index) =>
+                <Box key={image} width={1} height={1} position={'relative'} sx={{ opacity: imagesLoaded === listImage.length ? 1 : 0 }} display={Math.round(count) === index ? 'block' : 'none'}>
+                    <Image
+                        // width={width} height={height}
+                        // onLoadingComplete={}
+
+                        onLoadingComplete={() => setImagesLoaded((prev) => prev += 1)}
+                        loading="lazy"
+                        fill
+                        style={{ objectFit: "contain" }}
+                        src={image} alt="" />
+                </Box>
+            )
+        }
+
+    </Box>
 
 }
 export default React.memo(CoinAnimation);

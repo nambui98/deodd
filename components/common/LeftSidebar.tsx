@@ -88,7 +88,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         id: 9,
         icon: <ShopIcon />,
         title: 'Shop',
-        path: '/',
+        path: '/shop',
     },
     {
         id: 10,
