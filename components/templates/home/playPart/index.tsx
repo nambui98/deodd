@@ -28,7 +28,8 @@ import { useSiteContext } from "contexts/SiteContext";
 import { AudioPlay } from "libs/types";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
-const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
+// const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
+const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.193]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
