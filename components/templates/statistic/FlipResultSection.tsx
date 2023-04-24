@@ -26,7 +26,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         >
           <Typography
             alignSelf={"flex-start"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
             variant="body2"
           >
             flip result
@@ -88,7 +88,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         >
           <Typography
             alignSelf={"flex-start"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
             variant="body2"
           >
             user&apos;s flip choice

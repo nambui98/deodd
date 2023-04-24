@@ -129,7 +129,7 @@ export function TotalSection({
         <DashboardCard flexDirection={"column"} height="100%">
           <Typography
             alignSelf={"flex-start"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
             variant="body2"
           >
             flip per user
