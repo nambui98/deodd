@@ -138,6 +138,7 @@ export function UserInfo() {
                 {
                   paddingRight: { xs: 0.5, md: 1 },
                   gap: { xs: expanded ? 2 : 0, md: 2 }, // Spacing between expand icon and content
+                  transition: "300ms gap"
                 }
               }
             >
@@ -164,9 +165,10 @@ export function UserInfo() {
                 gap={1}
                 alignItems={"center"}
                 sx={{
-                  // opacity: !expanded ? 0 : 1,
+                  opacity: { xs: expanded ? 1 : 0, md: 1 },
+                  transition: "300ms width, 300ms opacity",
                   width: { xs: expanded ? 1 : 0, md: 1 },
-                  display: { xs: expanded ? "flex" : "none", md: "flex" }
+                  // display: { xs: expanded ? "flex" : "none", md: "flex" }
                 }}
               >
                 <Typography fontSize={"0.875rem"} variant="h3">
@@ -191,10 +193,11 @@ export function UserInfo() {
           </AccordionSummary>
           <AccordionDetails
             sx={{
-              display: expanded ? "flex" : "none",
+              display: "flex",
               flexDirection: "column", gap: 1.5,
-              transition: '300ms opacity',
+              width: { xs: expanded ? 1 : 0, md: 1 },
               opacity: !expanded ? 0 : 1,
+              transition: `300ms opacity, 300ms width ${!expanded ? "300ms" : "0"}`,
               "&.MuiAccordionDetails-root": {
                 padding: "0.75rem",
                 paddingBlockStart: 0,
