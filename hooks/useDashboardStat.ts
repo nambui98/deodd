@@ -28,7 +28,7 @@ export function useDashboardStat() {
   const { setIsLoading } = useSiteContext();
   const [statistic, setStatistic] = useState({
     error: {
-      haveFlipped: true,
+      haveFlipped: false,
       errorMessage: "",
     },
     streak: {
@@ -68,7 +68,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: streakResult.data.meta.error_message,
             },
           }));
@@ -85,7 +85,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: statResult.data.meta.error_message,
             },
           }));
@@ -109,7 +109,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: flipResult.data.meta.error_message,
             },
           }));
