@@ -213,7 +213,7 @@ export function UserInfo() {
               <FlipHistoryItem />
             </Stack>
             <Stack>
-              <Divider></Divider>
+              <Divider sx={{ marginBottom: 0.5 }}></Divider>
               <Button
                 variant="text"
                 onClick={() => { disconnect() }}
