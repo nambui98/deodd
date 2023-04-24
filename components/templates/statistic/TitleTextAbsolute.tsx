@@ -7,7 +7,7 @@ export function TitleTextAbsolute({ text }: { text: string }) {
       top={"1rem"}
       left={"1rem"}
       position={"absolute"}
-      textTransform={"uppercase"}
+      textTransform={"capitalize"}
       variant="body2"
     >
       {text}
