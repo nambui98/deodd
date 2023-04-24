@@ -11,12 +11,33 @@ deploy_preview:
     - ./node_modules/.bin/vercel build --token=$VERCEL_TOKEN
     - ./node_modules/.bin/vercel deploy --prebuilt  --token=$VERCEL_TOKEN
 
+# deploy_production:
+#   stage: deploy
+#   only:
+#     - main
+#   script:
+#     - npm install vercel
+#     - ./node_modules/.bin/vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+#     - ./node_modules/.bin/vercel build --prod --token=$VERCEL_TOKEN
+#     - ./node_modules/.bin/vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+
 deploy_production:
   stage: deploy
+  before_script:
+    - command -v ssh-agent > /dev/null
+    - eval $(ssh-agent -s)
+    - echo "$DEV_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$DEV_SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh "$DEV_USER@$DEV_HOST" './killall-deodd-frontend-process.sh || true'
+    - ssh "$DEV_USER@$DEV_HOST" 'rm -rf ~/deodd || true'
+    - ssh "$DEV_USER@$DEV_HOST" 'mkdir -p ~/deodd/ || true'
+    - scp -r ./* "$DEV_USER@$DEV_HOST:~/deodd/"
+    - ssh "$DEV_USER@$DEV_HOST" "cd deodd; yarn install; yarn build"
+    - ssh "$DEV_USER@$DEV_HOST" "cd deodd; yarn start -p 3001 > /dev/null 2>&1 &"
   only:
     - main
-  script:
-    - npm install vercel
-    - ./node_modules/.bin/vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-    - ./node_modules/.bin/vercel build --prod --token=$VERCEL_TOKEN
-    - ./node_modules/.bin/vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+  when: manual

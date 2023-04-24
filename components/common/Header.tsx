@@ -1,7 +1,7 @@
-import { Box, Stack, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Container, Stack, Typography, styled, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { useWalletContext } from "../../contexts/WalletContext";
-import { Container, TEXT_STYLE } from "../../styles/common";
+import { TEXT_STYLE } from "../../styles/common";
 import { Popup } from "./popup";
 // import { Button } from "../ui/button";
 import { ButtonSecondRemex } from "components/ui/button";
@@ -10,15 +10,21 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Link from "next/link";
 import { LeftIcon } from "utils/Icons";
-import { VolumnImage } from "utils/Images";
+import { VolumeTurnOffImage, VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
 import { propsTheme } from '../../pages/homepage';
+import { UserInfo } from "components/ui/userInfo";
+import Image from "next/image";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
+import MyImage from "components/ui/image";
 
 type Props = {}
 
 function Header({ }: Props) {
   const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
+  const { audioPlayer, turnOffAudio, isTurnOffAudio } = useSiteContext();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   TimeAgo.addLocale(en)
   const timeAgo = new TimeAgo('en-US')
@@ -64,12 +70,14 @@ function Header({ }: Props) {
   }, [statusLoading, bodyBalance])
 
   return <Container>
-    <Stack height={112} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+    <Stack height={{ md: 112, xs: 72 }} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <ButtonSecondRemex
-        aria-label="open drawer"
-        onClick={() => { }}
+        aria-label="turn off, on audio"
+        onClick={() => {
+          turnOffAudio();
+        }}
         sx={{
-          padding: .5, minWidth: 0, borderRadius: 1,
+          padding: 1.5, minWidth: 0, borderRadius: 2,
           img: {
             transition: '.3s all'
           },
@@ -82,20 +90,21 @@ function Header({ }: Props) {
           }
         }}
       >
-        <img src={VolumnImage} alt="" />
+        {
+          isTurnOffAudio ? <img src={VolumeTurnOffImage} alt="" /> : <img src={VolumnImage} alt="" />
+        }
       </ButtonSecondRemex>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>
-          <img width={106} height={64} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
+          <Box position={'relative'} width={{ md: 105.19, xs: 65.5 }} height={{ md: 64, xs: 40 }} >
+
+            <Image fill style={{ objectFit: "contain" }} alt="" src={`/assets/logos/logo${!darkMode ? '-light' : ''}.svg`} />
+          </Box>
         </Link>
       </Box>
-      <ButtonSecondRemex
-        aria-label="open drawer"
-        onClick={() => { }}
-        sx={{ padding: .5, minWidth: 0, borderRadius: '0px 4px 4px 0px' }}
-      >
-        <LeftIcon />
-      </ButtonSecondRemex>
+      <Box  >
+        <UserInfo />
+      </Box>
     </Stack>
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}

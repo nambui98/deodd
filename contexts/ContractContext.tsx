@@ -5,8 +5,9 @@ import { UserService } from "../services/user.service";
 import { deoddContract } from '../libs/contract';
 import { useWalletContext } from './WalletContext';
 import { getUserByPublicAddress } from '../libs/apis/flipCoin';
-import { FlipResultType } from '../libs/types';
+import { AudioPlay, FlipResultType } from '../libs/types';
 import { useContractEvent } from 'wagmi';
+import { useSiteContext } from './SiteContext';
 // import { watchContractEvent } from '@wagmi/core'
 // import { Contract, EventData, providers } from '@wagmi/contract';
 
@@ -22,12 +23,12 @@ export type GameResultType = {
 	amount: string,
 	coinSide: number,
 	flipResult: number,
-	tokenId: BigNumber,
-	typeId: BigNumber,
-	jackpotWin: BigNumber,
-	tossPoints: BigNumber,
-	winningStreakAmount: string,
-	winningStreakLength: string
+	tokenId?: BigNumber,
+	typeId?: BigNumber,
+	jackpotWin?: BigNumber,
+	tossPoints?: BigNumber,
+	winningStreakAmount?: string,
+	winningStreakLength?: string
 } | undefined;
 
 interface ContractContextType {
@@ -38,6 +39,8 @@ interface ContractContextType {
 	audio: any,
 	setIsFinish: Function,
 	isFinish: boolean,
+	dataSelected: DataSelected,
+	setDataSelected: Function,
 }
 
 const ContractContext = createContext<ContractContextType>({
@@ -48,16 +51,27 @@ const ContractContext = createContext<ContractContextType>({
 	audio: undefined,
 	setIsFinish: () => { },
 	isFinish: false,
+	dataSelected: undefined,
+	setDataSelected: () => { },
 })
+export type DataSelected = {
+	coinSide?: 0 | 1,
+	amount?: number,
+	index?: number,
+} | undefined
+
 
 export const useContractContext = () => useContext(ContractContext);
 
 export const ContractProvider: React.FC<IProps> = ({ children }) => {
 
 	const { walletAddress, contractDeodd, refresh, setRefresh } = useWalletContext();
+	const { audioPlayer } = useSiteContext();
 	const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.flip);
 	const [gameResult, setGameResult] = useState<GameResultType>(undefined);
 	const [isFinish, setIsFinish] = useState<boolean>(false);
+
+	const [dataSelected, setDataSelected] = useState<DataSelected>()
 	// const unWatch = watchContractEvent(
 	// 	{
 	// 		address: deoddContract.address,
@@ -105,40 +119,50 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	useContractEvent({
 		address: deoddContract.address,
 		abi: deoddContract.abi,
-		eventName: 'FlipCoinResult',
+		eventName: 'FlipResult',
 		async listener(...args) {
 			debugger
 			if (isFinish) {
-				const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
-				console.log("latestFlipId: " + latestFlipId);
+				// const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
+				// console.log("latestFlipId: " + latestFlipId);
+				debugger
+				let {
+					//  amount, 
+					fId, randomValue, flipResult, timestamp
+					// flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet 
+				}: FlipResultType = (args[4] as any).args;
+				// if (latestFlipId?.eq(fId)) {
+				audio.loop = false;
+				audio.load();
+				// let res = await getUserByPublicAddress(walletAddress, fId.toString());
+				// console.log(res);
+				// console.log("result from backend: " + res);
+				// console.log(playerWin.toNumber());
 
-				let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = (args[10] as any).args;
-				if (latestFlipId?.eq(fId)) {
-					audio.loop = false;
-					audio.load();
-					let res = await getUserByPublicAddress(walletAddress, fId.toString());
-					console.log(res);
-					console.log("result from backend: " + res);
-					console.log(playerWin.toNumber());
+				debugger
+				setGameResult({
+					amount: (dataSelected?.amount ?? 0).toString(),
+					coinSide: dataSelected?.coinSide ?? 0,
+					flipResult: flipResult.toNumber(),
 
-					debugger
-					setGameResult({
-						amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
-						coinSide: flipChoice.toNumber(),
-						flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
-						tokenId: tokenId,
-						typeId,
-						jackpotWin: jackpotReward,
-						tossPoints: tpoint,
-						winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
-						winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
-					})
-					setStatusGame(StatusGame.result);
-					setRefresh(!refresh);
-					setIsFinish(false);
-					const audioResult = new Audio(`/assets/${playerWin.gt(BigNumber.from(0)) ? 'win' : 'lost'}.mp3`);
-					audioResult.play();
-					// audioResult.load();
+					// coinSide: flipChoice.toNumber(),
+					// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
+					// tokenId: tokenId,
+					// typeId,
+					// jackpotWin: jackpotReward,
+					// tossPoints: tpoint,
+					// winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
+					// winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
+				})
+				setStatusGame(StatusGame.result);
+				setRefresh(!refresh);
+				setIsFinish(false);
+
+				audioPlayer(AudioPlay.STOP);
+				if (BigNumber.from(dataSelected?.coinSide).eq(flipResult)) {
+					audioPlayer(AudioPlay.WIN);
+				} else {
+					audioPlayer(AudioPlay.LOST);
 				}
 			}
 		},
@@ -199,7 +223,9 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		setGameResult,
 		audio,
 		isFinish,
-		setIsFinish
+		setIsFinish,
+		dataSelected,
+		setDataSelected,
 	}
 	return <ContractContext.Provider value={value}>{children}</ContractContext.Provider>
 }

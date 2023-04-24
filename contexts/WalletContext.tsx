@@ -1,13 +1,11 @@
-import { BigNumber, Contract, ethers, utils } from "ethers"
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
-import detectEthereumProvider from '@metamask/detect-provider';
+import { BigNumber, Contract, ethers } from "ethers";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { UserService } from "../services/user.service";
 
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useProvider, useSwitchNetwork } from "wagmi";
-import { disconnect } from "process";
+import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 interface Map {
 	[key: string]: any;

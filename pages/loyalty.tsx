@@ -1,8 +1,8 @@
 
 import BottomContent from "@/templates/loyalty/BottomContent";
 import TopContent from "@/templates/loyalty/TopContent";
-import { Box, Typography } from "@mui/material";
-import { Container } from "../styles/common";
+import { Box, Container, Typography } from "@mui/material";
+// import { Container } from "../styles/common";
 
 const LoyaltyPage: React.FC = () => {
     return (<Box mb={10}>

@@ -21,9 +21,16 @@ export const coin0 = "/assets/images/coin/coin0.png";
 export const coin6 = "/assets/images/coin/coin6.png";
 
 export const VolumnImage = "/assets/icons/volume-high.svg";
-export const BnbImage = "/assets/icons/binance-coin.svg";
+export const VolumeTurnOffImage = "/assets/icons/volume-cross.svg";
+export const BnbImage = "/assets/images/binance-coin-(bnb).png";
 export const MoneyBagImage = "/assets/images/money-bag_1.png";
 export const LotteryImage = "/assets/images/balls_1.png";
+export const Avatar2Image = "/assets/images/avatar2.png";
+export const TestailCoinImage = "/assets/images/testail_coin.png";
+
+export const HeadCoinImage= "/assets/icons/head.svg";
+export const TailCoinImage = "/assets/icons/tail.svg";
+export const GoldCupImage = "/assets/images/gold-cup.png";
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,

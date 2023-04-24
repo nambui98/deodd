@@ -1,16 +1,18 @@
 import { BigNumber, ethers } from "ethers"
 import { useEffect, useState } from "react"
+import LoadingButton from '@mui/lab/LoadingButton';
+import Image from 'next/image'
 // import { Button } from "../../../ui/button"
 import { useWalletContext } from "../../../../contexts/WalletContext"
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
 import { TEXT_STYLE } from "../../../../styles/common"
 import { Flipping } from "../flipping"
 import { Result } from "../result"
-import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
+import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, StackProps, styled, Typography } from "@mui/material";
 import { propsTheme, StatusGame } from "../../../../pages/homepage"
 import { Popup } from "../../../common/popup"
 import { useColorModeContext } from "../../../../contexts/ColorModeContext"
-import { ButtonMain } from "../../../ui/button"
+import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button"
 import { Format } from "../../../../utils/format"
 import { Convert } from "../../../../utils/convert"
 // import { feeManagerContract } from "libs/contract"
@@ -19,9 +21,14 @@ import { useContractContext } from "contexts/ContractContext"
 import { DeoddService } from "libs/apis"
 import { useProfileContract } from "hooks/useProfileContract"
 import { useDisconnect } from "wagmi"
+import { BnbIcon, HeadCoinIcon } from "utils/Icons";
+import CoinAnimation from "components/common/CoinAnimation";
+import { TestailCoinImage } from "utils/Images";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
 
-const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12]
-
+// const amounts = [0.1, 0.5, 1, 2, 5, 10]
+const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
@@ -34,24 +41,26 @@ interface IProps {
   statusGame: StatusGame
   setStatusGame: (status: StatusGame) => any
 }
+type DataSelected = {
+  coinSide?: 0 | 1,
+  amount?: number,
+  index?: number,
+} | undefined
 
 export const PlayPart: React.FC<any> = () => {
   const { walletAddress, refresh, setRefresh, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
   const { disconnect } = useDisconnect()
-  const { setIsFinish, audio, statusGame, setStatusGame } = useContractContext();
+  const { setIsFinish, statusGame, setStatusGame, setDataSelected, dataSelected } = useContractContext();
   const { registerName } = useProfileContract();
   const { handleFlipToken } = useDeoddContract();
   const { darkMode } = useColorModeContext();
+  const { audioPlayer } = useSiteContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
     body: <></>
   })
   const [currentProfile, setCurrentProfile] = useState<{ username: any, avatar: any }>({ username: null, avatar: userInfo.avatar || 0 })
-  const [dataSelect, setDataSelect] = useState<{
-    coinSide?: 0 | 1,
-    amount?: number,
-    index?: number,
-  }>()
+  // const [dataSelect, setDataSelect] = useState<DataSelected>()
 
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
@@ -74,15 +83,15 @@ export const PlayPart: React.FC<any> = () => {
   )
 
   const handleFlip = async () => {
-    console.log(ethers.utils.parseUnits(`${dataSelect?.amount}`));
+    console.log(ethers.utils.parseUnits(`${dataSelected?.amount}`));
 
     debugger
-    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
+    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
 
     debugger
     // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
     let complement: BigNumber = BigNumber.from(0);
-    let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelect!.amount!.toString()).add(fee);
+    let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelected!.amount!.toString()).add(fee);
     if (bnbAssets.gte(totalAmount)) {
       complement = BigNumber.from(0);
     }
@@ -101,17 +110,16 @@ export const PlayPart: React.FC<any> = () => {
         setStatusLoadingFlip(true);
         setIsFinish(false);
         try {
-          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelect?.amount}`))
-          audio.loop = true;
-          audio.play();
+          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
+          audioPlayer(AudioPlay.GET_READY);
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
           if (getCaculateFee) {
             setIsFinish(true);
             debugger
             const res = await handleFlipToken(
-              dataSelect?.index || 0,
-              dataSelect?.coinSide || 0,
+              dataSelected?.index || 0,
+              dataSelected?.coinSide || 0,
               complement
             )
             if (res.status) {
@@ -119,7 +127,7 @@ export const PlayPart: React.FC<any> = () => {
             }
           }
         } catch (error: any) {
-          audio.load();
+          audioPlayer(AudioPlay.STOP);
           setStatusLoadingFlip(false)
           setStatusGame(StatusGame.flip)
           setPopup({
@@ -227,54 +235,54 @@ export const PlayPart: React.FC<any> = () => {
     }
   }
 
-  const renderPlayPart = () => {
-    return <div>
-      <BoxWallet themelight={!darkMode}>
-        <Avt><img alt="" src={userInfo?.avatar ? `assets/images/${checkAvatar()}.png` : "assets/icons/avt.svg"} /></Avt>
-        <Box sx={{ '@media (min-width: 800px)': { display: 'flex', alignItems: 'center' } }}>
-          <Wallet themelight={!darkMode}>{userInfo?.userName ? <Box>
-            {userInfo?.userName + " "}
-            <Typography display={{ xs: "none", md: 'initial' }} variant="body2" component={'span'}>({Convert.convertWalletAddress(walletAddress, 5, 4)})</Typography>
+  const RenderPlayPart = () => {
+    return <Box>
+      <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
+      <Box maxWidth={544} mx="auto" textAlign={'left'}>
 
-          </Box> : Convert.convertWalletAddress(walletAddress, 6, 3)}</Wallet>
-          <NickName onClick={handleCreateProfile}>{userInfo.userName ? 'Change' : 'Create'} profile</NickName>
+        <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
+        <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
+          {amounts?.map((item, index) => (
+            <Box flexBasis={{ md: 'auto', xs: "30%" }} flexGrow={1} flexShrink={0} key={index}>
+              <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
+                <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
+                <BnbIcon />
+              </ButtonLoadingShadow>
+            </Box>
+          ))}
+        </Stack>
+        <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
+          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 0 })}>
+            <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
+          </Box>
+          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 1 })}>
+            <SideCoin isSelected={dataSelected?.coinSide === 1} />
+          </Box>
+        </Stack>
+        <Box mt={{ sm: 3, xs: 2 }}>
+          <ButtonLoading
+            onClick={handleFlip}
+            disabled={dataSelected?.coinSide !== undefined && dataSelected?.coinSide >= 0 && dataSelected?.amount ? false : true}
+            loading={statusLoadingFlip}>
+            <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
+          </ButtonLoading>
         </Box>
-        <NickName style={{ marginLeft: 'auto' }} onClick={handleShowDisconnect}>Disconnect</NickName>
-      </BoxWallet>
-      <Typography variant="h5" style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>You like</Typography>
-      <Stack direction={'row'} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-        <Itemcoin themelight={!darkMode} active={dataSelect?.coinSide === 0} onClick={() => setDataSelect({ ...dataSelect, coinSide: 0 })}><img alt="" src={`assets/icons/head${dataSelect?.coinSide === 0 ? '' : '-disable'}.svg`} /> HEAD</Itemcoin>
-        <Itemcoin themelight={!darkMode} active={dataSelect?.coinSide === 1} onClick={() => setDataSelect({ ...dataSelect, coinSide: 1 })}><img alt="" src={`assets/icons/tail${dataSelect?.coinSide === 1 ? '' : '-disable'}.svg`} /> TAIL</Itemcoin>
-      </Stack>
-      <Typography variant="h5" mt={{ xs: 3, md: 4 }} style={{ ...TEXT_STYLE(24, 500), marginBottom: '16px', textAlign: 'left' }}>Bet amount</Typography>
-      <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} rowGap={2}>
-        {amounts?.map((item, index) => (
-          <Box flexBasis={'30%'} width={'100%'} key={index}><ButtonMain title={`${item} BNB`} onClick={() => setDataSelect({ ...dataSelect, amount: item, index })} active={true} customStyle={{
-            padding: '13px 0px',
-            width: '100%',
-            background: !darkMode ? (dataSelect?.amount === item ? '#FC753F' : '#FFFFFF') : (dataSelect?.amount === item ? '#FEF156' : '#25244B'),
-            color: !darkMode ? dataSelect?.amount === item ? '#FFFFFF' : '#FC753F' : dataSelect?.amount === item ? '#1C1B3E' : '#FEF156',
-          }} /></Box>
-        ))}
-      </Stack>
-      <ButtonMain
-        disable={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? false : true}
-        active={(dataSelect?.coinSide === 0 || dataSelect?.coinSide === 1) && dataSelect.amount ? true : false}
-        title={statusLoadingFlip ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'double or nothing'}
-        onClick={handleFlip} customStyle={{
-          padding: '13.5px 0',
-          width: "100%",
-          marginTop: 4
-        }} />
-    </div>
+      </Box>
+    </Box>
   }
 
-  const renderUi = () => {
+  const RenderUi = ({ statusGame, dataSelected }: {
+    statusGame: StatusGame,
+    dataSelected: DataSelected
+  }) => {
     switch (statusGame) {
-      case 0: return renderPlayPart()
-      case 1: return <Flipping amount={`${dataSelect?.amount}`} />
-      case 2: return <Result
-      />
+      case 0:
+        return <RenderPlayPart />
+      case 1:
+        return <Flipping isHead={dataSelected?.coinSide === 0} amount={`${dataSelected?.amount}`} />
+      case 2:
+        return <Result />
+      default: return <Box></Box>
     }
   }
 
@@ -288,7 +296,7 @@ export const PlayPart: React.FC<any> = () => {
   useEffect(() => {
     if (localStorage.getItem('popupCreateProfile') !== walletAddress) {
       localStorage.setItem('popupCreateProfile', walletAddress)
-      localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
+      // localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
     }
   }, [walletAddress])
 
@@ -301,25 +309,100 @@ export const PlayPart: React.FC<any> = () => {
 
   }, [userInfo.avatar])
 
-  return <Wrap>
-    {renderUi()}
+  return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+    <RenderUi statusGame={statusGame} dataSelected={dataSelected} />
+    <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
+      <Stack alignItems={'flex-end'}>
+
+        <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
+        <Typography variant="h3" fontWeight={600}>124</Typography>
+      </Stack>
+      <img width={40} src={TestailCoinImage} alt="" />
+
+    </Stack>
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
       {popup.body}
     </Box>} />
-  </Wrap>
+  </Box>
 }
 
-const Wrap = styled(Box)({
-  width: '100%',
-})
-const BoxWallet = styled(Box)((props: propsTheme) => ({
-  padding: '12px 16px',
-  background: props.themelight ? '#F8F9FB' : '#181536',
-  borderRadius: 8,
-  marginBottom: 32,
-  display: 'flex',
-  alignItems: 'center',
-}))
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
+(<Stack
+  direction="row"
+  gap={3}
+  borderRadius={2}
+  // maxWidth={256}
+  width={1}
+  py={{ sm: 3, xs: 2 }}
+  justifyContent={"center"}
+  border={isSelected ? " 1px solid #FEF156" : "1px solid transparent"}
+  boxShadow={isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)"}
+  alignItems={'center'}
+  sx={{
+    transition: ".3s all",
+    backgroundColor: "primary.100",
+    cursor: 'pointer',
+    color: isSelected ? 'secondary.main' : "secondary.700",
+    '.disabled, .enabled': {
+      position: 'absolute',
+      inset: 0,
+      zIndex: 1,
+      transition: "all .3s",
+      opacity: 1
+    },
+    '.enabled': {
+      zIndex: isSelected ? 1 : 0,
+      opacity: isSelected ? 1 : 0,
+    },
+    '&:hover': {
+      border: "1px solid #FEF156",
+      color: 'secondary.main',
+      '.disabled': {
+        zIndex: 0,
+        opacity: 0,
+      },
+      '.enabled': {
+        zIndex: 1,
+        opacity: 1
+      },
+    },
+  }}
+>
+  {
+    isHead ?
+      <>
+        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+          <Box className="disabled" width={1}>
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head-disable.svg`} />
+          </Box>
+          <Box className="enabled" width={1} >
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head.svg`} />
+          </Box>
+        </Box>
+
+        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+          HEAD
+        </Typography>
+      </>
+      : <>
+        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+          <Box className="disabled" width={1} >
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail-disable.svg`} />
+          </Box>
+          <Box className="enabled" width={1}>
+            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail.svg`} />
+          </Box>
+        </Box>
+        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
+          TAIL
+        </Typography>
+      </>
+  }
+</Stack>
+)
+
+
+
 const Avt = styled(Box)({
   marginRight: 16,
   '& img': {
