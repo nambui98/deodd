@@ -28,7 +28,7 @@ import { useSiteContext } from "contexts/SiteContext";
 import { AudioPlay } from "libs/types";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
-const amounts = [0.016, 0.02, 0.04, 0.06, 0.08, 0.1]
+const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
@@ -110,11 +110,10 @@ export const PlayPart: React.FC<any> = () => {
         setStatusLoadingFlip(true);
         setIsFinish(false);
         try {
-          const getCaculateFee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
           audioPlayer(AudioPlay.GET_READY);
           setStatusGame(StatusGame.flipping)
           setPopup({ ...popup, status: false })
-          if (getCaculateFee) {
+          if (fee) {
             setIsFinish(true);
             debugger
             const res = await handleFlipToken(
@@ -243,7 +242,7 @@ export const PlayPart: React.FC<any> = () => {
         <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
         <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
           {amounts?.map((item, index) => (
-            <Box flexBasis={{ md: 'auto', xs: "30%" }} flexGrow={1} flexShrink={0} key={index}>
+            <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>
               <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
                 <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
                 <BnbIcon />
