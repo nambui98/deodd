@@ -11,6 +11,7 @@ import { Main } from "components/ui/main";
 import LeftSidebar from "./LeftSidebar";
 import RightSidebar from "./RightSidebar";
 import MyBottomNavigation from "./BottomNavigation";
+import { Meta } from "./Meta";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -40,6 +41,7 @@ const Layout = ({ children }: IProps) => {
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
+            <Meta title="deODD" description="" />
             <AppBar
                 leftOpen={leftOpen}
                 rightOpen={rightOpen}
