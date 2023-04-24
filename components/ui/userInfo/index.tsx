@@ -222,6 +222,7 @@ export function UserInfo() {
                   color: "secondary.400",
                   fontSize: "0.75rem",
                   border: "none",
+                  textTransform: "capitalize",
                   "&:hover": {
                     border: "none",
                     color: "secondary.400",
@@ -229,7 +230,7 @@ export function UserInfo() {
                   },
                 }}
               >
-                Disconnect Wallet
+                disconnect wallet
               </Button>
             </Stack>
           </AccordionDetails>
