@@ -219,6 +219,7 @@ export function UserInfo() {
                 "&:hover": {
                   border: "none",
                   color: "secondary.400",
+                  backgroundColor: "transparent"
                 },
               }}
             >
