@@ -41,13 +41,12 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
         fontWeight: "400",
         border: "none",
         svg: {
-          stroke: "#96A5C0",
+          stroke: "transparent",
           transition: "0.3s"
         },
         "&:hover": {
           svg: {
-            stroke: "#F5F5FA",
-            fill: "#F5F5FA",
+            stroke: "transparent",
           },
           border: "none",
           backgroundColor: "neutral.A100",
@@ -87,7 +86,6 @@ function FlipHistoryItem() {
           </Typography>
         </Stack>
       </Stack>
-      <Divider flexItem></Divider>
     </>
   );
 }
@@ -104,29 +102,39 @@ export function UserInfo() {
     return null;
   } else {
     return (
-      <Box position={"relative"} height={"3rem"} width={238} >
+      <Box position={"relative"} height={"3rem"} >
         <Accordion
           disableGutters
           expanded={expanded} onChange={handleChange()}
           sx={{
             backgroundColor: "primary.100",
             position: "absolute",
+            padding: "0",
             top: 0,
-            right: 2,
-            transition: '.3s all',
+            right: 0,
+            outline: `${expanded ? "2px solid #3F4251" : ""}`,
+            "&.MuiAccordion-root": {
+              borderRadius: "0.5rem",
+            }
           }}
         >
           <AccordionSummary
             expandIcon={<ArrowDownIcon fill="#F5F5FA" />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls="userinfo-content"
+            id="userinfo-header"
             sx={{
               transition: '.3s all',
-            }}
+              "&.MuiAccordionSummary-root": {
+                paddingInline: "0.75rem", //12px
+              }
+            }
+            }
           >
             <Stack
               direction={"row"}
               gap={2}
+              divider={expanded ? (<Divider sx={{ width: "1px", backgroundColor: "primary.300" }} />) : ""}
+              paddingRight={expanded ? 1 : 0.5} // Spacing between expand icon and content
             >
               <Stack direction={"row"} alignItems={"center"} gap={1}>
                 <Typography
@@ -144,29 +152,19 @@ export function UserInfo() {
                   {Format.formatMoneyFromBigNumberEther(bnbBalance)}
                 </Typography>
                 <BnbIcon fill={Colors.primaryDark} />
-
               </Stack>
 
               <Stack
                 direction={"row"}
-                gap={2}
+                gap={1}
                 alignItems={"center"}
                 sx={{
                   // opacity: !expanded ? 0 : 1,
-                  transition: '.3s all',
+                  transition: '.3s opacity',
                   width: { xs: expanded ? 1 : 0, xl: 1 },
-
                   display: { xs: expanded ? 'flex' : 'none', xl: 'flex' },
-
                 }}
               >
-                <Divider
-                  orientation="vertical"
-                  sx={{
-                    width: '1.5px', backgroundColor: "primary.300",
-
-                  }}
-                />
                 <Typography fontSize={"0.875rem"} variant="h3">
                   {
                     Convert.convertWalletAddress(walletAddress, 5, 4)
@@ -187,7 +185,13 @@ export function UserInfo() {
             </Stack>
           </AccordionSummary>
           <AccordionDetails
-            sx={{ display: "flex", flexDirection: "column", gap: 1.5, transition: !expanded ? '.3s width' : '', width: { xs: expanded ? 1 : 0, xl: 1 } }}
+            sx={{
+              display: expanded ? "flex" : "none", flexDirection: "column", gap: 1.5, transition: '.3s opacity', opacity: !expanded ? 0 : 1, "&.MuiAccordionDetails-root": {
+                padding: "0.75rem",
+                paddingBlockStart: 0,
+                paddingBlockEnd: 0.5,
+              }
+            }}
           >
             <Stack direction={"row"} spacing={1}>
               <UserInfoButton text="Profile" startIcon={<ProfileCircleIcon />} />
@@ -201,30 +205,33 @@ export function UserInfo() {
             >
               Flipping History
             </Typography>
-            <Stack gap={1}>
-              <Typography textAlign={'center'} variant="h3">Comming soon</Typography>
-              {/* <FlipHistoryItem />
+            <Stack gap={1} divider={<Divider />}>
+              {/* <Typography textAlign={'center'} variant="h3">Comming soon</Typography> */}
               <FlipHistoryItem />
               <FlipHistoryItem />
-              <FlipHistoryItem /> */}
+              <FlipHistoryItem />
+              <FlipHistoryItem />
             </Stack>
-            <Button
-              variant="text"
-              onClick={() => { disconnect() }}
-              startIcon={<LogoutIcon />}
-              sx={{
-                color: "secondary.400",
-                fontSize: "0.75rem",
-                border: "none",
-                "&:hover": {
-                  border: "none",
+            <Stack>
+              <Divider></Divider>
+              <Button
+                variant="text"
+                onClick={() => { disconnect() }}
+                startIcon={<LogoutIcon />}
+                sx={{
                   color: "secondary.400",
-                  backgroundColor: "transparent"
-                },
-              }}
-            >
-              Disconnect Wallet
-            </Button>
+                  fontSize: "0.75rem",
+                  border: "none",
+                  "&:hover": {
+                    border: "none",
+                    color: "secondary.400",
+                    backgroundColor: "transparent"
+                  },
+                }}
+              >
+                Disconnect Wallet
+              </Button>
+            </Stack>
           </AccordionDetails>
         </Accordion>
       </Box >
