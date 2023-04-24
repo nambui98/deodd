@@ -6,7 +6,7 @@ export function DashboardCard(props: BoxProps) {
     <Box
       p={2}
       bgcolor={"secondary.300"}
-      borderRadius={1.5}
+      borderRadius={"0.5rem"}
       display={"flex"}
       alignItems={"center"}
       {...props}
