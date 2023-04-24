@@ -32,19 +32,26 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
   return (
     <Button
       variant="contained"
+      disableElevation
       sx={{
         width: "50%",
         color: "secondary.100",
         backgroundColor: "#3F4251",
         fontSize: "0.875rem",
         fontWeight: "400",
+        border: "none",
         svg: {
-          stroke: "transparent",
+          stroke: "#96A5C0",
+          transition: "0.3s"
         },
         "&:hover": {
           svg: {
-            stroke: "transparent",
+            stroke: "#F5F5FA",
+            fill: "#F5F5FA",
           },
+          border: "none",
+          backgroundColor: "neutral.A100",
+          color: "secondary.600"
         },
       }}
       startIcon={props.startIcon}
@@ -93,7 +100,7 @@ export function UserInfo() {
   const handleChange = () => () => {
     setExpanded(!expanded);
   };
-  if (!walletIsConnected) {
+  if (walletIsConnected) {
     return null;
   } else {
     return (
