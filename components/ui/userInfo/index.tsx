@@ -99,7 +99,7 @@ export function UserInfo() {
   const handleChange = () => () => {
     setExpanded(!expanded);
   };
-  if (walletIsConnected) {
+  if (!walletIsConnected) {
     return null;
   } else {
     return (
