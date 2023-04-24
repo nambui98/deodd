@@ -7,6 +7,7 @@ import {
   Box,
   Divider,
   Button,
+  ButtonProps,
 } from "@mui/material";
 import {
   ArchiveIcon,
@@ -26,6 +27,41 @@ import { ethers } from "ethers";
 import { Format } from "utils/format";
 import Link from "next/link";
 import { useDisconnect } from "wagmi";
+
+function UserInfoButton(props: ButtonProps & { text: string }) {
+  return (
+    <Button
+      variant="contained"
+      disableElevation
+      sx={{
+        width: "50%",
+        color: "secondary.100",
+        backgroundColor: "#3F4251",
+        fontSize: "0.875rem",
+        fontWeight: "400",
+        border: "none",
+        textTransform: "capitalize",
+        svg: {
+          stroke: "transparent",
+          transition: "0.3s"
+        },
+        "&:hover": {
+          svg: {
+            stroke: "transparent",
+          },
+          border: "none",
+          backgroundColor: "neutral.A100",
+          color: "secondary.600"
+        },
+      }}
+      startIcon={props.startIcon}
+    >
+      {props.text}
+    </Button>
+  );
+}
+
+
 
 function FlipHistoryItem() {
   return (
@@ -51,7 +87,6 @@ function FlipHistoryItem() {
           </Typography>
         </Stack>
       </Stack>
-      <Divider flexItem></Divider>
     </>
   );
 }
@@ -64,175 +99,152 @@ export function UserInfo() {
   const handleChange = () => () => {
     setExpanded(!expanded);
   };
-  if (!walletIsConnected) {
+  if (walletIsConnected) {
     return null;
-  } else (walletIsConnected)
-  return (
-    <Box position={"relative"} height={"3rem"} width={238} >
-      <Accordion
-        disableGutters
-        expanded={expanded} onChange={handleChange()}
-        sx={{
-          backgroundColor: "primary.100",
-          position: "absolute",
-          top: 0,
-          right: 2,
-          transition: '.3s all',
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ArrowDownIcon fill="#F5F5FA" />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+  } else {
+    return (
+      <Box position={"relative"} height={"3rem"} >
+        <Accordion
+          disableGutters
+          expanded={expanded} onChange={handleChange()}
           sx={{
-            transition: '.3s all',
+            backgroundColor: "primary.100",
+            position: "absolute",
+            padding: "0",
+            top: 0,
+            right: 0,
+            outline: `${expanded ? "2px solid #3F4251" : ""}`,
+            "&.MuiAccordion-root": {
+              borderRadius: "0.5rem",
+            }
           }}
         >
-          <Stack
-            direction={"row"}
-            gap={2}
+          <AccordionSummary
+            expandIcon={<ArrowDownIcon fill="#F5F5FA" />}
+            aria-controls="userinfo-content"
+            id="userinfo-header"
+            sx={{
+              transition: '.3s all',
+              "&.MuiAccordionSummary-root": {
+                paddingInline: "0.75rem", //12px
+              }
+            }
+            }
           >
-            <Stack direction={"row"} alignItems={"center"} gap={1}>
-              <Typography
-                variant="h3"
-                fontSize={"0.75rem"}
-                textTransform={"uppercase"}
-                color={"text.disabled"}
-                display={{ sm: 'inline', xs: 'none' }}
-              >
-                balance
-              </Typography>
-
-              <Typography fontSize={"0.875rem"} variant="h3">
-                {/* 1.534 */}
-                {Format.formatMoneyFromBigNumberEther(bnbBalance)}
-              </Typography>
-              <BnbIcon fill={Colors.primaryDark} />
-
-            </Stack>
-
             <Stack
               direction={"row"}
-              gap={2}
-              alignItems={"center"}
-              sx={{
-                // opacity: !expanded ? 0 : 1,
-                transition: '.3s all',
-                width: { xs: expanded ? 1 : 0, xl: 1 },
-
-                display: { xs: expanded ? 'flex' : 'none', xl: 'flex' },
-
-              }}
-            >
-              <Divider
-                orientation="vertical"
-                sx={{
-                  width: '1.5px', backgroundColor: "primary.300",
-
-                }}
-              />
-              <Typography fontSize={"0.875rem"} variant="h3">
+              divider={<Divider sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
+              sx={
                 {
-                  Convert.convertWalletAddress(walletAddress, 5, 4)
+                  paddingRight: { xs: 0.5, md: 1 },
+                  gap: { xs: expanded ? 2 : 0, md: 2 }, // Spacing between expand icon and content
                 }
-              </Typography>
-              <Box
-                sx={{
-                  borderRadius: "50%",
-                  width: "1.5rem",
-                  aspectRatio: "1",
-                  position: "relative",
-                }}
-                overflow={"hidden"}
-              >
-                <Image src={Avatar2Image} fill alt="avatar-image" />
-              </Box>
-            </Stack>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{ display: "flex", flexDirection: "column", gap: 1.5, transition: !expanded ? '.3s width' : '', width: { xs: expanded ? 1 : 0, xl: 1 } }}
-        >
-          <Stack direction={"row"} spacing={1}>
-            <Button
-              variant="contained"
-              sx={{
-                width: "50%",
-                color: "secondary.100",
-                backgroundColor: "#3F4251",
-                fontSize: "0.875rem",
-                fontWeight: "400",
-                svg: {
-                  stroke: "transparent",
-                },
-                "&:hover": {
-                  svg: {
-                    stroke: "transparent",
-                  },
-                },
-              }}
-              startIcon={<ProfileCircleIcon />}
+              }
             >
-              Profile
-            </Button>
+              <Stack direction={"row"} alignItems={"center"} gap={1}>
+                <Typography
+                  variant="h3"
+                  fontSize={"0.75rem"}
+                  textTransform={"uppercase"}
+                  color={"text.disabled"}
+                  display={{ sm: 'inline', xs: 'none' }}
+                >
+                  balance
+                </Typography>
 
-            <Button
-              variant="contained"
-              LinkComponent={Link}
-              href="/assets"
-              sx={{
-                width: "50%",
-                color: "secondary.100",
-                backgroundColor: "#3F4251",
-                fontSize: "0.875rem",
-                fontWeight: "400",
-                svg: {
-                  stroke: "transparent",
-                },
-                "&:hover": {
-                  svg: {
-                    stroke: "transparent",
-                  },
-                },
-              }}
-              startIcon={<ArchiveIcon />}
-            >
-              Assets
-            </Button>
-          </Stack>
-          <Divider></Divider>
-          <Typography
-            variant="h3"
-            fontSize={"0.875rem"}
-            color={"text.disabled"}
-          >
-            Flipping History
-          </Typography>
-          <Stack gap={1}>
-            <Typography textAlign={'center'} variant="h3">Comming soon</Typography>
-            {/* <FlipHistoryItem />
-            <FlipHistoryItem />
-            <FlipHistoryItem />
-            <FlipHistoryItem /> */}
-          </Stack>
-          <Button
-            variant="text"
-            onClick={() => { disconnect() }}
-            startIcon={<LogoutIcon />}
+                <Typography fontSize={"0.875rem"} variant="h3">
+                  {/* 1.534 */}
+                  {Format.formatMoneyFromBigNumberEther(bnbBalance)}
+                </Typography>
+                <BnbIcon fill={Colors.primaryDark} />
+              </Stack>
+
+              <Stack
+                direction={"row"}
+                gap={1}
+                alignItems={"center"}
+                sx={{
+                  // opacity: !expanded ? 0 : 1,
+                  width: { xs: expanded ? 1 : 0, md: 1 },
+                  display: { xs: expanded ? "flex" : "none", md: "flex" }
+                }}
+              >
+                <Typography fontSize={"0.875rem"} variant="h3">
+                  {
+                    Convert.convertWalletAddress(walletAddress, 5, 4)
+                  }
+                </Typography>
+                <Box
+                  sx={{
+                    borderRadius: "50%",
+                    width: "1.5rem",
+                    aspectRatio: "1",
+                    position: "relative",
+                  }}
+                  overflow={"hidden"}
+                >
+                  <Image src={Avatar2Image} fill alt="avatar-image" />
+                </Box>
+              </Stack>
+
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails
             sx={{
-              color: "secondary.400",
-              fontSize: "0.75rem",
-              border: "none",
-              "&:hover": {
-                border: "none",
-                color: "secondary.400",
-              },
+              display: expanded ? "flex" : "none",
+              flexDirection: "column", gap: 1.5,
+              transition: '300ms opacity',
+              opacity: !expanded ? 0 : 1,
+              "&.MuiAccordionDetails-root": {
+                padding: "0.75rem",
+                paddingBlockStart: 0,
+                paddingBlockEnd: 0.5,
+              }
             }}
           >
-            Disconnect Wallet
-          </Button>
-        </AccordionDetails>
-      </Accordion>
-    </Box >
-  );
+            <Stack direction={"row"} spacing={1}>
+              <UserInfoButton text="Profile" startIcon={<ProfileCircleIcon />} />
+              <UserInfoButton text="Assets" startIcon={<ArchiveIcon />} />
+            </Stack>
+            <Divider></Divider>
+            <Typography
+              variant="h3"
+              fontSize={"0.875rem"}
+              color={"text.disabled"}
+            >
+              Flipping History
+            </Typography>
+            <Stack gap={1} divider={<Divider />}>
+              {/* <Typography textAlign={'center'} variant="h3">Comming soon</Typography> */}
+              <FlipHistoryItem />
+              <FlipHistoryItem />
+              <FlipHistoryItem />
+              <FlipHistoryItem />
+            </Stack>
+            <Stack>
+              <Divider sx={{ marginBottom: 0.5 }}></Divider>
+              <Button
+                variant="text"
+                onClick={() => { disconnect() }}
+                startIcon={<LogoutIcon />}
+                sx={{
+                  color: "secondary.400",
+                  fontSize: "0.75rem",
+                  border: "none",
+                  textTransform: "capitalize",
+                  "&:hover": {
+                    border: "none",
+                    color: "secondary.400",
+                    backgroundColor: "transparent"
+                  },
+                }}
+              >
+                disconnect wallet
+              </Button>
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+      </Box >
+    );
+  }
 }
