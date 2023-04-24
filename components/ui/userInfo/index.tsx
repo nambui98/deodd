@@ -133,9 +133,13 @@ export function UserInfo() {
           >
             <Stack
               direction={"row"}
-              gap={2}
-              divider={expanded ? (<Divider sx={{ width: "1px", backgroundColor: "primary.300" }} />) : ""}
-              paddingRight={expanded ? 1 : 0.5} // Spacing between expand icon and content
+              divider={<Divider sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
+              sx={
+                {
+                  paddingRight: { xs: 0.5, md: 1 },
+                  gap: { xs: expanded ? 2 : 0, md: 2 }, // Spacing between expand icon and content
+                }
+              }
             >
               <Stack direction={"row"} alignItems={"center"} gap={1}>
                 <Typography
@@ -161,9 +165,8 @@ export function UserInfo() {
                 alignItems={"center"}
                 sx={{
                   // opacity: !expanded ? 0 : 1,
-                  transition: '.3s opacity',
-                  width: { xs: expanded ? 1 : 0, xl: 1 },
-                  display: { xs: expanded ? 'flex' : 'none', xl: 'flex' },
+                  width: { xs: expanded ? 1 : 0, md: 1 },
+                  display: { xs: expanded ? "flex" : "none", md: "flex" }
                 }}
               >
                 <Typography fontSize={"0.875rem"} variant="h3">
@@ -183,11 +186,16 @@ export function UserInfo() {
                   <Image src={Avatar2Image} fill alt="avatar-image" />
                 </Box>
               </Stack>
+
             </Stack>
           </AccordionSummary>
           <AccordionDetails
             sx={{
-              display: expanded ? "flex" : "none", flexDirection: "column", gap: 1.5, transition: '.3s opacity', opacity: !expanded ? 0 : 1, "&.MuiAccordionDetails-root": {
+              display: expanded ? "flex" : "none",
+              flexDirection: "column", gap: 1.5,
+              transition: '300ms opacity',
+              opacity: !expanded ? 0 : 1,
+              "&.MuiAccordionDetails-root": {
                 padding: "0.75rem",
                 paddingBlockStart: 0,
                 paddingBlockEnd: 0.5,
