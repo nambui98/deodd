@@ -26,7 +26,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         >
           <Typography
             alignSelf={"flex-start"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
             variant="body2"
           >
             flip result
@@ -88,7 +88,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         >
           <Typography
             alignSelf={"flex-start"}
-            textTransform={"uppercase"}
+            textTransform={"capitalize"}
             variant="body2"
           >
             user&apos;s flip choice
@@ -160,7 +160,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <Image src={coin0} width={80} height={80} alt="coin-img" />
             {error.haveFlipped ? (
               <>
-                <Typography variant="h1">
+                <Typography variant="h1" fontSize={"3rem"}>
                   {flipDashboardStat.numberFlipToday < 10
                     ? "0" + flipDashboardStat.numberFlipToday
                     : flipDashboardStat.numberFlipToday}

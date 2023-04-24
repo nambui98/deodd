@@ -67,10 +67,11 @@ export function FlipPerUserTable({
         paddingInline: { xs: 1, sm: 2, md: 3 },
         width: "100%",
         mt: 3,
-        height: "fit-content",
+        height: { xs: "fit-content", md: "100%" },
         maxHeight: "27rem",
         overflowY: "auto",
         overflowX: "hidden",
+        position: "relative",
       }}
     >
       <Box
@@ -88,7 +89,42 @@ export function FlipPerUserTable({
         </Typography>
       </Box>
 
-      <Box
+      {error.haveFlipped ? (<Box
+        width={1}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        gap={3}
+      >
+
+        {userPerFlip.map(
+          ([property, value]: [string, number], index: number) => {
+            return (
+              <RowItem
+                key={index}
+                totalUser={totalUser}
+                times={property}
+                percentage={value}
+              />
+            );
+          }
+        )}
+
+      </Box>) : (
+        <Typography
+          variant="h2"
+          textAlign={"center"}
+          width={1}
+          // Center the text when the viewport is bigger. This is a temporary implementation, still thinking of better solution.
+          sx={
+            {
+              paddingBlockEnd: { xs: "2rem", md: 0 }, top: { md: "50%" }, left: { md: "50%" }, transform: { md: "translate(-50%, -100%)" }, position: { md: "absolute" }
+            }
+          }>
+          {error.errorMessage}
+        </Typography>
+      )}
+      {/* <Box
         width={1}
         display={"flex"}
         flexDirection={"column"}
@@ -113,7 +149,7 @@ export function FlipPerUserTable({
             {error.errorMessage}
           </Typography>
         )}
-      </Box>
+      </Box> */}
     </Box>
   );
 }

@@ -34,12 +34,12 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           >
             {error.haveFlipped ? (
               <>
-                <Typography variant="h1">
+                <Typography variant="h1" fontSize={"3rem"}>
                   {streak.winStreak < 10 && streak.winStreak >= 1
                     ? `0${streak.winStreak}`
                     : streak.winStreak}
                 </Typography>
-                <Typography>
+                <Typography fontSize={"1rem"}>
                   {streak.username ? streak.username : "Unknown"}
                 </Typography>
               </>
@@ -62,7 +62,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         >
           <TitleTextAbsolute text="highest loss streak" />
           {error.haveFlipped ? (
-            <Typography variant="h1">
+            <Typography variant="h1" fontSize={"3rem"}>
               {streak.lossStreak < 10 && streak.lossStreak >= 1
                 ? `0${streak.lossStreak}`
                 : streak.lossStreak}
