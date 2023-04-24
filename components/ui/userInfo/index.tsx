@@ -40,6 +40,7 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
         fontSize: "0.875rem",
         fontWeight: "400",
         border: "none",
+        textTransform: "capitalize",
         svg: {
           stroke: "transparent",
           transition: "0.3s"
