@@ -91,7 +91,7 @@ function Header({ }: Props) {
         }}
       >
         {
-          isTurnOffAudio ? <img src={VolumeTurnOffImage} alt="" /> : <img src={VolumnImage} alt="" />
+          isTurnOffAudio ? <MyImage src={VolumeTurnOffImage} alt="volume-off-icon" width={24} height={24} /> : <MyImage src={VolumnImage} alt="volume-on-icon" width={24} height={24} />
         }
       </ButtonSecondRemex>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
