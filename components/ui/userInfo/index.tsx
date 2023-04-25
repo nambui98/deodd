@@ -31,9 +31,11 @@ import { useDisconnect } from "wagmi";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-function UserInfoButton(props: ButtonProps & { text: string }) {
+function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
   return (
     <Button
+      LinkComponent={Link}
+      href={props.href}
       variant="contained"
       disableElevation
       sx={{
@@ -235,8 +237,8 @@ export function UserInfo() {
               }}
             >
               <Stack direction={"row"} spacing={1}>
-                <UserInfoButton text="Profile" startIcon={<ProfileCircleIcon />} />
-                <UserInfoButton text="Assets" startIcon={<ArchiveIcon />} />
+                <UserInfoButton href="/" text="Profile" startIcon={<ProfileCircleIcon />} />
+                <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
               </Stack>
               <Divider></Divider>
               <Typography
