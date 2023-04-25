@@ -1,31 +1,28 @@
-import { BigNumber, ethers } from "ethers"
-import { useEffect, useState } from "react"
-import LoadingButton from '@mui/lab/LoadingButton';
-import Image from 'next/image'
+import { BigNumber, ethers } from "ethers";
+import Image from 'next/image';
+import { useEffect, useState } from "react";
 // import { Button } from "../../../ui/button"
-import { useWalletContext } from "../../../../contexts/WalletContext"
+import { useWalletContext } from "../../../../contexts/WalletContext";
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
-import { TEXT_STYLE } from "../../../../styles/common"
-import { Flipping } from "../flipping"
-import { Result } from "../result"
-import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, StackProps, styled, Typography } from "@mui/material";
-import { propsTheme, StatusGame } from "../../../../pages/homepage"
-import { Popup } from "../../../common/popup"
-import { useColorModeContext } from "../../../../contexts/ColorModeContext"
-import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button"
-import { Format } from "../../../../utils/format"
-import { Convert } from "../../../../utils/convert"
+import { Box, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
+import { useColorModeContext } from "../../../../contexts/ColorModeContext";
+import { propsTheme, StatusGame } from "../../../../pages/homepage";
+import { TEXT_STYLE } from "../../../../styles/common";
+import { Popup } from "../../../common/popup";
+import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button";
+import { Flipping } from "../flipping";
+import { Result } from "../result";
 // import { feeManagerContract } from "libs/contract"
-import { useDeoddContract } from "hooks/useDeoddContract"
-import { useContractContext } from "contexts/ContractContext"
-import { DeoddService } from "libs/apis"
-import { useProfileContract } from "hooks/useProfileContract"
-import { useDisconnect } from "wagmi"
-import { BnbIcon, HeadCoinIcon } from "utils/Icons";
 import CoinAnimation from "components/common/CoinAnimation";
-import { TestailCoinImage } from "utils/Images";
+import { useContractContext } from "contexts/ContractContext";
 import { useSiteContext } from "contexts/SiteContext";
+import { useDeoddContract } from "hooks/useDeoddContract";
+import { useProfileContract } from "hooks/useProfileContract";
+import { DeoddService } from "libs/apis";
 import { AudioPlay } from "libs/types";
+import { BnbIcon } from "utils/Icons";
+import { TestailCoinImage } from "utils/Images";
+import { useDisconnect } from "wagmi";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
 // const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]

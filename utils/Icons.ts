@@ -40,9 +40,19 @@ import Close2Icon from "public/assets/icons/close.svg";
 import SendIcon from "public/assets/icons/send.svg";
 import LogoutIcon from "public/assets/icons/logout.svg";
 import VolumeIcon from "public/assets/icons/volume-cross.svg";
+import UndoIcon from "public/assets/icons/undo.svg";
+import WarningIcon from "public/assets/icons/warning-2.svg";
+import CloseSquareIcon from "public/assets/icons/close-square.svg";
+import MoreSquareIcon from "public/assets/icons/more-square.svg";
+import ArrowDown2Icon from "public/assets/icons/arrow-down.svg";
 // import Icon from "public/assets/icons/.svg";
 
 export {
+  ArrowDown2Icon,
+  MoreSquareIcon,
+  UndoIcon,
+  WarningIcon,
+  CloseSquareIcon,
   VolumeIcon,
   LogoutIcon,
 
