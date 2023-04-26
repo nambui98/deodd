@@ -12,7 +12,9 @@ type Props = BoxProps & {
 function MyImage({ src, alt, width, height, ...props }: Props) {
     return (
         <Box position={'relative'} width={width} height={height} {...props}>
-            <Image alt={alt} fill src={src} style={{ objectFit: 'contain' }} />
+            <Image alt={alt} fill src={src} sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw" style={{ objectFit: 'contain' }} />
         </Box>
     )
 }

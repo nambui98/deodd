@@ -11,6 +11,7 @@ export const useDeoddContract = () => {
         const res = await contractDeodd?.claimBNB();
         return res.wait();
     }
+
     const handleClaimBnb =useCallback( async () => {
         try {
             setIsLoading(true);

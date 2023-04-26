@@ -172,13 +172,13 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
         }
     }, [idCurrentActive])
 
-    const handleSetActive = useCallback((id: number | undefined) => {
+    const handleSetActive = (id: number | undefined) => {
         // debugger
         if (id !== idActive) {
             setIdActive(prev => prev !== id ? id : prev);
         }
         handleDrawerToggle();
-    }, [])
+    }
 
 
     const drawer = (

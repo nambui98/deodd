@@ -1,19 +1,17 @@
-import { TEXT_STYLE } from "../../../../styles/common"
-import { Box, BoxProps, ButtonProps, CircularProgress, Stack, styled, Typography } from "@mui/material";
-import Image from "next/image"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import Image from "next/image";
+import { TEXT_STYLE } from "../../../../styles/common";
 // import { handleClaimAll } from "../../../../libs/flipCoinContract";
-import { useWalletContext } from "../../../../contexts/WalletContext";
-import { useEffect, useState } from 'react'
-import { Popup } from "../../../common/popup";
-import { propsTheme } from "../../../../pages/homepage";
-import { useColorModeContext } from "../../../../contexts/ColorModeContext";
-import { ButtonMain } from "../../../ui/button";
-import { BigNumber, ethers } from "ethers";
-import { Format } from "../../../../utils/format";
-import { GameResultType, StatusGame, useContractContext } from "../../../../contexts/ContractContext";
-import { useDeoddContract } from "hooks/useDeoddContract";
-import { BnbImage, GoldCupImage } from "utils/Images";
 import MyImage from "components/ui/image";
+import { BigNumber } from "ethers";
+import { useDeoddContract } from "hooks/useDeoddContract";
+import { useState } from 'react';
+import { BnbImage, GoldCupImage } from "utils/Images";
+import { useColorModeContext } from "../../../../contexts/ColorModeContext";
+import { StatusGame, useContractContext } from "../../../../contexts/ContractContext";
+import { useWalletContext } from "../../../../contexts/WalletContext";
+import { Popup } from "../../../common/popup";
+import { ButtonMain } from "../../../ui/button";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",

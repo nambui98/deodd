@@ -24,15 +24,8 @@ export enum StatusGame {
 const HomePage: React.FC = React.memo(() => {
 
   const [statusPopup, setStatusPopup] = useState<boolean>(false);
-
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
-
-  const { statusGame, setStatusGame } = useContractContext();
   const { walletIsConnected } = useWalletContext();
-
-  // useEffect(() => {
-  //   setStatusGame(StatusGame.flip);
-  // }, [router.asPath, setStatusGame])
 
   const handleShowPopup = (type: 'about' | 'faq' | 'howToPlay' | 'flip') => {
     setStatusPopup(true)
@@ -46,10 +39,8 @@ const HomePage: React.FC = React.memo(() => {
         justifyContent='space-between'
       >
         {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
-
       </Stack>
-
-      {statusGame === StatusGame.flip && <Stack
+      <Stack
         sx={{
           mt: 3,
           mb: { md: 3, xs: 0 }
@@ -59,7 +50,7 @@ const HomePage: React.FC = React.memo(() => {
         <ItemPopup style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
         <ItemPopup onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
         <ItemPopup style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
-      </Stack>}
+      </Stack>
       <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
         <Box sx={{ maxWidth: '304px' }}>
           <TitlePopup >{CONTENT[statusPopupType].title}</TitlePopup>
@@ -77,15 +68,15 @@ export default HomePage;
 
 
 const ItemPopup = styled(Box)(() => ({
-  ...TEXT_STYLE(13, 500, '#181536'),
+  ...TEXT_STYLE(13, 500, '#fff'),
   margin: '0 16px',
   cursor: 'pointer',
   '@media (min-width: 800px)': {
-    ...TEXT_STYLE(14, 500, '#181536'),
+    ...TEXT_STYLE(14, 500, '#fff'),
   }
 }))
 const TitlePopup = styled(Typography)(() => ({
-  ...TEXT_STYLE(24, 500, '#181536'),
+  ...TEXT_STYLE(24, 500, '#fff'),
   marginBottom: 24,
   textAlign: 'center',
 }))

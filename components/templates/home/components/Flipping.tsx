@@ -2,15 +2,20 @@ import { Box, Stack, styled, Typography } from "@mui/material";
 import CoinAnimation from "components/common/CoinAnimation";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
+import { useContractContext } from "contexts/ContractContext";
 import Image from 'next/image';
 import { BnbIcon } from "utils/Icons";
 import { HeadCoinImage, TailCoinImage } from "utils/Images";
 interface IProps {
-  amount: string,
-  isHead: boolean
+  // amount: string,
+  // isHead: boolean
 }
 
-export const Flipping: React.FC<IProps> = ({ amount, isHead }) => {
+export const Flipping: React.FC<IProps> = () => {
+
+  const { dataSelected } = useContractContext();
+  let isHead = dataSelected?.coinSide === 0;
+  let amount = dataSelected?.amount;
   return <Box textAlign={'center'} >
     <Box>
       <CoinAnimation mx="auto" width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} />

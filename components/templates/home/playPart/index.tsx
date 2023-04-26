@@ -1,35 +1,33 @@
-import { BigNumber, ethers } from "ethers"
-import React, { useEffect, useState } from "react"
-import LoadingButton from '@mui/lab/LoadingButton';
-import Image from 'next/image'
+import { BigNumber, ethers } from "ethers";
+import Image from 'next/image';
+import React, { useEffect, useState } from "react";
 // import { Button } from "../../../ui/button"
-import { useWalletContext } from "../../../../contexts/WalletContext"
+import { useWalletContext } from "../../../../contexts/WalletContext";
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
-import { TEXT_STYLE } from "../../../../styles/common"
-import { Flipping } from "../flipping"
-import { Result } from "../result"
-import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, StackProps, styled, Typography } from "@mui/material";
-import { StatusGame } from "../../../../pages/homepage"
-import { Popup } from "../../../common/popup"
-import { useColorModeContext } from "../../../../contexts/ColorModeContext"
-import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button"
-import { Format } from "../../../../utils/format"
-import { Convert } from "../../../../utils/convert"
+import { Box, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
+import { StatusGame } from "../../../../pages/homepage";
+import { TEXT_STYLE } from "../../../../styles/common";
+import { Popup } from "../../../common/popup";
+import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button";
+import { Result } from "../result";
 // import { feeManagerContract } from "libs/contract"
-import { useDeoddContract } from "hooks/useDeoddContract"
-import { useContractContext } from "contexts/ContractContext"
-import { DeoddService } from "libs/apis"
-import { useProfileContract } from "hooks/useProfileContract"
-import { useDisconnect } from "wagmi"
-import { BnbIcon, HeadCoinIcon } from "utils/Icons";
 import CoinAnimation from "components/common/CoinAnimation";
-import { TestailCoinImage } from "utils/Images";
-import { useSiteContext } from "contexts/SiteContext";
-import { AudioPlay } from "libs/types";
 import { VRF_FEE } from "constants/index";
+import { useContractContext } from "contexts/ContractContext";
+import { useSiteContext } from "contexts/SiteContext";
+import { useDeoddContract } from "hooks/useDeoddContract";
+import { useProfileContract } from "hooks/useProfileContract";
+import { DeoddService } from "libs/apis";
+import { AudioPlay } from "libs/types";
+import { BnbIcon } from "utils/Icons";
+import { TestailCoinImage } from "utils/Images";
+import { useDisconnect } from "wagmi";
+import NotYetFlip from "../components/NotYetFlip";
+import { Flipping } from "../components/Flipping";
+import MyApp from "pages/_app";
+import MyImage from "components/ui/image";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
-const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 const avatar = [
   'assets/images/avatar-yellow.png',
@@ -52,26 +50,21 @@ type DataSelected = {
 // eslint-disable-next-line react/display-name
 export const PlayPart = React.memo(() => {
 
-  const { walletAddress, refresh, setRefresh, contractDeodd, userInfo, bnbBalance } = useWalletContext()
+  const { walletAddress, refresh, setRefresh, userInfo } = useWalletContext()
 
-  const { setIsFinish, statusGame, setStatusGame, setDataSelected, dataSelected } = useContractContext();
+  const { statusGame } = useContractContext();
 
   const { registerName } = useProfileContract();
 
   const { disconnect } = useDisconnect()
 
-  const { handleFlipToken } = useDeoddContract();
 
-  const { audioPlayer } = useSiteContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
     body: <></>
   })
   const [currentProfile, setCurrentProfile] = useState<{ username: any, avatar: any }>({ username: null, avatar: userInfo.avatar || 0 })
-  // const [dataSelect, setDataSelect] = useState<DataSelected>()
-
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
-  const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 
 
 
@@ -92,61 +85,7 @@ export const PlayPart = React.memo(() => {
     </Box>
   )
 
-  const handleFlip = async () => {
-    console.log(ethers.utils.parseUnits(`${dataSelected?.amount}`));
 
-    debugger
-    const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
-
-    debugger
-    // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
-    // let complement: BigNumber = BigNumber.from(0);
-    let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
-    // if (bnbAssets.gte(totalAmount)) {
-    //   complement = BigNumber.from(0);
-    // }
-    // else {
-    //   complement = totalAmount.sub(bnbAssets);
-    // }
-    if (totalAmount.gte(bnbBalance)) {
-      // debugger
-      setPopup({
-        status: true,
-        body: bodyPopupError('Balance is not enough!')
-      })
-    }
-    else {
-      if (!statusLoadingFlip) {
-        setStatusLoadingFlip(true);
-        setIsFinish(false);
-        try {
-          audioPlayer(AudioPlay.GET_READY);
-          setStatusGame(StatusGame.flipping)
-          setPopup({ ...popup, status: false })
-          if (fee) {
-            setIsFinish(true);
-            debugger
-            const res = await handleFlipToken(
-              dataSelected?.index || 0,
-              dataSelected?.coinSide || 0,
-              totalAmount
-            )
-            if (res.status) {
-              setStatusLoadingFlip(false)
-            }
-          }
-        } catch (error: any) {
-          audioPlayer(AudioPlay.STOP);
-          setStatusLoadingFlip(false)
-          setStatusGame(StatusGame.flip)
-          setPopup({
-            status: true,
-            body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
-          })
-        }
-      }
-    }
-  }
 
   const handleShowDisconnect = () => {
     setPopup({
@@ -244,57 +183,9 @@ export const PlayPart = React.memo(() => {
     }
   }
 
-  const RenderPlayPart = () => {
 
-    return <Box>
-      <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
-      <Box maxWidth={544} mx="auto" textAlign={'left'}>
 
-        <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
-        <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
-          {amounts?.map((item, index) => (
-            <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>
-              <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
-                <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
-                <BnbIcon />
-              </ButtonLoadingShadow>
-            </Box>
-          ))}
-        </Stack>
-        <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 0 })}>
-            <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
-          </Box>
-          <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 1 })}>
-            <SideCoin isSelected={dataSelected?.coinSide === 1} />
-          </Box>
-        </Stack>
-        <Box mt={{ sm: 3, xs: 2 }}>
-          <ButtonLoading
-            onClick={handleFlip}
-            disabled={dataSelected?.coinSide !== undefined && dataSelected?.coinSide >= 0 && dataSelected?.amount ? false : true}
-            loading={statusLoadingFlip}>
-            <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
-          </ButtonLoading>
-        </Box>
-      </Box>
-    </Box>
-  }
 
-  const RenderUi = ({ statusGame, dataSelected }: {
-    statusGame: StatusGame,
-    dataSelected: DataSelected
-  }) => {
-    switch (statusGame) {
-      case 0:
-        return <RenderPlayPart />
-      case 1:
-        return <Flipping isHead={dataSelected?.coinSide === 0} amount={`${dataSelected?.amount}`} />
-      case 2:
-        return <Result />
-      default: return <Box></Box>
-    }
-  }
 
   useEffect(() => {
     popup.status && setPopup({
@@ -318,17 +209,20 @@ export const PlayPart = React.memo(() => {
     parseFloat(userInfo.avatar) !== currentProfile.avatar && setCurrentProfile({ username: userInfo.userName, avatar: userInfo.avatar })
 
   }, [userInfo.avatar])
+  console.log("asdfasdf");
+  console.log(statusGame);
+
 
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
 
-    <RenderUi statusGame={statusGame} dataSelected={dataSelected} />
+    <RenderUi statusGame={statusGame} />
     <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>
 
         <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
         <Typography variant="h3" fontWeight={600}>124</Typography>
       </Stack>
-      <img width={40} src={TestailCoinImage} alt="" />
+      <MyImage alt="" width={40} height={40} src={TestailCoinImage} />
 
     </Stack>
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
@@ -337,82 +231,18 @@ export const PlayPart = React.memo(() => {
   </Box>
 })
 
-const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
-(<Stack
-  direction="row"
-  gap={3}
-  borderRadius={2}
-  // maxWidth={256}
-  width={1}
-  py={{ sm: 3, xs: 2 }}
-  justifyContent={"center"}
-  border={isSelected ? " 1px solid #FEF156" : "1px solid transparent"}
-  boxShadow={isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)"}
-  alignItems={'center'}
-  sx={{
-    transition: ".3s all",
-    backgroundColor: "primary.100",
-    cursor: 'pointer',
-    color: isSelected ? 'secondary.main' : "secondary.700",
-    '.disabled, .enabled': {
-      position: 'absolute',
-      inset: 0,
-      zIndex: 1,
-      transition: "all .3s",
-      opacity: 1
-    },
-    '.enabled': {
-      zIndex: isSelected ? 1 : 0,
-      opacity: isSelected ? 1 : 0,
-    },
-    '&:hover': {
-      border: "1px solid #FEF156",
-      color: 'secondary.main',
-      '.disabled': {
-        zIndex: 0,
-        opacity: 0,
-      },
-      '.enabled': {
-        zIndex: 1,
-        opacity: 1
-      },
-    },
-  }}
->
-  {
-    isHead ?
-      <>
-        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-          <Box className="disabled" width={1}>
-            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head-disable.svg`} />
-          </Box>
-          <Box className="enabled" width={1} >
-            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/head.svg`} />
-          </Box>
-        </Box>
-
-        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-          HEAD
-        </Typography>
-      </>
-      : <>
-        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-          <Box className="disabled" width={1} >
-            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail-disable.svg`} />
-          </Box>
-          <Box className="enabled" width={1}>
-            <Image fill style={{ objectFit: 'contain' }} alt="" src={`/assets/icons/tail.svg`} />
-          </Box>
-        </Box>
-        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
-          TAIL
-        </Typography>
-      </>
+// eslint-disable-next-line react/display-name
+const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
+  switch (statusGame) {
+    case 0:
+      return <NotYetFlip />
+    case 1:
+      return <Flipping />
+    case 2:
+      return <Result />
+    default: return <Box></Box>
   }
-</Stack>
-)
-
-
+})
 
 const Avt = styled(Box)({
   marginRight: 16,
