@@ -1,18 +1,15 @@
 import { Box, Container, Stack, Typography, styled } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import { Button } from "../components/ui/button"
-import { useRouter } from "next/router";
+import FlipRecent from "@/templates/home/flipRecent";
+import React from "react";
 import { ConnectWallet } from "../components/common/ConnectWallet";
 import { Popup } from "../components/common/popup";
 import { PlayPart } from "../components/templates/home/playPart";
 import { ButtonMain } from "../components/ui/button";
 import { CONTENT } from "../constants/connectWallet";
-import { useColorModeContext } from "../contexts/ColorModeContext";
-import { useContractContext } from "../contexts/ContractContext";
 import { useWalletContext } from "../contexts/WalletContext";
 import { TEXT_STYLE } from "../styles/common";
-import FlipRecent from "@/templates/home/flipRecent";
-import React from "react";
 
 export enum StatusGame {
   flip,
