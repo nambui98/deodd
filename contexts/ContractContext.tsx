@@ -1,6 +1,6 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { BigNumber, Contract, ethers, utils } from "ethers";
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { UserService } from "../services/user.service";
 import { deoddContract } from '../libs/contract';
 import { useWalletContext } from './WalletContext';
@@ -216,16 +216,27 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 
 	// }, [contractDeodd])
 
-	const value: ContractContextType = {
-		statusGame,
-		setStatusGame,
+	const value: ContractContextType = useMemo(() => {
+		return (
+			{
+				statusGame,
+				setStatusGame,
+				gameResult,
+				setGameResult,
+				audio,
+				isFinish,
+				setIsFinish,
+				dataSelected,
+				setDataSelected,
+
+			}
+		)
+
+	}, [statusGame,
 		gameResult,
-		setGameResult,
 		audio,
 		isFinish,
-		setIsFinish,
 		dataSelected,
-		setDataSelected,
-	}
+	])
 	return <ContractContext.Provider value={value}>{children}</ContractContext.Provider>
 }

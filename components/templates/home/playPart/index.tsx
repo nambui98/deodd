@@ -1,32 +1,36 @@
-import { BigNumber, ethers } from "ethers";
-import Image from 'next/image';
-import { useEffect, useState } from "react";
+import { BigNumber, ethers } from "ethers"
+import React, { useEffect, useState } from "react"
+import LoadingButton from '@mui/lab/LoadingButton';
+import Image from 'next/image'
 // import { Button } from "../../../ui/button"
-import { useWalletContext } from "../../../../contexts/WalletContext";
+import { useWalletContext } from "../../../../contexts/WalletContext"
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
-import { Box, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
-import { useColorModeContext } from "../../../../contexts/ColorModeContext";
-import { propsTheme, StatusGame } from "../../../../pages/homepage";
-import { TEXT_STYLE } from "../../../../styles/common";
-import { Popup } from "../../../common/popup";
-import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button";
-import { Flipping } from "../flipping";
-import { Result } from "../result";
+import { TEXT_STYLE } from "../../../../styles/common"
+import { Flipping } from "../flipping"
+import { Result } from "../result"
+import { Backdrop, Box, BoxProps, ButtonProps, CircularProgress, Grid, InputBase, Stack, StackProps, styled, Typography } from "@mui/material";
+import { StatusGame } from "../../../../pages/homepage"
+import { Popup } from "../../../common/popup"
+import { useColorModeContext } from "../../../../contexts/ColorModeContext"
+import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button"
+import { Format } from "../../../../utils/format"
+import { Convert } from "../../../../utils/convert"
 // import { feeManagerContract } from "libs/contract"
+import { useDeoddContract } from "hooks/useDeoddContract"
+import { useContractContext } from "contexts/ContractContext"
+import { DeoddService } from "libs/apis"
+import { useProfileContract } from "hooks/useProfileContract"
+import { useDisconnect } from "wagmi"
+import { BnbIcon, HeadCoinIcon } from "utils/Icons";
 import CoinAnimation from "components/common/CoinAnimation";
-import { useContractContext } from "contexts/ContractContext";
-import { useSiteContext } from "contexts/SiteContext";
-import { useDeoddContract } from "hooks/useDeoddContract";
-import { useProfileContract } from "hooks/useProfileContract";
-import { DeoddService } from "libs/apis";
-import { AudioPlay } from "libs/types";
-import { BnbIcon } from "utils/Icons";
 import { TestailCoinImage } from "utils/Images";
-import { useDisconnect } from "wagmi";
+import { useSiteContext } from "contexts/SiteContext";
+import { AudioPlay } from "libs/types";
+import { VRF_FEE } from "constants/index";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
-// const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
-const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.193]
+const amounts = [0.01, 0.02, 0.04, 0.07, 0.1, 0.13, 0.16, 0.19]
+// const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
@@ -45,13 +49,19 @@ type DataSelected = {
   index?: number,
 } | undefined
 
-export const PlayPart: React.FC<any> = () => {
-  const { walletAddress, refresh, setRefresh, contractFeeManager, userInfo, bnbAssets, bnbBalance } = useWalletContext()
-  const { disconnect } = useDisconnect()
+// eslint-disable-next-line react/display-name
+export const PlayPart = React.memo(() => {
+
+  const { walletAddress, refresh, setRefresh, contractDeodd, userInfo, bnbBalance } = useWalletContext()
+
   const { setIsFinish, statusGame, setStatusGame, setDataSelected, dataSelected } = useContractContext();
+
   const { registerName } = useProfileContract();
+
+  const { disconnect } = useDisconnect()
+
   const { handleFlipToken } = useDeoddContract();
-  const { darkMode } = useColorModeContext();
+
   const { audioPlayer } = useSiteContext();
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
@@ -63,11 +73,13 @@ export const PlayPart: React.FC<any> = () => {
   const [statusLoading, setStatusLoading] = useState<boolean>(false)
   const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 
+
+
   const bodyPopupError = (message: string) => {
     return (
       <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
         <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
-        <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
+        <Typography sx={{ ...TEXT_STYLE(14, 500, '#ffffff'), margin: '24px 0' }}>{message}</Typography>
         <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
       </Box>
     )
@@ -84,23 +96,23 @@ export const PlayPart: React.FC<any> = () => {
     console.log(ethers.utils.parseUnits(`${dataSelected?.amount}`));
 
     debugger
-    const fee = await contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(`${dataSelected?.amount}`))
+    const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
 
     debugger
     // const fee = await getCalculateFee(ethersSigner, `${dataSelect?.amount}`)
-    let complement: BigNumber = BigNumber.from(0);
-    let totalAmount: BigNumber = ethers.utils.parseUnits(dataSelected!.amount!.toString()).add(fee);
-    if (bnbAssets.gte(totalAmount)) {
-      complement = BigNumber.from(0);
-    }
-    else {
-      complement = totalAmount.sub(bnbAssets);
-    }
-    if (bnbAssets < totalAmount && complement.gte(bnbBalance)) {
+    // let complement: BigNumber = BigNumber.from(0);
+    let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
+    // if (bnbAssets.gte(totalAmount)) {
+    //   complement = BigNumber.from(0);
+    // }
+    // else {
+    //   complement = totalAmount.sub(bnbAssets);
+    // }
+    if (totalAmount.gte(bnbBalance)) {
       // debugger
       setPopup({
         status: true,
-        body: bodyPopupError('Something went wrong. Please try again!')
+        body: bodyPopupError('Balance is not enough!')
       })
     }
     else {
@@ -117,7 +129,7 @@ export const PlayPart: React.FC<any> = () => {
             const res = await handleFlipToken(
               dataSelected?.index || 0,
               dataSelected?.coinSide || 0,
-              complement
+              totalAmount
             )
             if (res.status) {
               setStatusLoadingFlip(false)
@@ -140,8 +152,8 @@ export const PlayPart: React.FC<any> = () => {
     setPopup({
       status: true,
       body: <Box>
-        <TitlePopup themelight={!darkMode}>Disconnect</TitlePopup>
-        <SubtitlePopup themelight={!darkMode}>Do you want to disconnect your wallet?</SubtitlePopup>
+        <TitlePopup >Disconnect</TitlePopup>
+        <SubtitlePopup >Do you want to disconnect your wallet?</SubtitlePopup>
         <Grid container >
           <Grid item xs={12}>
 
@@ -198,14 +210,14 @@ export const PlayPart: React.FC<any> = () => {
 
   const bodyCreateProfile = (
     <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
-      <TitlePopup themelight={!darkMode}>{userInfo.userName ? 'Change' : 'Create'} profile</TitlePopup>
+      <TitlePopup >{userInfo.userName ? 'Change' : 'Create'} profile</TitlePopup>
       <BoxAvatar><img alt="" src={currentProfile.avatar !== null ? avatar[currentProfile.avatar] : avatar[parseFloat(userInfo.avatar)]} /></BoxAvatar>
       <ListAvatar>
         {avatar.map((item, index) => <Box onClick={() => setCurrentProfile({ ...currentProfile, avatar: index })} key={index}><img alt="" src={item} /></Box>)}
       </ListAvatar>
-      <InputNickname value={currentProfile.username !== null ? currentProfile.username : userInfo.userName} themelight={!darkMode} placeholder="Nickname" onChange={(e) => setCurrentProfile({ ...currentProfile, username: e.target.value })}></InputNickname>
+      <InputNickname value={currentProfile.username !== null ? currentProfile.username : userInfo.userName} placeholder="Nickname" onChange={(e) => setCurrentProfile({ ...currentProfile, username: e.target.value })}></InputNickname>
       <Typography sx={{
-        ...TEXT_STYLE(12, 400, !darkMode ? '#181536' : '#FFFFFF'),
+        ...TEXT_STYLE(12, 400),
         marginBottom: '24px'
       }}>{userInfo.userName ? '*If you change a Nickname, you will be charged some gas fee for this.' : '*If you choose to create a Nickname, you will be charged some gas fee for this.'}</Typography>
       <ButtonMain disable={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
@@ -233,6 +245,7 @@ export const PlayPart: React.FC<any> = () => {
   }
 
   const RenderPlayPart = () => {
+
     return <Box>
       <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
       <Box maxWidth={544} mx="auto" textAlign={'left'}>
@@ -307,6 +320,7 @@ export const PlayPart: React.FC<any> = () => {
   }, [userInfo.avatar])
 
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+
     <RenderUi statusGame={statusGame} dataSelected={dataSelected} />
     <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>
@@ -321,7 +335,7 @@ export const PlayPart: React.FC<any> = () => {
       {popup.body}
     </Box>} />
   </Box>
-}
+})
 
 const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
 (<Stack
@@ -406,8 +420,8 @@ const Avt = styled(Box)({
     maxWidth: 48
   }
 })
-const Wallet = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#FFFFFF'),
+const Wallet = styled(Box)((props) => ({
+  ...TEXT_STYLE(14, 500, '#181536'),
   marginRight: 24,
   marginBottom: 8,
   textAlign: "left",
@@ -448,13 +462,13 @@ const Itemcoin = styled(Box)((props: ItemCoinProps) => ({
 // })
 
 
-const TitlePopup = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(24, 500, props.themelight ? '#181536' : '#FFFFFF'),
+const TitlePopup = styled(Typography)(() => ({
+  ...TEXT_STYLE(24, 500, '#181536'),
   marginBottom: 24,
   textAlign: 'center'
 }))
-const SubtitlePopup = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
+const SubtitlePopup = styled(Typography)(() => ({
+  ...TEXT_STYLE(14, 400, '#181536'),
   marginBottom: 24
 }))
 type ItemBodyPopupProps = {
@@ -490,12 +504,12 @@ const ListAvatar = styled(Box)({
     }
   }
 })
-const InputNickname = styled(InputBase)((props: propsTheme) => ({
+const InputNickname = styled(InputBase)((props) => ({
   padding: 12,
-  background: props.themelight ? '#E9EAEF' : '#25244B',
+  background: '#E9EAEF',
   borderRadius: 8,
   textAlign: 'center',
-  ...TEXT_STYLE(18, 500, props.themelight ? '#181536' : '#7071B3'),
+  ...TEXT_STYLE(18, 500, '#7071B3'),
   width: '100%',
   marginBottom: 24,
   '& input': {

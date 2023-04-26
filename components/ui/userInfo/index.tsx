@@ -198,9 +198,9 @@ export function UserInfo() {
           <Collapse
             in={!matchesScreen ? expanded ? true : false : true}
             onEntering={() => {
-
             }}
-            orientation="horizontal" sx={{
+            orientation="horizontal"
+            sx={{
               // ".MuiCollapse-entered": {
               //   width: "100%",
               //   height: 0,

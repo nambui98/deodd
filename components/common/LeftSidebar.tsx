@@ -7,7 +7,7 @@ import { LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type Props = {
     open: boolean;
@@ -34,6 +34,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         icon: <HomeIcon />,
         title: 'Home',
         path: '/',
+
     },
     {
         id: 2,
@@ -171,10 +172,13 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
         }
     }, [idCurrentActive])
 
-    const handleSetActive = (id: number | undefined) => {
-        setIdActive(id);
+    const handleSetActive = useCallback((id: number | undefined) => {
+        // debugger
+        if (id !== idActive) {
+            setIdActive(prev => prev !== id ? id : prev);
+        }
         handleDrawerToggle();
-    }
+    }, [])
 
 
     const drawer = (
@@ -185,7 +189,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                     return (
                         item.isOnlyComponent ? item.child :
                             <ListItem
-                                key={item.path ?? '' + index}
+                                key={item.id ?? '' + index}
                                 disablePadding
                                 sx={{ display: "block" }}
                             >

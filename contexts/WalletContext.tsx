@@ -163,13 +163,13 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		address: walletAddress,
 		watch: true
 	})
-	const balanceBNBAssets = useContractRead({
-		address: deoddContract.address,
-		abi: deoddContract.abi,
-		functionName: 'getPlayerAsset',
-		args: [walletAddress],
-		watch: true
-	})
+	// const balanceBNBAssets = useContractRead({
+	// 	address: deoddContract.address,
+	// 	abi: deoddContract.abi,
+	// 	functionName: 'getPlayerAsset',
+	// 	args: [walletAddress],
+	// 	watch: true
+	// })
 
 	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
 		address: luckyProfile.address,
@@ -314,17 +314,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	}
 
-
-
-	useEffect(() => {
-		if (balanceBNBAssets.data !== undefined) {
-			setBnbAssets((balanceBNBAssets?.data! as BigNumber));
-		} else {
-			setBnbAssets(BigNumber.from(0))
-		}
-
-	}, [balanceBNBAssets.data, walletIsConnected])
-
 	useEffect(() => {
 		if (balance?.formatted) {
 			setBnbBalance(balance?.value!)
@@ -361,6 +350,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setRefresh
 		}
 
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		walletIsConnected,
 		walletAddress,

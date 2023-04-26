@@ -13,11 +13,13 @@ import Loader from 'components/common/Loader';
 import MadalClaimSuccess from 'components/common/MadalClaimSuccess';
 import { SiteProvider } from 'contexts/SiteContext';
 import MadalError from 'components/common/MadalError';
+import NextProgress from "next-progress";
+import { Colors } from 'constants/index';
 
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // const [mounted, setMounted] = useState(false);
+  // useEffect(() => setMounted(true), []);
   return (
     <WagmiConfig client={wagmiClient}>
 
@@ -26,14 +28,15 @@ function MyApp(props: AppPropsCustom) {
           <WalletProvider>
             <ContractProvider>
               <CssBaseline />
-              {
-                mounted && <Layout>
-                  <Component {...pageProps} />
-                  <Loader />
-                  <MadalClaimSuccess />
-                  <MadalError />
-                </Layout>
-              }
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+
+              <Loader />
+              <MadalClaimSuccess />
+              <MadalError />
+              <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />
+
             </ContractProvider>
           </WalletProvider>
         </ColorModeProvider>

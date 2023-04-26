@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { AudioPlay, SiteContextType } from "../libs/types";
 
 export const SiteContext = createContext<SiteContextType>({
@@ -43,7 +43,7 @@ export const SiteProvider = ({ children }: IProps) => {
         setIsTurnOffAudio(isTurnOff)
         if (isTurnOff) {
             // if (isTurnOffAudio) {
-            debugger
+            // debugger
             // audioPlay!.muted = true;
             // audioLost!.muted = true;
             // audioWin!.muted = true;
@@ -104,20 +104,31 @@ export const SiteProvider = ({ children }: IProps) => {
 
         // }
     }
-    const value = {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const value: SiteContextType = useMemo(() => {
+        return {
+            isLoading,
+            setIsLoading,
+            isError,
+            setIsError,
+            titleError,
+            setTitleError,
+            isSuccess,
+            setIsSuccess,
+            titleSuccess,
+            setTitleSuccess,
+            audioPlayer,
+            isTurnOffAudio,
+            turnOffAudio
+
+        }
+    }, [
         isLoading,
-        setIsLoading,
         isError,
-        setIsError,
         titleError,
-        setTitleError,
         isSuccess,
-        setIsSuccess,
         titleSuccess,
-        setTitleSuccess,
-        audioPlayer,
         isTurnOffAudio,
-        turnOffAudio
-    }
+    ])
     return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>
 }

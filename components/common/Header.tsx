@@ -12,7 +12,6 @@ import Link from "next/link";
 import { LeftIcon } from "utils/Icons";
 import { VolumeTurnOffImage, VolumnImage } from "utils/Images";
 import { useColorModeContext } from '../../contexts/ColorModeContext';
-import { propsTheme } from '../../pages/homepage';
 import { UserInfo } from "components/ui/userInfo";
 import Image from "next/image";
 import { useSiteContext } from "contexts/SiteContext";
@@ -44,13 +43,13 @@ function Header({ }: Props) {
         <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(ethers.utils.formatUnits(bnbAssets))} <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
       </HeaderPopup> */}
       {/* <HistoryPopup themelight={!darkMode}>History</HistoryPopup> */}
-      <BoxItemHistory themelight={!darkMode}>
+      <BoxItemHistory >
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
           const currentFee = contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(ethers.utils.formatUnits(`${item.amount}`)))
           return <ItemHistory key={index}>
             <Box>
-              <TitleHistory themelight={!darkMode}>{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
-              <BnbHistory themelight={!darkMode} active={item.flipResult}>
+              <TitleHistory >{item.flipResult ? 'Win' : 'Lost'}</TitleHistory>
+              <BnbHistory active={item.flipResult}>
                 {item.flipResult ? '+' : '-'}{ethers.utils.formatUnits(`${item.amount}`)} BNB
                 <Box>Fee: {ethers.utils.formatUnits(currentFee)} BNB</Box>
               </BnbHistory>
@@ -121,34 +120,31 @@ const BoxRight = styled(Box)({
   display: 'flex',
   alignItems: 'center'
 })
-const ItemRight = styled(Box)((props: propsTheme) => ({
-  ...TEXT_STYLE(12, 500, props.themelight ? '#181536' : '#FFFFFF'),
+const ItemRight = styled(Box)(() => ({
+  ...TEXT_STYLE(12, 500, '#181536'),
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   padding: '8px 12px',
-  background: props.themelight ? '#FFFFFF' : '#181536',
+  background: '#181536',
   border: '2px solid ',
-  borderColor: props.themelight ? '#E9EAEF' : '#181536',
+  borderColor: '#181536',
   borderRadius: 8,
   marginLeft: 8,
   '&.stats': {
-    background: props.themelight ? '#E9EAEF' : '#181536',
+    background: '#181536',
     '& > div': {
-      color: props.themelight ? '#181536 !important' : ''
     }
   },
   '&.leadeboard': {
     '& > div': {
-      color: props.themelight ? '#181536 !important' : ''
     }
   },
   '& .MuiInputBase-root': {
-    ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
+    ...TEXT_STYLE(14, 500),
     outline: 0,
     border: 0,
     '& svg': {
-      color: props.themelight ? 'transparent' : '#7071B3'
     },
     '& fieldset': {
       display: 'none'
@@ -158,7 +154,6 @@ const ItemRight = styled(Box)((props: propsTheme) => ({
     }
   },
   '& span': {
-    ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
     margin: '0 8px'
   }
 }))
@@ -168,11 +163,11 @@ const HeaderPopup = styled(Box)({
   alignItems: 'center',
   justifyContent: 'space-between'
 })
-const HistoryPopup = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 500, props.themelight ? '#181536' : '#7071B3'),
+const HistoryPopup = styled(Typography)(() => ({
+  ...TEXT_STYLE(14, 500),
   margin: '8px 0'
 }))
-const BoxItemHistory = styled(Box)((props: propsTheme) => ({
+const BoxItemHistory = styled(Box)(() => ({
   maxHeight: 400,
   overflow: 'auto',
   paddingRight: 10,
@@ -184,11 +179,11 @@ const BoxItemHistory = styled(Box)((props: propsTheme) => ({
     borderRadius: 10
   },
   '&::-webkit-scrollbar-thumb': {
-    background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`,
+    // background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`,
     borderRadius: 10
   },
   '&::-webkit-scrollbar-thumb:hover': {
-    background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`
+    // background: `linear-gradient(180deg, ${props.themelight ? '#FC753F' : '#FEF156'} 2.08%, ${props.themelight ? '#FC753F' : '#FEF156'} 66.9%)`
   }
 }))
 const ItemHistory = styled(Box)({
@@ -202,18 +197,17 @@ const TimeHistory = styled(Typography)({
 })
 type propsBnbHistory = {
   active: boolean,
-  themelight: boolean
 }
 const BnbHistory = styled(Typography)((props: propsBnbHistory) => ({
   display: 'flex',
   alignItems: 'flex-end',
-  ...TEXT_STYLE(14, 500, props.themelight ? props.active ? '#FC753F' : '#A7ACB8' : props.active ? '#FEF156' : '#A7ACB8'),
+  ...TEXT_STYLE(14, 500),
   '& > div': {
     ...TEXT_STYLE(10, 500, '#5A6178'),
     marginLeft: 4
   }
 }))
-const TitleHistory = styled(Typography)((props: propsTheme) => ({
-  ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
+const TitleHistory = styled(Typography)((props) => ({
+  ...TEXT_STYLE(14, 400),
   marginBottom: 6
 }))

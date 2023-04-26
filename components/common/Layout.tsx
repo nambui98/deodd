@@ -1,5 +1,5 @@
 import { Box, Paper } from "@mui/material";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useTheme } from "@mui/material/styles";
 import { IProps } from "../../libs/interfaces";
@@ -20,12 +20,12 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
 
-    const handleDrawerToggleLeft = () => {
+    const handleDrawerToggleLeft = useCallback(() => {
         setMobileOpenLeft(!mobileOpenLeft);
         if (mobileOpenRight) {
             setMobileOpenRight(false);
         }
-    };
+    }, []);
     const handleDrawerToggleRight = () => {
         setMobileOpenRight(!mobileOpenRight);
         if (mobileOpenLeft) {
@@ -52,7 +52,6 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main> {children} </main>
-                {/* <Footer /> */}
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
             <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
