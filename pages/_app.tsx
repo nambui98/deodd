@@ -1,20 +1,19 @@
 import CssBaseline from '@mui/material/CssBaseline';
+import Loader from 'components/common/Loader';
+import MadalClaimSuccess from 'components/common/MadalClaimSuccess';
+import MadalError from 'components/common/MadalError';
+import { wagmiClient } from 'config/wagmi';
+import { Colors } from 'constants/index';
+import { ContractProvider } from 'contexts/ContractContext';
+import { SiteProvider } from 'contexts/SiteContext';
+import NextProgress from "next-progress";
+import { WagmiConfig } from 'wagmi';
+import Layout from '../components/common/Layout';
 import { ColorModeProvider } from '../contexts/ColorModeContext';
-import { WalletProvider, useWalletContext } from '../contexts/WalletContext';
+import { WalletProvider } from '../contexts/WalletContext';
 import { AppPropsCustom } from '../libs/types';
 import '../styles/globals.css';
 import '../styles/globals.scss';
-import Layout from '../components/common/Layout';
-import { WagmiConfig } from 'wagmi';
-import { wagmiClient } from 'config/wagmi';
-import { useEffect, useState } from 'react';
-import { ContractProvider } from 'contexts/ContractContext';
-import Loader from 'components/common/Loader';
-import MadalClaimSuccess from 'components/common/MadalClaimSuccess';
-import { SiteProvider } from 'contexts/SiteContext';
-import MadalError from 'components/common/MadalError';
-import NextProgress from "next-progress";
-import { Colors } from 'constants/index';
 
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
@@ -31,7 +30,6 @@ function MyApp(props: AppPropsCustom) {
               <Layout>
                 <Component {...pageProps} />
               </Layout>
-
               <Loader />
               <MadalClaimSuccess />
               <MadalError />

@@ -1,8 +1,8 @@
 import { Avatar, Box, Collapse, List, Stack, Typography } from '@mui/material'
-import React, { createRef, useEffect, useState } from 'react'
+import IntervalManager from 'libs/IntervalManager'
+import React, { createRef, useEffect, useRef, useState } from 'react'
 import { TransitionGroup } from 'react-transition-group'
 import { Avatar2Image } from 'utils/Images'
-
 type Props = {}
 type dataUserRecent = {
     id: number,
@@ -27,7 +27,15 @@ function FlipRecent({ }: Props) {
             }
         })
     );
+    const countRef = useRef(0);
+
     useEffect(() => {
+        console.log((IntervalManager as any).setInterval);
+
+        // IntervalManager.
+        // IntervalManager.setInterval(() => {
+        //   setCount((prevCount) => prevCount + 1);
+        // }, 1000);
         const interval = setInterval(() => {
             setDataRecent((dataRecent) => [
                 { id: dataRecent.length, amount: 2, isWin: dataRecent.length % 2 === 0, timeAgo: '5h ago', username: 'username' + dataRecent.length, streak: dataRecent.length % 2 === 1 ? 4 : 0, nodeRef: createRef() },

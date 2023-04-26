@@ -1,17 +1,15 @@
 import { Box, Paper } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
-import { useTheme } from "@mui/material/styles";
 import { IProps } from "../../libs/interfaces";
-import Footer from "./Footer";
 
 import AppBar from "components/ui/appbar";
 import { DrawerHeader } from "components/ui/drawer";
 import { Main } from "components/ui/main";
-import LeftSidebar from "./LeftSidebar";
-import RightSidebar from "./RightSidebar";
 import MyBottomNavigation from "./BottomNavigation";
+import LeftSidebar from "./LeftSidebar";
 import { Meta } from "./Meta";
+import RightSidebar from "./RightSidebar";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);

@@ -25,7 +25,6 @@ function CoinAnimation({ width, height, mx, textAlign }: Props) {
         const interval = setInterval(() => {
             setCurrentImageIndex((currentIndex) => (currentIndex + 1) % listImage.length);
         }, 100);
-
         return () => clearInterval(interval);
     }, []);
 

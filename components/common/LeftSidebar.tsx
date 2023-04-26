@@ -8,6 +8,7 @@ import { Contact } from './Contact';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 
 type Props = {
     open: boolean;
@@ -27,6 +28,7 @@ type TypeSideBarItem = {
     comming?: boolean,
     isOnlyComponent?: boolean,
     isActive?: boolean,
+    isLink?: boolean
 }
 const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     {
@@ -34,14 +36,15 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         icon: <HomeIcon />,
         title: 'Home',
         path: '/',
-
+        isLink: true,
     },
     {
         id: 2,
         icon: <CoinFlipIcon />,
         title: 'Coin Flip',
         path: '/',
-        highLightText: true
+        highLightText: true,
+        isLink: true,
     },
     {
         id: 3,
@@ -53,43 +56,50 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         child: <Stack width={'100%'} >
             <Typography variant='body2' color={'primary.200'}>Golden Hour start in</Typography>
             <Typography variant='h3' fontWeight={600} color={'primary.200'}>20:53:10</Typography>
-        </Stack>
+        </Stack>,
+        isLink: true
     },
     {
         id: 4,
         icon: <DashboardIcon />,
         title: 'Dashboard',
         path: '/statistic',
+        isLink: true,
     },
     {
         id: 5,
         icon: <FlipIcon />,
         title: 'Flip',
         path: '/',
+        isLink: true
     },
     {
         id: 6,
         icon: <CampaignIcon />,
         title: 'Campaign',
         path: '/campaign',
+        isLink: true
     },
     {
         id: 7,
         icon: <Ref2EarnIcon />,
         title: 'Ref 2 Earn',
         path: '/referral',
+        isLink: true
     },
     {
         id: 8,
         icon: <LoyaltyIcon />,
         title: 'Loyalty',
         path: '/loyalty',
+        isLink: true
     },
     {
         id: 9,
         icon: <ShopIcon />,
         title: 'Shop',
         path: '/shop',
+        isLink: true
     },
     {
         id: 10,
@@ -107,7 +117,8 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
             <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery</Typography>
 
-        </Stack>
+        </Stack>,
+        isLink: true
     },
     {
         id: 12,
@@ -177,7 +188,9 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
         if (id !== idActive) {
             setIdActive(prev => prev !== id ? id : prev);
         }
-        handleDrawerToggle();
+        if (mobileOpen) {
+            handleDrawerToggle();
+        }
     }
 
 
@@ -193,7 +206,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                 disablePadding
                                 sx={{ display: "block" }}
                             >
-                                <ListItemButton LinkComponent={Link} href={item?.path ?? ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
+                                <ListItemButton LinkComponent={item.isLink && route.asPath !== item.path ? Link : undefined} href={route.asPath !== item.path && item?.path ? item?.path : ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
                                     <ListItemIcon
                                         sx={{
                                             minWidth: 0,
@@ -282,6 +295,6 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
 
 }
 
-export default LeftSidebar
+export default React.memo(LeftSidebar)
 
 
