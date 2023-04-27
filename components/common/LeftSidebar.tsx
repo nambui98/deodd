@@ -9,6 +9,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
+import MyImage from "components/ui/image";
+import { GoldenHour } from 'components/ui/goldenHour';
+import { useGoldenHour } from 'hooks/useGoldenHour';
 
 type Props = {
     open: boolean;
@@ -48,15 +51,12 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     },
     {
         id: 3,
-        icon: <img src={MoneyBagImage} alt="" />,
+        icon: <MyImage src={MoneyBagImage} width={40} height={40} alt="" />,
         title: '',
         path: '/',
         highLight: true,
         disabledHover: true,
-        child: <Stack width={'100%'} >
-            <Typography variant='body2' color={'primary.200'}>Golden Hour start in</Typography>
-            <Typography variant='h3' fontWeight={600} color={'primary.200'}>20:53:10</Typography>
-        </Stack>,
+        child: <GoldenHour />,
         isLink: true
     },
     {
@@ -108,7 +108,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     },
     {
         id: 11,
-        icon: <img src={LotteryImage} alt="" />,
+        icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
         path: '/',
         comming: true,
@@ -128,19 +128,19 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
 ]
 
 
-const styleButton = (item: TypeSideBarItem, open: boolean) => {
+const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean) => {
     return {
         minHeight: 48,
         justifyContent: open ? 'initial' : 'center',
         px: item.highLight ? 1.5 : 3,
         py: item.highLight ? 1 : 2,
-        bgcolor: item.highLight && open ? 'secondary.main' : 'transparent',
-        backgroundImage: item.highLight ? `url(assets/images/bg_button_sidebar.png)` : 'none',
+        bgcolor: item.highLight && open ? isGoldenHour ? 'rgba(255, 252, 221, 1)' : 'secondary.main' : 'transparent',
+        backgroundImage: item.highLight ? isGoldenHour ? `url(assets/images/golden-hour-bg.png)` : `url(assets/images/bg_button_sidebar.png)` : 'none',
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%',
         backgroundPosition: 'center',
         borderRadius: item.highLight ? 2 : 0,
-        boxShadow: item.highLight ? '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px',
+        boxShadow: item.highLight ? isGoldenHour ? '0px 2px 24px 0px rgba(254, 241, 86, 0.8)' : '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px',
         mx: item.highLight ? 2 : 0,
         mt: 1,
         color: item.isActive ? 'secondary.main' : item.highLightText ? 'text.primary' : 'text.disabled',
@@ -177,6 +177,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const route = useRouter();
     const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.isReady])
     const container = window !== undefined ? () => window().document.body : undefined;
+    const { isGoldenHour } = useGoldenHour();
     useEffect(() => {
         if (idCurrentActive) {
             setIdActive(idCurrentActive);
@@ -206,16 +207,19 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                 disablePadding
                                 sx={{ display: "block" }}
                             >
-                                <ListItemButton LinkComponent={item.isLink && route.asPath !== item.path ? Link : undefined} href={route.asPath !== item.path && item?.path ? item?.path : ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open)}>
-                                    <ListItemIcon
-                                        sx={{
-                                            minWidth: 0,
-                                            mr: open ? 2 : "auto",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        {item.icon}
-                                    </ListItemIcon>
+                                <ListItemButton LinkComponent={item.isLink && route.asPath !== item.path ? Link : undefined} href={route.asPath !== item.path && item?.path ? item?.path : ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open, isGoldenHour)}>
+                                    {/* If is currently golden hour then remove item of item 3 */}
+                                    {isGoldenHour && item.id == 3
+                                        ? ""
+                                        : (<ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                mr: open ? 2 : "auto",
+                                                justifyContent: "center",
+                                            }}
+                                        >
+                                            {item.icon}
+                                        </ListItemIcon>)}
                                     {item.child && (
                                         <Stack width={"100%"} display={open ? "block" : "none"}>
                                             {item.child}

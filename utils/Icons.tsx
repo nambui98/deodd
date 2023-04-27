@@ -47,6 +47,7 @@ import MoreSquareIcon from "public/assets/icons/more-square.svg";
 import ArrowDown2Icon from "public/assets/icons/arrow-down.svg";
 import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
+import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 function Bnb2Icon(props: SvgIconProps) {
   console.log(props);
 
@@ -110,4 +111,5 @@ export {
   MobileIcon,
   ProfileCircleIcon,
   ArchiveIcon,
+  InfoCircleIcon
 };
