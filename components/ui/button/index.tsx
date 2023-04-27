@@ -1,11 +1,9 @@
+import { Button, ButtonProps } from "@mui/material";
 import React from 'react';
-import { Button, ButtonProps, styled } from "@mui/material";
 import { useColorModeContext } from "../../../contexts/ColorModeContext";
-import { TEXT_STYLE } from "../../../styles/common";
-import { ReactElement } from "react";
 // import { LoadingButton, LoadingButtonProps } from "@mui/lab";
-import { Colors } from "constants/index";
 import { LoadingButton, LoadingButtonProps } from '@mui/lab';
+import { Colors } from "constants/index";
 
 interface IProps {
   title: any

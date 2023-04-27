@@ -39,6 +39,7 @@ function FormActions({ }: Props) {
     const handleFlip = async () => {
         const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
         let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
+        debugger
         if (totalAmount.gte(bnbBalance)) {
             setIsError(true);
             setTitleError("Balance is not enough!");
@@ -62,6 +63,7 @@ function FormActions({ }: Props) {
                         }
                     }
                 } catch (error: any) {
+                    debugger
                     audioPlayer(AudioPlay.STOP);
                     setStatusLoadingFlip(false)
                     setStatusGame(StatusGame.flip)

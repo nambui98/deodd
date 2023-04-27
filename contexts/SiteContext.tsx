@@ -42,6 +42,7 @@ export const SiteProvider = ({ children }: IProps) => {
     }, [])
     useEffect(() => {
         if (audioWin && audioPlay && audioLost) {
+            debugger
             if (isTurnOffAudio) {
                 audioPlay!.muted = true;
                 audioLost!.muted = true;
@@ -70,7 +71,7 @@ export const SiteProvider = ({ children }: IProps) => {
             }
         }
     }
-    const audioPlayer = (sound: AudioPlay) => {
+    const audioPlayer = useCallback((sound: AudioPlay) => {
         if (sound === AudioPlay.GET_READY) {
             audioPlay!.loop = true;
             audioPlay?.play()
@@ -82,16 +83,19 @@ export const SiteProvider = ({ children }: IProps) => {
             audioLost?.play()
         }
         if (sound === AudioPlay.STOP) {
-            audioPlay?.pause();
-            audioPlay!.currentTime = 0;
-            audioWin?.pause();
-            audioWin!.currentTime = 0;
-            audioLost?.pause();
-            audioLost!.currentTime = 0;
+            if (audioWin && audioPlay && audioLost) {
+                audioPlay?.pause();
+                audioPlay!.currentTime = 0;
+                audioWin?.pause();
+                audioWin!.currentTime = 0;
+                audioLost?.pause();
+                audioLost!.currentTime = 0;
+
+            }
         }
 
         // }
-    }
+    }, [audioPlay, audioWin, audioLost])
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const value: SiteContextType = useMemo(() => {
         return {
@@ -116,6 +120,8 @@ export const SiteProvider = ({ children }: IProps) => {
         isSuccess,
         titleSuccess,
         isTurnOffAudio,
+        audioPlayer
+        // isTurnOffAudio
     ])
     return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>
 }
