@@ -173,7 +173,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
                         <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
                     </Box>
                 </Box>
-                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} color={isSelected ? 'secondary.main' : "secondary.700"}>
+                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
                     TAIL
                 </Typography>
             </>
