@@ -157,11 +157,12 @@ const styleButton = (item: TypeSideBarItem, open: boolean) => {
             transition: '.3s all',
         },
 
-        '&:hover': item.disabledHover ? {
+        '&:hover': item.disabledHover || item.isActive ? {
             backgroundColor: item.highLight && open ? 'secondary.main' : 'transparent',
             backgroundSize: '110%',
         } : {
             color: 'primary.main',
+            backgroundColor: 'transparent',
             svg: {
                 fill: Colors.white
             },

@@ -60,6 +60,12 @@ const ClaimReferral = async (address: string) => {
         })
     })
 }
+ const getRecentFlipping = async () => {
+  return vhIdRequest({
+    url: `/recent`,
+    method: 'get',
+  })
+}
 export const DeoddService = {
     generateReferralLink,
     checkUserIsValidForReferral,
@@ -69,5 +75,6 @@ export const DeoddService = {
     saveInfoUser,
     checkUserReferral,
     confirmReferralForUser,
-    ClaimReferral
+    ClaimReferral,
+    getRecentFlipping
 }

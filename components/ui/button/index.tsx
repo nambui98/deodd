@@ -69,6 +69,7 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       borderRadius: 2,
       py: '13px',
       px: 0,
+      transition: ".3s all",
       color: active ? 'secondary.main' : 'primary.main',
       boxShadow: active ? '0px 2px 16px rgba(254, 241, 86, 0.5)' : 'none',
       backgroundColor: "primary.100",

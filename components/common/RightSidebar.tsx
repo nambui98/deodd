@@ -423,7 +423,7 @@ const DrawerContent = ({ open }: { open: boolean }) => {
                 </Stack>
             </Box>
             <Divider />
-            <Box p={2} overflow={'hidden'} sx={{ transition: '.3s all', opacity: open ? 1 : 0 }} >
+            <Box p={2} overflow={'hidden'} sx={{ transition: open ? '3s all' : "", opacity: open ? 1 : 0 }} >
                 {
                     Array.from(Array(50).keys()).map((item, key) =>
                         <ChatItem handleClick={handleClick} id={id} isReport={key === 48} isMy={key === 49} key={key} />

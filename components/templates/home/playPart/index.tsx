@@ -233,6 +233,7 @@ export const PlayPart = React.memo(() => {
 
 // eslint-disable-next-line react/display-name
 const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
+
   switch (statusGame) {
     case 0:
       return <NotYetFlip />

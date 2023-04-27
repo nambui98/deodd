@@ -30,7 +30,7 @@ export const Result = () => {
   })
   const {
     coinSide,
-    flipResult,
+    isWinner,
     amount,
     tokenId,
     typeId,
@@ -53,7 +53,7 @@ export const Result = () => {
   // console.log();
 
   const renderImage = () => {
-    if (coinSide === flipResult) {
+    if (isWinner) {
       if (coinSide === 0) {
         return 'head'
       }
@@ -89,17 +89,12 @@ export const Result = () => {
     }
   }
 
-  // useEffect(() => {
-  //   const audio = new Audio(`/assets/${coinSide === flipResult ? 'win' : 'lost'}.mp3`);
-  //   audio.play();
-  // }, [flipResult, coinSide])
-
   let typeNFT: number | undefined = typeId?.toNumber();
   return <Box>
     <MyImage mx="auto" width={120} height={120} alt="" src={`/assets/icons/${renderImage()}.svg`} />
     <Stack direction={'row'} mt={5} justifyContent={'center'}>
 
-      <Typography variant="h2" fontWeight={700}>{coinSide === flipResult ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
+      <Typography variant="h2" fontWeight={700}>{isWinner ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
       <Stack ml={1} gap={1} direction={'row'}>
 
         <Typography variant="h2" color="secondary.main">{amount} </Typography>
@@ -196,7 +191,7 @@ export const Result = () => {
       flexWrap={{ xs: 'wrap', md: 'nowrap' }}
     >
 
-      <ButtonMain title={coinSide !== flipResult ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
+      <ButtonMain title={!isWinner ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
         setStatusGame(StatusGame.flip);
       }} customStyle={{
         py: 2,
@@ -224,7 +219,7 @@ export const Result = () => {
       }
     </Stack>
 
-    {coinSide !== flipResult && <Typography variant="h3" mb={2}>Fall where, double there, don’t give up</Typography>}
+    {!isWinner && <Typography variant="h3" mb={2}>Fall where, double there, don’t give up</Typography>}
     <Popup status={popup.status} handleClose={() => setPopup({ ...popup, status: false })} customWidth={{ width: '100%', maxWidth: '381px', padding: '16px' }} body={<Box>
       {popup.body}
     </Box>} />

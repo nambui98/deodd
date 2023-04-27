@@ -38,7 +38,7 @@ function FormActions({ }: Props) {
 
     const handleFlip = async () => {
         const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
-        let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
+        let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount!).toString()).add(fee);
         debugger
         if (totalAmount.gte(bnbBalance)) {
             setIsError(true);

@@ -22,7 +22,7 @@ export enum StatusGame {
 export type GameResultType = {
 	amount: string,
 	coinSide: number,
-	flipResult: number,
+	isWinner: boolean
 	tokenId?: BigNumber,
 	typeId?: BigNumber,
 	jackpotWin?: BigNumber,
@@ -145,7 +145,8 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					setGameResult({
 						amount: (dataSelected?.amount ?? 0).toString(),
 						coinSide: dataSelected?.coinSide ?? 0,
-						flipResult: flipResult.toNumber(),
+						isWinner: flipResult.toNumber() === 0 ? false : true,
+						// flipResult: flipResult.toNumber(),
 
 						// coinSide: flipChoice.toNumber(),
 						// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
@@ -161,7 +162,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 					setIsFinish(false);
 
 					audioPlayer(AudioPlay.STOP);
-					if (BigNumber.from(dataSelected?.coinSide).eq(flipResult)) {
+					if (flipResult.toNumber() === 1) {
 						audioPlayer(AudioPlay.WIN);
 					} else {
 						audioPlayer(AudioPlay.LOST);
