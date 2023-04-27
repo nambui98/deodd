@@ -1,21 +1,30 @@
 import { Box, Stack, styled, Typography } from "@mui/material";
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import CoinAnimation from "components/common/CoinAnimation";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
 import { useContractContext } from "contexts/ContractContext";
 import Image from 'next/image';
-import { BnbIcon } from "utils/Icons";
+import { Bnb2Icon, BnbIcon } from "utils/Icons";
 import { HeadCoinImage, TailCoinImage } from "utils/Images";
 interface IProps {
   // amount: string,
   // isHead: boolean
 }
-
+function HomeIcon(props: SvgIconProps) {
+  return (
+    <SvgIcon {...props}>
+      <BnbIcon />
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+    </SvgIcon>
+  );
+}
 export const Flipping: React.FC<IProps> = () => {
 
   const { dataSelected } = useContractContext();
   let isHead = dataSelected?.coinSide === 0;
   let amount = dataSelected?.amount;
+
   return <Box textAlign={'center'} >
     <Box>
       <CoinAnimation mx="auto" width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} />
@@ -26,7 +35,9 @@ export const Flipping: React.FC<IProps> = () => {
           <Typography component={'span'} variant="h2" fontWeight={700} color={"secondary.main"} >
             {amount}
           </Typography>
+
           <BnbIcon fill={Colors.secondaryDark} />
+          <Bnb2Icon fill={Colors.secondaryDark} />
           <Typography component={'span'} variant="h2" fontWeight={700} >for
           </Typography>
         </Stack>

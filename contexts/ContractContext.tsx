@@ -116,6 +116,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	// 		}
 	// 	},
 	// )
+	// debugger
 	useContractEvent({
 		address: deoddContract.address,
 		abi: deoddContract.abi,
@@ -128,41 +129,43 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				debugger
 				let {
 					//  amount, 
+					wallet,
 					fId, randomValue, flipResult, timestamp
 					// flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet 
-				}: FlipResultType = (args[4] as any).args;
-				// if (latestFlipId?.eq(fId)) {
-				audio.loop = false;
-				audio.load();
-				// let res = await getUserByPublicAddress(walletAddress, fId.toString());
-				// console.log(res);
-				// console.log("result from backend: " + res);
-				// console.log(playerWin.toNumber());
+				}: FlipResultType = (args[5] as any).args;
+				if (wallet === walletAddress) {
+					audio.loop = false;
+					audio.load();
+					// let res = await getUserByPublicAddress(walletAddress, fId.toString());
+					// console.log(res);
+					// console.log("result from backend: " + res);
+					// console.log(playerWin.toNumber());
 
-				debugger
-				setGameResult({
-					amount: (dataSelected?.amount ?? 0).toString(),
-					coinSide: dataSelected?.coinSide ?? 0,
-					flipResult: flipResult.toNumber(),
+					debugger
+					setGameResult({
+						amount: (dataSelected?.amount ?? 0).toString(),
+						coinSide: dataSelected?.coinSide ?? 0,
+						flipResult: flipResult.toNumber(),
 
-					// coinSide: flipChoice.toNumber(),
-					// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
-					// tokenId: tokenId,
-					// typeId,
-					// jackpotWin: jackpotReward,
-					// tossPoints: tpoint,
-					// winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
-					// winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
-				})
-				setStatusGame(StatusGame.result);
-				setRefresh(!refresh);
-				setIsFinish(false);
+						// coinSide: flipChoice.toNumber(),
+						// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
+						// tokenId: tokenId,
+						// typeId,
+						// jackpotWin: jackpotReward,
+						// tossPoints: tpoint,
+						// winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
+						// winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
+					})
+					setStatusGame(StatusGame.result);
+					setRefresh(!refresh);
+					setIsFinish(false);
 
-				audioPlayer(AudioPlay.STOP);
-				if (BigNumber.from(dataSelected?.coinSide).eq(flipResult)) {
-					audioPlayer(AudioPlay.WIN);
-				} else {
-					audioPlayer(AudioPlay.LOST);
+					audioPlayer(AudioPlay.STOP);
+					if (BigNumber.from(dataSelected?.coinSide).eq(flipResult)) {
+						audioPlayer(AudioPlay.WIN);
+					} else {
+						audioPlayer(AudioPlay.LOST);
+					}
 				}
 			}
 		},
@@ -215,28 +218,39 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	// 	});
 
 	// }, [contractDeodd])
-
-	const value: ContractContextType = useMemo(() => {
-		return (
-			{
-				statusGame,
-				setStatusGame,
-				gameResult,
-				setGameResult,
-				audio,
-				isFinish,
-				setIsFinish,
-				dataSelected,
-				setDataSelected,
-
-			}
-		)
-
-	}, [statusGame,
+	const value2 = {
+		statusGame,
+		setStatusGame,
 		gameResult,
+		setGameResult,
 		audio,
 		isFinish,
+		setIsFinish,
 		dataSelected,
-	])
-	return <ContractContext.Provider value={value}>{children}</ContractContext.Provider>
+		setDataSelected,
+
+	}
+	// const value: ContractContextType = useMemo(() => {
+	// 	return (
+	// 		{
+	// 			statusGame,
+	// 			setStatusGame,
+	// 			gameResult,
+	// 			setGameResult,
+	// 			audio,
+	// 			isFinish,
+	// 			setIsFinish,
+	// 			dataSelected,
+	// 			setDataSelected,
+
+	// 		}
+	// 	)
+
+	// }, [statusGame,
+	// 	gameResult,
+	// 	audio,
+	// 	isFinish,
+	// 	dataSelected,
+	// ])
+	return <ContractContext.Provider value={value2}>{children}</ContractContext.Provider>
 }

@@ -567,11 +567,14 @@ const ChatItem = ({ isMy, isReport, id, handleClick }: { isReport?: boolean, isM
     }
     return <Box bgcolor={'primary.300'} position={'relative'} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} px={2} py={1} mb={1} sx={{
         cursor: 'pointer',
+
+        transition: '.3s all',
         '.more': {
             opacity: 0,
             transition: '.3s all'
         },
         '&:hover': {
+            bgcolor: 'background.paper',
             '.more': {
                 opacity: 1
             }

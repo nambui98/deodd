@@ -30,8 +30,6 @@ function FlipRecent({ }: Props) {
     const countRef = useRef(0);
 
     useEffect(() => {
-        console.log((IntervalManager as any).setInterval);
-
         // IntervalManager.
         // IntervalManager.setInterval(() => {
         //   setCount((prevCount) => prevCount + 1);

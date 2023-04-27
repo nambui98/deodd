@@ -161,12 +161,12 @@ const styleButton = (item: TypeSideBarItem, open: boolean) => {
             backgroundColor: item.highLight && open ? 'secondary.main' : 'transparent',
             backgroundSize: '110%',
         } : {
-            color: 'secondary.main',
+            color: 'primary.main',
             svg: {
-                fill: Colors.secondaryDark
+                fill: Colors.white
             },
             '&::before': {
-                width: '100%',
+                // width: '100%',
             }
         }
     }
@@ -236,7 +236,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                     )}
                                 </ListItemButton>
                                 {
-                                    item?.comming &&
+                                    item?.comming && open &&
                                     <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
                                         transform: 'translateY(-50%)'
                                     }}>

@@ -5,6 +5,8 @@ export const Colors = {
   secondaryDark: "#FEF156",
   increase: "#29C778",
   decrease: "#C72929",
+  white:"#fff"
+
 };
 export const MINXIMUM_BALANCE_DEPOSIT = 0;
 export const DRAWER_WIDTH = 320;

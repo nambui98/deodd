@@ -43,7 +43,7 @@ export type FlipResultType = {
     // tokenId: BigNumber,
     // tpoint: BigNumber,
     // typeId: BigNumber,
-    // wallet: string
+    wallet: string,
 
     fId: BigNumber,
     randomValue: BigNumber,
