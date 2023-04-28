@@ -1,4 +1,4 @@
-import { Stack, Toolbar, Typography } from '@mui/material';
+import { Box, Collapse, Stack, Toolbar, Typography } from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useMemo } from 'react';
 
@@ -35,19 +35,26 @@ function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Pr
                     }
                 </ButtonSecondRemex>
                 <Header />
-                <ButtonSecondRemex
-                    aria-label="open drawer"
-                    onClick={handleDrawerRight}
-                    sx={{
 
-                        display: { md: 'flex', xs: 'none' },
-                        padding: .5, minWidth: 0, mt: 2, borderRadius: '4px 0px 0px 4px', color: 'secondary.600', '&:hover': { color: '#000' }
-                    }}
-                >
-                    {
-                        rightOpen ? <RightIcon /> : <Stack direction={'row'} columnGap={1} alignItems={'center'}> <LeftIcon /><Typography variant='caption' component={'span'} textTransform={'capitalize'} >Chat</Typography></Stack>
-                    }
-                </ButtonSecondRemex>
+                <Box width={65}>
+
+                    <ButtonSecondRemex
+                        aria-label="open drawer"
+                        onClick={handleDrawerRight}
+                        sx={{
+                            ml: 'auto',
+                            display: { md: 'flex', xs: 'none' },
+                            gap: 1,
+                            padding: .5, minWidth: 0, mt: 2, borderRadius: '4px 0px 0px 4px', color: 'secondary.600', '&:hover': { color: '#000' },
+                        }}
+                    >
+                        {
+                            rightOpen ?
+                                <RightIcon />
+                                : <Stack direction={'row'} columnGap={1} alignItems={'center'}> <LeftIcon /><Typography variant='caption' component={'span'} textTransform={'capitalize'} >Chat</Typography></Stack>
+                        }
+                    </ButtonSecondRemex>
+                </Box>
             </Toolbar>
         </AppBarCus>
 
@@ -69,6 +76,7 @@ const openedMixin = ({ theme, open, countOpen }: {
     transition: theme.transitions.create(["margin", "width"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
+        // duration: 1000
     }),
     [theme.breakpoints.up('md')]: {
         height: 112,

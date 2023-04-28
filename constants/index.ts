@@ -13,7 +13,7 @@ export const DRAWER_WIDTH = 320;
 export const SERVICE_FEE = 0.035; //35%
 export const VRF_FEE = 0.003; //35%
 
-export const AMOUNTS = [0.013, 0.023, 0.043, 0.073, 0.13, 0.133, 0.163, 0.193]
+export const AMOUNTS = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.193]
 
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 // export const BASE_URL_REFERRAL = window.origin + "/ref/"

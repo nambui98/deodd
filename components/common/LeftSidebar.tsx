@@ -287,6 +287,22 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                 open={open}
                 sx={{
                     display: { xs: 'none', md: 'block' },
+                    '&:after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: open ? DRAWER_WIDTH : (theme) => theme.spacing(8.5),
+                        background: 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)',
+                        filter: 'blur(20px)',
+                        width: 30,
+                        height: '100vh',
+                        pointerEvents: 'none',
+                        zIndex: (theme) => theme.zIndex?.appBar + 1,
+                        transition: (theme) => theme.transitions.create('left', {
+                            easing: theme.transitions.easing.sharp,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                    },
                 }}
             >
                 {drawer}

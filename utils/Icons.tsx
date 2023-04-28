@@ -45,6 +45,7 @@ import WarningIcon from "public/assets/icons/warning-2.svg";
 import CloseSquareIcon from "public/assets/icons/close-square.svg";
 import MoreSquareIcon from "public/assets/icons/more-square.svg";
 import ArrowDown2Icon from "public/assets/icons/arrow-down.svg";
+import ArrowLeft2Icon from "public/assets/icons/arrow-left (2).svg";
 import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
 function Bnb2Icon(props: SvgIconProps) {
@@ -61,6 +62,7 @@ function Bnb2Icon(props: SvgIconProps) {
   );
 }
 export {
+  ArrowLeft2Icon,
   Bnb2Icon,
   ArrowDown2Icon,
   MoreSquareIcon,

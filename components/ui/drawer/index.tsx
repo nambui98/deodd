@@ -13,7 +13,6 @@ export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
 
         backgroundColor: 'primary.200',
         border: 'none',
-
         ...(open && {
 
             ...Utils.openedMixin(theme),

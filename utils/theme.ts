@@ -155,6 +155,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			'500': '#E4EDF4',
 			'600': '#F5F5FA',
 			'700': '#677286',
+			'800':'#48505f'
 
 
 		},
