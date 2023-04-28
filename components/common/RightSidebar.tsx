@@ -1,14 +1,12 @@
-import { Avatar, Drawer as DrawerMobile, Box, Divider, Stack, Typography, styled, InputBase, InputAdornment, IconButton, FormControl, FormHelperText, Popover, Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Slide, Collapse } from '@mui/material'
+import { Avatar, Box, Button, Divider, Drawer as DrawerMobile, IconButton, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Stack, Typography } from '@mui/material'
 import { ButtonLoading } from 'components/ui/button'
 import { Drawer } from 'components/ui/drawer'
 import { Input } from 'components/ui/input'
 import { DRAWER_WIDTH } from 'constants/index'
 import { useWalletContext } from 'contexts/WalletContext'
-import SwipeableViews from 'react-swipeable-views';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { ArrowDown2Icon, ArrowLeft2Icon, ArrowLeftIcon, ChatBoxIcon, CloseSquareIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Avatar2Image } from 'utils/Images'
-import { SwitchTransition, CSSTransition } from 'react-transition-group'
 
 type Props = {
     open: boolean;
