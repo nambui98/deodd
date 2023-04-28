@@ -36,7 +36,7 @@ export const Flipping: React.FC<IProps> = () => {
             {amount}
           </Typography>
 
-          <Bnb2Icon sx={{ fill: Colors.secondaryDark, width: 24, height: 24 }} fontSize="large" />
+          <Bnb2Icon sx={{ fill: Colors.secondaryDark, width: 30, height: 30 }} fontSize="large" />
           <Typography component={'span'} variant="h2" fontWeight={700} >for
           </Typography>
         </Stack>

@@ -10,7 +10,6 @@ import { ButtonMain } from "../components/ui/button";
 import { CONTENT } from "../constants/connectWallet";
 import { useWalletContext } from "../contexts/WalletContext";
 import { TEXT_STYLE } from "../styles/common";
-import { DRAWER_WIDTH } from "constants";
 
 export enum StatusGame {
   flip,

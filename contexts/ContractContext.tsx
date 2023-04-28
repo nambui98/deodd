@@ -20,7 +20,7 @@ export enum StatusGame {
 	result,
 }
 export type GameResultType = {
-	amount: string,
+	amount: number,
 	coinSide: number,
 	isWinner: boolean
 	tokenId?: BigNumber,
@@ -143,7 +143,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 
 					debugger
 					setGameResult({
-						amount: (dataSelected?.amount ?? 0).toString(),
+						amount: (dataSelected?.amount ?? 0),
 						coinSide: dataSelected?.coinSide ?? 0,
 						isWinner: flipResult.toNumber() === 0 ? false : true,
 						// flipResult: flipResult.toNumber(),

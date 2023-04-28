@@ -14,6 +14,7 @@ import { AvatarImage, BnbImage, CoinEmptyImage } from 'utils/Images';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
 import ShareLink from './ShareLink';
+import MyImage from 'components/ui/image';
 
 type Props = {
     dataAvailable: any | undefined,
@@ -94,16 +95,48 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         </Stack>
                     </Stack>
                     <Box mt={1}>
-                        <TableContainer sx={{ backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
-                            <Table stickyHeader aria-label="simple table">
+                        <TableContainer sx={{
+
+                            backgroundColor: "transparent", borderRadius: 2, position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none"
+                        }} component={Paper}>
+                            <Table stickyHeader
+                                sx={{
+
+                                    ".MuiDataGrid-root": {
+                                        borderRadius: "50px",
+                                    },
+                                    ".MuiDataGrid-columnHeaders": {
+                                        display: 'none',
+                                    },
+                                    '.MuiTableRow-root': {
+                                        '&:first-child': {
+                                            '.MuiTableCell-root': {
+
+                                                '&:first-child': {
+                                                    borderRadius: '8px 0 0 0'
+                                                },
+                                                '&:last-child': {
+                                                    borderRadius: '0 8px 0 0'
+                                                }
+                                            }
+
+
+                                        }
+
+                                    }
+                                }
+                                }
+                                aria-label="simple table">
                                 <TableHead>
                                     <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-                                        <TableCell sx={{ textTransform: "uppercase" }}>User</TableCell>
-                                        <TableCell sx={{ textTransform: "uppercase" }} align="right">Expire</TableCell>
-                                        <TableCell sx={{ textTransform: "uppercase" }} align="right">profit</TableCell>
+                                        <TableCell sx={{ px: 0 }}>Users</TableCell>
+                                        <TableCell align="right">Expire Date</TableCell>
+                                        <TableCell align="right">Profit</TableCell>
                                     </TableRow>
                                 </TableHead>
-                                <TableBody sx={{ bgcolor: 'background.paper' }}>
+                                <TableBody sx={{
+                                    bgcolor: 'background.paper',
+                                }}>
                                     {rows.length > 0 && rows.map((row: any, index: number) => (
                                         <TableRow
                                             key={row.name}
@@ -124,7 +157,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
 
                                                 <Stack direction={'row'} justifyContent={'flex-end'} columnGap={1} alignItems={'center'}>
                                                     <Typography variant='caption' color="secondary.main"> {row.profit}</Typography>
-                                                    <BnbIcon />
+                                                    <BnbIcon fill={Colors.secondaryDark} />
                                                 </Stack>
                                             </TableCell>
                                         </TableRow>
@@ -149,7 +182,8 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                     <Typography variant='body2' textTransform={"uppercase"} textAlign={"center"} mt={2}>AvailAble to claim</Typography>
                     <Stack mt={1} direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"}>
                         <Typography variant='h3' fontSize={"48px"}>{Format.formatMoneyFromBigNumberEther(dataAvailable?.unclaimedReward)}</Typography>
-                        <img src={BnbImage} width={40} alt="" />
+                        {/* <img src={BnbImage} width={40}  /> */}
+                        <MyImage src={BnbImage} width={40} alt="" height={40} />
                     </Stack>
                     <Stack direction={'row'} mt={2} alignItems={'center'} justifyContent={"space-between"}>
                         <Typography variant='body2' textTransform={"uppercase"}>Claimed</Typography>
@@ -174,7 +208,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                 </Box>
             </Stack >
 
-        </Container>
+        </Container >
     )
 }
 
