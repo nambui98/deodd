@@ -3,14 +3,8 @@ import { Box, Container, Typography } from '@mui/material';
 
 function Ref() {
     return (
-        <Box>
-            <Box bgcolor={"background.paper"} p={"35px 0px"}>
-                <Container>
-                    <Typography variant="h2" textTransform={"uppercase"}>
-                        Ref 2 earn
-                    </Typography>
-                </Container>
-            </Box>
+        <Box mt={10}>
+
             <Box>
                 <ContentRef />
             </Box>

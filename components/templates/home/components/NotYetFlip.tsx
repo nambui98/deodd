@@ -38,7 +38,7 @@ function FormActions({ }: Props) {
 
     const handleFlip = async () => {
         const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
-        let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount!).toString()).add(fee);
+        let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
         debugger
         if (totalAmount.gte(bnbBalance)) {
             setIsError(true);
@@ -79,7 +79,7 @@ function FormActions({ }: Props) {
 
             <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
             <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
-                {AMOUNTS?.map((item, index) => (
+                {AMOUNTS.map((item, index) => (
                     <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>
                         <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
                             <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>

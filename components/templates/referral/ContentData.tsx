@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import MyTabs, { TypeTab } from "components/common/Tabs";
 import { DiscordIcon, TelegramIcon, TwiterIcon } from "components/common/icons";
-import { ButtonFourth, ButtonTertiary } from "components/ui/button";
+import { ButtonFourth, ButtonLoading, ButtonTertiary } from "components/ui/button";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
@@ -50,7 +50,7 @@ function createData(name: string, expire: string, profit: BigNumber) {
 function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
 
-    const { walletAddress } = useWalletContext();
+    const { walletAddress, bnbBalance } = useWalletContext();
     const {
         setIsSuccess,
         setTitleSuccess,
@@ -343,9 +343,29 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         No more gas fee required
                     </Typography>
 
-                    <ButtonTertiary sx={{ width: "100%", mt: 3 }} onClick={handleClaim}>
-                        Claim reward{" "}
-                    </ButtonTertiary>
+                    <ButtonLoading
+                        onClick={handleClaim}
+                        disabled={
+                            BigNumber.from(
+                                dataAvailable?.claimedReward || 0
+                            ).lte(BigNumber.from(0)) ||
+                            bnbBalance.lte(BigNumber.from(dataAvailable?.claimFee || 0))
+                        }
+                        sx={{
+                            px: 5, py: 2, mt: 3,
+                            borderRadius: 2,
+                            width: '100%',
+                            textTransform: 'none',
+                            '&:disabled': {
+                                bgcolor: 'secondary.900',
+                                color: 'primary.300'
+                            }
+                        }}
+                        loading={false}>
+                        <Typography variant='body2' fontSize={16} fontWeight={600} >
+                            Claim reward
+                        </Typography>
+                    </ButtonLoading>
                     <Box display={{ xs: "none", md: "block" }}>
                         <ShareLink link={link} />
                     </Box>

@@ -122,7 +122,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		abi: deoddContract.abi,
 		eventName: 'FlipResult',
 		async listener(...args) {
-			debugger
+			// debugger
 			if (isFinish) {
 				// const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
 				// console.log("latestFlipId: " + latestFlipId);

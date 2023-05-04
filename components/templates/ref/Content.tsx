@@ -19,6 +19,7 @@ export const ContentRef = (props: Props) => {
 
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
+
         if (res.status === 200) {
             if (res.data.data) {
                 const body = {
@@ -27,8 +28,6 @@ export const ContentRef = (props: Props) => {
                     referralLink: code,
                 }
                 const res = await DeoddService.confirmReferralForUser(body);
-
-                debugger
                 if (res.status === 200 && res.data.data) {
                     getLinkUser();
                     setSuccess(true);
@@ -44,6 +43,7 @@ export const ContentRef = (props: Props) => {
         if (walletAddress && code) {
             checkUserIsValidForReferral();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletAddress, code])
 
 

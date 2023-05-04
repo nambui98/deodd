@@ -265,7 +265,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     return (
         <Box
             component="nav"
-            sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
+            sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { sm: 0 }, position: 'relative' }}
             aria-label="mailbox folders"
         >
             <DrawerMobile
@@ -295,8 +295,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                     display: { xs: 'none', md: 'block' },
                     '&:after': {
                         content: '""',
-                        position: 'absolute',
-                        top: 0,
+                        position: 'fixed',
                         left: open ? DRAWER_WIDTH : (theme) => theme.spacing(8.5),
                         background: 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)',
                         filter: 'blur(20px)',

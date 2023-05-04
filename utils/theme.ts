@@ -155,14 +155,15 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			'500': '#E4EDF4',
 			'600': '#F5F5FA',
 			'700': '#677286',
-			'800':'#48505f'
+			'800': '#48505f',
+			'900': '#3F4251',
 
 
 		},
 		neutral: {
 			main: ' #2A2D3E',
 			A100: '#48505F',
-			A200:'#11131A'
+			A200: '#11131A'
 		},
 		border: {
 			main: '#FEF156',
@@ -214,7 +215,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			fontSize: 14,
 			fontWeight: 500
 		},
-		
+
 		button: {
 			fontSize: 16,
 		},
@@ -247,7 +248,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 					scrollbarColor: "#6b6b6b #2b2b2b",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
 						backgroundColor: "transparent",
-						width:'10px'
+						width: '10px'
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,

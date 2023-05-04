@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 import CoinAnimation from 'components/common/CoinAnimation'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
-import { ButtonTertiary } from 'components/ui/button'
+import { ButtonLoading, ButtonMain, ButtonTertiary } from 'components/ui/button'
 import { Colors } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
@@ -39,14 +39,24 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                     !walletIsConnected &&
                     <>
                         <Typography variant='h3'>Connect wallet to get your referral link</Typography>
-                        <ButtonTertiary onClick={handleConnectWallet} sx={{ py: "17px", px: 3, mt: 3 }}>
-                            <Typography>Connect wallet</Typography>
-                        </ButtonTertiary>
+
+                        <ButtonLoading
+                            onClick={handleConnectWallet}
+                            sx={{
+                                px: 5, py: 2, mt: 3,
+                                borderRadius: 2,
+                                width: 'auto',
+                                textTransform: 'none',
+                            }}
+                            loading={false}>
+                            <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
+                        </ButtonLoading>
+
                     </>
                 }
                 {
                     success &&
-                    <Typography mt={5} variant='h4' textTransform={'uppercase'}>You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
+                    <Typography my={5} variant='h4' >You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
                 }
                 {
                     !ckReferral && walletIsConnected && <>

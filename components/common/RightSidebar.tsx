@@ -57,8 +57,7 @@ function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                     display: { xs: 'none', md: 'block' },
                     '&:before': {
                         content: '""',
-                        position: 'absolute',
-                        top: 0,
+                        position: 'fixed',
                         right: open ? DRAWER_WIDTH : 0,
                         background: 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)',
                         filter: 'blur(20px)',

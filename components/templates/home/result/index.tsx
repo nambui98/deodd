@@ -12,7 +12,7 @@ import { StatusGame, useContractContext } from "../../../../contexts/ContractCon
 import { useWalletContext } from "../../../../contexts/WalletContext";
 import { Popup } from "../../../common/popup";
 import { ButtonMain } from "../../../ui/button";
-import { SERVICE_FEE, VRF_FEE } from "constants/index";
+import { AMOUNTS_REAL_RECEIVE, SERVICE_FEE, VRF_FEE } from "constants/index";
 
 const dataTypeNFT: any = {
   0: "/assets/images/bronze.png",
@@ -98,7 +98,8 @@ export const Result = () => {
       <Typography variant="h2" fontWeight={700}>{isWinner ? 'Congrats! You won' : 'Whoops... You lost'} </Typography>
       <Stack ml={1} gap={1} direction={'row'}>
 
-        <Typography variant="h2" color="secondary.main">{isWinner ? (amount - VRF_FEE) * 2 : amount} </Typography>
+        <Typography variant="h2" color="secondary.main">{isWinner ? amount * 2 : amount} </Typography>
+
         <MyImage src={BnbImage} alt="" width={24} height={24} />
       </Stack>
     </Stack>

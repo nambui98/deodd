@@ -13,7 +13,7 @@ import { Avatar2Image } from "utils/Images";
 import { DeoddService } from "libs/apis";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 type Props = {};
 type dataUserRecent = {
     id: number;
@@ -43,12 +43,14 @@ function FlipRecent({ }: Props) {
                     let today = Math.floor(Date.now() / 1000);
                     // debugger
                     console.log(today - item.time);
-
+                    let isWin = item.flipResult === 1;
+                    let amountWin = BigNumber.from(item.amount?.toString()).mul(BigNumber.from(2));
+                    debugger
                     let data: dataUserRecent = {
                         id: item.flipId,
                         wallet: item.wallet,
-                        amount: Format.formatMoneyFromBigNumberEther(item.amount),
-                        isWin: item.flipChoice === item.flipResult,
+                        amount: Format.formatMoneyFromBigNumberEther(isWin ? amountWin : item.amount),
+                        isWin: item.flipResult === 1,
                         timeAgo: Convert.convertTimeStamp(item.time),
                         username: item.username,
                         streak: 0,
