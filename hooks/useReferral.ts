@@ -13,11 +13,13 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const [dataExpired, setDataExpired] = useState<any[] | undefined>();
     useEffect(() => {
         if (!isNotGet) {
-            if(walletAddress){
+            if (walletAddress) {
                 getLinkUser();
+            } else {
+                setCkReferral(false);
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNotGet, walletAddress])
 
     const getLinkUser = async () => {
@@ -49,6 +51,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (ckReferral) {
             getDataReferral();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ckReferral, walletAddress, isReload])
 
     const getDataReferral = async () => {
