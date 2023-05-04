@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from "@mui/material";
+import { Button, ButtonProps, Typography } from "@mui/material";
 import React from 'react';
 import { useColorModeContext } from "../../../contexts/ColorModeContext";
 // import { LoadingButton, LoadingButtonProps } from "@mui/lab";
@@ -95,3 +95,28 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
   </LoadingButton>
 }
 
+export const ButtonFourth: React.FC<ButtonProps & { active: boolean, label: string }> = ({ active, label, ...props }) => {
+  return <Button
+    variant="outlined"
+    sx={{
+      bgcolor: active ? "secondary.300" : 'primary.200',
+      border: "1px solid",
+      borderColor: active ? "secondary.main" : 'primary.200',
+      textTransform: "none",
+      fontSize: 14,
+      py: 1,
+      px: 2,
+      '&:hover': {
+        border: "1px solid",
+      }
+    }}
+    {...props}
+  >
+    <Typography variant="body2" fontSize={14}>
+      {
+        label
+      }
+    </Typography>
+  </Button>
+
+}

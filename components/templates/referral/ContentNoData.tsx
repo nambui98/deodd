@@ -26,22 +26,19 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-    // console.log(window.origin);
 
     return (
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
-
-                <CoinAnimation width={40} />
-                <Typography mx={2} variant='h2' textTransform={'uppercase'}>invite friends to get more profit from each flip!</Typography>
-                <CoinAnimation width={40} />
+                <CoinAnimation width={40} height={40} />
+                <Typography mx={2} variant='h2'>Invite Friends To Get More Profit From Each Flip!</Typography>
+                <CoinAnimation width={40} height={40} />
             </Stack>
-            <Box mt={10} textAlign={'center'}>
+            <Box mt={5} textAlign={'center'}>
                 {
-
                     !walletIsConnected &&
                     <>
-                        <Typography mx={2} variant='h3' textTransform={'uppercase'}>Connect wallet to get your referral link</Typography>
+                        <Typography variant='h3'>Connect wallet to get your referral link</Typography>
                         <ButtonTertiary onClick={handleConnectWallet} sx={{ py: "17px", px: 3, mt: 3 }}>
                             <Typography>Connect wallet</Typography>
                         </ButtonTertiary>
@@ -49,17 +46,16 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                 }
                 {
                     success &&
-                    <Typography variant='h4' textTransform={'uppercase'}>You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
+                    <Typography mt={5} variant='h4' textTransform={'uppercase'}>You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
                 }
                 {
                     !ckReferral && walletIsConnected && <>
-                        <Typography variant='h4' textAlign={'center'} mt={5}>
+                        <Typography variant='h4' textAlign={'center'} >
                             Your referral link
                         </Typography>
                         <ButtonTertiary sx={{
-                            mt: 1, py: '12px',
+                            mt: 3, py: '12px',
                             color: 'secondary.main',
-
                             'svg': {
                                 fill: Colors.primaryDark,
                             },
@@ -76,21 +72,18 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                             </Typography>
                             <CopyIcon />
                         </ButtonTertiary>
-                        <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
+                        <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={3}>
                             Share to
                         </Typography>
                         <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                            {/* <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton> */}
                             <TelegramShareButton url={link}
                                 title={'next-share is a social share buttons for your next React apps.'}>
-
                                 <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
                             </TelegramShareButton>
                             <TwitterShareButton
                                 url={link}
                                 title={'next-share is a social share buttons for your next React apps.'}
                             >
-
                                 <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
                             </TwitterShareButton>
                             <FacebookShareButton
@@ -103,10 +96,10 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                         </Stack>
                     </>
                 }
-                <Stack mt={10} direction={'row'} justifyContent={'center'} alignItems={'center'}>
+                <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
                     <NotiIcon />
-                    <Typography ml={1} variant='body2' textAlign={'center'} textTransform={'uppercase'} >
-                        HOW it work
+                    <Typography ml={1} variant='body2' textAlign={'center'}  >
+                        How it work
                     </Typography>
                 </Stack>
             </Box>

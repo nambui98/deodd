@@ -20,13 +20,13 @@ function ShareLink({ link }: Props) {
     }
     return (
         <Box>
-            <Box sx={{ height: '1px', margin: "40px 0", bgcolor: 'secondary.100' }}>
+            <Box sx={{ height: '1px', my: 3, bgcolor: 'secondary.300' }}>
             </Box>
-            <Typography variant='h4' textAlign={'center'} mt={5}>
+            <Typography variant='h4' textAlign={'center'}>
                 Your referral link
             </Typography>
             <ButtonTertiary fullWidth sx={{
-                mt: 1, py: '12px',
+                mt: 3, py: '12px',
                 color: 'secondary.main',
                 'svg': {
                     fill: Colors.primaryDark,
@@ -45,7 +45,7 @@ function ShareLink({ link }: Props) {
                 <CopyIcon />
             </ButtonTertiary>
 
-            <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
+            <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={3}>
                 Share to
             </Typography>
             <Stack direction={'row'} mt={2} justifyContent={'center'}>
