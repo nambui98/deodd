@@ -48,6 +48,7 @@ import ArrowDown2Icon from "public/assets/icons/arrow-down.svg";
 import ArrowLeft2Icon from "public/assets/icons/arrow-left (2).svg";
 import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
+import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 function Bnb2Icon(props: SvgIconProps) {
   console.log(props);
@@ -72,7 +73,6 @@ export {
   CloseSquareIcon,
   VolumeIcon,
   LogoutIcon,
-
   SendIcon,
   Close2Icon,
   Flip2Icon,
@@ -113,5 +113,6 @@ export {
   MobileIcon,
   ProfileCircleIcon,
   ArchiveIcon,
+  CloseSquareIcon2,
   InfoCircleIcon
 };
