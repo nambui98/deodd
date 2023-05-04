@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useDisconnect } from "wagmi";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { ClickAwayListener } from '@mui/base';
 
 function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
   return (
