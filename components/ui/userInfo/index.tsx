@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
   Stack,
   Box,
@@ -30,6 +27,7 @@ import Link from "next/link";
 import { useDisconnect } from "wagmi";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import ClickAwayListener from '@mui/base/ClickAwayListener';
 
 function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
   return (
@@ -47,11 +45,13 @@ function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
         border: "none",
         textTransform: "capitalize",
         svg: {
+          fill: "#96A5C0",
           stroke: "transparent",
           transition: "0.3s"
         },
         "&:hover": {
           svg: {
+            fill: "#F5F5FA",
             stroke: "transparent",
           },
           border: "none",
@@ -103,53 +103,41 @@ export function UserInfo() {
   const { walletIsConnected, walletAddress, bnbBalance } = useWalletContext();
 
   const { disconnect } = useDisconnect()
-  const handleChange = () => () => {
-    setExpanded(!expanded);
-  };
   if (!walletIsConnected) {
     return null;
   } else {
     return (
-      <Box position={"relative"} height={"3rem"} >
-        <Accordion
-          disableGutters
-          expanded={expanded} onChange={handleChange()}
-          sx={{
-            backgroundColor: "primary.100",
-            position: "absolute",
-            padding: "0",
-            top: 0,
-            right: 0,
-            outline: `${expanded ? "2px solid #3F4251" : ""}`,
-            "&.MuiAccordion-root": {
-              borderRadius: "0.5rem",
-            }
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ArrowDownIcon fill="#F5F5FA" />}
-            aria-controls="userinfo-content"
-            id="userinfo-header"
+      <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
+        {/* Box to refer to position */}
+        <Box position={"relative"} height={"3rem"} >
+          {/* Menu Container */}
+          <Box
             sx={{
-              "&.MuiAccordionSummary-root": {
-                paddingInline: "0.75rem", //12px
-              }
-            }
-            }
-          >
+              backgroundColor: "primary.100",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              borderRadius: "0.5rem",
+              transition: "300ms outline",
+              outline: `${expanded ? "2px solid #3F4251" : "2px solid transparent"}`,
+            }}>
+            {/* Summary Container */}
             <Stack
-              direction={"row"}
-              divider={<Divider sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
+              onClick={() => setExpanded(!expanded)}
+              direction="row"
+              divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
               sx={
                 {
-                  paddingRight: { xs: 0.5, md: 1 },
-                  gap: { xs: expanded ? 2 : 0, md: 2 }, // Spacing between expand icon and content
-                  transition: "300ms gap"
+                  justifyContent: "space-between",
+                  padding: "0.875rem 0.75rem",
+                  gap: { xs: expanded ? 2 : 0, md: 2 },
+                  transition: "300ms gap",
+                  cursor: "pointer",
                 }
               }
             >
-              <Stack direction={"row"} alignItems={"center"} gap={1}>
-                <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal">
+              <Stack direction="row" alignItems="center" gap={1}>
+                {/* <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
                   <Typography
                     variant="h3"
                     fontSize={"0.75rem"}
@@ -158,128 +146,100 @@ export function UserInfo() {
                   >
                     balance
                   </Typography>
-                </Collapse>
-
-                <Typography fontSize={"0.875rem"} variant="h3">
-                  {/* 1.534 */}
-                  {Format.formatMoneyFromBigNumberEther(bnbBalance)}
-                </Typography>
+                </Collapse> */}
+                <Typography variant="h3" fontSize={"0.875rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
                 <BnbIcon fill={Colors.primaryDark} />
               </Stack>
-
-              <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" >
-                <Stack
-                  direction={"row"}
-                  gap={1}
-                  alignItems={"center"}
-                >
-                  <Typography fontSize={"0.875rem"} variant="h3">
-                    {
-                      Convert.convertWalletAddress(walletAddress, 5, 4)
-                    }
-                  </Typography>
-                  <Box
-                    sx={{
-                      borderRadius: "50%",
-                      width: "1.5rem",
-                      aspectRatio: "1",
-                      position: "relative",
-                    }}
-                    overflow={"hidden"}
-                  >
-                    <Image src={Avatar2Image} fill alt="avatar-image" />
-                  </Box>
+              <Stack direction={"row"} gap={1} alignItems="center">
+                <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
+                  <Stack direction={"row"} gap={1} alignItems="center">
+                    <Typography fontSize={"0.875rem"} variant="h3">
+                      {
+                        Convert.convertWalletAddress(walletAddress, 5, 4)
+                      }
+                    </Typography>
+                    <Box
+                      sx={{
+                        borderRadius: "50%",
+                        width: "1.5rem",
+                        aspectRatio: "1",
+                        position: "relative",
+                      }}
+                      overflow={"hidden"}
+                    >
+                      <Image src={Avatar2Image} fill alt="avatar-image" />
+                    </Box>
+                  </Stack>
+                </Collapse>
+                <Stack justifyContent="center" sx={{ transform: expanded ? "rotate(180deg)" : "", transition: "transform 300ms" }}>
+                  <ArrowDownIcon fill={"#F5F5FA"} />
                 </Stack>
-
-              </Collapse>
-
+              </Stack>
             </Stack>
-          </AccordionSummary>
-          <Collapse
-            in={!matchesScreen ? expanded ? true : false : true}
-            onEntering={() => {
-            }}
-            orientation="horizontal"
-            sx={{
-              // ".MuiCollapse-entered": {
-              //   width: "100%",
-              //   height: 0,
-              // },
-              // ".MuiCollapse-hidden": {
-              //   width: 0,
-              //   height: 0,
-              // },
-              // ".MuiCollapse-root": {
-              //   width: "100%",
-              //   transition: "all",
-              //   height: 0,
-              // },
-              // ".MuiCollapse-wrapper": {
-              //   width: "100%"
-              // },
-              ".MuiCollapse-wrapperInner": {
-                width: "100%"
-              },
 
-            }} >
-
-            <AccordionDetails
-              sx={{
-                display: "grid",
-                gap: 1.5,
-                opacity: expanded ? 1 : 0,
-                transition: "300ms opacity",
-                "&.MuiAccordionDetails-root": {
-                  padding: "0.75rem",
-                  paddingBlockStart: 0,
-                  paddingBlockEnd: 0.5,
-                }
-              }}
-            >
-              <Stack direction={"row"} spacing={1}>
-                <UserInfoButton href="/" text="Profile" startIcon={<ProfileCircleIcon />} />
-                <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
-              </Stack>
-              <Divider></Divider>
-              <Typography
-                variant="h3"
-                fontSize={"0.875rem"}
-                color={"text.disabled"}
+            {/* Details Container */}
+            <Collapse in={expanded}>
+              <Collapse
+                in={!matchesScreen ? expanded ? true : false : true}
+                timeout={100}
+                orientation="horizontal"
+                sx={{
+                  ".MuiCollapse-wrapper": {
+                    flexFlow: "column wrap"
+                  },
+                }}
               >
-                Flipping History
-              </Typography>
-              <Stack gap={1} divider={<Divider />}>
-                {/* <Typography textAlign={'center'} variant="h3">Comming soon</Typography> */}
-                <FlipHistoryItem />
-                <FlipHistoryItem />
-                <FlipHistoryItem />
-                <FlipHistoryItem />
-              </Stack>
-              <Stack>
-                <Divider sx={{ marginBottom: 0.5 }}></Divider>
-                <Button
-                  variant="text"
-                  onClick={() => { disconnect() }}
-                  startIcon={<LogoutIcon />}
-                  sx={{
-                    color: "secondary.400",
-                    fontSize: "0.75rem",
-                    border: "none",
-                    textTransform: "capitalize",
-                    "&:hover": {
-                      border: "none",
-                      color: "secondary.400",
-                      backgroundColor: "transparent"
-                    },
-                  }}
+                <Stack
+                  sx={{ gap: 1.5, opacity: expanded ? 1 : 0, transition: "opacity 600ms", padding: "0 0.75rem" }}
                 >
-                  disconnect wallet
-                </Button>
-              </Stack>
-            </AccordionDetails>
-          </Collapse>
-        </Accordion>
-      </Box >
+                  <Stack direction={"row"} spacing={1}>
+                    <UserInfoButton href="/" text="Profile" startIcon={<ProfileCircleIcon />} />
+                    <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
+                  </Stack>
+                  <Divider></Divider>
+                  <Typography
+                    variant="h3"
+                    fontSize={"0.875rem"}
+                    color={"text.disabled"}
+                  >
+                    Flipping History
+                  </Typography>
+                  <Stack gap={1} divider={<Divider />}>
+                    {/* <Typography textAlign={'center'} variant="h3">Empty</Typography> */}
+                    <FlipHistoryItem />
+                    <FlipHistoryItem />
+                    <FlipHistoryItem />
+                    <FlipHistoryItem />
+                  </Stack>
+                  <Stack>
+                    <Divider></Divider>
+                    <Button
+                      variant="text"
+                      onClick={() => { disconnect() }}
+                      startIcon={<LogoutIcon />}
+                      sx={{
+                        color: "secondary.400",
+                        fontSize: "0.75rem",
+                        border: "none",
+                        padding: "0.75rem 0",
+                        textTransform: "capitalize",
+                        "&:hover": {
+                          border: "none",
+                          color: "secondary.400",
+                          backgroundColor: "transparent"
+                        },
+                      }}
+                    >
+                      disconnect wallet
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Collapse>
+            </Collapse>
+
+          </Box>
+        </Box >
+      </ClickAwayListener >
     );
   }
 }
