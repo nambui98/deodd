@@ -10,6 +10,7 @@ import { ButtonMain } from "../components/ui/button";
 import { CONTENT } from "../constants/connectWallet";
 import { useWalletContext } from "../contexts/WalletContext";
 import { TEXT_STYLE } from "../styles/common";
+import { CloseSquareIcon2 } from "utils/Icons";
 
 export enum StatusGame {
   flip,
@@ -46,13 +47,23 @@ const HomePage: React.FC = React.memo(() => {
       >
         <ItemPopup style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
         <ItemPopup onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-        <ItemPopup style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip Responsibly</ItemPopup>
+        <ItemPopup style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip responsibly</ItemPopup>
       </Stack>
-      <Popup status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
-        <Box sx={{ maxWidth: '304px' }}>
+      <Popup customWidth={"34rem"} status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
+        <Box>
+          <Box position={"absolute"} top={"1rem"} right={"1rem"} sx={{
+            cursor: "pointer",
+            transition: "300ms opacity, 300ms transform",
+            ":hover": {
+              opacity: 0.8,
+              transform: "scale(1.1)"
+            }
+          }}>
+            <CloseSquareIcon2 onClick={() => setStatusPopup(false)} />
+          </Box>
           <TitlePopup >{CONTENT[statusPopupType].title}</TitlePopup>
           <BodyPopup >{CONTENT[statusPopupType].body}</BodyPopup>
-          <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} />
+          {/* <ButtonMain active={true} title={'OKAY'} onClick={() => setStatusPopup(false)} customStyle={{ width: '100%' }} /> */}
         </Box>
       </Box>} />
     </Stack>
@@ -73,18 +84,23 @@ const ItemPopup = styled(Box)(() => ({
   }
 }))
 const TitlePopup = styled(Typography)(() => ({
-  ...TEXT_STYLE(24, 500, '#fff'),
-  marginBottom: 24,
-  textAlign: 'center',
+  '& h3': {
+    ...TEXT_STYLE(24, 700, '#fff'),
+    marginBottom: 24,
+    textAlign: 'center',
+    lineHeight: "2rem",
+  }
 }))
 const BodyPopup = styled(Box)(() => ({
   '& h5': {
-    ...TEXT_STYLE(18, 500, '#FEF156'),
-    marginBottom: 8
+    ...TEXT_STYLE(16, 600, '#FEF156'),
+    marginBottom: 8,
+    lineHeight: "1.375rem",
   },
   '& p': {
-    ...TEXT_STYLE(14, 400, '#181536'),
-    marginBottom: 24
+    ...TEXT_STYLE(14, 400, '#fff'),
+    marginBottom: 24,
+    lineHeight: "1.25rem",
   },
   '& a': {
     color: '#FEF156',
