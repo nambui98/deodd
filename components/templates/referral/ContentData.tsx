@@ -268,10 +268,10 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 </TableBody>
                             </Table>
                             {rows.length <= 0 && (
-                                <Box mt={6} mb={12} display={"block"} textAlign={"center"}>
+                                <Box py={12.5} bgcolor={'primary.100'} borderRadius={2} display={"block"} textAlign={"center"}>
                                     <img width={144} src={CoinEmptyImage} alt="" />
-                                    <Typography fontSize={16} color={"secondary.100"} mt={2}>
-                                        Nothing here
+                                    <Typography fontSize={16} color={"secondary.100"} mt={5}>
+                                        There is no one here
                                     </Typography>
                                 </Box>
                             )}
