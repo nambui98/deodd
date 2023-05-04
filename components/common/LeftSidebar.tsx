@@ -176,12 +176,14 @@ const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean
 function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const [idActive, setIdActive] = useState<number | undefined>();
     const route = useRouter();
-    const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.isReady])
+    const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.pathname])
     const container = window !== undefined ? () => window().document.body : undefined;
     const { isGoldenHour } = useGoldenHour();
     useEffect(() => {
         if (idCurrentActive) {
             setIdActive(idCurrentActive);
+        } else {
+            setIdActive(undefined);
         }
     }, [idCurrentActive])
 

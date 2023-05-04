@@ -13,8 +13,11 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const [dataExpired, setDataExpired] = useState<any[] | undefined>();
     useEffect(() => {
         if (!isNotGet) {
-            getLinkUser();
+            if(walletAddress){
+                getLinkUser();
+            }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNotGet, walletAddress])
 
     const getLinkUser = async () => {
