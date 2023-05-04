@@ -36,6 +36,7 @@
     "wagmi": "^0.12.10"
   },
   "devDependencies": {
+    "@mui/base": "^5.0.0-alpha.128",
     "@svgr/webpack": "^6.5.1",
     "@types/gtag.js": "^0.0.10",
     "@types/node": "18.11.8",

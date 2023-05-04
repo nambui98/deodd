@@ -88,20 +88,20 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                         <Stack direction={'row'} mt={2} justifyContent={'center'}>
                             <TelegramShareButton url={link}
                                 title={'next-share is a social share buttons for your next React apps.'}>
-                                <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
+                                <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
                             </TelegramShareButton>
                             <TwitterShareButton
                                 url={link}
                                 title={'next-share is a social share buttons for your next React apps.'}
                             >
-                                <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                                <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
                             </TwitterShareButton>
                             <FacebookShareButton
                                 url={link}
                                 quote={''}
                                 hashtag={'#deodd'}
                             >
-                                <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
+                                <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                             </FacebookShareButton>
                         </Stack>
                     </>
