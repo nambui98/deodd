@@ -14,7 +14,7 @@ export default function Statistic() {
       <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
         Today stat
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container rowSpacing={3} columnSpacing={4}>
         <StreakSection error={error} streak={streak} />
         <FlipResultSection
           error={error}

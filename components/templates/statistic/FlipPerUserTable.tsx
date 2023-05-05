@@ -87,13 +87,13 @@ export function FlipPerUserTable({
       >
 
         {userFlipStat.map(
-          ([property, { userPerFlipPercent, userPerFlipCount }]: [string, { userPerFlipPercent: number, userPerFlipCount: number }], index: number) => {
+          ([property, { percentFlip, numberFlip }]: [string, { percentFlip: number, numberFlip: number }], index: number) => {
             return (
               <RowItem
                 key={index}
                 times={property}
-                percentage={userPerFlipPercent}
-                count={userPerFlipCount}
+                percentage={percentFlip}
+                count={numberFlip}
               />
             );
           }
