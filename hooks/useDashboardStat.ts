@@ -19,7 +19,7 @@ function sortFunction([a]: any, [b]: any) {
   if (matchValue(a) - matchValue(b) > 0) {
     return 1;
   } else {
-    return -1;
+    return 0;
   }
 }
 // -----
@@ -96,7 +96,7 @@ export function useDashboardStat() {
         const flipData = flipResult.data.data;
         if (flipData != null) {
           const sortedFlip = (
-            Object.entries(flipData.userFlipStat) as any
+            Object.entries(flipData.flipStat) as any
           ).toSorted(sortFunction);
           setStatistic((prev) => ({
             ...prev,

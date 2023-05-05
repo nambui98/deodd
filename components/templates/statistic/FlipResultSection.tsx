@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { coin0, coin6 } from "utils/Images";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Stack } from "@mui/material";
 import { Colors } from "constants/index";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
@@ -22,7 +22,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"space-between"}
-          height="24.375rem"
+          height="24rem"
         >
           <Typography
             alignSelf={"flex-start"}
@@ -33,7 +33,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
           </Typography>
           <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
             <Image src={coin0} width={24} height={24} alt="coin-head" />
-            <Box>
+            <Stack gap={0.5}>
               <Typography
                 variant="h3"
                 color={"secondary.main"}
@@ -47,7 +47,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
                   ({flipDashboardStat.headResultPercentage}%)
                 </Typography>
               </Typography>
-            </Box>
+            </Stack>
           </Box>
           <DonutDisplay
             error={error}
@@ -61,7 +61,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             alignSelf={"flex-end"}
             gap={1}
           >
-            <Box>
+            <Stack gap={0.5}>
               <Typography
                 variant="h3"
                 color={"error.100"}
@@ -75,7 +75,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
                   ({flipDashboardStat.tailResultPercentage}%)
                 </Typography>
               </Typography>
-            </Box>
+            </Stack>
             <Image src={coin6} width={24} height={24} alt="coin-tail" />
           </Box>
         </DashboardCard>
@@ -84,7 +84,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"space-between"}
-          height="24.375rem"
+          height="24rem"
         >
           <Typography
             alignSelf={"flex-start"}
@@ -95,7 +95,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
           </Typography>
           <Box display={"flex"} alignSelf={"flex-start"} gap={1}>
             <Image src={coin0} width={24} height={24} alt="coin-head" />
-            <Box>
+            <Stack gap={0.5}>
               <Typography
                 variant="h3"
                 color={"secondary.main"}
@@ -109,7 +109,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
                   ({flipDashboardStat.headChoicePercentage}%)
                 </Typography>
               </Typography>
-            </Box>
+            </Stack>
           </Box>
           <DonutDisplay
             error={error}
@@ -123,7 +123,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             alignSelf={"flex-end"}
             gap={1}
           >
-            <Box>
+            <Stack gap={0.5}>
               <Typography
                 variant="h3"
                 color={"error.100"}
@@ -137,7 +137,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
                   ({flipDashboardStat.tailChoicePercentage}%)
                 </Typography>
               </Typography>
-            </Box>
+            </Stack>
             <Image src={coin6} width={24} height={24} alt="coin-tail" />
           </Box>
         </DashboardCard>
@@ -146,7 +146,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"center"}
-          height="24.375rem"
+          height="24rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="flip total" />

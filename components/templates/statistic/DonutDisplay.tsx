@@ -46,7 +46,7 @@ export function DonutDisplay({
         </Typography>
       </Box>
       {/* Wrap Donut Component in a box to use z-index so that the tooltip is on top of other texts */}
-      <Box width={1} position={"absolute"} zIndex={2}>
+      <Box width={1} position={"relative"} zIndex={2}>
         <Donut data={[flipDashboardStat[tail], flipDashboardStat[head]]} />
       </Box>
     </Box>
