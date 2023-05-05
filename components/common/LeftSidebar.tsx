@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
 import MyImage from "components/ui/image";
 import { GoldenHour } from 'components/ui/goldenHour';
-import { useGoldenHour } from 'hooks/useGoldenHour';
+import { useSiteContext } from 'contexts/SiteContext';
 
 type Props = {
     open: boolean;
@@ -158,7 +158,7 @@ const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean
         },
 
         '&:hover': item.disabledHover || item.isActive ? {
-            backgroundColor: item.highLight && open ? 'secondary.main' : 'transparent',
+            backgroundColor: item.highLight && open ? isGoldenHour ? 'rgba(255, 252, 221, 1)' : 'secondary.main' : 'transparent',
             backgroundSize: '110%',
         } : {
             color: 'primary.main',
@@ -178,7 +178,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const route = useRouter();
     const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.pathname])
     const container = window !== undefined ? () => window().document.body : undefined;
-    const { isGoldenHour } = useGoldenHour();
+    const { isGoldenHour } = useSiteContext();
     useEffect(() => {
         if (idCurrentActive) {
             setIdActive(idCurrentActive);
@@ -297,7 +297,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                         content: '""',
                         position: 'fixed',
                         left: open ? DRAWER_WIDTH : (theme) => theme.spacing(8.5),
-                        background: 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)',
+                        background: isGoldenHour ? 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)' : '',
                         filter: 'blur(20px)',
                         width: 30,
                         height: '100vh',

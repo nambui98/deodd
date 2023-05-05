@@ -29,7 +29,9 @@ export type SiteContextType = {
     audioPlayer:(value: AudioPlay) => void,
 
     isTurnOffAudio: boolean,
-    turnOffAudio: VoidFunction
+    turnOffAudio: VoidFunction;
+    isGoldenHour: boolean;
+    setIsGoldenHour: (value: boolean) => void;
 }
 
 
