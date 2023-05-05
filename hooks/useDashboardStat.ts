@@ -6,7 +6,7 @@ import {
 } from "libs/apis/statisticapi";
 import { useSiteContext } from "contexts/SiteContext";
 
-// This is sort function for userPerFlip
+// This is sort function for userFlipStat
 function matchValue(str: string): any {
   const matches = str.match(/\d+/g);
   if (matches != null) {
@@ -35,9 +35,10 @@ export function useDashboardStat() {
       winStreak: 0,
       lossStreak: 0,
       username: "",
+      winWallet: "",
     },
     flipDashboardStat: {},
-    userPerFlip: [],
+    userFlipStat: {},
     totalUser: 0,
   });
 
@@ -58,6 +59,7 @@ export function useDashboardStat() {
               winStreak: streakData.highestWinStreak.maxStreakLength,
               lossStreak: streakData.highestLossStreak.maxStreakLength,
               username: streakData.highestWinStreak.username,
+              winWallet: streakData.highestWinStreak.wallet,
             },
             error: {
               ...prev.error,
@@ -94,11 +96,11 @@ export function useDashboardStat() {
         const flipData = flipResult.data.data;
         if (flipData != null) {
           const sortedFlip = (
-            Object.entries(flipData.userPerFlip) as any
+            Object.entries(flipData.userFlipStat) as any
           ).toSorted(sortFunction);
           setStatistic((prev) => ({
             ...prev,
-            userPerFlip: sortedFlip,
+            userFlipStat: sortedFlip,
             totalUser: flipData.totalUser,
             error: {
               ...prev.error,

@@ -2,6 +2,7 @@ import { Grid, Typography, Box } from "@mui/material";
 import { bgWinStreakImage, bgLossStreakImage } from "utils/Images";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
+import { Convert } from "utils/convert";
 
 type StreakPropsType = {
   error: {
@@ -39,8 +40,10 @@ export function StreakSection({ error, streak }: StreakPropsType) {
                     ? `0${streak.winStreak}`
                     : streak.winStreak}
                 </Typography>
-                <Typography fontSize={"1rem"}>
+                <Typography fontSize={"1rem"} textAlign={"center"}>
                   {streak.username ? streak.username : "Unknown"}
+                  {" "}
+                  {streak.winWallet ? `(${Convert.convertWalletAddress(streak.winWallet, 5, 4)})` : ""}
                 </Typography>
               </>
             ) : (
