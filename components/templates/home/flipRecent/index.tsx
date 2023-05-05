@@ -41,11 +41,8 @@ function FlipRecent({ }: Props) {
                     username: any;
                 }) => {
                     let today = Math.floor(Date.now() / 1000);
-                    // debugger
-                    console.log(today - item.time);
                     let isWin = item.flipResult === 1;
                     let amountWin = BigNumber.from(item.amount?.toString()).mul(BigNumber.from(2));
-                    debugger
                     let data: dataUserRecent = {
                         id: item.flipId,
                         wallet: item.wallet,

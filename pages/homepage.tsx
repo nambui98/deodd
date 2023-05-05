@@ -38,17 +38,6 @@ const HomePage: React.FC = React.memo(() => {
       >
         {walletIsConnected ? <PlayPart /> : <ConnectWallet />}
       </Stack>
-      <Stack
-        sx={{
-          mt: 3,
-          mb: { md: 3, xs: 0 }
-        }}
-        direction={'row'} justifyContent={'center'}
-      >
-        <ItemPopup style={{ marginLeft: 0 }} onClick={() => handleShowPopup('faq')}>FAQ</ItemPopup> |
-        <ItemPopup onClick={() => handleShowPopup('howToPlay')}>How to play</ItemPopup> |
-        <ItemPopup style={{ marginRight: 0 }} onClick={() => handleShowPopup('flip')}>Flip responsibly</ItemPopup>
-      </Stack>
       <Popup customWidth={"34rem"} status={statusPopup} handleClose={() => setStatusPopup(false)} body={<Box>
         <Box>
           <Box position={"absolute"} top={"1rem"} right={"1rem"} sx={{

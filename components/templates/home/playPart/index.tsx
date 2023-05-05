@@ -216,7 +216,7 @@ export const PlayPart = React.memo(() => {
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
 
     <RenderUi statusGame={statusGame} />
-    <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
+    {/* <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
       <Stack alignItems={'flex-end'}>
 
         <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
@@ -224,7 +224,7 @@ export const PlayPart = React.memo(() => {
       </Stack>
       <MyImage alt="" width={40} height={40} src={TestailCoinImage} />
 
-    </Stack>
+    </Stack> */}
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
       {popup.body}
     </Box>} />

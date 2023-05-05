@@ -10,6 +10,7 @@ import MyBottomNavigation from "./BottomNavigation";
 import LeftSidebar from "./LeftSidebar";
 import { Meta } from "./Meta";
 import RightSidebar from "./RightSidebar";
+import FaqHowtoplay from "./FaqHowtoplay";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -50,6 +51,7 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main> {children} </main>
+                <FaqHowtoplay />
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
             <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>

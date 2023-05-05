@@ -1,5 +1,5 @@
 import Content from "@/templates/referral/Content";
-import { Box, Container, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Loader from "components/common/Loader";
 import { Suspense } from "react";
 
@@ -11,7 +11,6 @@ function referral({ }: Props) {
             <Suspense fallback={<Loader isLoadingProps={true} />}>
                 <Content />
             </Suspense>
-
         </Box>
     );
 }

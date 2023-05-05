@@ -5,25 +5,26 @@ import { useColorModeContext } from "../../../contexts/ColorModeContext";
 import { LoadingButton, LoadingButtonProps } from '@mui/lab';
 import { Colors } from "constants/index";
 
-interface IProps {
+interface IProps extends ButtonProps {
   title: any
-  customStyle?: any
-  onClick: () => any
   active: boolean
-  disable?: boolean
 }
 
-export const ButtonMain: React.FC<IProps> = ({ title, customStyle, onClick, active, disable }) => {
-  const { darkMode } = useColorModeContext();
-  return <Button onClick={onClick} sx={{
+export const ButtonMain: React.FC<IProps> = ({ title, sx, active, ...props }) => {
+  return <Button sx={{
     minHeight: 1,
-    borderColor: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
-    color: !darkMode ? active ? '#fc753f' : '#e9eaef' : active ? '#fef156' : '#5a6178',
-    pointerEvents: disable === undefined || !disable ? 'auto' : 'none',
-    textTransform: 'uppercase',
+    borderColor: active ? '#fef156' : '#5a6178',
+    color: active ? '#fef156' : '#5a6178',
     fontSize: 16,
-    ...customStyle
-  }} color="secondary" variant="outlined" disabled={disable} > {title} </Button>
+    textTransform: 'none',
+    fontWeight: 400,
+    borderWidth: 1,
+    '&:hover': {
+
+      borderWidth: 1,
+    },
+    ...sx
+  }} color="secondary" variant="outlined" {...props}> {title} </Button>
 }
 // type ButtonProps2 = React.ButtonHTMLAttributes<HTMLButtonElement>;
 export const ButtonTertiary: React.FC<ButtonProps> = (props) => {
