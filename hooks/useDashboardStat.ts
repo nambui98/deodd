@@ -55,8 +55,8 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             streak: {
-              winStreak: streakData.highestWinStreak.currentStreakLength,
-              lossStreak: streakData.highestLossStreak.currentStreakLength,
+              winStreak: streakData.highestWinStreak.maxStreakLength,
+              lossStreak: streakData.highestLossStreak.maxStreakLength,
               username: streakData.highestWinStreak.username,
             },
             error: {
