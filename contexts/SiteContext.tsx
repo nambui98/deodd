@@ -14,7 +14,9 @@ export const SiteContext = createContext<SiteContextType>({
     titleSuccess: "",
     audioPlayer: () => { },
     isTurnOffAudio: false,
-    turnOffAudio: () => { }
+    turnOffAudio: () => { },
+    isGoldenHour: false,
+    setIsGoldenHour: () => { },
 
 })
 
@@ -33,6 +35,7 @@ export const SiteProvider = ({ children }: IProps) => {
     const [audioLost, setAudioLost] = useState<HTMLAudioElement | undefined>();
     const [audioWin, setAudioWin] = useState<HTMLAudioElement | undefined>();
     const [isTurnOffAudio, setIsTurnOffAudio] = useState<boolean>(false);
+    const [isGoldenHour, setIsGoldenHour] = useState(false as boolean);
     useEffect(() => {
         setAudioPlay(new Audio("/assets/roll.mp3"))
         setAudioWin(new Audio("/assets/win.mp3"))
@@ -111,7 +114,9 @@ export const SiteProvider = ({ children }: IProps) => {
             setTitleSuccess,
             audioPlayer,
             isTurnOffAudio,
-            turnOffAudio
+            turnOffAudio,
+            isGoldenHour,
+            setIsGoldenHour,
         }
     }, [
         isLoading,
@@ -120,7 +125,9 @@ export const SiteProvider = ({ children }: IProps) => {
         isSuccess,
         titleSuccess,
         isTurnOffAudio,
-        audioPlayer
+        audioPlayer,
+        isGoldenHour,
+        setIsGoldenHour,
         // isTurnOffAudio
     ])
     return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>

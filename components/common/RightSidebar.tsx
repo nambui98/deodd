@@ -4,6 +4,7 @@ import { Drawer } from 'components/ui/drawer'
 import { Input } from 'components/ui/input'
 import { DRAWER_WIDTH } from 'constants/index'
 import { useWalletContext } from 'contexts/WalletContext'
+import { useSiteContext } from 'contexts/SiteContext'
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Avatar2Image } from 'utils/Images'
@@ -16,6 +17,7 @@ type Props = {
 }
 function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const container = window !== undefined ? () => window().document.body : undefined;
+    const { isGoldenHour } = useSiteContext();
 
     return (
         <Box
@@ -59,7 +61,7 @@ function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                         content: '""',
                         position: 'fixed',
                         right: open ? DRAWER_WIDTH : 0,
-                        background: 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)',
+                        background: isGoldenHour ? 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)' : '',
                         filter: 'blur(20px)',
                         width: 30,
                         height: '100vh',

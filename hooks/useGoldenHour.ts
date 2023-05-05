@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSiteContext } from "contexts/SiteContext";
 
 function formatTime(time: number) {
   const hour = Math.floor(time / 3600);
@@ -19,7 +20,6 @@ function formatTime(time: number) {
 type TimelineProps = {
   startHour: number;
   endHour: number;
-  isGoldenHour: boolean;
 };
 
 type CountdownProps = {
@@ -28,16 +28,18 @@ type CountdownProps = {
 };
 
 function getUTCHour(time: number) {
+  // Get milliseconds have elapsed in UTC time, convert it to elapsed days and floor the number.
+  // The number we get will be 00:00 of today, now convert it to elapsed hours.
+  // Add the amount of hours we want and convert it to seconds. 
   const startOfTheDay =
     Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24) * 24;
   return (startOfTheDay + time) * 60 * 60;
 }
 
 export function useGoldenHour() {
-  const [timeline, setTimeline] = useState<TimelineProps>({
+  const [timeline] = useState<TimelineProps>({
     startHour: getUTCHour(14),
     endHour: getUTCHour(16),
-    isGoldenHour: false,
   });
 
   const [countdown, setCountdown] = useState<CountdownProps>({
@@ -45,29 +47,26 @@ export function useGoldenHour() {
     timeLeft: 0,
   });
 
+  const {isGoldenHour, setIsGoldenHour} = useSiteContext();
+
   // Set isGoldenHour state
   useEffect(() => {
     if (
       countdown.timeCurrent >= timeline.startHour &&
       countdown.timeCurrent < timeline.endHour
     ) {
-      if (!timeline.isGoldenHour) {
-        setTimeline((prev) => ({
-          ...prev,
-          isGoldenHour: true,
-        }));
+      if (!isGoldenHour) {
+        setIsGoldenHour(true);
       }
     } else {
-      if (timeline.isGoldenHour) {
-        setTimeline((prev) => ({
-          ...prev,
-          isGoldenHour: false,
-        }));
+      if (isGoldenHour) {
+        setIsGoldenHour(false);
       }
     }
   }, [
+    isGoldenHour,
+    setIsGoldenHour,
     countdown.timeCurrent,
-    timeline.isGoldenHour,
     timeline.startHour,
     timeline.endHour,
   ]);
@@ -109,6 +108,5 @@ export function useGoldenHour() {
 
   return {
     displayTime: formatTime(countdown.timeLeft),
-    isGoldenHour: timeline.isGoldenHour,
   };
 }
