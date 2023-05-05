@@ -1,6 +1,9 @@
 import { Box, styled } from "@mui/material"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { defaults } from "chart.js";
+
+defaults.font.family = "BeVietnamPro";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const Donut = (props: { data: [number, number] }) => {
@@ -9,28 +12,35 @@ export const Donut = (props: { data: [number, number] }) => {
 
         datasets: [
             {
-        label: "Percent",
-        data: props.data,
-        cutout: 68,
-        backgroundColor: ["#FC753F", "#FEF156"],
+                data: props.data,
+                cutout: 68,
+                backgroundColor: ["#FC753F", "#FEF156"],
                 spacing: 3,
                 borderWidth: 0,
                 borderRadius: 50,
                 plugins: {
                     legend: {
-            display: false,
-          },
-        },
+                        display: false,
+                    },
+                },
             },
         ],
     };
-    return <Doughnut options={{
-        plugins: {
-            legend: {
-                display: false,
-            },
-        }
-    }} data={data} />;
+    return <Doughnut
+        options={{
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    padding: 10,
+                    bodyAlign: "center",
+                    titleAlign: "center",
+                    boxPadding: 3,
+                }
+            }
+        }}
+        data={data} />;
 }
 
 // const BoxCus = styled(Box)(({ percentMain }: { percentMain: number }) => ({

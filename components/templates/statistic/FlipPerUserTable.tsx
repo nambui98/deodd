@@ -2,29 +2,20 @@ import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
 
 function RowItem({
-  totalUser,
   times,
   percentage,
+  count,
 }: {
-  totalUser: number;
   times: string;
   percentage: number;
+  count: number;
 }) {
   return (
-    <Box
-      sx={{
-        gap: { xs: 1, sm: 2, md: 3 },
-      }}
-      width={1}
-      display={"flex"}
-      gap={1}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-    >
-      <Typography variant="body2" minWidth={"3rem"}>
+    <>
+      <Typography variant="body2">
         {times}
       </Typography>
-      <Box height={1} width={1}>
+      <Box display={"flex"} alignItems={"center"}>
         <Box
           width={1}
           height={"0.25rem"}
@@ -39,11 +30,11 @@ function RowItem({
           ></Box>
         </Box>
       </Box>
-      <Typography variant="body2">{totalUser}</Typography>
-      <Typography variant="body2" minWidth={"2.3rem"} textAlign={"right"}>
+      <Typography variant="body2" textAlign={"right"}>{count}</Typography>
+      <Typography variant="body2" textAlign={"right"}>
         {percentage}%
       </Typography>
-    </Box>
+    </>
   );
 }
 
@@ -52,13 +43,11 @@ type FlipPerUserType = {
     haveFlipped: boolean;
     errorMessage: string;
   };
-  userPerFlip: any;
-  totalUser: number;
+  userFlipStat: any;
 };
 
 export function FlipPerUserTable({
-  userPerFlip,
-  totalUser,
+  userFlipStat,
   error,
 }: FlipPerUserType) {
   return (
@@ -91,20 +80,20 @@ export function FlipPerUserTable({
 
       {error.haveFlipped ? (<Box
         width={1}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
+        display={"grid"}
+        gridTemplateColumns={"auto 1fr auto auto"}
+        alignItems={"center"}
         gap={3}
       >
 
-        {userPerFlip.map(
-          ([property, value]: [string, number], index: number) => {
+        {userFlipStat.map(
+          ([property, { userPerFlipPercent, userPerFlipCount }]: [string, { userPerFlipPercent: number, userPerFlipCount: number }], index: number) => {
             return (
               <RowItem
                 key={index}
-                totalUser={totalUser}
                 times={property}
-                percentage={value}
+                percentage={userPerFlipPercent}
+                count={userPerFlipCount}
               />
             );
           }
@@ -124,32 +113,6 @@ export function FlipPerUserTable({
           {error.errorMessage}
         </Typography>
       )}
-      {/* <Box
-        width={1}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        gap={3}
-      >
-        {error.haveFlipped ? (
-          userPerFlip.map(
-            ([property, value]: [string, number], index: number) => {
-              return (
-                <RowItem
-                  key={index}
-                  totalUser={totalUser}
-                  times={property}
-                  percentage={value}
-                />
-              );
-            }
-          )
-        ) : (
-          <Typography variant="h2" textAlign={"center"}>
-            {error.errorMessage}
-          </Typography>
-        )}
-      </Box> */}
     </Box>
   );
 }
