@@ -39,18 +39,17 @@ function FlipRecent({ }: Props) {
                     flipChoice: any;
                     flipResult: any;
                     username: any;
+                    currentStreak: number
                 }) => {
-                    let today = Math.floor(Date.now() / 1000);
                     let isWin = item.flipResult === 1;
-                    let amountWin = BigNumber.from(item.amount?.toString()).mul(BigNumber.from(2));
                     let data: dataUserRecent = {
                         id: item.flipId,
                         wallet: item.wallet,
-                        amount: Format.formatMoneyFromBigNumberEther(isWin ? amountWin : item.amount),
-                        isWin: item.flipResult === 1,
+                        amount: Format.formatMoneyFromBigNumberEther(item.amount),
+                        isWin: isWin,
                         timeAgo: Convert.convertTimeStamp(item.time),
                         username: item.username,
-                        streak: 0,
+                        streak: item.currentStreak,
                         nodeRef: createRef(),
                     };
                     return data;
@@ -229,7 +228,7 @@ function UserActivity({ user }: { user: dataUserRecent }) {
                     </Typography>
                 </Stack>
             </Stack>
-            {user.streak > 0 && (
+            {user.streak > 1 && (
                 <Box
                     position={"absolute"}
                     top={0}
