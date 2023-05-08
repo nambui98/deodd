@@ -47,7 +47,12 @@ vhIdRequest.interceptors.response.use(
           } catch (error) {
             return console.log(error)
           }
-
+        }
+        else if (err.response.data.meta.code === 1012) {
+          LocalStorage.removeAccessToken();
+          LocalStorage.removeRefreshToken();
+          LocalStorage.removeWalletAddress();
+          window.location.reload();
         }
       } else {
         // ToastUtils.error(err.response.meta.message)

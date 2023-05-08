@@ -20,7 +20,6 @@ const dataTypeNFT: any = {
   2: "/assets/images/diamond.png",
 }
 export const Result = () => {
-  const { bnbAssets } = useWalletContext()
   const { darkMode } = useColorModeContext();
   const { gameResult, setStatusGame } = useContractContext();
   const { handleClaimBnb } = useDeoddContract();
@@ -29,6 +28,7 @@ export const Result = () => {
     status: false,
     body: <></>
   })
+  const bnbAssets = BigNumber.from(0);
   const {
     coinSide,
     isWinner,
@@ -40,6 +40,7 @@ export const Result = () => {
     tossPoints,
     jackpotWin
   } = gameResult!
+
   // || {
   //   coinSide: 1,
   //   flipResult: 1,

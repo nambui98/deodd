@@ -28,7 +28,6 @@ type Props = {
 function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelected, priceToken }: Props) {
     const [openNftType, setOpenNftType] = useState<EnumNFT | undefined>()
     const [openModal, setOpenModal] = useState(false)
-    const { bnbAssets } = useWalletContext();
     const { tossPoint } = useJackpotContract();
     const { handleClaimBnb } = useDeoddContract();
     const handleClick = (nftType: EnumNFT) => {
@@ -38,6 +37,7 @@ function LeftContent({ spendingTokens, handleClaimNFT, handleClickNFT, nftSelect
             setOpenNftType(nftType);
         }
     };
+    let bnbAssets = BigNumber.from(0);
 
     let price = useMemo(() => parseFloat(ethers.utils.formatEther(bnbAssets)) * (priceToken ?? 0), [priceToken, bnbAssets]);
     return (
