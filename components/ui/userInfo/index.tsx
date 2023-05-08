@@ -28,12 +28,12 @@ import { useDisconnect } from "wagmi";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { ClickAwayListener } from '@mui/base';
+import ProfileUsername from "../profileUsername";
 
-function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
+function UserInfoButton(props: ButtonProps & { text: string }) {
   return (
     <Button
       LinkComponent={Link}
-      href={props.href}
       variant="contained"
       disableElevation
       sx={{
@@ -60,6 +60,7 @@ function UserInfoButton(props: ButtonProps & { href: string; text: string }) {
         },
       }}
       startIcon={props.startIcon}
+      {...props}
     >
       {props.text}
     </Button>
@@ -101,6 +102,7 @@ export function UserInfo() {
   const matchesScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance } = useWalletContext();
+  const [isProfileOpened, setIsProfileOpened] = useState(false);
 
   const { disconnect } = useDisconnect()
   if (!walletIsConnected) {
@@ -110,6 +112,7 @@ export function UserInfo() {
       <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
         {/* Box to refer to position */}
         <Box position={"relative"} height={"3rem"} >
+          <ProfileUsername open={isProfileOpened} onClose={() => { setIsProfileOpened(false) }} />
           {/* Menu Container */}
           <Box
             sx={{
@@ -193,7 +196,7 @@ export function UserInfo() {
                   sx={{ gap: 1.5, opacity: expanded ? 1 : 0, transition: "opacity 600ms", padding: "0 0.75rem" }}
                 >
                   <Stack direction={"row"} spacing={1}>
-                    <UserInfoButton href="/" text="Profile" startIcon={<ProfileCircleIcon />} />
+                    <UserInfoButton onClick={() => { setIsProfileOpened(true) }} text="Profile" startIcon={<ProfileCircleIcon />} />
                     <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
                   </Stack>
                   <Divider></Divider>
