@@ -3,6 +3,10 @@ import { Modal, Stack, Box, Typography, CircularProgress, InputBase, Zoom } from
 import MyImage from "components/ui/image";
 import { ButtonMain } from "components/ui/button";
 import { useWalletContext } from "contexts/WalletContext";
+import { DeoddService } from "libs/apis";
+import { useProfileContract } from "hooks/useProfileContract";
+import { useDisconnect } from "wagmi";
+import { useContractContext } from "contexts/ContractContext";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -12,10 +16,55 @@ const avatars = [
   '/assets/images/avatar-green.png'
 ]
 
+type SetProfileFunctionProps = {
+  currentProfile: { username: string, avatar: any },
+  isLoading: boolean,
+  setIsLoading: Function,
+  registerName: any, // Change me later
+  userInfo: any, // Change me later
+  walletAddress: any, // Change me later
+  refresh: any, // Change me later
+  setRefresh: any, // Change me later
+}
+
+async function handleSetProfile({
+  currentProfile,
+  isLoading,
+  setIsLoading,
+  registerName,
+  userInfo,
+  walletAddress,
+  refresh,
+  setRefresh,
+}: SetProfileFunctionProps) {
+  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  if (format.test(currentProfile.username)) {
+    return;
+  }
+  debugger
+  if (!isLoading) {
+    setIsLoading(true);
+    const resService = await DeoddService.saveInfoUser({
+      wallet: walletAddress,
+      username: currentProfile.username || userInfo.userName,
+      avatarId: currentProfile.avatar
+    });
+    setIsLoading(false);
+    if (resService.status === 200) {
+      setRefresh(!refresh);
+    } else {
+    }
+  }
+}
+
 export default function ProfileUsername({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { statusGame } = useContractContext();
+  const { registerName } = useProfileContract();
+  const { disconnect } = useDisconnect();
+
   const [isLoading, setIsLoading] = useState(false);
   const { walletAddress, refresh, setRefresh, userInfo } = useWalletContext();
-  const [currentProfile, setCurrentProfile] = useState({ username: "", avatar: userInfo.avatar });
+  const [currentProfile, setCurrentProfile] = useState({ username: "", avatar: userInfo.avatar } as { username: string; avatar: any });
 
   return (
     <Modal aria-labelledby="profile-nickname-modal" open={open} onClose={onClose} sx={{ display: "flex", justifyContent: "center" }}>
@@ -46,9 +95,9 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           </Box>
 
           <Typography variant="h3" fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>Your profile</Typography>
-          <MyImage src="/assets/images/avatar-yellow.png" width={120} height={120} alt="profile-avatar" />
+          <MyImage src={currentProfile.avatar !== null ? avatars[currentProfile.avatar] : avatars[parseFloat(userInfo.avatar)]} width={120} height={120} alt="profile-avatar" />
           <Stack direction={"row"} spacing={2} >
-            {avatars.map((avatarSrc, index) => (<MyImage key={index} src={avatarSrc} width={40} height={40} alt="profile-avatar" sx={{ cursor: "pointer" }} />))}
+            {avatars.map((avatarSrc, index) => (<MyImage key={index} onClick={() => { setCurrentProfile(prev => ({ ...prev, avatar: index })) }} src={avatarSrc} width={40} height={40} alt="profile-avatar" sx={{ cursor: "pointer" }} />))}
           </Stack>
           <InputBase
             sx={{
@@ -71,7 +120,13 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             onChange={(e) => { setCurrentProfile(prev => ({ ...prev, username: e.target.value })) }}
           />
           <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
-          <ButtonMain customStyle={{ width: 1 }} active={true} title={isLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'SAVE'} onClick={() => { setIsLoading(true) }}></ButtonMain>
+          <ButtonMain
+            disable={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
+            active={true}
+            customStyle={{ width: 1, height: "3.375rem" }}
+            title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
+            onClick={() => { handleSetProfile({ currentProfile, isLoading, setIsLoading, registerName, userInfo, walletAddress, refresh, setRefresh }) }}
+          ></ButtonMain>
         </Stack>
       </Zoom>
     </Modal >
