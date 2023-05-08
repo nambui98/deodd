@@ -30,8 +30,8 @@ export const ButtonMain: React.FC<IProps> = ({ title, sx, active, ...props }) =>
 export const ButtonTertiary: React.FC<ButtonProps> = (props) => {
   return <Button {...props} color="secondary" variant="contained"  > {props.children} </Button>
 }
-export const ButtonSecond: React.FC<IProps & ButtonProps> = ({ children, onClick, active, sx, disable }) => {
-  return <Button onClick={onClick} color="secondary" variant="outlined" disabled={disable} sx={sx} > {children} </Button>
+export const ButtonSecond: React.FC<IProps & ButtonProps> = ({ children, onClick, active, sx, ...props }) => {
+  return <Button onClick={onClick} color="secondary" variant="outlined" sx={sx} {...props} > {children} </Button>
 }
 export const ButtonSecondRemex: React.FC<ButtonProps> = (props) => {
   return <Button {...props} color="secondary" variant="contained" > {props.children} </Button>

@@ -207,7 +207,8 @@ export const Result = () => {
         tokenId?.gt(BigNumber.from(0)) &&
         <ButtonMain
           active
-          title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} sx={{
+          title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim}
+          sx={{
             py: 2,
             px: 0,
             // width: '100%',
