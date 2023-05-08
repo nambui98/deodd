@@ -10,7 +10,6 @@ enum Modal_Type {
     FLIP_RESPONSIBLY
 }
 function FaqHowtoplay({ }: Props) {
-    const [statusPopup, setStatusPopup] = useState<boolean>(false);
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [modalType, setModalType] = useState<Modal_Type>(Modal_Type.FAQ);
 
@@ -23,7 +22,7 @@ function FaqHowtoplay({ }: Props) {
         [Modal_Type.HOW_TO_PLAY]: <HowToPlay />,
         [Modal_Type.FLIP_RESPONSIBLY]: <FlipResponsibly />
     }
-    console.log(Modal_Type[modalType]);
+
     return (
         <Box position={'fixed'} bottom={24} left={'50%'} sx={{ transform: 'translateX(-50%)' }}>
 

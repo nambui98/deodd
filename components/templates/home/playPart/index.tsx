@@ -73,7 +73,7 @@ export const PlayPart = React.memo(() => {
       <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
         <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, '#ffffff'), margin: '24px 0' }}>{message}</Typography>
-        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
+        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: '100%' }} />
       </Box>
     )
   }
@@ -81,7 +81,7 @@ export const PlayPart = React.memo(() => {
   const bodyPopupSuccess = (
     <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
       <Typography sx={{ ...TEXT_STYLE(24, 500), marginBottom: '24px' }} >Profile updated !</Typography>
-      <ButtonMain active={true} title={'OKAY'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: '100%' }} />
+      <ButtonMain active={true} title={'OKAY'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: '100%' }} />
     </Box>
   )
 
@@ -96,11 +96,11 @@ export const PlayPart = React.memo(() => {
         <Grid container >
           <Grid item xs={12}>
 
-            <ButtonMain active={true} title={'NO'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%", padding: "17px 0", marginBottom: '16px' }} />
+            <ButtonMain active={true} title={'NO'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: "100%", padding: "17px 0", marginBottom: '16px' }} />
           </Grid>
           <Grid item xs={12}>
 
-            <ButtonMain active={false} title={'YES'} onClick={() => disconnect()} customStyle={{ width: "100%", padding: "17px 0" }} />
+            <ButtonMain active={false} title={'YES'} onClick={() => disconnect()} sx={{ width: "100%", padding: "17px 0" }} />
           </Grid>
 
         </Grid>
@@ -159,10 +159,10 @@ export const PlayPart = React.memo(() => {
         ...TEXT_STYLE(12, 400),
         marginBottom: '24px'
       }}>{userInfo.userName ? '*If you change a Nickname, you will be charged some gas fee for this.' : '*If you choose to create a Nickname, you will be charged some gas fee for this.'}</Typography>
-      <ButtonMain disable={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
+      <ButtonMain disabled={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
         active={true}
-        title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'SAVE'} onClick={handleSetProfile} customStyle={{ width: "100%", marginBottom: '16px' }} />
-      <ButtonMain active={false} title={'CLOSE'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
+        title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'SAVE'} onClick={handleSetProfile} sx={{ width: "100%", marginBottom: '16px' }} />
+      <ButtonMain active={false} title={'CLOSE'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: "100%" }} />
     </Box>
   )
 
@@ -233,7 +233,6 @@ export const PlayPart = React.memo(() => {
 
 // eslint-disable-next-line react/display-name
 const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
-
   switch (statusGame) {
     case 0:
       return <NotYetFlip />

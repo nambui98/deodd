@@ -14,12 +14,13 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '100%',
+    // width: '100%',
     bgcolor: 'primary.200',
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.15)',
     px: 3,
     py: 3,
-    borderRadius: "8px"
+    borderRadius: "8px",
+    minWidth: 400
 };
 
 export default function MyModal({ open, setOpen, title, haveIconClosed, children, sx }: Props) {
