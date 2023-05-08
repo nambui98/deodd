@@ -354,7 +354,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         onClick={handleClaim}
                         disabled={
                             ethers.utils.parseEther(
-                                (dataAvailable?.claimedReward || 0).toString()
+                                (dataAvailable?.unclaimedReward || 0).toString()
                             ).lte(BigNumber.from(0)) ||
                             bnbBalance.lte(
                                 ethers.utils.parseEther((dataAvailable?.claimFee || 0).toString())
