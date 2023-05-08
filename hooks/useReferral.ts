@@ -61,10 +61,10 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
             DeoddService.getReferralRewardExpired(walletAddress)
         ]);
         debugger
-        if (available.status === 200 && available.data && available.data.data) {
+        if (available && available.status === 200 && available.data && available.data.data) {
             setDataAvailable(available.data.data);
         }
-        if (rewardExpired.status === 200 && rewardExpired.data && rewardExpired.data.data) {
+        if (rewardExpired && rewardExpired.status === 200 && rewardExpired.data && rewardExpired.data.data) {
             setDataExpired(rewardExpired.data.data);
         }
     }

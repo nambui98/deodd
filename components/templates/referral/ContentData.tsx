@@ -102,7 +102,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const handleClaim = async () => {
         try {
             setIsLoading(true);
-            const res = await DeoddService.ClaimReferral(walletAddress);
+            const res = await DeoddService.claimReferral(walletAddress);
             setIsLoading(false);
             if (res.data.data && res.status === 200) {
                 setTitleSuccess("Claimed successfully");

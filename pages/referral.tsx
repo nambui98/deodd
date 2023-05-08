@@ -8,9 +8,9 @@ type Props = {};
 function referral({ }: Props) {
     return (
         <Box mt={10}>
-            <Suspense fallback={<Loader isLoadingProps={true} />}>
-                <Content />
-            </Suspense>
+            {/* <Suspense fallback={<Loader isLoadingProps={true} />}> */}
+            <Content />
+            {/* </Suspense> */}
         </Box>
     );
 }

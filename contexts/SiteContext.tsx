@@ -45,7 +45,6 @@ export const SiteProvider = ({ children }: IProps) => {
     }, [])
     useEffect(() => {
         if (audioWin && audioPlay && audioLost) {
-            debugger
             if (isTurnOffAudio) {
                 audioPlay!.muted = true;
                 audioLost!.muted = true;
