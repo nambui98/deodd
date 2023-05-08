@@ -67,35 +67,33 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
   );
 }
 
-
-
-function FlipHistoryItem() {
-  return (
-    <>
-      <Stack gap={0.5} px={1}>
-        <Typography variant="body2" fontSize={"0.75rem"}>
-          Claim all reward
-        </Typography>
-        <Stack direction={"row"} justifyContent={"space-between"}>
-          <Typography
-            variant="body2"
-            fontSize={"0.875rem"}
-            color={"text.disabled"}
-          >
-            -100 BNB
-          </Typography>
-          <Typography
-            variant="body2"
-            fontSize={"0.75rem"}
-            color={"text.disabled"}
-          >
-            12 seconds ago
-          </Typography>
-        </Stack>
-      </Stack>
-    </>
-  );
-}
+// function FlipHistoryItem() {
+//   return (
+//     <>
+//       <Stack gap={0.5} px={1}>
+//         <Typography variant="body2" fontSize={"0.75rem"}>
+//           Claim all reward
+//         </Typography>
+//         <Stack direction={"row"} justifyContent={"space-between"}>
+//           <Typography
+//             variant="body2"
+//             fontSize={"0.875rem"}
+//             color={"text.disabled"}
+//           >
+//             -100 BNB
+//           </Typography>
+//           <Typography
+//             variant="body2"
+//             fontSize={"0.75rem"}
+//             color={"text.disabled"}
+//           >
+//             12 seconds ago
+//           </Typography>
+//         </Stack>
+//       </Stack>
+//     </>
+//   );
+// }
 
 export function UserInfo() {
   const theme = useTheme();
@@ -140,16 +138,6 @@ export function UserInfo() {
               }
             >
               <Stack direction="row" alignItems="center" gap={1}>
-                {/* <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
-                  <Typography
-                    variant="h3"
-                    fontSize={"0.75rem"}
-                    textTransform={"uppercase"}
-                    color={"text.disabled"}
-                  >
-                    balance
-                  </Typography>
-                </Collapse> */}
                 <Typography variant="h3" fontSize={"0.875rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
                 <BnbIcon fill={Colors.primaryDark} />
               </Stack>
@@ -199,21 +187,17 @@ export function UserInfo() {
                     <UserInfoButton onClick={() => { setIsProfileOpened(true) }} text="Profile" startIcon={<ProfileCircleIcon />} />
                     <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
                   </Stack>
-                  <Divider></Divider>
+                  {/* <Divider></Divider>
                   <Typography
                     variant="h3"
                     fontSize={"0.875rem"}
                     color={"text.disabled"}
-                  >
+                  >http://localhost:3000/loyalty
                     Flipping History
                   </Typography>
                   <Stack gap={1} divider={<Divider />}>
-                    {/* <Typography textAlign={'center'} variant="h3">Empty</Typography> */}
-                    <FlipHistoryItem />
-                    <FlipHistoryItem />
-                    <FlipHistoryItem />
-                    <FlipHistoryItem />
-                  </Stack>
+                    <Typography textAlign={'center'} variant="h3">Empty</Typography>
+                  </Stack> */}
                   <Stack>
                     <Divider></Divider>
                     <Button
