@@ -73,7 +73,7 @@ export const Result = () => {
 
         <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
         <Typography sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#ffffff'), margin: '24px 0' }}>{message}</Typography>
-        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} customStyle={{ width: "100%" }} />
+        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: "100%" }} />
       </Box>
     )
   }
@@ -195,7 +195,7 @@ export const Result = () => {
 
       <ButtonMain title={!isWinner ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
         setStatusGame(StatusGame.flip);
-      }} customStyle={{
+      }} sx={{
         py: 2,
         px: 0,
         // width: '100%',
@@ -207,7 +207,7 @@ export const Result = () => {
         tokenId?.gt(BigNumber.from(0)) &&
         <ButtonMain
           active
-          title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} customStyle={{
+          title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : "Claim NFT in Assets"} onClick={handleClaim} sx={{
             py: 2,
             px: 0,
             // width: '100%',

@@ -24,7 +24,10 @@ function FaqHowtoplay({ }: Props) {
     }
 
     return (
-        <Box position={'fixed'} bottom={24} left={'50%'} sx={{ transform: 'translateX(-50%)' }}>
+        <Box position={'fixed'} bottom={{
+            xs: 89, md: 24
+
+        }} width={'100%'} left={'50%'} sx={{ transform: 'translateX(-50%)' }}>
 
             <Stack
                 direction={'row'} justifyContent={'center'}
@@ -34,13 +37,13 @@ function FaqHowtoplay({ }: Props) {
                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item> |
                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FLIP_RESPONSIBLY)}>Flip responsibly</Item>
             </Stack>
-            <MyModal open={openModal} sx={{ width: 544 }} haveIconClosed setOpen={setOpenModal}>
+            <MyModal open={openModal} sx={{ width: { xs: 400, sm: 544 } }} haveIconClosed setOpen={setOpenModal}>
                 {
                     mapContent[modalType]
                 }
             </MyModal>
 
-        </Box>
+        </Box >
     )
 }
 
@@ -139,6 +142,7 @@ const FlipResponsibly = () => (
 )
 const Item = styled(Typography)(({ theme }) => ({
     fontSize: 14,
+    cursor: 'pointer',
     color: (theme.palette.secondary as any)["500"],
     fontWeight: 500
 }))

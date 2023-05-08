@@ -1,4 +1,5 @@
 import { Utils } from '@/utils/index'
+import EastIcon from '@mui/icons-material/East'
 import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, styled } from '@mui/material'
 import MadalClaimSuccess from 'components/common/MadalError'
 import MyModal from 'components/common/Modal'
@@ -11,8 +12,7 @@ import { TypeDataNFT, TypeNFT } from 'hooks/useDeoddNFTContract'
 import { useJackpotContract } from 'hooks/useJackpotContract'
 import { EnumNFT } from 'libs/types'
 import React, { useMemo, useState } from 'react'
-import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon, RightIcon } from 'utils/Icons'
-import EastIcon from '@mui/icons-material/East';
+import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Format } from 'utils/format'
 import { ItemHistory, StatusTransfer } from './ItemHistory'
 
