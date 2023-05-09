@@ -40,7 +40,7 @@ const Layout = ({ children }: IProps) => {
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
-            <Meta title="deODD" description="" />
+            <Meta title="DeODD" description="" />
             <AppBar
                 leftOpen={leftOpen}
                 rightOpen={rightOpen}
