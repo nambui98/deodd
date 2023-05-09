@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Stack, Box, Typography, CircularProgress, InputBase, Zoom } from "@mui/material";
 import MyImage from "components/ui/image";
 import { ButtonMain } from "components/ui/button";
 import { useWalletContext } from "contexts/WalletContext";
 import { DeoddService } from "libs/apis";
-import { useProfileContract } from "hooks/useProfileContract";
-import { useDisconnect } from "wagmi";
-import { useContractContext } from "contexts/ContractContext";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -16,11 +13,10 @@ const avatars = [
   '/assets/images/avatar-green.png'
 ]
 
-type SetProfileFunctionProps = {
+type HandleSetProfileProps = {
   currentProfile: { username: string, avatar: any },
   isLoading: boolean,
   setIsLoading: Function,
-  registerName: any, // Change me later
   userInfo: any, // Change me later
   walletAddress: any, // Change me later
   refresh: any, // Change me later
@@ -31,40 +27,49 @@ async function handleSetProfile({
   currentProfile,
   isLoading,
   setIsLoading,
-  registerName,
   userInfo,
   walletAddress,
   refresh,
   setRefresh,
-}: SetProfileFunctionProps) {
-  const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-  if (format.test(currentProfile.username)) {
-    return;
-  }
-  debugger
-  if (!isLoading) {
-    setIsLoading(true);
-    const resService = await DeoddService.saveInfoUser({
-      wallet: walletAddress,
-      username: currentProfile.username || userInfo.userName,
-      avatarId: currentProfile.avatar
-    });
-    setIsLoading(false);
-    if (resService.status === 200) {
-      setRefresh(!refresh);
-    } else {
+}: HandleSetProfileProps) {
+  const format = /^(?=.{0,15}[\w\d\s\S]$)\S+$/; // No whitespace, 1-15 characters.
+  if (format.test(currentProfile.username.trim())) {
+    if (!isLoading) {
+      setIsLoading(true);
+      try {
+        debugger
+        const resService = await DeoddService.saveInfoUser({
+          wallet: walletAddress,
+          username: currentProfile.username || userInfo.userName,
+          avatarId: currentProfile.avatar
+        });
+        localStorage.setItem("nickname", JSON.stringify({
+          wallet: walletAddress,
+          username: currentProfile.username || userInfo.userName,
+          avatarId: currentProfile.avatar
+        }));
+        setIsLoading(false);
+        if (resService.status === 200) {
+          setRefresh(!refresh);
+        } else {
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 }
 
 export default function ProfileUsername({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { statusGame } = useContractContext();
-  const { registerName } = useProfileContract();
-  const { disconnect } = useDisconnect();
-
   const [isLoading, setIsLoading] = useState(false);
-  const { walletAddress, refresh, setRefresh, userInfo } = useWalletContext();
-  const [currentProfile, setCurrentProfile] = useState({ username: "", avatar: userInfo.avatar } as { username: string; avatar: any });
+  const { walletAddress, refresh, setRefresh } = useWalletContext();
+  const [userInfo, setUserInfo] = useState({ username: "", avatar: 0 } as { username: string; avatar: number });
+  const [currentProfile, setCurrentProfile] = useState({ username: userInfo.username || "", avatar: userInfo.avatar || 0 } as { username: string; avatar: number });
+
+  useEffect(() => {
+    const localNickname = localStorage.getItem("nickname");
+    console.log(localNickname);
+  }, []);
 
   return (
     <Modal aria-labelledby="profile-nickname-modal" open={open} onClose={onClose} sx={{ display: "flex", justifyContent: "center" }}>
@@ -95,7 +100,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           </Box>
 
           <Typography variant="h3" fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>Your profile</Typography>
-          <MyImage src={currentProfile.avatar !== null ? avatars[currentProfile.avatar] : avatars[parseFloat(userInfo.avatar)]} width={120} height={120} alt="profile-avatar" />
+          <MyImage src={currentProfile.avatar !== null ? avatars[currentProfile.avatar] : avatars[userInfo.avatar]} width={120} height={120} alt="profile-avatar" />
           <Stack direction={"row"} spacing={2} >
             {avatars.map((avatarSrc, index) => (<MyImage key={index} onClick={() => { setCurrentProfile(prev => ({ ...prev, avatar: index })) }} src={avatarSrc} width={40} height={40} alt="profile-avatar" sx={{ cursor: "pointer" }} />))}
           </Stack>
@@ -118,14 +123,15 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             fullWidth
             value={currentProfile.username}
             onChange={(e) => { setCurrentProfile(prev => ({ ...prev, username: e.target.value })) }}
+            onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile({ currentProfile, isLoading, setIsLoading, userInfo, walletAddress, refresh, setRefresh }) } }}
           />
           <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
           <ButtonMain
-            disable={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
+            disable={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
             active={true}
             customStyle={{ width: 1, height: "3.375rem" }}
             title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
-            onClick={() => { handleSetProfile({ currentProfile, isLoading, setIsLoading, registerName, userInfo, walletAddress, refresh, setRefresh }) }}
+            onClick={() => { handleSetProfile({ currentProfile, isLoading, setIsLoading, userInfo, walletAddress, refresh, setRefresh }) }}
           ></ButtonMain>
         </Stack>
       </Zoom>
