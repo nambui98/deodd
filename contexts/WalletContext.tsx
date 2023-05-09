@@ -1,12 +1,14 @@
 import { BigNumber, Contract, ethers } from "ethers";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { UserService } from "../services/user.service";
+import { connect, disconnect } from '@wagmi/core'
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-import { useAccount, useBalance, useConnect, useContractRead, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 import { DeoddService } from "libs/apis";
+import { signMessage } from '@wagmi/core'
 import { LocalStorage } from "libs/LocalStorage";
 
 interface Map {
@@ -68,14 +70,15 @@ const networks: Map = {
 
 const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
 
-interface wallerContextType {
+interface WalletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
 	setWalletAddress: (account: any) => void
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { userName: string, avatar: string },
+	userInfo: { username: string, avatar: number },
+	setUserInfo: Function,
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
 	contractDeoddNft: Contract | undefined,
@@ -91,14 +94,15 @@ interface IProps {
 	children: ReactNode
 }
 
-const WalletContext = createContext<wallerContextType>({
+const WalletContext = createContext<WalletContextType>({
 	walletAddress: null,
 	walletIsConnected: false,
 	setWalletAddress: () => { },
 	isLoading: false,
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
-	userInfo: { userName: '', avatar: '' },
+	userInfo: { username: '', avatar: 0 },
+	setUserInfo: () => { },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
@@ -145,26 +149,31 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: "", avatar: "" })
+	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
-	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
-	const { address, isConnected } = useAccount();
-	const { signMessageAsync } = useSignMessage()
 
+	const { address, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
 
 	const { chain } = useNetwork();
-
-	const { disconnect } = useDisconnect()
-	const { switchNetworkAsync } = useSwitchNetwork()
-
-	const { connectAsync, connectors } =
+	const { data: ensAddress } = useEnsAddress({
+		name: 'awkweb.eth',
+	})
+	const { chains, switchNetwork, switchNetworkAsync } = useSwitchNetwork()
+	const { connectors } =
 		useConnect();
 	const { data: balance } = useBalance({
 		address: walletAddress,
 		watch: true
 	})
+	// const balanceBNBAssets = useContractRead({
+	// 	address: deoddContract.address,
+	// 	abi: deoddContract.abi,
+	// 	functionName: 'getPlayerAsset',
+	// 	args: [walletAddress],
+	// 	watch: true
+	// })
 
 	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
 		address: luckyProfile.address,
@@ -193,8 +202,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	>();
 	useEffect(() => {
 		if (bscTestnet.id !== chain?.id) {
-			// switchNetworkCus()
-			switchNetworkAsync?.(bscTestnet.id);
+
+			switchNetworkCus()
+			// switchNetworkAsync?.(bscTestnet.id);
 		}
 
 		// if (switchNetwork) {
@@ -228,16 +238,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		const accessToken = LocalStorage.getAccessToken();
 		const refreshToken = LocalStorage.getRefreshToken();
 		const walletAddressLocal = LocalStorage.getWalletAddress();
-		debugger
-		if (isConnected && address) {
+		if (isConnected) {
 			if (accessToken && refreshToken && walletAddressLocal === address) {
 				setWalletIsConnected(isConnected);
 				setWalletAddress(address);
-			}
-			else {
-				if (isConnectingWallet === false) {
-					handleConnectWallet();
-				}
+			} else {
+				handleConnectWallet();
 			}
 		} else {
 			setWalletAddress(null);
@@ -256,17 +262,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setWalletAddress(wallet);
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
-			setIsConnectingWallet(false)
 		}).catch((error) => {
 			disconnect();
 		});
 	}
 
 	const handleConnectWithCache = () => {
-
-		LocalStorage.removeAccessToken();
-		LocalStorage.removeRefreshToken();
-		LocalStorage.removeWalletAddress();
 		if (isConnected) {
 			return new Promise<{ account: `0x${string}` }>((resolve, reject) => {
 				if (address) {
@@ -278,60 +279,19 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				return reject();
 			}
 			);
-		}
-
-		return new Promise<{ account: `0x${string}` }>((resolve, reject) =>
-			connectAsync({
-				connector: connectors[0],
-
-			}).then(res => {
-				LocalStorage.removeAccessToken();
-				LocalStorage.removeRefreshToken();
-				LocalStorage.removeWalletAddress();
-				resolve({ account: res.account })
-			}).catch((err) => reject())
-		);
+		} else
+			return new Promise<{ account: `0x${string}` }>((resolve, reject) =>
+				connect({
+					connector: connectors[0],
+				}).then(res => {
+					LocalStorage.removeAccessToken();
+					LocalStorage.removeRefreshToken();
+					LocalStorage.removeWalletAddress();
+					resolve({ account: res.account })
+				}).catch((err) => reject())
+			);
 	}
-	// useEffect(() => {
-	// 	console.log(address);
-	// 	console.log(isSuccess);
-	// 	console.log(status);
-	// 	debugger
 
-	// 	if (address && isConnected) {
-	// 		handleSignMessage();
-	// 		// signMessageAsync({ message: `Sign message to verify you are owner of wallet ${123}` });
-	// 	}
-
-	// }, [address, isConnected])
-
-	const handleSignMessage = () => {
-		DeoddService.getUserNonce(`${address}`)
-			.then(res => {
-				debugger
-				if (res.data.data) {
-					return res;
-				} else {
-					return DeoddService.signUp({ wallet: `${address}` });
-				}
-			})
-			.then(
-				({ data }) => {
-					const nonce = data.data.nonce || data.data;
-					return signMessageAsync({
-						message: `Sign message to verify you are owner of wallet ${nonce}`,
-					})
-				}
-			)
-			.then((res) => {
-				return handleAuthenticate({ wallet: `${address}`, signature: res })
-			})
-			.catch(err => {
-				debugger
-				return disconnect();
-			});
-
-	}
 	const handleConnectWallet = async () => {
 		const needsInjectedWalletFallback =
 			typeof window !== 'undefined' &&
@@ -339,7 +299,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
 		debugger
-		setIsConnectingWallet(true);
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
 			a.target = '_blank';
@@ -364,7 +323,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					({ data }) => {
 						debugger
 						const nonce = data.data.nonce || data.data;
-						return signMessageAsync({
+						return signMessage({
 							message: `Sign message to verify you are owner of wallet ${nonce}`,
 						})
 					}
@@ -373,7 +332,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					return handleAuthenticate({ wallet: resultAddress, signature: res })
 				})
 				.catch(err => {
-					setIsConnectingWallet(false);
 					return disconnect();
 				});
 		}
@@ -388,10 +346,22 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	useEffect(() => {
 		//TODO : call api get Information 
-		// setUserInfo()
-	}, [])
+		async function getUserInfo() {
+			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
+			const user = userData.data.data;
+			setUserInfo({ username: user.userName, avatar: user.avatarId });
+		}
 
-	const value: wallerContextType = useMemo(() => {
+		const walletAddressLocal = LocalStorage.getWalletAddress();
+		const nicknameLocal = LocalStorage.getNickname();
+		if (nicknameLocal != null && walletAddressLocal == JSON.parse(nicknameLocal).wallet) {
+			setUserInfo({ username: JSON.parse(nicknameLocal).username, avatar: JSON.parse(nicknameLocal).avatarId });
+		} else {
+			getUserInfo();
+		}
+	}, [walletAddress]);
+
+	const value: WalletContextType = useMemo(() => {
 		return {
 			walletIsConnected,
 			walletAddress,
@@ -400,6 +370,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			isLoading,
 			bnbBalance,
 			userInfo,
+			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
 			contractProfile,
@@ -418,6 +389,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		isLoading,
 		bnbBalance,
 		userInfo,
+		setUserInfo,
 		contractDeodd,
 		contractProfile,
 		contractFeeManager,
