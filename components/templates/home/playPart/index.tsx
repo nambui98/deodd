@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { useWalletContext } from "../../../../contexts/WalletContext";
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
 import { Box, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
-import { StatusGame } from "../../../../pages/homepage";
 import { TEXT_STYLE } from "../../../../styles/common";
 import { Popup } from "../../../common/popup";
 import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button";
@@ -13,7 +12,7 @@ import { Result } from "../result";
 // import { feeManagerContract } from "libs/contract"
 import CoinAnimation from "components/common/CoinAnimation";
 import { VRF_FEE } from "constants/index";
-import { useContractContext } from "contexts/ContractContext";
+import { StatusGame, useContractContext } from "contexts/ContractContext";
 import { useSiteContext } from "contexts/SiteContext";
 import { useDeoddContract } from "hooks/useDeoddContract";
 import { useProfileContract } from "hooks/useProfileContract";
@@ -234,11 +233,11 @@ export const PlayPart = React.memo(() => {
 // eslint-disable-next-line react/display-name
 const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
   switch (statusGame) {
-    case 0:
+    case StatusGame.FLIP:
       return <NotYetFlip />
-    case 1:
+    case StatusGame.FLIPPING:
       return <Flipping />
-    case 2:
+    case StatusGame.FLIP_RESULT:
       return <Result />
     default: return <Box></Box>
   }

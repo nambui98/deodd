@@ -12,12 +12,6 @@ import { useWalletContext } from "../contexts/WalletContext";
 import { TEXT_STYLE } from "../styles/common";
 import { CloseSquareIcon2 } from "utils/Icons";
 
-export enum StatusGame {
-  flip,
-  flipping,
-  result,
-}
-
 // eslint-disable-next-line react/display-name
 const HomePage: React.FC = React.memo(() => {
 

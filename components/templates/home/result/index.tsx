@@ -195,7 +195,7 @@ export const Result = () => {
     >
 
       <ButtonMain title={!isWinner ? 'TRY AGAIN' : "CONTINUE FLIP"} active={true} onClick={() => {
-        setStatusGame(StatusGame.flip);
+        setStatusGame(StatusGame.FLIP);
       }} sx={{
         py: 2,
         px: 0,

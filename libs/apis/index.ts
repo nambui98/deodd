@@ -16,10 +16,23 @@ const getRecentFlipping = async () => {
         method: 'get',
     })
 }
-
+const getAssetsBalance = async (address: string) => {
+    return vhIdRequest({
+        url: `/assets/balance?wallet=${address}`,
+        method: 'get',
+    })
+}
+const getBalanceHistories = async (address: string) => {
+    return vhIdRequest({
+        url: `/spending?wallet=${address}`,
+        method: 'get',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     saveInfoUser,
-    getRecentFlipping
+    getRecentFlipping,
+    getAssetsBalance,
+    getBalanceHistories
 }

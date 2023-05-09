@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { ArrowLeftIcon, ArrowRightIcon } from "utils/Icons"
+import { ArrowLeftIcon, ArrowRightIcon, LeftIcon, RightIcon } from "utils/Icons"
 
 export enum StatusTransfer {
     Inprogress,
@@ -16,15 +16,15 @@ type TypeItem = {
 export const ItemHistory: React.FC<TypeItem> = ({ title, isDeposit, status, value, date }) => {
     return <Stack direction={'row'} mt={1}>
         {
-            isDeposit ? <ArrowLeftIcon style={{ stroke: "#FC753F" }} /> : <ArrowRightIcon fill="#4FD190" />
+            isDeposit ? <LeftIcon style={{ stroke: "#FC753F" }} /> : <RightIcon stroke="#26BC7F" />
         }
         <Stack ml={1}>
-            <Typography>{title}</Typography>
-            <Typography color={"secondary"} mt={0.5}>{value}</Typography>
+            <Typography variant="body2" fontWeight={400}>{title}</Typography>
+            <Typography variant="body2" color={"secondary"} mt={0.5}>{value}</Typography>
         </Stack>
         <Stack ml="auto" textAlign={"end"}>
-            <Typography color={"secondary.200"} variant='caption'>{StatusTransfer[status]}</Typography>
-            <Typography color={"secondary.200"} variant='caption' mt={0.5}>{date}</Typography>
+            <Typography color={"dark.60"} variant='caption'>{StatusTransfer[status]}</Typography>
+            <Typography color={"dark.60"} variant='caption' mt={0.5}>{date}</Typography>
         </Stack>
     </Stack>
 }

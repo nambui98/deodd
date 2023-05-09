@@ -117,12 +117,14 @@ export const lightTheme = responsiveFontSizes(createTheme({
 declare module '@mui/material/styles' {
 	interface Palette {
 		neutral: Palette['primary'];
+		dark: Palette['primary'];
 		border: Palette['primary'];
 	}
 
 	// allow configuration using `createTheme`
 	interface PaletteOptions {
 		neutral?: PaletteOptions['primary'];
+		dark?: PaletteOptions['primary'] & { 60: string };
 		border?: PaletteOptions['primary'];
 	}
 }
@@ -131,11 +133,12 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Button' {
 	interface ButtonPropsColorOverrides {
 		neutral: true;
+		dark: true;
 		border: true;
 	}
 }
 
-export const darkTheme = responsiveFontSizes(createTheme({
+export const darkTheme = createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
@@ -159,6 +162,9 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			'900': '#3F4251',
 
 
+		},
+		dark: {
+			"60": '#96A5C0'
 		},
 		neutral: {
 			main: ' #2A2D3E',
@@ -364,5 +370,5 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			// xl: 1536
 		},
 	},
-}), {});
+});
 

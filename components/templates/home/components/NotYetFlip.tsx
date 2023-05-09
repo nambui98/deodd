@@ -15,8 +15,6 @@ import { BnbIcon } from 'utils/Icons';
 type Props = {}
 
 function NotYetFlip({ }: Props) {
-
-    console.log("1231aaaaaaaaaaa123123");
     return <Box>
         <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
         <FormActions />
@@ -39,7 +37,6 @@ function FormActions({ }: Props) {
     const handleFlip = async () => {
         const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
         let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
-        debugger
         if (totalAmount.gte(bnbBalance)) {
             setIsError(true);
             setTitleError("Balance is not enough!");
@@ -49,8 +46,6 @@ function FormActions({ }: Props) {
                 setStatusLoadingFlip(true);
                 setIsFinish(false);
                 try {
-                    audioPlayer(AudioPlay.GET_READY);
-                    setStatusGame(StatusGame.flipping)
                     if (fee) {
                         setIsFinish(true);
                         const res = await handleFlipToken(
@@ -66,7 +61,7 @@ function FormActions({ }: Props) {
                     debugger
                     audioPlayer(AudioPlay.STOP);
                     setStatusLoadingFlip(false)
-                    setStatusGame(StatusGame.flip)
+                    setStatusGame(StatusGame.FLIP)
                     setIsError(true);
                     setTitleError(error.reason || 'Something went wrong. Please try again!');
 

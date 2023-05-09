@@ -1,3 +1,4 @@
+
 import { Utils } from '@/utils/index'
 import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, styled } from '@mui/material'
 import MyModal from 'components/common/Modal'
@@ -106,7 +107,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                                         {
                                             nft.list.map((detailNFT, index) => {
 
-                                                return <ListItemButton key={detailNFT.id + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
+                                                return <ListItemButton key={detailNFT.id?.toString() + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
                                                     <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
                                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
                                                     <Typography ml="auto" variant='h2' color={"secondary"}>
@@ -125,10 +126,12 @@ function RightContent({ walletTokens, priceToken }: Props) {
                     }
                 </ListCus>
             </Stack>
-            <MyModal open={openModalWallet} title='Wallet History' setOpen={setOpenModalWallet} >
+            <MyModal open={openModalWallet} setOpen={setOpenModalWallet} >
+                <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Wallet History</Typography>
                 <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
                 <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
             </MyModal>
+
         </Box>
     )
 }

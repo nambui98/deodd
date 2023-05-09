@@ -168,7 +168,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             >
                                 <Typography variant="body2" color="secondary.main">
                                     {Format.formatMoneyFromBigNumberEther(
-                                        dataAvailable?.claimedReward
+                                        dataAvailable?.claimedReward ?? 0
                                     )}
                                 </Typography>
                                 <BnbIcon fill={Colors.secondaryDark} />
@@ -304,8 +304,8 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         justifyContent={"center"}
                     >
                         <Typography variant="h3" fontSize={"48px"}>
-                            {Format.formatMoneyFromBigNumberEther(
-                                dataAvailable?.unclaimedReward
+                            {Format.formatMoney(
+                                dataAvailable?.availableReward ?? 0
                             )}
                         </Typography>
                         <MyImage src={BnbImage} width={40} alt="" height={40} />
@@ -354,7 +354,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         onClick={handleClaim}
                         disabled={
                             ethers.utils.parseEther(
-                                (dataAvailable?.unclaimedReward || 0).toString()
+                                (dataAvailable?.availableReward || 0).toString()
                             ).lte(BigNumber.from(0)) ||
                             bnbBalance.lte(
                                 ethers.utils.parseEther((dataAvailable?.claimFee || 0).toString())

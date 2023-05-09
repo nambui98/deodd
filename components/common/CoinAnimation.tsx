@@ -29,7 +29,7 @@ function CoinAnimation({ width, height, mx, textAlign }: Props) {
     }, []);
 
     return <Box mx={mx} textAlign={textAlign} width={width} height={height} position={'relative'}
-    // sx={{ opacity: imagesLoaded === listImage.length ? 1 : 0 }}
+        sx={{ opacity: imagesLoaded === listImage.length ? 1 : 0 }}
     >
         {
             listImage.map((image, index) =>

@@ -3,7 +3,6 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { UserService } from "../services/user.service";
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
-// import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
 import { useAccount, useBalance, useConnect, useContractRead, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 import { DeoddService } from "libs/apis";
@@ -196,11 +195,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			// switchNetworkCus()
 			switchNetworkAsync?.(bscTestnet.id);
 		}
-
-		// if (switchNetwork) {
-		// debugger
-		// switchNetwork?.(bscTestnet.id);
-		// }
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chain])
 	useEffect(() => {
 		if (window.ethereum) {
@@ -292,19 +287,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			}).catch((err) => reject())
 		);
 	}
-	// useEffect(() => {
-	// 	console.log(address);
-	// 	console.log(isSuccess);
-	// 	console.log(status);
-	// 	debugger
-
-	// 	if (address && isConnected) {
-	// 		handleSignMessage();
-	// 		// signMessageAsync({ message: `Sign message to verify you are owner of wallet ${123}` });
-	// 	}
-
-	// }, [address, isConnected])
-
 	const handleSignMessage = () => {
 		DeoddService.getUserNonce(`${address}`)
 			.then(res => {

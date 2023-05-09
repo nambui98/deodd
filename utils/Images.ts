@@ -1,3 +1,5 @@
+import { EnumNFT } from "libs/types";
+
 export const BronzeImage = "/assets/images/bronze.png";
 export const GoldImage = "/assets/images/gold.png";
 export const DiamondImage = "/assets/images/diamond.png";
@@ -28,7 +30,7 @@ export const LotteryImage = "/assets/images/balls_1.png";
 export const Avatar2Image = "/assets/images/avatar2.png";
 export const TestailCoinImage = "/assets/images/testail_coin.png";
 
-export const HeadCoinImage= "/assets/icons/head.svg";
+export const HeadCoinImage = "/assets/icons/head.svg";
 export const TailCoinImage = "/assets/icons/tail.svg";
 export const GoldCupImage = "/assets/images/gold-cup.png";
 export const MapIcon: { [key: string]: string } = {
@@ -37,8 +39,13 @@ export const MapIcon: { [key: string]: string } = {
   Gold: GoldImage,
   Diamond: DiamondImage,
 };
-export const MapIconNFT: { [key: number]: string } = {
+export const MapIconNFT: { [key: number | string]: string } = {
   0: BronzeImage,
   1: GoldImage,
   2: DiamondImage,
+};
+export const MapIconNFTString: { [key in EnumNFT]: string } = {
+  [EnumNFT.BRONZE]: BronzeImage,
+  [EnumNFT.GOLD]: GoldImage,
+  [EnumNFT.DIAMOND]: DiamondImage,
 };
