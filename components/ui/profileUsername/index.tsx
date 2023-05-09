@@ -127,9 +127,9 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           />
           <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
           <ButtonMain
-            disable={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
             active={true}
-            customStyle={{ width: 1, height: "3.375rem" }}
+            disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
+            sx={{ width: 1, height: "3.375rem" }}
             title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
             onClick={() => { handleSetProfile({ currentProfile, isLoading, setIsLoading, userInfo, walletAddress, refresh, setRefresh }) }}
           ></ButtonMain>
