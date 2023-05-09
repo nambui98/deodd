@@ -15,16 +15,14 @@ export const ContentRef = (props: Props) => {
     const { code } = router.query;
     const [success, setSuccess] = useState(false);
     const [dataReferralSuccess, setDataReferralSuccess] = useState<{ username: string, wallet: string } | undefined>();
-    console.log(code);
 
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
-
         if (res.status === 200) {
             if (res.data.data) {
                 const body = {
                     wallet: walletAddress,
-                    username: userInfo.userName,
+                    username: userInfo?.userName,
                     referralLink: code,
                 }
                 const res = await DeoddService.confirmReferralForUser(body);

@@ -1,12 +1,16 @@
 import { BigNumber, Contract, ethers } from "ethers";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { UserService } from "../services/user.service";
-
+import { connect, disconnect } from '@wagmi/core'
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
 import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
+import { DeoddService } from "libs/apis";
+import { signMessage } from '@wagmi/core'
+import { LocalStorage } from "libs/LocalStorage";
+
 interface Map {
 	[key: string]: any;
 }
@@ -72,7 +76,6 @@ interface wallerContextType {
 	setWalletAddress: (account: any) => void
 	setIsLoading: Function;
 	isLoading: boolean;
-	bnbAssets: BigNumber,
 	bnbBalance: BigNumber,
 	userInfo: { userName: string, avatar: string },
 	contractProfile: Contract | undefined,
@@ -97,7 +100,6 @@ const WalletContext = createContext<wallerContextType>({
 	isLoading: false,
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
-	bnbAssets: BigNumber.from(0),
 	userInfo: { userName: '', avatar: '' },
 	contractDeodd: undefined,
 	contractProfile: undefined,
@@ -145,19 +147,19 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [bnbAssets, setBnbAssets] = useState<BigNumber>(BigNumber.from(0))
-	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: '', avatar: '' })
+	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: "", avatar: "" })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
 
-	const { address, isConnected } = useAccount();
+	const { address, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
+
 	const { chain } = useNetwork();
 	const { data: ensAddress } = useEnsAddress({
 		name: 'awkweb.eth',
 	})
 	const { chains, switchNetwork, switchNetworkAsync } = useSwitchNetwork()
-	const { connect, connectors } =
+	const { connectors } =
 		useConnect();
 	const { data: balance } = useBalance({
 		address: walletAddress,
@@ -208,15 +210,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		// switchNetwork?.(bscTestnet.id);
 		// }
 	}, [chain])
-
-	useEffect(() => {
-		setWalletIsConnected(isConnected);
-		setWalletAddress(address);
-		if (address) {
-			UserService.setCurrentUser(address);
-		}
-	}, [address, isConnected]);
-
 	useEffect(() => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(
@@ -235,49 +228,67 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setContractJackpot(contractJackpot);
 			setContractNftHolder(contractNftHolder);
 			setContractDeoddNft(contractDeoddNft);
-			// console.log(ensAddress);
-
-			// let etherscanProvider = new ethers.providers.JsonRpcProvider(
-			// 	"https://data-seed-prebsc-1-s1.binance.org:8545/",
-			// 	{
-			// 		chainId: 97,
-			// 		name: chain?.name ?? ''
-			// 	}
-			// );
-			// debugger
-			// etherscanProvider.getLogs({
-			// 	fromBlock: 0,
-			// 	toBlock: 'latest',
-			// 	address: walletAddress,
-			// }).then((history) => {
-			// 	debugger
-			// 	history.forEach((tx) => {
-			// 		console.log(tx);
-			// 	})
-			// });
-
 		}
 	}, [chain]);
 
-	// useEffect(() => {
-	// 	async function fetchData() {
-	// 		try {
-	// 			// check if MetaMask is installed and connected
-	// 			if (window.ethereum) {
-	// 				//   const provider = window.ethereum;
-	// 				//   await provider.request({ method: 'eth_requestAccounts' });
-	// 				//   const activity = await provider.request({ method: 'eth_getTransactionByAddress', params: [walletAddress, { fromBlock: '0', toBlock: 'latest' }] });
-	// 				//   debugger
-	// 			} else {
-	// 				console.error('MetaMask is not installed.');
-	// 			}
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		}
-	// 	}
-	// 	fetchData();
-	// }, [])
 
+	useEffect(() => {
+		const accessToken = LocalStorage.getAccessToken();
+		const refreshToken = LocalStorage.getRefreshToken();
+		const walletAddressLocal = LocalStorage.getWalletAddress();
+		if (isConnected) {
+			if (accessToken && refreshToken && walletAddressLocal === address) {
+				setWalletIsConnected(isConnected);
+				setWalletAddress(address);
+			} else {
+				handleConnectWallet();
+			}
+		} else {
+			setWalletAddress(null);
+			setWalletIsConnected(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [address, isConnected]);
+	const handleAuthenticate = ({ wallet, signature }: {
+		wallet: string, signature: string
+	}) => {
+		debugger
+		DeoddService.loginWithWallet({ wallet, signature }).then((res) => {
+			const { accessToken, refreshToken } = res.data.data;
+			LocalStorage.setAccessToken(accessToken);
+			LocalStorage.setRefreshToken(refreshToken);
+			LocalStorage.setWalletAddress(wallet);
+			setWalletIsConnected(true);
+			setWalletAddress(wallet);
+		}).catch((error) => {
+			disconnect();
+		});
+	}
+
+	const handleConnectWithCache = () => {
+		if (isConnected) {
+			return new Promise<{ account: `0x${string}` }>((resolve, reject) => {
+				if (address) {
+					LocalStorage.removeAccessToken();
+					LocalStorage.removeRefreshToken();
+					LocalStorage.removeWalletAddress();
+					return resolve({ account: address });
+				}
+				return reject();
+			}
+			);
+		} else
+			return new Promise<{ account: `0x${string}` }>((resolve, reject) =>
+				connect({
+					connector: connectors[0],
+				}).then(res => {
+					LocalStorage.removeAccessToken();
+					LocalStorage.removeRefreshToken();
+					LocalStorage.removeWalletAddress();
+					resolve({ account: res.account })
+				}).catch((err) => reject())
+			);
+	}
 
 	const handleConnectWallet = async () => {
 		const needsInjectedWalletFallback =
@@ -285,49 +296,56 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			window.ethereum &&
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
+		debugger
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
 			a.target = '_blank';
 			a.href = 'https://metamask.io/download';
 			a.click();
-		} else if (!walletIsConnected) {
-			connect({ connector: connectors[0] })
-			// const providerEthers = await new ethers.providers.Web3Provider(provider);
-			// const address = await providerEthers.send("eth_requestAccounts", []);
-			// if (address) {
-			// 	setWalletAddress(ethers.utils.getAddress(address[0]));
-			// 	UserService.setCurrentUser(address[0]);
-			// 	setActivePopup(false);
-			// } else {
-			// 	const signer = providerEthers.getSigner();
-			// 	const signature = await signer.signMessage("Please sign this transaction");
-			// 	if (address && signature) {
-			// 		setWalletAddress(ethers.utils.getAddress(address[0]));
-			// 		UserService.setCurrentUser(address[0]);
-			// 		setActivePopup(false);
-			// 	}
-			// }
-			// if (!chainIdIsSupported) {
-			// 	await changeNetwork(provider)
-			// }
+		} else {
+			let resultAddress: string;
+			handleConnectWithCache()
+				.then((res) => {
+					resultAddress = res.account;
+					return DeoddService.getUserNonce(`${resultAddress}`);
+				})
+				.then(res => {
+					debugger
+					if (res.data.data) {
+						return res;
+					} else {
+						return DeoddService.signUp({ wallet: resultAddress });
+					}
+				})
+				.then(
+					({ data }) => {
+						debugger
+						const nonce = data.data.nonce || data.data;
+						return signMessage({
+							message: `Sign message to verify you are owner of wallet ${nonce}`,
+						})
+					}
+				)
+				.then((res) => {
+					return handleAuthenticate({ wallet: resultAddress, signature: res })
+				})
+				.catch(err => {
+					return disconnect();
+				});
 		}
-
 	}
 
 	useEffect(() => {
 		if (balance?.formatted) {
 			setBnbBalance(balance?.value!)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [balance?.formatted])
 
 	useEffect(() => {
-		if (resInfo) {
-			let info = {
-				userName: resInfo[0], avatar: ethers.utils.formatUnits(resInfo[1], 'wei')
-			}
-			setUserInfo(info)
-		}
-	}, [resInfo?.[0], (resInfo?.[1] as BigNumber)?.toNumber()])
+		//TODO : call api get Information 
+		// setUserInfo()
+	}, [])
 
 	const value: wallerContextType = useMemo(() => {
 		return {
@@ -337,7 +355,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setIsLoading,
 			isLoading,
 			bnbBalance,
-			bnbAssets,
 			userInfo,
 			handleConnectWallet,
 			contractDeodd,
@@ -356,7 +373,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		walletAddress,
 		isLoading,
 		bnbBalance,
-		bnbAssets,
 		userInfo,
 		contractDeodd,
 		contractProfile,

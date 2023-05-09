@@ -21,7 +21,7 @@ import MyImage from "components/ui/image";
 type Props = {}
 
 function Header({ }: Props) {
-  const { bnbAssets, walletAddress, contractFeeManager } = useWalletContext()
+  const { walletAddress, contractFeeManager } = useWalletContext()
   const { darkMode, setDarkMode } = useColorModeContext();
   const { audioPlayer, turnOffAudio, isTurnOffAudio } = useSiteContext();
   const md = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
@@ -39,10 +39,6 @@ function Header({ }: Props) {
 
   const bodyBalance = async () => {
     return (<Box >
-      {/* <HeaderPopup>
-        <Box sx={{ ...TEXT_STYLE(14, 500, !darkMode ? '#181536' : '#FFFFFF'), '& img': { marginRight: '8px' } }}>Your balance: {Format.formatMoney(ethers.utils.formatUnits(bnbAssets))} <img alt="" src={`assets/icons/binance-coin${!darkMode ? '-light' : ''}.svg`} /></Box>
-      </HeaderPopup> */}
-      {/* <HistoryPopup themelight={!darkMode}>History</HistoryPopup> */}
       <BoxItemHistory >
         {dataHistory.length && await Promise.all(dataHistory.map(async (item, index) => {
           const currentFee = contractFeeManager?.calcTotalFee(ethers.utils.parseUnits(ethers.utils.formatUnits(`${item.amount}`)))

@@ -25,8 +25,9 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const getLinkUser = async () => {
         const ck = await DeoddService.checkUserReferral(walletAddress)
         console.log(ck);
-
         const ckLinkExist = await DeoddService.findGenerateReferralLinkByWallet(walletAddress);
+
+        debugger
         let linkGenerate;
         if (ckLinkExist.status === 200) {
             if (ckLinkExist.data && ckLinkExist.data.data) {
@@ -59,10 +60,11 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
             DeoddService.getReferralRewardAvailable(walletAddress),
             DeoddService.getReferralRewardExpired(walletAddress)
         ]);
-        if (available.status === 200 && available.data && available.data.data) {
+        debugger
+        if (available && available.status === 200 && available.data && available.data.data) {
             setDataAvailable(available.data.data);
         }
-        if (rewardExpired.status === 200 && rewardExpired.data && rewardExpired.data.data) {
+        if (rewardExpired && rewardExpired.status === 200 && rewardExpired.data && rewardExpired.data.data) {
             setDataExpired(rewardExpired.data.data);
         }
     }

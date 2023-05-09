@@ -19,7 +19,7 @@ import { ButtonFourth, ButtonLoading, ButtonTertiary } from "components/ui/butto
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import {
     FacebookShareButton,
@@ -102,7 +102,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const handleClaim = async () => {
         try {
             setIsLoading(true);
-            const res = await DeoddService.ClaimReferral(walletAddress);
+            const res = await DeoddService.claimReferral(walletAddress);
             setIsLoading(false);
             if (res.data.data && res.status === 200) {
                 setTitleSuccess("Claimed successfully");
@@ -118,6 +118,13 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             setTitleError("Something went wrong!");
         }
     };
+    console.log(
+        bnbBalance)
+    console.log(
+
+        // BigNumber.from(0.08)
+    )
+
 
     return (
         <Container>
@@ -243,7 +250,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     <Typography variant="caption" color="secondary.100">
-                                                        {row.expire}
+                                                        {row.expire.replaceAll("-", "/")}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="right">
@@ -346,10 +353,12 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                     <ButtonLoading
                         onClick={handleClaim}
                         disabled={
-                            BigNumber.from(
-                                dataAvailable?.claimedReward || 0
+                            ethers.utils.parseEther(
+                                (dataAvailable?.unclaimedReward || 0).toString()
                             ).lte(BigNumber.from(0)) ||
-                            bnbBalance.lte(BigNumber.from(dataAvailable?.claimFee || 0))
+                            bnbBalance.lte(
+                                ethers.utils.parseEther((dataAvailable?.claimFee || 0).toString())
+                            )
                         }
                         sx={{
                             px: 5, py: 2, mt: 3,

@@ -1,9 +1,8 @@
-import React from 'react'
-import MyModal from './Modal'
 import { Stack, Typography } from '@mui/material'
-import { CloseIcon } from 'utils/Icons'
+import { ButtonTertiary } from 'components/ui/button'
 import { useSiteContext } from 'contexts/SiteContext'
-import { ButtonMain, ButtonTertiary } from 'components/ui/button'
+import { CloseIcon } from 'utils/Icons'
+import MyModal from './Modal'
 
 
 

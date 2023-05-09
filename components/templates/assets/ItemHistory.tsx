@@ -16,7 +16,7 @@ type TypeItem = {
 export const ItemHistory: React.FC<TypeItem> = ({ title, isDeposit, status, value, date }) => {
     return <Stack direction={'row'} mt={1}>
         {
-            isDeposit ? <ArrowLeftIcon style={{ stroke: "#FC753F" }} /> : <ArrowRightIcon />
+            isDeposit ? <ArrowLeftIcon style={{ stroke: "#FC753F" }} /> : <ArrowRightIcon fill="#4FD190" />
         }
         <Stack ml={1}>
             <Typography>{title}</Typography>

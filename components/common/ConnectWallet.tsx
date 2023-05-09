@@ -12,7 +12,7 @@ export const ConnectWallet = () => {
 			<Box my={5}>
 				<CoinAnimation width={{ md: 144, xs: 160 }} height={{ md: 144, xs: 160 }} />
 			</Box>
-			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} customStyle={{
+			<ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} sx={{
 				px: 5, py: 2, textTransform: 'none', fontSize: 16
 			}} />
 		</BoxConnect>
