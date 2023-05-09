@@ -22,7 +22,7 @@ export const ContentRef = (props: Props) => {
             if (res.data.data) {
                 const body = {
                     wallet: walletAddress,
-                    username: userInfo?.userName,
+                    username: userInfo?.username,
                     referralLink: code,
                 }
                 const res = await DeoddService.confirmReferralForUser(body);
