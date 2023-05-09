@@ -351,7 +351,14 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			const user = userData.data.data;
 			setUserInfo({ username: user.userName, avatar: user.avatarId });
 		}
-		getUserInfo();
+
+		const walletAddressLocal = LocalStorage.getWalletAddress();
+		const nicknameLocal = LocalStorage.getNickname();
+		if (nicknameLocal != null && walletAddressLocal == JSON.parse(nicknameLocal).wallet) {
+			setUserInfo({ username: JSON.parse(nicknameLocal).username, avatar: JSON.parse(nicknameLocal).avatarId });
+		} else {
+			getUserInfo();
+		}
 	}, [walletAddress]);
 
 	const value: WalletContextType = useMemo(() => {

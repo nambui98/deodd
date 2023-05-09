@@ -31,18 +31,21 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             username: currentProfile.username || userInfo.username,
             avatarId: currentProfile.avatar || userInfo.avatar,
           });
-          setUserInfo(currentProfile);
+          localStorage.setItem("nickname", JSON.stringify({
+            wallet: walletAddress,
+            username: currentProfile.username || userInfo.username,
+            avatarId: currentProfile.avatar || userInfo.avatar,
+          }));
+          if (resService.data.meta.code === 1) {
+            setErrorMessage(resService.data.meta.error_message);
+          } else {
+            setUserInfo(currentProfile);
+          }
         } catch (err) {
           console.log(err);
         } finally {
           setIsLoading(false);
         }
-      }
-    } else {
-      if (currentProfile.username.trim().length > 15) {
-        setErrorMessage("Your nickname has to be less the 15 characters");
-      } else if ((/\s/).test(currentProfile.username.trim())) {
-        setErrorMessage("Your nickname must not contain space");
       }
     }
   }
@@ -103,7 +106,16 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             placeholder="Your nickname"
             fullWidth
             value={currentProfile.username}
-            onChange={(e) => { setCurrentProfile(prev => ({ ...prev, username: e.target.value })); setErrorMessage("") }}
+            onChange={(e) => {
+              setCurrentProfile(prev => ({ ...prev, username: e.target.value }));
+              if (currentProfile.username.trim().length > 15) {
+                setErrorMessage("Your nickname cannot be longer than 15 characters");
+              } else if ((/\s/).test(currentProfile.username.trim())) {
+                setErrorMessage("Your nickname must not contain space");
+              } else {
+                setErrorMessage("")
+              }
+            }}
             onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
           />
           <Box position={"relative"}>
