@@ -1,14 +1,12 @@
 import { BigNumber, Contract, ethers } from "ethers";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { UserService } from "../services/user.service";
-import { connect, disconnect } from '@wagmi/core'
 import { ENVIRONMENT_SWITCH } from "../libs/common";
 import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
 // import { getPlayerAssets, getUserInfo } from "../libs/flipCoinContract";
-import { useAccount, useBalance, useConnect, useContractRead, useEnsAddress, useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useBalance, useConnect, useContractRead, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 import { DeoddService } from "libs/apis";
-import { signMessage } from '@wagmi/core'
 import { LocalStorage } from "libs/LocalStorage";
 
 interface Map {
@@ -151,27 +149,22 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
+	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
+	const { address, isConnected } = useAccount();
+	const { signMessageAsync } = useSignMessage()
 
-	const { address, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
 
 	const { chain } = useNetwork();
-	const { data: ensAddress } = useEnsAddress({
-		name: 'awkweb.eth',
-	})
-	const { chains, switchNetwork, switchNetworkAsync } = useSwitchNetwork()
-	const { connectors } =
+
+	const { disconnect } = useDisconnect()
+	const { switchNetworkAsync } = useSwitchNetwork()
+
+	const { connectAsync, connectors } =
 		useConnect();
 	const { data: balance } = useBalance({
 		address: walletAddress,
 		watch: true
 	})
-	// const balanceBNBAssets = useContractRead({
-	// 	address: deoddContract.address,
-	// 	abi: deoddContract.abi,
-	// 	functionName: 'getPlayerAsset',
-	// 	args: [walletAddress],
-	// 	watch: true
-	// })
 
 	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
 		address: luckyProfile.address,
@@ -200,9 +193,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	>();
 	useEffect(() => {
 		if (bscTestnet.id !== chain?.id) {
-
-			switchNetworkCus()
-			// switchNetworkAsync?.(bscTestnet.id);
+			// switchNetworkCus()
+			switchNetworkAsync?.(bscTestnet.id);
 		}
 
 		// if (switchNetwork) {
@@ -236,12 +228,16 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		const accessToken = LocalStorage.getAccessToken();
 		const refreshToken = LocalStorage.getRefreshToken();
 		const walletAddressLocal = LocalStorage.getWalletAddress();
-		if (isConnected) {
+		debugger
+		if (isConnected && address) {
 			if (accessToken && refreshToken && walletAddressLocal === address) {
 				setWalletIsConnected(isConnected);
 				setWalletAddress(address);
-			} else {
-				handleConnectWallet();
+			}
+			else {
+				if (isConnectingWallet === false) {
+					handleConnectWallet();
+				}
 			}
 		} else {
 			setWalletAddress(null);
@@ -260,12 +256,17 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setWalletAddress(wallet);
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
+			setIsConnectingWallet(false)
 		}).catch((error) => {
 			disconnect();
 		});
 	}
 
 	const handleConnectWithCache = () => {
+
+		LocalStorage.removeAccessToken();
+		LocalStorage.removeRefreshToken();
+		LocalStorage.removeWalletAddress();
 		if (isConnected) {
 			return new Promise<{ account: `0x${string}` }>((resolve, reject) => {
 				if (address) {
@@ -277,19 +278,60 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				return reject();
 			}
 			);
-		} else
-			return new Promise<{ account: `0x${string}` }>((resolve, reject) =>
-				connect({
-					connector: connectors[0],
-				}).then(res => {
-					LocalStorage.removeAccessToken();
-					LocalStorage.removeRefreshToken();
-					LocalStorage.removeWalletAddress();
-					resolve({ account: res.account })
-				}).catch((err) => reject())
-			);
-	}
+		}
 
+		return new Promise<{ account: `0x${string}` }>((resolve, reject) =>
+			connectAsync({
+				connector: connectors[0],
+
+			}).then(res => {
+				LocalStorage.removeAccessToken();
+				LocalStorage.removeRefreshToken();
+				LocalStorage.removeWalletAddress();
+				resolve({ account: res.account })
+			}).catch((err) => reject())
+		);
+	}
+	// useEffect(() => {
+	// 	console.log(address);
+	// 	console.log(isSuccess);
+	// 	console.log(status);
+	// 	debugger
+
+	// 	if (address && isConnected) {
+	// 		handleSignMessage();
+	// 		// signMessageAsync({ message: `Sign message to verify you are owner of wallet ${123}` });
+	// 	}
+
+	// }, [address, isConnected])
+
+	const handleSignMessage = () => {
+		DeoddService.getUserNonce(`${address}`)
+			.then(res => {
+				debugger
+				if (res.data.data) {
+					return res;
+				} else {
+					return DeoddService.signUp({ wallet: `${address}` });
+				}
+			})
+			.then(
+				({ data }) => {
+					const nonce = data.data.nonce || data.data;
+					return signMessageAsync({
+						message: `Sign message to verify you are owner of wallet ${nonce}`,
+					})
+				}
+			)
+			.then((res) => {
+				return handleAuthenticate({ wallet: `${address}`, signature: res })
+			})
+			.catch(err => {
+				debugger
+				return disconnect();
+			});
+
+	}
 	const handleConnectWallet = async () => {
 		const needsInjectedWalletFallback =
 			typeof window !== 'undefined' &&
@@ -297,6 +339,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
 		debugger
+		setIsConnectingWallet(true);
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
 			a.target = '_blank';
@@ -321,7 +364,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					({ data }) => {
 						debugger
 						const nonce = data.data.nonce || data.data;
-						return signMessage({
+						return signMessageAsync({
 							message: `Sign message to verify you are owner of wallet ${nonce}`,
 						})
 					}
@@ -330,6 +373,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					return handleAuthenticate({ wallet: resultAddress, signature: res })
 				})
 				.catch(err => {
+					setIsConnectingWallet(false);
 					return disconnect();
 				});
 		}
