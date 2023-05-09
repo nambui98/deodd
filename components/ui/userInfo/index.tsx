@@ -16,7 +16,6 @@ import {
 } from "utils/Icons";
 import { Colors } from "constants/index";
 import Image from "next/image";
-import { Avatar2Image } from "utils/Images";
 import { useState } from "react";
 import { Utils } from "@/utils/index";
 import { Convert } from "utils/convert";
@@ -29,6 +28,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { ClickAwayListener } from '@mui/base';
 import ProfileUsername from "../profileUsername";
+
+const avatars = [
+  '/assets/images/avatar-yellow.png',
+  '/assets/images/avatar-orange.png',
+  '/assets/images/avatar-pink.png',
+  '/assets/images/avatar-violet.png',
+  '/assets/images/avatar-green.png'
+]
 
 function UserInfoButton(props: ButtonProps & { text: string }) {
   return (
@@ -99,7 +106,7 @@ export function UserInfo() {
   const theme = useTheme();
   const matchesScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [expanded, setExpanded] = useState<boolean>(false);
-  const { walletIsConnected, walletAddress, bnbBalance } = useWalletContext();
+  const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
   const [isProfileOpened, setIsProfileOpened] = useState(false);
 
   const { disconnect } = useDisconnect()
@@ -146,7 +153,7 @@ export function UserInfo() {
                   <Stack direction={"row"} gap={1} alignItems="center">
                     <Typography fontSize={"0.875rem"} variant="h3">
                       {
-                        Convert.convertWalletAddress(walletAddress, 5, 4)
+                        userInfo.username ? userInfo.username : Convert.convertWalletAddress(walletAddress, 5, 4)
                       }
                     </Typography>
                     <Box
@@ -158,7 +165,7 @@ export function UserInfo() {
                       }}
                       overflow={"hidden"}
                     >
-                      <Image src={Avatar2Image} fill alt="avatar-image" />
+                      <Image src={avatars[userInfo.avatar]} fill alt="avatar-image" />
                     </Box>
                   </Stack>
                 </Collapse>

@@ -13,63 +13,43 @@ const avatars = [
   '/assets/images/avatar-green.png'
 ]
 
-type HandleSetProfileProps = {
-  currentProfile: { username: string, avatar: any },
-  isLoading: boolean,
-  setIsLoading: Function,
-  userInfo: any, // Change me later
-  walletAddress: any, // Change me later
-  refresh: any, // Change me later
-  setRefresh: any, // Change me later
-}
+export default function ProfileUsername({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { walletAddress, userInfo, setUserInfo, refresh, setRefresh } = useWalletContext();
+  const [currentProfile, setCurrentProfile] = useState({ username: userInfo.username, avatar: userInfo.avatar } as { username: string; avatar: number });
 
-async function handleSetProfile({
-  currentProfile,
-  isLoading,
-  setIsLoading,
-  userInfo,
-  walletAddress,
-  refresh,
-  setRefresh,
-}: HandleSetProfileProps) {
-  const format = /^(?=.{0,15}[\w\d\s\S]$)\S+$/; // No whitespace, 1-15 characters.
-  if (format.test(currentProfile.username.trim())) {
-    if (!isLoading) {
-      setIsLoading(true);
-      try {
-        debugger
-        const resService = await DeoddService.saveInfoUser({
-          wallet: walletAddress,
-          username: currentProfile.username || userInfo.userName,
-          avatarId: currentProfile.avatar
-        });
-        localStorage.setItem("nickname", JSON.stringify({
-          wallet: walletAddress,
-          username: currentProfile.username || userInfo.userName,
-          avatarId: currentProfile.avatar
-        }));
-        setIsLoading(false);
-        if (resService.status === 200) {
-          setRefresh(!refresh);
-        } else {
+  async function handleSetProfile() {
+    const format = /^(?=.{0,15}[\w\d\s\S]$)\S+$/; // No whitespace, 1-15 characters.
+    if (format.test(currentProfile.username.trim()) || currentProfile.username === "") {
+      if (!isLoading) {
+        setIsLoading(true);
+        try {
+          debugger
+          const resService = await DeoddService.saveInfoUser({
+            wallet: walletAddress,
+            username: currentProfile.username || userInfo.username,
+            avatarId: currentProfile.avatar || userInfo.avatar,
+          });
+          setUserInfo(currentProfile);
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (err) {
-        console.log(err);
+      }
+    } else {
+      if (currentProfile.username.trim().length > 15) {
+        setErrorMessage("Your nickname has to be less the 15 characters");
+      } else if ((/\s/).test(currentProfile.username.trim())) {
+        setErrorMessage("Your nickname must not contain space");
       }
     }
   }
-}
-
-export default function ProfileUsername({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { walletAddress, refresh, setRefresh } = useWalletContext();
-  const [userInfo, setUserInfo] = useState({ username: "", avatar: 0 } as { username: string; avatar: number });
-  const [currentProfile, setCurrentProfile] = useState({ username: userInfo.username || "", avatar: userInfo.avatar || 0 } as { username: string; avatar: number });
 
   useEffect(() => {
-    const localNickname = localStorage.getItem("nickname");
-    console.log(localNickname);
-  }, []);
+    setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
+  }, [userInfo]);
 
   return (
     <Modal aria-labelledby="profile-nickname-modal" open={open} onClose={onClose} sx={{ display: "flex", justifyContent: "center" }}>
@@ -109,6 +89,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
               backgroundColor: "#2A2D3E",
               borderRadius: "0.5rem",
               padding: "0.75rem 2rem",
+              marginBlockEnd: "1rem",
               input: {
                 textAlign: "center",
                 fontSize: "14px",
@@ -122,16 +103,21 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             placeholder="Your nickname"
             fullWidth
             value={currentProfile.username}
-            onChange={(e) => { setCurrentProfile(prev => ({ ...prev, username: e.target.value })) }}
-            onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile({ currentProfile, isLoading, setIsLoading, userInfo, walletAddress, refresh, setRefresh }) } }}
+            onChange={(e) => { setCurrentProfile(prev => ({ ...prev, username: e.target.value })); setErrorMessage("") }}
+            onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
           />
-          <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
+          <Box position={"relative"}>
+            <Typography variant="body2" color={"#EE3E3E"} fontSize={"0.75rem"} lineHeight={"1rem"} sx={{ position: "absolute", top: "-1.25rem", transform: "translateY(-50%)" }}>
+              {errorMessage}
+            </Typography>
+            <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
+          </Box>
           <ButtonMain
             active={true}
             disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
             sx={{ width: 1, height: "3.375rem" }}
             title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
-            onClick={() => { handleSetProfile({ currentProfile, isLoading, setIsLoading, userInfo, walletAddress, refresh, setRefresh }) }}
+            onClick={() => { handleSetProfile() }}
           ></ButtonMain>
         </Stack>
       </Zoom>

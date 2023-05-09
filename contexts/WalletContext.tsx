@@ -70,14 +70,15 @@ const networks: Map = {
 
 const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
 
-interface wallerContextType {
+interface WalletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
 	setWalletAddress: (account: any) => void
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { userName: string, avatar: string },
+	userInfo: { username: string, avatar: number },
+	setUserInfo: Function,
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
 	contractDeoddNft: Contract | undefined,
@@ -93,14 +94,15 @@ interface IProps {
 	children: ReactNode
 }
 
-const WalletContext = createContext<wallerContextType>({
+const WalletContext = createContext<WalletContextType>({
 	walletAddress: null,
 	walletIsConnected: false,
 	setWalletAddress: () => { },
 	isLoading: false,
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
-	userInfo: { userName: '', avatar: '' },
+	userInfo: { username: '', avatar: 0 },
+	setUserInfo: () => { },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
@@ -147,7 +149,7 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: "", avatar: "" })
+	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
@@ -344,10 +346,15 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	useEffect(() => {
 		//TODO : call api get Information 
-		// setUserInfo()
-	}, [])
+		async function getUserInfo() {
+			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
+			const user = userData.data.data;
+			setUserInfo({ username: user.userName, avatar: user.avatarId });
+		}
+		getUserInfo();
+	}, [walletAddress]);
 
-	const value: wallerContextType = useMemo(() => {
+	const value: WalletContextType = useMemo(() => {
 		return {
 			walletIsConnected,
 			walletAddress,
@@ -356,6 +363,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			isLoading,
 			bnbBalance,
 			userInfo,
+			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
 			contractProfile,
@@ -374,6 +382,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		isLoading,
 		bnbBalance,
 		userInfo,
+		setUserInfo,
 		contractDeodd,
 		contractProfile,
 		contractFeeManager,
