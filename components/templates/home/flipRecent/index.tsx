@@ -55,7 +55,7 @@ function FlipRecent({ }: Props) {
                     return data;
                 }
             ),
-        refetchInterval: 1000,
+        refetchInterval: 5000,
     });
     // console.log(data);
 
