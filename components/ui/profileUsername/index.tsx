@@ -88,6 +88,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             {avatars.map((avatarSrc, index) => (<MyImage key={index} onClick={() => { setCurrentProfile(prev => ({ ...prev, avatar: index })) }} src={avatarSrc} width={40} height={40} alt="profile-avatar" sx={{ cursor: "pointer" }} />))}
           </Stack>
           <InputBase
+            inputProps={{ maxLength: 15 }}
             sx={{
               backgroundColor: "#2A2D3E",
               borderRadius: "0.5rem",
@@ -107,13 +108,9 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             fullWidth
             value={currentProfile.username}
             onChange={(e) => {
-              setCurrentProfile(prev => ({ ...prev, username: e.target.value }));
-              if (currentProfile.username.trim().length > 15) {
-                setErrorMessage("Your nickname cannot be longer than 15 characters");
-              } else if ((/\s/).test(currentProfile.username.trim())) {
-                setErrorMessage("Your nickname must not contain space");
-              } else {
-                setErrorMessage("")
+              setCurrentProfile(prev => ({ ...prev, username: e.target.value.split(" ").join("") }));
+              if (errorMessage) {
+                setErrorMessage("");
               }
             }}
             onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
