@@ -1,30 +1,18 @@
-import { BigNumber, ethers } from "ethers";
-import Image from 'next/image';
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // import { Button } from "../../../ui/button"
-import { useWalletContext } from "../../../../contexts/WalletContext";
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
-import { Box, CircularProgress, Grid, InputBase, Stack, styled, Typography } from "@mui/material";
+import { Box, Grid, styled, Typography } from "@mui/material";
 import { TEXT_STYLE } from "../../../../styles/common";
 import { Popup } from "../../../common/popup";
-import { ButtonLoading, ButtonLoadingShadow, ButtonMain } from "../../../ui/button";
+import { ButtonLoading, ButtonMain } from "../../../ui/button";
 import { Result } from "../result";
 // import { feeManagerContract } from "libs/contract"
-import CoinAnimation from "components/common/CoinAnimation";
-import { VRF_FEE } from "constants/index";
+import MyModal from "components/common/Modal";
 import { StatusGame, useContractContext } from "contexts/ContractContext";
-import { useSiteContext } from "contexts/SiteContext";
-import { useDeoddContract } from "hooks/useDeoddContract";
-import { useProfileContract } from "hooks/useProfileContract";
-import { DeoddService } from "libs/apis";
-import { AudioPlay } from "libs/types";
-import { BnbIcon } from "utils/Icons";
-import { TestailCoinImage } from "utils/Images";
-import { useDisconnect } from "wagmi";
-import NotYetFlip from "../components/NotYetFlip";
+import { deoddContract } from "libs/contract";
+import { useContractWrite, useDisconnect } from "wagmi";
 import { Flipping } from "../components/Flipping";
-import MyApp from "pages/_app";
-import MyImage from "components/ui/image";
+import NotYetFlip from "../components/NotYetFlip";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
@@ -48,43 +36,26 @@ type DataSelected = {
 
 // eslint-disable-next-line react/display-name
 export const PlayPart = React.memo(() => {
-
-  const { walletAddress, refresh, setRefresh, userInfo } = useWalletContext()
-
-  const { statusGame } = useContractContext();
-
-  const { registerName } = useProfileContract();
-
+  const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useContractContext();
   const { disconnect } = useDisconnect()
-
+  const { writeAsync } = useContractWrite({
+    address: deoddContract.address,
+    mode: 'recklesslyUnprepared',
+    abi: deoddContract.abi,
+    functionName: 'rollbackUnfulfilled',
+  })
 
   const [popup, setPopup] = useState<{ status: boolean, body: any }>({
     status: false,
     body: <></>
   })
-  const [currentProfile, setCurrentProfile] = useState<{ username: any, avatar: any }>({ username: null, avatar: userInfo.avatar || 0 })
-  const [statusLoading, setStatusLoading] = useState<boolean>(false)
-
-
-
-  const bodyPopupError = (message: string) => {
-    return (
-      <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
-        <Box><img alt="" src='assets/icons/close-circle.svg' /></Box>
-        <Typography sx={{ ...TEXT_STYLE(14, 500, '#ffffff'), margin: '24px 0' }}>{message}</Typography>
-        <ButtonMain active={true} title={'Try again'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: '100%' }} />
-      </Box>
-    )
+  const handleRefun = () => {
+    writeAsync?.().then(res => {
+      debugger
+    }).catch(err => {
+      debugger
+    })
   }
-
-  const bodyPopupSuccess = (
-    <Box sx={{ textAlign: 'center', maxWidth: '304px', margin: 'auto' }}>
-      <Typography sx={{ ...TEXT_STYLE(24, 500), marginBottom: '24px' }} >Profile updated !</Typography>
-      <ButtonMain active={true} title={'OKAY'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: '100%' }} />
-    </Box>
-  )
-
-
 
   const handleShowDisconnect = () => {
     setPopup({
@@ -107,111 +78,6 @@ export const PlayPart = React.memo(() => {
     })
   }
 
-  const handleSetProfile = async () => {
-    const format = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    if (format.test(currentProfile.username)) {
-      return
-    }
-    debugger
-    if (!statusLoading) {
-      setStatusLoading(true)
-      try {
-        const res = await registerName(currentProfile.username || userInfo.userName, currentProfile.avatar)
-        if (res.status) {
-          debugger
-          const resService = await DeoddService.saveInfoUser({
-            wallet: walletAddress,
-            username: currentProfile.username || userInfo.userName,
-            avatarId: currentProfile.avatar
-          });
-          setStatusLoading(false)
-          if (resService.status === 200) {
-            setRefresh(!refresh);
-            setPopup({ ...popup, body: bodyPopupSuccess })
-          } else {
-            setPopup({
-              status: true,
-              body: bodyPopupError('Something went wrong. Please try again!')
-            })
-          }
-        }
-      } catch (error: any) {
-        console.log(error)
-        setStatusLoading(false)
-        setPopup({
-          status: true,
-          body: bodyPopupError(error.reason || 'Something went wrong. Please try again!')
-        })
-      }
-    }
-  }
-
-  const bodyCreateProfile = (
-    <Box sx={{ textAlign: 'center', maxWidth: '304px' }}>
-      <TitlePopup >{userInfo.userName ? 'Change' : 'Create'} profile</TitlePopup>
-      <BoxAvatar><img alt="" src={currentProfile.avatar !== null ? avatar[currentProfile.avatar] : avatar[parseFloat(userInfo.avatar)]} /></BoxAvatar>
-      <ListAvatar>
-        {avatar.map((item, index) => <Box onClick={() => setCurrentProfile({ ...currentProfile, avatar: index })} key={index}><img alt="" src={item} /></Box>)}
-      </ListAvatar>
-      <InputNickname value={currentProfile.username !== null ? currentProfile.username : userInfo.userName} placeholder="Nickname" onChange={(e) => setCurrentProfile({ ...currentProfile, username: e.target.value })}></InputNickname>
-      <Typography sx={{
-        ...TEXT_STYLE(12, 400),
-        marginBottom: '24px'
-      }}>{userInfo.userName ? '*If you change a Nickname, you will be charged some gas fee for this.' : '*If you choose to create a Nickname, you will be charged some gas fee for this.'}</Typography>
-      <ButtonMain disabled={((parseFloat(currentProfile.avatar) !== parseFloat(userInfo.avatar)) || (currentProfile.username !== userInfo.userName && currentProfile.username !== null)) ? false : true}
-        active={true}
-        title={statusLoading ? <CircularProgress sx={{ width: '25px !important', height: 'auto !important' }} color="inherit" /> : 'SAVE'} onClick={handleSetProfile} sx={{ width: "100%", marginBottom: '16px' }} />
-      <ButtonMain active={false} title={'CLOSE'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: "100%" }} />
-    </Box>
-  )
-
-  const handleCreateProfile = () => {
-    setPopup({
-      status: true,
-      body: bodyCreateProfile
-    })
-  }
-
-  const checkAvatar = () => {
-    switch (userInfo?.avatar) {
-      case '0': return 'avatar-yellow'
-      case '1': return 'avatar-orange'
-      case '2': return 'avatar-pink'
-      case '3': return 'avatar-violet'
-      case '4': return 'avatar-green'
-    }
-  }
-
-
-
-
-
-  useEffect(() => {
-    popup.status && setPopup({
-      status: true,
-      body: bodyCreateProfile
-    })
-  }, [currentProfile.avatar, currentProfile.username])
-
-  useEffect(() => {
-    if (localStorage.getItem('popupCreateProfile') !== walletAddress) {
-      localStorage.setItem('popupCreateProfile', walletAddress)
-      // localStorage.getItem('popupCreateProfile') === walletAddress && handleCreateProfile()
-    }
-  }, [walletAddress])
-
-  useEffect(() => {
-    statusLoading && setPopup({ status: true, body: bodyCreateProfile })
-  }, [statusLoading])
-
-  useEffect(() => {
-    parseFloat(userInfo.avatar) !== currentProfile.avatar && setCurrentProfile({ username: userInfo.userName, avatar: userInfo.avatar })
-
-  }, [userInfo.avatar])
-  console.log("asdfasdf");
-  console.log(statusGame);
-
-
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
 
     <RenderUi statusGame={statusGame} />
@@ -227,6 +93,31 @@ export const PlayPart = React.memo(() => {
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
       {popup.body}
     </Box>} />
+    <MyModal open={true} setOpen={setOpenModalPendingTransaction} sx={{
+      minWidth: 554, width: 554,
+      textAlign: "center",
+    }}>
+      <Typography variant="h5" fontWeight={700} color="secondary.main" textAlign={'center'}>ATTENTION</Typography>
+      <Typography textAlign={'center'} variant="body2" mt={3} fontWeight={400} lineHeight={'20px'}>Your latest transaction is not completed because a network error has occurred.
+        Now you can claim your token back!</Typography>
+      <ButtonLoading
+        onClick={handleRefun}
+        sx={{
+          py: 2, mt: 2,
+          borderRadius: 2,
+          width: 233,
+          textTransform: 'none',
+          '&:disabled': {
+            bgcolor: 'secondary.900',
+            color: 'primary.300'
+          }
+        }}
+        loading={false}>
+        <Typography variant='body2' textTransform={'uppercase'} fontSize={16} fontWeight={600} >
+          Claim
+        </Typography>
+      </ButtonLoading>
+    </MyModal>
   </Box>
 })
 
@@ -243,54 +134,6 @@ const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
   }
 })
 
-const Avt = styled(Box)({
-  marginRight: 16,
-  '& img': {
-    maxWidth: 48
-  }
-})
-const Wallet = styled(Box)((props) => ({
-  ...TEXT_STYLE(14, 500, '#181536'),
-  marginRight: 24,
-  marginBottom: 8,
-  textAlign: "left",
-  '@media (min-width: 800px)': {
-    marginBottom: 0
-  }
-}))
-const NickName = styled(Box)({
-  ...TEXT_STYLE(14, 500, '#7071B3'),
-  cursor: 'pointer'
-})
-
-type ItemCoinProps = {
-  active: boolean,
-  themelight: boolean
-}
-const Itemcoin = styled(Box)((props: ItemCoinProps) => ({
-  display: 'flex',
-  alignItems: 'center',
-  flexDirection: 'column' as any,
-  gap: '24px',
-  ...TEXT_STYLE(40, 700, props.themelight ? props.active ? '#FC753F' : '#5A6178' : props.active ? '#FEF156' : '#5A6178'),
-  lineHeight: 1,
-  cursor: 'pointer',
-  '@media (min-width: 900px )': {
-    flexDirection: 'row',
-  },
-}))
-// const BoxAmount = styled(Box)({
-//   display: 'flex',
-//   flexWrap: 'wrap',
-//   justifyContent: 'space-between',
-
-//   columnGap: 24,
-//   '@media (min-width: 800px)': {
-//     justifyContent: 'flex-start'
-//   }
-// })
-
-
 const TitlePopup = styled(Typography)(() => ({
   ...TEXT_STYLE(24, 500, '#181536'),
   marginBottom: 24,
@@ -300,49 +143,3 @@ const SubtitlePopup = styled(Typography)(() => ({
   ...TEXT_STYLE(14, 400, '#181536'),
   marginBottom: 24
 }))
-type ItemBodyPopupProps = {
-  themelight: boolean
-}
-const ItemBodyPopup = styled(Box)((props: ItemBodyPopupProps) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  marginBottom: 24,
-  ...TEXT_STYLE(14, 400, props.themelight ? '#181536' : '#FFFFFF'),
-  '& span': {
-    ...TEXT_STYLE(14, 600, props.themelight ? '#FC753F' : '#FEF156'),
-  },
-}))
-const BoxAvatar = styled(Box)({
-  marginBottom: 24,
-  '& img': {
-    maxWidth: 120
-  }
-})
-const ListAvatar = styled(Box)({
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: 24,
-  '& div': {
-    marginRight: 16,
-    cursor: 'pointer',
-    '&:last-of-type': {
-      marginRight: 0
-    },
-    '& img': {
-      maxWidth: 40
-    }
-  }
-})
-const InputNickname = styled(InputBase)((props) => ({
-  padding: 12,
-  background: '#E9EAEF',
-  borderRadius: 8,
-  textAlign: 'center',
-  ...TEXT_STYLE(18, 500, '#7071B3'),
-  width: '100%',
-  marginBottom: 24,
-  '& input': {
-    textAlign: 'center'
-  }
-}))
-

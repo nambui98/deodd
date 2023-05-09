@@ -1,8 +1,6 @@
 import {
     Box,
-    Button,
     Container,
-    IconButton,
     Paper,
     Stack,
     Table,
@@ -11,28 +9,22 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography,
+    Typography
 } from "@mui/material";
-import MyTabs, { TypeTab } from "components/common/Tabs";
-import { DiscordIcon, TelegramIcon, TwiterIcon } from "components/common/icons";
-import { ButtonFourth, ButtonLoading, ButtonTertiary } from "components/ui/button";
+import { TypeTab } from "components/common/Tabs";
+import { ButtonFourth, ButtonLoading } from "components/ui/button";
+import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
-import {
-    FacebookShareButton,
-    TelegramShareButton,
-    TwitterShareButton,
-} from "next-share";
-import { useEffect, useMemo, useState } from "react";
-import { BnbIcon, CopyIcon, FacebookIcon, NotiIcon } from "utils/Icons";
+import { useMemo, useState } from "react";
+import { BnbIcon } from "utils/Icons";
 import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
-import MyImage from "components/ui/image";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -65,7 +57,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                     createData(
                         item.userNameReferred + "(" + item.userWalletReferred + ")",
                         item.expiredDateForFather,
-                        item.rewardFatherClaimed
+                        item.rewardFatherUnclaimed
                     )
                 )
                 : [],
@@ -78,7 +70,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                     createData(
                         item.userNameReferred + "(" + item.userWalletReferred + ")",
                         item.expiredDateForFather,
-                        item.rewardFatherClaimed
+                        item.rewardFatherUnclaimed
                     )
                 )
                 : [],
@@ -321,11 +313,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         </Typography>
                         <Stack direction={"row"} columnGap={1} alignItems={"center"}>
                             <Typography variant="body2">
-                                {Format.formatMoneyFromBigNumberEther(
-                                    dataAvailable?.claimedReward
+                                {Format.formatMoney(
+                                    dataAvailable?.totalReward ?? 0
                                 )}
                             </Typography>
-                            <BnbIcon />
+                            <BnbIcon fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Stack
@@ -341,7 +333,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             <Typography variant="body2">
                                 {Format.formatMoney(dataAvailable?.claimFee ?? 0)}{" "}
                             </Typography>
-                            <BnbIcon />
+                            <BnbIcon fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Typography variant="caption" color="secondary.100">

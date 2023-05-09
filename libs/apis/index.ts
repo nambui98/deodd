@@ -10,6 +10,13 @@ const saveInfoUser = async (body: object) => {
     })
 }
 
+const getUserByPublicAddress = async (wallet: string) => {
+    return vhIdRequest({
+        url: `/users/fetch?address=${wallet}`,
+        method: 'get',
+    })
+}
+
 const getRecentFlipping = async () => {
     return vhIdRequest({
         url: `/recent`,
@@ -34,5 +41,6 @@ export const DeoddService = {
     saveInfoUser,
     getRecentFlipping,
     getAssetsBalance,
-    getBalanceHistories
+    getBalanceHistories,
+    getUserByPublicAddress,
 }

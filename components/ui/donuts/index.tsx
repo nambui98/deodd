@@ -37,6 +37,7 @@ export const Donut = (props: { data: [number, number] }) => {
                     bodyAlign: "center",
                     titleAlign: "center",
                     boxPadding: 3,
+                    backgroundColor: "rgba(0, 0, 0, 0.9)",
                 }
             }
         }}

@@ -74,7 +74,7 @@ interface wallerContextType {
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { userName: string, avatar: string },
+	userInfo: { username: string, avatar: number },
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
 	contractDeoddNft: Contract | undefined,
@@ -97,7 +97,7 @@ const WalletContext = createContext<wallerContextType>({
 	isLoading: false,
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
-	userInfo: { userName: '', avatar: '' },
+	userInfo: { username: '', avatar: 0 },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
@@ -144,7 +144,7 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ userName: string, avatar: string }>({ userName: "", avatar: "" })
+	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
@@ -370,8 +370,22 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	useEffect(() => {
 		//TODO : call api get Information 
-		// setUserInfo()
-	}, [])
+		async function getUserInfo() {
+			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
+			const user = userData.data.data;
+			setUserInfo({ username: user?.userName, avatar: user?.avatarId });
+		}
+		if (walletAddress) {
+			const walletAddressLocal = LocalStorage.getWalletAddress();
+			const nicknameLocal = LocalStorage.getNickname();
+			if (nicknameLocal != null && walletAddressLocal == JSON.parse(nicknameLocal).wallet) {
+				setUserInfo({ username: JSON.parse(nicknameLocal).username, avatar: JSON.parse(nicknameLocal).avatarId });
+			} else {
+				getUserInfo();
+			}
+		}
+
+	}, [walletAddress]);
 
 	const value: wallerContextType = useMemo(() => {
 		return {

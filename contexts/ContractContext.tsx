@@ -42,6 +42,8 @@ interface ContractContextType {
 	isFinish: boolean,
 	dataSelected: DataSelected,
 	setDataSelected: Function,
+	openModalPendingTransaction: boolean,
+	setOpenModalPendingTransaction: Function
 }
 
 const ContractContext = createContext<ContractContextType>({
@@ -54,6 +56,8 @@ const ContractContext = createContext<ContractContextType>({
 	isFinish: false,
 	dataSelected: undefined,
 	setDataSelected: () => { },
+	openModalPendingTransaction: false,
+	setOpenModalPendingTransaction: () => { }
 })
 export type DataSelected = {
 	coinSide?: 0 | 1,
@@ -74,7 +78,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	const [openModalPendingTransaction, setOpenModalPendingTransaction] = useState<boolean>(false);
 
 	const [dataSelected, setDataSelected] = useState<DataSelected>()
-	const { data: pendingRequestExists, refetch, } = useContractRead({
+	const { refetch } = useContractRead({
 		address: deoddContract.address,
 		abi: deoddContract.abi,
 		functionName: 'pendingRequestExists',
@@ -87,14 +91,12 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		let timer: string | number | NodeJS.Timeout | undefined;
 		if (statusGame === StatusGame.FLIPPING) {
 			timer = setTimeout(() => {
-				refetch().then((res) => {
-					debugger
-					// if (res === true) {
-					setIsFinish(false);
-					setStatusGame(StatusGame.FLIP);
-					setOpenModalPendingTransaction(true);
-
-					// }
+				refetch().then(({ data }) => {
+					if (data === true) {
+						setIsFinish(false);
+						setStatusGame(StatusGame.FLIP);
+						setOpenModalPendingTransaction(true);
+					}
 				});
 			}, TIMEOUT_FULLFILL);
 		}
@@ -200,7 +202,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	// 	});
 
 	// }, [contractDeodd])
-	const value2 = {
+	const value = {
 		statusGame,
 		setStatusGame,
 		gameResult,
@@ -210,6 +212,8 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		setIsFinish,
 		dataSelected,
 		setDataSelected,
+		openModalPendingTransaction,
+		setOpenModalPendingTransaction
 
 	}
 	// const value: ContractContextType = useMemo(() => {
@@ -234,5 +238,5 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	// 	isFinish,
 	// 	dataSelected,
 	// ])
-	return <ContractContext.Provider value={value2}>{children}</ContractContext.Provider>
+	return <ContractContext.Provider value={value}>{children}</ContractContext.Provider>
 }

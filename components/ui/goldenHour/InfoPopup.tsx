@@ -10,7 +10,7 @@ export function InfoPopup() {
         </Typography>
         and {""}
         <Typography variant="body2" fontWeight={400} display={"inline"} color="secondary.main" fontSize={"inherit"}>
-          deODD NFT Card
+          DeODD NFT Card
         </Typography>
       </Typography>
       {/* listStyleType is used so that it displays a bullet list.
@@ -33,7 +33,7 @@ export function InfoPopup() {
         }}>
           <ListItemText disableTypography>
             <Typography variant="body2" fontWeight={400} fontSize={"0.75rem"}>
-              Saving deODD NFT Card to get reward in <Box component={"span"} fontWeight={600}>NFT Holder Pool</Box>
+              Saving DeODD NFT Card to get reward in <Box component={"span"} fontWeight={600}>NFT Holder Pool</Box>
             </Typography>
           </ListItemText>
         </ListItem>

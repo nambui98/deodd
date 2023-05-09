@@ -1,9 +1,9 @@
 // FIXME: Update this configuration file based on your project information
 
 export const AppConfig = {
-  site_name: 'deODD',
+  site_name: 'DeODD',
   company: 'Versehub',
-  title: 'deODD',
+  title: 'DeODD',
   description: '',
   locale: 'en',
 };

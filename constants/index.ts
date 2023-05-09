@@ -25,7 +25,7 @@ export const AMOUNTS_REAL_RECEIVE: { [key: string]: number } = {
   '0.163': 0.16,
   '0.193': 0.19
 }
-export const TIMEOUT_FULLFILL = 60000 //miniseconds
+export const TIMEOUT_FULLFILL = 6000 //miniseconds
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 // export const BASE_URL_REFERRAL = window.origin + "/ref/"
 
