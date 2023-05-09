@@ -9,6 +9,7 @@ import { ethers } from "ethers";
 import { useColorModeContext } from "../../../../contexts/ColorModeContext";
 import { Convert } from "../../../../utils/convert";
 import { RankingIcon } from "../../../common/icons";
+import { checkAvatar } from "utils/checkAvatar";
 type tabsType = tabsEnum;
 enum tabsEnum {
   RECENT,
@@ -51,16 +52,6 @@ export const TopList = () => {
     }
     if (currentTab === tabsEnum.TOPSTREAK) {
       return `flipped ${ethers.utils.formatUnits((item.streakAmount ?? 0).toString())} and got a double ${item.maxStreakLength} times in a row`
-    }
-  }
-
-  const checkAvatar = (avatar: string) => {
-    switch (avatar) {
-      case '0': return 'avatar-yellow'
-      case '1': return 'avatar-orange'
-      case '2': return 'avatar-pink'
-      case '3': return 'avatar-violet'
-      case '4': return 'avatar-green'
     }
   }
 
