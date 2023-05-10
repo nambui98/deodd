@@ -31,20 +31,24 @@ export function DonutDisplay({
         display={"flex"}
         flexDirection={"column"}
         alignItems={"center"}
+        zIndex={1}
       >
         <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"}>
           {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
           {!error.haveFlipped
             ? "0"
             : flipDashboardStat.numberFlipToday < 10
-            ? "0" + flipDashboardStat.numberFlipToday
-            : flipDashboardStat.numberFlipToday}
+              ? "0" + flipDashboardStat.numberFlipToday
+              : flipDashboardStat.numberFlipToday}
         </Typography>
         <Typography variant="body2" textTransform={"uppercase"}>
           times
         </Typography>
       </Box>
-      <Donut data={[flipDashboardStat[tail], flipDashboardStat[head]]} />
+      {/* Wrap Donut Component in a box to use z-index so that the tooltip is on top of other texts */}
+      <Box width={1} position={"relative"} zIndex={2}>
+        <Donut data={[flipDashboardStat[tail], flipDashboardStat[head]]} />
+      </Box>
     </Box>
   );
 }

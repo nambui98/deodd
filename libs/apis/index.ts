@@ -1,4 +1,6 @@
 import vhIdRequest from "@/utils/vhIdRequest"
+import { ReferralApis } from "./referral"
+import { AuthApis } from "./auth"
 
 const saveInfoUser = async (body: object) => {
     return vhIdRequest({
@@ -7,67 +9,38 @@ const saveInfoUser = async (body: object) => {
         data: body
     })
 }
-const checkUserReferral = async (address: string) => {
+
+const getUserByPublicAddress = async (wallet: string) => {
     return vhIdRequest({
-        url: `/users/ref/checkref?address=${address}`,
-        method: 'get'
-    })
-}
-const getReferralRewardAvailable = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/available?wallet=${address}`,
-        method: 'get'
-    })
-}
-const getReferralRewardExpired = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/expired?wallet=${address}`,
-        method: 'get'
-    })
-}
-const checkUserIsValidForReferral = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/check?address=${address}`,
+        url: `/users/fetch?address=${wallet}`,
         method: 'get',
     })
 }
-const findGenerateReferralLinkByWallet = async (address: string) => {
+
+const getRecentFlipping = async () => {
     return vhIdRequest({
-        url: `/users/ref/findLink?address=${address}`,
+        url: `/recent`,
         method: 'get',
     })
 }
-const generateReferralLink = async (address: string) => {
+const getAssetsBalance = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/generate`,
-        method: 'put',
-        data: JSON.stringify({ wallet: address })
+        url: `/assets/balance?wallet=${address}`,
+        method: 'get',
     })
 }
-const confirmReferralForUser = async (body: any) => {
+const getBalanceHistories = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/confirm`,
-        method: 'post',
-        data: JSON.stringify(body)
-    })
-}
-const ClaimReferral = async (address: string) => {
-    return await vhIdRequest({
-        url: `/users/ref/claim`,
-        method: 'post',
-        data: JSON.stringify({
-            wallet: address
-        })
+        url: `/spending?wallet=${address}`,
+        method: 'get',
     })
 }
 export const DeoddService = {
-    generateReferralLink,
-    checkUserIsValidForReferral,
-    getReferralRewardExpired,
-    findGenerateReferralLinkByWallet,
-    getReferralRewardAvailable,
+    ...ReferralApis,
+    ...AuthApis,
     saveInfoUser,
-    checkUserReferral,
-    confirmReferralForUser,
-    ClaimReferral
+    getRecentFlipping,
+    getAssetsBalance,
+    getBalanceHistories,
+    getUserByPublicAddress,
 }

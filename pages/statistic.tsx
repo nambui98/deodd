@@ -6,7 +6,7 @@ import { FlipResultSection } from "@/templates/statistic/FlipResultSection";
 import { TotalSection } from "@/templates/statistic/TotalSection";
 
 export default function Statistic() {
-  const { error, flipDashboardStat, streak, userPerFlip, totalUser } =
+  const { error, flipDashboardStat, streak, userFlipStat, totalUser } =
     useDashboardStat();
 
   return (
@@ -14,7 +14,7 @@ export default function Statistic() {
       <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
         Today stat
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container rowSpacing={3} columnSpacing={4}>
         <StreakSection error={error} streak={streak} />
         <FlipResultSection
           error={error}
@@ -23,7 +23,7 @@ export default function Statistic() {
         <TotalSection
           error={error}
           flipDashboardStat={flipDashboardStat}
-          userPerFlip={userPerFlip}
+          userFlipStat={userFlipStat}
           totalUser={totalUser}
         />
       </Grid>

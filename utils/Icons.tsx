@@ -40,12 +40,39 @@ import Close2Icon from "public/assets/icons/close.svg";
 import SendIcon from "public/assets/icons/send.svg";
 import LogoutIcon from "public/assets/icons/logout.svg";
 import VolumeIcon from "public/assets/icons/volume-cross.svg";
+import UndoIcon from "public/assets/icons/undo.svg";
+import WarningIcon from "public/assets/icons/warning-2.svg";
+import CloseSquareIcon from "public/assets/icons/close-square.svg";
+import MoreSquareIcon from "public/assets/icons/more-square.svg";
+import ArrowDown2Icon from "public/assets/icons/arrow-down.svg";
+import ArrowLeft2Icon from "public/assets/icons/arrow-left (2).svg";
+import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
+import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
+import InfoCircleIcon from "public/assets/icons/info-circle.svg";
+function Bnb2Icon(props: SvgIconProps) {
+  console.log(props);
 
+  return (
+    <SvgIcon {...props}>
+      <path d="M10.375 1.95835L5.96666 6.36668C5.8 6.53335 5.8 6.79168 5.96666 6.95835L7.04166 8.03335C7.20832 8.20002 7.46666 8.20002 7.63333 8.03335L10.375 5.29168C10.5417 5.12502 10.8 5.12502 10.9667 5.29168L13.7083 8.03335C13.875 8.20002 14.1333 8.20002 14.3 8.03335L15.375 6.95835C15.5417 6.79168 15.5417 6.53335 15.375 6.36668L10.9667 1.95835C10.8 1.80002 10.5333 1.80002 10.375 1.95835Z" />
+      <path d="M10.375 18.0417L5.96666 13.6334C5.8 13.4667 5.8 13.2084 5.96666 13.0417L7.04166 11.9667C7.20832 11.8 7.46666 11.8 7.63333 11.9667L10.375 14.7084C10.5417 14.875 10.8 14.875 10.9667 14.7084L13.7083 11.9667C13.875 11.8 14.1333 11.8 14.3 11.9667L15.375 13.0417C15.5417 13.2084 15.5417 13.4667 15.375 13.6334L10.9667 18.0417C10.8 18.2 10.5333 18.2 10.375 18.0417Z" />
+      <path d="M17.4167 8.41668L18.7 9.70002C18.8667 9.86668 18.8667 10.125 18.7 10.2917L17.4167 11.575C17.25 11.7417 16.9917 11.7417 16.825 11.575L15.5417 10.2917C15.375 10.125 15.375 9.86668 15.5417 9.70002L16.825 8.41668C16.9917 8.25835 17.2583 8.25835 17.4167 8.41668Z" />
+      <path d="M4.5 8.41668L5.78333 9.70002C5.94999 9.86668 5.94999 10.125 5.78333 10.2917L4.5 11.575C4.33333 11.7417 4.07499 11.7417 3.90833 11.575L2.625 10.2917C2.45833 10.125 2.45833 9.86668 2.625 9.70002L3.90833 8.41668C4.07499 8.25835 4.34167 8.25835 4.5 8.41668Z" />
+      <path d="M10.9583 8.23335L12.4333 9.70835C12.6 9.87502 12.6 10.1334 12.4333 10.3L10.9583 11.775C10.7917 11.9417 10.5333 11.9417 10.3667 11.775L8.89166 10.3C8.72499 10.1334 8.72499 9.87502 8.89166 9.70835L10.3667 8.23335C10.5333 8.06668 10.8 8.06668 10.9583 8.23335Z" />
+    </SvgIcon>
+  );
+}
 export {
+  ArrowLeft2Icon,
+  Bnb2Icon,
+  ArrowDown2Icon,
+  MoreSquareIcon,
+  UndoIcon,
+  WarningIcon,
+  CloseSquareIcon,
   VolumeIcon,
   LogoutIcon,
-
   SendIcon,
   Close2Icon,
   Flip2Icon,
@@ -86,4 +113,6 @@ export {
   MobileIcon,
   ProfileCircleIcon,
   ArchiveIcon,
+  CloseSquareIcon2,
+  InfoCircleIcon
 };

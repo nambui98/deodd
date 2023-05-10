@@ -15,7 +15,6 @@ export const ContentRef = (props: Props) => {
     const { code } = router.query;
     const [success, setSuccess] = useState(false);
     const [dataReferralSuccess, setDataReferralSuccess] = useState<{ username: string, wallet: string } | undefined>();
-    console.log(code);
 
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
@@ -23,12 +22,10 @@ export const ContentRef = (props: Props) => {
             if (res.data.data) {
                 const body = {
                     wallet: walletAddress,
-                    username: userInfo.userName,
+                    username: userInfo?.username,
                     referralLink: code,
                 }
                 const res = await DeoddService.confirmReferralForUser(body);
-
-                debugger
                 if (res.status === 200 && res.data.data) {
                     getLinkUser();
                     setSuccess(true);
@@ -44,6 +41,7 @@ export const ContentRef = (props: Props) => {
         if (walletAddress && code) {
             checkUserIsValidForReferral();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletAddress, code])
 
 

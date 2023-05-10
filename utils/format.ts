@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from "ethers";
 
 export const Format = {
-    formatMoney: (number: string, fixed?: number) => {
-        var newValue = number;
+    formatMoney: (value: string | number, fixed?: number) => {
+        var newValue = value.toString();
         if (newValue[newValue.length - 1] === '.') {
             newValue = parseFloat(newValue).toFixed(1);
         }

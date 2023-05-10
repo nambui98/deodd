@@ -12,7 +12,7 @@ type TotalPropsType = {
     haveFlipped: boolean;
     errorMessage: string;
   };
-  userPerFlip: any;
+  userFlipStat: any;
   totalUser: number;
   flipDashboardStat: any;
 };
@@ -20,7 +20,7 @@ type TotalPropsType = {
 export function TotalSection({
   flipDashboardStat,
   error,
-  userPerFlip,
+  userFlipStat,
   totalUser,
 }: TotalPropsType) {
   return (
@@ -84,7 +84,7 @@ export function TotalSection({
           height="15.375rem"
           position={"relative"}
         >
-          <TitleTextAbsolute text="bnb total" />
+          <TitleTextAbsolute text="BNB total" />
           {error.haveFlipped ? (
             <Box>
               <Typography mt={4} variant="h1" fontSize={"3rem"}>
@@ -132,11 +132,10 @@ export function TotalSection({
             textTransform={"capitalize"}
             variant="body2"
           >
-            flip per user
+            flip of user
           </Typography>
           <FlipPerUserTable
-            userPerFlip={userPerFlip}
-            totalUser={totalUser}
+            userFlipStat={userFlipStat}
             error={error}
           />
         </DashboardCard>

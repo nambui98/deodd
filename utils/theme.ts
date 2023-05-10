@@ -117,12 +117,14 @@ export const lightTheme = responsiveFontSizes(createTheme({
 declare module '@mui/material/styles' {
 	interface Palette {
 		neutral: Palette['primary'];
+		dark: Palette['primary'];
 		border: Palette['primary'];
 	}
 
 	// allow configuration using `createTheme`
 	interface PaletteOptions {
 		neutral?: PaletteOptions['primary'];
+		dark?: PaletteOptions['primary'] & { 60: string };
 		border?: PaletteOptions['primary'];
 	}
 }
@@ -131,11 +133,12 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Button' {
 	interface ButtonPropsColorOverrides {
 		neutral: true;
+		dark: true;
 		border: true;
 	}
 }
 
-export const darkTheme = responsiveFontSizes(createTheme({
+export const darkTheme = createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
@@ -155,13 +158,18 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			'500': '#E4EDF4',
 			'600': '#F5F5FA',
 			'700': '#677286',
+			'800': '#48505f',
+			'900': '#3F4251',
 
 
+		},
+		dark: {
+			"60": '#96A5C0'
 		},
 		neutral: {
 			main: ' #2A2D3E',
 			A100: '#48505F',
-			A200:'#11131A'
+			A200: '#11131A'
 		},
 		border: {
 			main: '#FEF156',
@@ -199,7 +207,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 	typography: {
 		fontFamily: 'BeVietnamPro',
 		fontSize: 14,
-		
+		// fontWeight: 400,
 		subtitle1: {
 			fontFamily: 'Electrofied',
 			lineHeight: 1.2,
@@ -213,6 +221,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			fontSize: 14,
 			fontWeight: 500
 		},
+
 		button: {
 			fontSize: 16,
 		},
@@ -245,7 +254,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 					scrollbarColor: "#6b6b6b #2b2b2b",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
 						backgroundColor: "transparent",
-						width:'10px'
+						width: '10px'
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,
@@ -361,5 +370,5 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			// xl: 1536
 		},
 	},
-}), {});
+});
 

@@ -1,8 +1,6 @@
 import { Box, BoxProps } from "@mui/material"
-import { useAnimationFrame } from "hooks/useAnimationFrame"
 import Image from "next/image"
-import React, { Suspense } from "react"
-import { useState } from "react"
+import React, { useEffect, useState } from "react"
 type Props = BoxProps;
 
 const listImage = [
@@ -19,25 +17,31 @@ const listImage = [
     "/assets/images/coin/coin10.png",
     "/assets/images/coin/coin11.png",
 ]
-function CoinAnimation({ width, height, ...props }: Props) {
-    const [count, setCount] = useState(0)
+
+function CoinAnimation({ width, height, mx, textAlign }: Props) {
     const [imagesLoaded, setImagesLoaded] = useState<number>(0);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((currentIndex) => (currentIndex + 1) % listImage.length);
+        }, 100);
+        return () => clearInterval(interval);
+    }, []);
 
-    useAnimationFrame((deltaTime: number) => {
-        setCount(prevCount => (prevCount + deltaTime * 0.01) % 11)
-    })
-
-    return <Box {...props} width={width} height={height}>
+    return <Box mx={mx} textAlign={textAlign} width={width} height={height} position={'relative'}
+        sx={{ opacity: imagesLoaded === listImage.length ? 1 : 0 }}
+    >
         {
-
             listImage.map((image, index) =>
-                <Box key={image} width={1} height={1} position={'relative'} sx={{ opacity: imagesLoaded === listImage.length ? 1 : 0 }} display={Math.round(count) === index ? 'block' : 'none'}>
+                <Box key={image} width={1} height={1} position={'absolute'}
+                    display={currentImageIndex === index ? 'block' : 'none'}
+                >
                     <Image
-                        // width={width} height={height}
-                        // onLoadingComplete={}
-
                         onLoadingComplete={() => setImagesLoaded((prev) => prev += 1)}
                         loading="lazy"
+                        sizes="(max-width: 768px) 100vw,
+                            (max-width: 1200px) 50vw,
+                                33vw"
                         fill
                         style={{ objectFit: "contain" }}
                         src={image} alt="" />
@@ -49,16 +53,3 @@ function CoinAnimation({ width, height, ...props }: Props) {
 
 }
 export default React.memo(CoinAnimation);
-// const CoinAnimationNotMemoize = ({ width, height, ...props }: Props) => {
-//     const [count, setCount] = useState(0)
-
-//     useAnimationFrame((deltaTime: number) => {
-//         setCount(prevCount => (prevCount + deltaTime * 0.01) % 11)
-//     })
-
-//     return <Box {...props}>
-//         <img width={width} height={height} src={"/assets/images/coin/coin" + Math.round(count) + ".png"} alt="" />
-//     </Box>
-// }
-// export const CoianAimation = React.memo(CoinAnimationNotMemoize);;
-//  CoianAimation;

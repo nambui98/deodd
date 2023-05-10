@@ -1,16 +1,16 @@
 import { Box, Paper } from "@mui/material";
-import React, { useState } from "react";
+import { useCallback, useState } from "react";
 
-import { useTheme } from "@mui/material/styles";
 import { IProps } from "../../libs/interfaces";
-import Footer from "./Footer";
 
 import AppBar from "components/ui/appbar";
 import { DrawerHeader } from "components/ui/drawer";
 import { Main } from "components/ui/main";
-import LeftSidebar from "./LeftSidebar";
-import RightSidebar from "./RightSidebar";
 import MyBottomNavigation from "./BottomNavigation";
+import LeftSidebar from "./LeftSidebar";
+import { Meta } from "./Meta";
+import RightSidebar from "./RightSidebar";
+import FaqHowtoplay from "./FaqHowtoplay";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -19,12 +19,12 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
 
-    const handleDrawerToggleLeft = () => {
+    const handleDrawerToggleLeft = useCallback(() => {
         setMobileOpenLeft(!mobileOpenLeft);
         if (mobileOpenRight) {
             setMobileOpenRight(false);
         }
-    };
+    }, []);
     const handleDrawerToggleRight = () => {
         setMobileOpenRight(!mobileOpenRight);
         if (mobileOpenLeft) {
@@ -40,6 +40,7 @@ const Layout = ({ children }: IProps) => {
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
+            <Meta title="DeODD" description="" />
             <AppBar
                 leftOpen={leftOpen}
                 rightOpen={rightOpen}
@@ -50,7 +51,7 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main> {children} </main>
-                {/* <Footer /> */}
+                <FaqHowtoplay />
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
             <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>

@@ -9,7 +9,7 @@ export type ColorModeType = {
     darkMode: boolean,
     setDarkMode: (value: boolean) => void
 }
-export enum AudioPlay{
+export enum AudioPlay {
     GET_READY,
     WIN,
     LOST,
@@ -26,10 +26,12 @@ export type SiteContextType = {
     setIsSuccess: (value: boolean) => void;
     titleSuccess: string;
     setTitleSuccess: (value: string) => void;
-    audioPlayer:(value: AudioPlay) => void,
+    audioPlayer: (value: AudioPlay) => void,
 
     isTurnOffAudio: boolean,
-    turnOffAudio: VoidFunction
+    turnOffAudio: VoidFunction;
+    isGoldenHour: boolean;
+    setIsGoldenHour: (value: boolean) => void;
 }
 
 
@@ -43,7 +45,7 @@ export type FlipResultType = {
     // tokenId: BigNumber,
     // tpoint: BigNumber,
     // typeId: BigNumber,
-    // wallet: string
+    wallet: string,
 
     fId: BigNumber,
     randomValue: BigNumber,
@@ -51,7 +53,7 @@ export type FlipResultType = {
     timestamp: BigNumber,
 }
 export enum EnumNFT {
-    BRONZE,
-    GOLD,
-    DIAMOND
+    BRONZE = 'BRONZE',
+    GOLD = 'GOLD',
+    DIAMOND = 'DIAMOND'
 }

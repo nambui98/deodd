@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack, Tab, Tabs, Typography, styled } from '@mui/material';
 import React, { useState } from 'react'
 import { CampaignImage } from '../../utils/Images';
 import { DotIcon } from '../../utils/Icons';
@@ -25,7 +25,7 @@ function MyTabs({ value, setValue, listTabs }: Props) {
             <Tabs sx={style} value={value} onChange={handleChange} aria-label="basic tabs example">
                 {
                     listTabs.map((tab, i) =>
-                        <Tab key={tab.id} value={tab.id} label={<Stack direction={'row'} alignItems={'center'}> {tab.icon} {tab.value ? tab.title + " " + tab.value : tab.title} {tab.isNoti && <Dot />}</Stack>} />
+                        <TabCustomize key={tab.id} value={tab.id} label={<Stack direction={'row'} alignItems={'center'}> {tab.icon} {tab.value ? tab.title + " " + tab.value : tab.title} {tab.isNoti && <Dot />}</Stack>} />
                     )
                 }
             </Tabs >
@@ -33,6 +33,12 @@ function MyTabs({ value, setValue, listTabs }: Props) {
     )
 
 }
+const TabCustomize = styled(Tab)(({ theme }) => ({
+    // '&.Mui-selected': {
+
+    //     backgroundColor: (theme.palette.secondary as any)['300']
+    // }
+}))
 const Dot = () => {
     return <Box position={"absolute"} right={8} top={4}>
         <DotIcon />
