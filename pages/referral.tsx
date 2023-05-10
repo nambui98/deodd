@@ -7,7 +7,7 @@ type Props = {};
 
 function referral({ }: Props) {
     return (
-        <Box mt={10}>
+        <Box mt={{ xs: 2, md: 10 }}>
             {/* <Suspense fallback={<Loader isLoadingProps={true} />}> */}
             <Content />
             {/* </Suspense> */}

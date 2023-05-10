@@ -19,7 +19,10 @@ export const ContentRef = (props: Props) => {
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
         if (res.status === 200) {
+
+            debugger
             if (res.data.data) {
+                debugger
                 const body = {
                     wallet: walletAddress,
                     username: userInfo?.username,
@@ -32,7 +35,7 @@ export const ContentRef = (props: Props) => {
                     setDataReferralSuccess(res.data.data);
                 }
             } else {
-                router.push('/referral');
+                // router.push('/referral');
             }
         }
         return res;

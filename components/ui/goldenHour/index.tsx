@@ -11,7 +11,9 @@ export function GoldenHour() {
     <Stack width={'100%'} alignItems={isGoldenHour ? "center" : "initial"} justifyContent="center">
       <Typography variant='body2' color={'primary.200'} >{isGoldenHour ? "Golden Hour" : "Golden Hour starts in"}</Typography>
       <CountdownTimer />
-      <Tooltip title={<InfoPopup />} arrow placement="top"
+      <Tooltip title={<InfoPopup />}
+        enterTouchDelay={0}
+        arrow placement="top"
         TransitionComponent={Fade}
         TransitionProps={{ timeout: 150 }}
         componentsProps={{
@@ -20,7 +22,7 @@ export function GoldenHour() {
               backgroundColor: "rgba(22, 24, 33, 60%)",
               borderRadius: "8px",
               padding: "0.75rem",
-              minWidth: 400,
+              minWidth: { xs: 300, md: 400 },
               outline: "1px solid #fffcdd",
               boxShadow: "0px 2px 24px 0px #00000033",
               backdropFilter: "blur(24px)",

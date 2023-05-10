@@ -154,6 +154,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
 
+	console.log('isConnected :', isConnected);
+	console.log('walletIsConnected :', walletIsConnected);
+
 
 	const { chain } = useNetwork();
 
@@ -225,7 +228,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		const accessToken = LocalStorage.getAccessToken();
 		const refreshToken = LocalStorage.getRefreshToken();
 		const walletAddressLocal = LocalStorage.getWalletAddress();
-		debugger
 		if (isConnected && address) {
 			if (accessToken && refreshToken && walletAddressLocal === address) {
 				setWalletIsConnected(isConnected);
@@ -245,7 +247,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const handleAuthenticate = ({ wallet, signature }: {
 		wallet: string, signature: string
 	}) => {
-		debugger
 		DeoddService.loginWithWallet({ wallet, signature }).then((res) => {
 			const { accessToken, refreshToken } = res.data.data;
 			LocalStorage.setAccessToken(accessToken);
@@ -292,7 +293,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const handleSignMessage = () => {
 		DeoddService.getUserNonce(`${address}`)
 			.then(res => {
-				debugger
 				if (res.data.data) {
 					return res;
 				} else {
@@ -311,7 +311,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				return handleAuthenticate({ wallet: `${address}`, signature: res })
 			})
 			.catch(err => {
-				debugger
 				return disconnect();
 			});
 
@@ -322,7 +321,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			window.ethereum &&
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
-		debugger
 		setIsConnectingWallet(true);
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
@@ -337,7 +335,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					return DeoddService.getUserNonce(`${resultAddress}`);
 				})
 				.then(res => {
-					debugger
 					if (res.data.data) {
 						return res;
 					} else {
@@ -346,7 +343,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				})
 				.then(
 					({ data }) => {
-						debugger
 						const nonce = data.data.nonce || data.data;
 						return signMessageAsync({
 							message: `Sign message to verify you are owner of wallet ${nonce}`,

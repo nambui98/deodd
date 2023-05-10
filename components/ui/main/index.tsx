@@ -19,6 +19,8 @@ export const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen
         }),
+
+        paddingBottom: theme.spacing(8),
         // marginLeft: `calc(-${theme.spacing(8.5)})`,
         // marginRight: `calc(-${theme.spacing(8.5)})`,
         // marginLeft: `-${DRAWER_WIDTH}px`,

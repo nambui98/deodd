@@ -19,12 +19,12 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
 
-    const handleDrawerToggleLeft = useCallback(() => {
+    const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
         if (mobileOpenRight) {
             setMobileOpenRight(false);
         }
-    }, []);
+    };
     const handleDrawerToggleRight = () => {
         setMobileOpenRight(!mobileOpenRight);
         if (mobileOpenLeft) {

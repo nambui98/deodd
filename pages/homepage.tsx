@@ -11,6 +11,8 @@ import { CONTENT } from "../constants/connectWallet";
 import { useWalletContext } from "../contexts/WalletContext";
 import { TEXT_STYLE } from "../styles/common";
 import { CloseSquareIcon2 } from "utils/Icons";
+import { useAccount } from "wagmi";
+import Loader from "components/common/Loader";
 
 // eslint-disable-next-line react/display-name
 const HomePage: React.FC = React.memo(() => {
@@ -19,12 +21,17 @@ const HomePage: React.FC = React.memo(() => {
   const [statusPopupType, setStatusPopupType] = useState<'about' | 'faq' | 'howToPlay' | 'flip'>('about');
   const { walletIsConnected } = useWalletContext();
 
+  const { isConnected } = useAccount();
+
   const handleShowPopup = (type: 'about' | 'faq' | 'howToPlay' | 'flip') => {
     setStatusPopup(true)
     setStatusPopupType(type)
   }
-
+  if (walletIsConnected === undefined) {
+    return <Loader isLoadingProps></Loader>
+  }
   return <Container>
+
     <Stack mt={2} >
       <FlipRecent />
       <Stack textAlign='center'

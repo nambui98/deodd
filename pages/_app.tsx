@@ -14,6 +14,7 @@ import { WalletProvider } from '../contexts/WalletContext';
 import { AppPropsCustom } from '../libs/types';
 import '../styles/globals.css';
 import '../styles/globals.scss';
+import 'react-indiana-drag-scroll/dist/style.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Create a client
 const queryClient = new QueryClient()

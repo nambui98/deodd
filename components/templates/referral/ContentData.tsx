@@ -25,6 +25,8 @@ import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
+import { checkAvatar } from "utils/checkAvatar";
+import { format } from "date-fns";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -32,10 +34,11 @@ type Props = {
     link: string;
     reload: Function;
 };
-function createData(name: string, expire: string, profit: BigNumber) {
+function createData(avatar: number | undefined, name: string, expire: string, profit: BigNumber) {
     return {
-        name: Convert.convertWalletAddress(name, 5, 5),
-        expire,
+        avatar: checkAvatar(avatar),
+        name,
+        expire: format(new Date(expire), 'dd/MM/yyyy'),
         profit: Format.formatMoneyFromBigNumberEther(profit),
     };
 }
@@ -55,7 +58,9 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataAvailable && dataAvailable?.referralEarningRoleFatherList
                 ? dataAvailable?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.userNameReferred + "(" + item.userWalletReferred + ")",
+                        item.avatar,
+                        item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
+                        // format(new Date(2014, 1, 11), 'yyyy-MM-dd'),
                         item.expiredDateForFather,
                         item.rewardFatherUnclaimed
                     )
@@ -68,7 +73,8 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataExpired && dataExpired?.referralEarningRoleFatherList
                 ? dataExpired?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.userNameReferred + "(" + item.userWalletReferred + ")",
+                        item.avatar,
+                        item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         item.expiredDateForFather,
                         item.rewardFatherUnclaimed
                     )
@@ -242,7 +248,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     <Typography variant="caption" color="secondary.100">
-                                                        {row.expire.replaceAll("-", "/")}
+                                                        {row.expire}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="right">
@@ -347,10 +353,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         disabled={
                             ethers.utils.parseEther(
                                 (dataAvailable?.availableReward || 0).toString()
-                            ).lte(BigNumber.from(0)) ||
-                            bnbBalance.lte(
-                                ethers.utils.parseEther((dataAvailable?.claimFee || 0).toString())
-                            )
+                            ).lte(BigNumber.from(0))
                         }
                         sx={{
                             px: 5, py: 2, mt: 3,
