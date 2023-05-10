@@ -132,7 +132,7 @@ export function TotalSection({
             textTransform={"capitalize"}
             variant="body2"
           >
-            flip per user
+            flip of user
           </Typography>
           <FlipPerUserTable
             userFlipStat={userFlipStat}
