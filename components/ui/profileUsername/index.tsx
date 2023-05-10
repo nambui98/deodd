@@ -28,24 +28,24 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           debugger
           const resService = await DeoddService.saveInfoUser({
             wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
+            username: currentProfile.username,
+            avatarId: currentProfile.avatar,
           });
-          localStorage.setItem("nickname", JSON.stringify({
-            wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
-          }));
           if (resService.data.meta.code === 1) {
             setErrorMessage(resService.data.meta.error_message);
+            setIsLoading(false);
           } else {
             setUserInfo(currentProfile);
+            localStorage.setItem("nickname", JSON.stringify({
+              wallet: walletAddress,
+              username: currentProfile.username,
+              avatarId: currentProfile.avatar,
+            }));
+            setIsLoading(false);
+            onClose();
           }
         } catch (err) {
           console.log(err);
-        } finally {
-          setIsLoading(false);
-          onClose();
         }
       }
     }
@@ -113,7 +113,11 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
                 setErrorMessage("");
               }
             }}
-            onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && ((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username))) {
+                handleSetProfile();
+              }
+            }}
           />
           {/* The box and relative, absolute position is here to maintain the space if there are no error message */}
           <Box alignSelf={"flex-start"} width={1} sx={{ display: "flex", alignItems: "center", position: "relative", marginBlockStart: "-0.3rem", marginBlockEnd: "-0.3rem" }}>
@@ -123,7 +127,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           </Box>
           <ButtonMain
             active={true}
-            disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
+            disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username)) ? false : true}
             sx={{ width: 1, height: "3.375rem" }}
             title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
             onClick={() => { handleSetProfile() }}
