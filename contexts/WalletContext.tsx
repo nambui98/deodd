@@ -67,7 +67,7 @@ const networks: Map = {
 
 const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
 
-interface wallerContextType {
+interface walletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
 	setWalletAddress: (account: any) => void
@@ -75,6 +75,7 @@ interface wallerContextType {
 	isLoading: boolean;
 	bnbBalance: BigNumber,
 	userInfo: { username: string, avatar: number },
+	setUserInfo: Function,
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
 	contractDeoddNft: Contract | undefined,
@@ -90,7 +91,7 @@ interface IProps {
 	children: ReactNode
 }
 
-const WalletContext = createContext<wallerContextType>({
+const WalletContext = createContext<walletContextType>({
 	walletAddress: null,
 	walletIsConnected: false,
 	setWalletAddress: () => { },
@@ -98,6 +99,7 @@ const WalletContext = createContext<wallerContextType>({
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
 	userInfo: { username: '', avatar: 0 },
+	setUserInfo: () => { },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
@@ -387,7 +389,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	}, [walletAddress]);
 
-	const value: wallerContextType = useMemo(() => {
+	const value: walletContextType = useMemo(() => {
 		return {
 			walletIsConnected,
 			walletAddress,
@@ -396,6 +398,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			isLoading,
 			bnbBalance,
 			userInfo,
+			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
 			contractProfile,
