@@ -45,6 +45,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           console.log(err);
         } finally {
           setIsLoading(false);
+          onClose();
         }
       }
     }
@@ -60,7 +61,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
         <Stack gap={3} alignItems={"center"} sx={{
           position: 'fixed',
           top: "20%",
-          maxWidth: "22rem",
+          width: "22rem",
           bgcolor: "primary.200",
           borderRadius: "0.5rem",
           boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
@@ -93,7 +94,6 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
               backgroundColor: "#2A2D3E",
               borderRadius: "0.5rem",
               padding: "0.75rem 2rem",
-              marginBlockEnd: "1rem",
               input: {
                 textAlign: "center",
                 fontSize: "14px",
@@ -115,11 +115,11 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             }}
             onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
           />
-          <Box position={"relative"}>
-            <Typography variant="body2" color={"#EE3E3E"} fontSize={"0.75rem"} lineHeight={"1rem"} sx={{ position: "absolute", top: "-1.25rem", transform: "translateY(-50%)" }}>
+          {/* The box and relative, absolute position is here to maintain the space if there are no error message */}
+          <Box alignSelf={"flex-start"} width={1} sx={{ display: "flex", alignItems: "center", position: "relative", marginBlockStart: "-0.3rem", marginBlockEnd: "-0.3rem" }}>
+            <Typography variant="body2" color={"#EE3E3E"} fontSize={"0.75rem"} lineHeight={"1rem"} position={"absolute"} >
               {errorMessage}
             </Typography>
-            <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
           </Box>
           <ButtonMain
             active={true}
