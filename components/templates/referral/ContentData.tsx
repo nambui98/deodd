@@ -35,6 +35,7 @@ type Props = {
     reload: Function;
 };
 function createData(avatar: number | undefined, name: string, expire: string, profit: BigNumber) {
+    debugger
     return {
         avatar: checkAvatar(avatar),
         name,
@@ -58,7 +59,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataAvailable && dataAvailable?.referralEarningRoleFatherList
                 ? dataAvailable?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.avatar,
+                        item.avatarIdChild,
                         item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         // format(new Date(2014, 1, 11), 'yyyy-MM-dd'),
                         item.expiredDateForFather,
@@ -73,7 +74,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataExpired && dataExpired?.referralEarningRoleFatherList
                 ? dataExpired?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.avatar,
+                        item.avatarIdChild,
                         item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         item.expiredDateForFather,
                         item.rewardFatherUnclaimed
@@ -239,7 +240,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                             width={24}
                                                             height={24}
                                                             alt=""
-                                                            src={AvatarImage}
+                                                            src={`/assets/images/${row.avatar}.png`}
                                                         />
                                                         <Typography variant="caption">
                                                             {row.name}

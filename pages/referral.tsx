@@ -1,7 +1,5 @@
 import Content from "@/templates/referral/Content";
 import { Box } from "@mui/material";
-import Loader from "components/common/Loader";
-import { Suspense } from "react";
 
 type Props = {};
 
@@ -14,5 +12,6 @@ function referral({ }: Props) {
         </Box>
     );
 }
+
 
 export default referral;

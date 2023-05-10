@@ -18,24 +18,33 @@ export const ContentRef = (props: Props) => {
 
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
+
+        debugger
         if (res.status === 200) {
 
             debugger
             if (res.data.data) {
                 debugger
-                const body = {
-                    wallet: walletAddress,
-                    username: userInfo?.username,
-                    referralLink: code,
-                }
-                const res = await DeoddService.confirmReferralForUser(body);
-                if (res.status === 200 && res.data.data) {
+                if (res.data.data.isValidForReferred) {
+                    const body = {
+                        wallet: walletAddress,
+                        username: userInfo?.username,
+                        referralLink: code,
+                    }
+                    const res = await DeoddService.confirmReferralForUser(body);
+                    if (res.status === 200 && res.data.data) {
+                        getLinkUser();
+                        setSuccess(true);
+                        setDataReferralSuccess(res.data.data);
+                    }
+
+                } else if (res.data.data.isReferredByOthers) {
                     getLinkUser();
                     setSuccess(true);
-                    setDataReferralSuccess(res.data.data);
+                    setDataReferralSuccess(res.data.data.father);
+                } else if (res.data.data.isReferredByOthers === false && res.data.data.isValidForReferred === false) {
+                    router.push('/referral');
                 }
-            } else {
-                // router.push('/referral');
             }
         }
         return res;
