@@ -110,7 +110,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         id: 11,
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
-        path: '/',
+        path: '/lottery',
         comming: true,
         highLightText: false,
         disabledHover: true,
