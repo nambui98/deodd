@@ -209,7 +209,7 @@ export function UserInfo() {
                     <Divider></Divider>
                     <Button
                       variant="text"
-                      onClick={() => { disconnect() }}
+                      onClick={() => { disconnect(); setExpanded(false); }}
                       startIcon={<LogoutIcon />}
                       sx={{
                         color: "secondary.400",
