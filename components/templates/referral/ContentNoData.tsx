@@ -10,6 +10,7 @@ import {
 } from 'next-share'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
+import HowItWorkModal from './HowItWorkModal'
 
 type Props = {
     ckReferral: boolean;
@@ -106,12 +107,7 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                         </Stack>
                     </>
                 }
-                <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                    <NotiIcon />
-                    <Typography ml={1} variant='body2' textAlign={'center'}  >
-                        How it work
-                    </Typography>
-                </Stack>
+                <HowItWorkModal />
             </Box>
         </>
     )
