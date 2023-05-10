@@ -256,7 +256,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                 })}
 
             </List>
-            <Box mt={"auto"} width="100%">
+            <Box display={open ? 'block' : 'none'} mt={"auto"} width="100%">
                 <Contact />
             </Box>
 

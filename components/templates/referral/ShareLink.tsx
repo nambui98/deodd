@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonTertiary } from 'components/ui/button'
-import { Colors } from 'constants/index'
+import { Colors, SHARE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share'
 import React from 'react'
@@ -51,20 +51,23 @@ function ShareLink({ link }: Props) {
                 Share to
             </Typography>
             <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                <TelegramShareButton url={link}
-                    title={'share title'}>
+                <TelegramShareButton
+                    url={link}
+                    title={SHARE.title}>
                     <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
                 </TelegramShareButton>
                 <TwitterShareButton
                     url={link}
-                    title={'share title'}
+                    title={SHARE.title}
+                    hashtags={['#Deodd']}
                 >
                     <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
                 </TwitterShareButton>
                 <FacebookShareButton
                     url={link}
-                    quote={'share title'}
-                    hashtag={'#deodd'}
+                    title={SHARE.title}
+                    quote={SHARE.title}
+                    hashtag={'#Deodd'}
                 >
                     <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                 </FacebookShareButton>

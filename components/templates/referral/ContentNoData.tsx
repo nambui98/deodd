@@ -2,7 +2,7 @@ import { Box, IconButton, Stack, Typography } from '@mui/material'
 import CoinAnimation from 'components/common/CoinAnimation'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonLoading, ButtonMain, ButtonTertiary } from 'components/ui/button'
-import { Colors } from 'constants/index'
+import { Colors, SHARE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import {
@@ -87,19 +87,22 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                         </Typography>
                         <Stack direction={'row'} mt={2} justifyContent={'center'}>
                             <TelegramShareButton url={link}
-                                title={'next-share is a social share buttons for your next React apps.'}>
+
+                                title={SHARE.title}>
                                 <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
                             </TelegramShareButton>
                             <TwitterShareButton
                                 url={link}
-                                title={'next-share is a social share buttons for your next React apps.'}
+                                title={SHARE.title}
+                                hashtags={["#Deodd"]}
                             >
                                 <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
                             </TwitterShareButton>
                             <FacebookShareButton
                                 url={link}
-                                quote={''}
-                                hashtag={'#deodd'}
+                                title={SHARE.title}
+                                quote={SHARE.title}
+                                hashtag={'#Deodd'}
                             >
                                 <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                             </FacebookShareButton>
