@@ -75,16 +75,16 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     },
     {
         id: 6,
-        icon: <CampaignIcon />,
-        title: 'Campaign',
-        path: '/campaign',
+        icon: <Ref2EarnIcon />,
+        title: 'Ref 2 Earn',
+        path: '/referral',
         isLink: true
     },
     {
         id: 7,
-        icon: <Ref2EarnIcon />,
-        title: 'Ref 2 Earn',
-        path: '/referral',
+        icon: <CampaignIcon />,
+        title: 'Campaign',
+        path: '/campaign',
         isLink: true
     },
     {
@@ -110,7 +110,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         id: 11,
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
-        path: '/',
+        path: '/lottery',
         comming: true,
         highLightText: false,
         disabledHover: true,

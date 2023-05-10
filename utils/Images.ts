@@ -49,3 +49,5 @@ export const MapIconNFTString: { [key in EnumNFT]: string } = {
   [EnumNFT.GOLD]: GoldImage,
   [EnumNFT.DIAMOND]: DiamondImage,
 };
+
+export const HowRef2EarnWorkImage = "/assets/images/how-ref2earn-work.png"
