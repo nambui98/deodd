@@ -16,7 +16,7 @@ import {
 } from "utils/Icons";
 import { Colors } from "constants/index";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Utils } from "@/utils/index";
 import { Convert } from "utils/convert";
 import { useWalletContext } from "contexts/WalletContext";
@@ -28,6 +28,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { ClickAwayListener } from '@mui/base';
 import ProfileUsername from "../profileUsername";
+import { LocalStorage } from "libs/LocalStorage";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -108,6 +109,15 @@ export function UserInfo() {
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
   const [isProfileOpened, setIsProfileOpened] = useState(false);
+
+  useEffect(() => {
+    const isProfileModalOpened = LocalStorage.getIsProfileModalOpened();
+    if ((userInfo.username === undefined || userInfo.username === null) && walletAddress && isProfileModalOpened === false) {
+      setIsProfileOpened(true);
+      LocalStorage.setIsProfileModalOpened(true);
+    }
+  }, [walletAddress, userInfo.username])
+
 
   const { disconnect } = useDisconnect()
   if (!walletIsConnected) {

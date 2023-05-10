@@ -252,6 +252,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setAccessToken(accessToken);
 			LocalStorage.setRefreshToken(refreshToken);
 			LocalStorage.setWalletAddress(wallet);
+			LocalStorage.setIsProfileModalOpened(false);
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
 			setIsConnectingWallet(false)
@@ -371,13 +372,19 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName, avatar: user?.avatarId });
+			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
+			LocalStorage.setUserInfo({
+				wallet: walletAddress,
+				username: user.userName,
+				avatarId: user.avatarId ?? 0,
+			});
 		}
 		if (walletAddress) {
 			const walletAddressLocal = LocalStorage.getWalletAddress();
-			const nicknameLocal = LocalStorage.getNickname();
-			if (nicknameLocal != null && walletAddressLocal == JSON.parse(nicknameLocal).wallet) {
-				setUserInfo({ username: JSON.parse(nicknameLocal).username, avatar: JSON.parse(nicknameLocal).avatarId });
+			const userInfoLocal = LocalStorage.getUserInfo();
+			if (userInfoLocal != null && walletAddressLocal == userInfoLocal.wallet) {
+				setUserInfo({ username: userInfoLocal.username, avatar: userInfoLocal.avatarId ?? 0 });
+
 			} else {
 				getUserInfo();
 			}

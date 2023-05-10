@@ -1,12 +1,14 @@
-import * as React from 'react';
+import { Avatar, Box } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import { ChatBoxIcon, Close2Icon, CloseIcon, DashboardIcon, Flip2Icon, FlipIcon, LotteryIcon, LoyaltyIcon, MenuIcon, MessageIcon, ShopIcon } from 'utils/Icons';
-import { Avatar, Box, Typography } from '@mui/material';
-import { Avatar2Image, AvatarImage } from 'utils/Images';
+import { useWalletContext } from 'contexts/WalletContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
+import * as React from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Close2Icon, Flip2Icon, LotteryIcon, MenuIcon, MessageIcon } from 'utils/Icons';
+import { Avatar2Image } from 'utils/Images';
+import { checkAvatar } from 'utils/checkAvatar';
 
 type Props = {
     handleOpenRightSidebar: VoidFunction,
@@ -15,7 +17,8 @@ type Props = {
     openRight: boolean
 }
 export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRightSidebar, openLeft, openRight }: Props) {
-    const [value, setValue] = React.useState('');
+    const { userInfo } = useWalletContext();
+    const [value, setValue] = useState('');
     const route = useRouter();
     console.log(route);
 
@@ -49,9 +52,9 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
         }, {
             label: '',
             value: 'avatar',
-            icon: <Avatar sx={{ width: 32, height: 32 }} alt="" src={Avatar2Image} />,
-            iconActive: <Avatar sx={{ width: 32, height: 32 }} alt="" src={Avatar2Image} />,
-            href: '/profile',
+            icon: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
+            iconActive: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
+            href: '/assets',
             onClick: () => { }
         },
         {

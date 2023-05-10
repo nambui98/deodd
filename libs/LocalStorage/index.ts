@@ -1,7 +1,8 @@
 const accessToken = 'access_token';
 const refreshToken = 'refresh_token';
 const walletAddress = 'wallet_address';
-const nickname = "nickname";
+const userInfo = "user_info";
+const isProfileModalOpened = 'is_profile_modal_opened';
 const setAccessToken = (token: string) => {
     localStorage.setItem(accessToken, token);
 }
@@ -29,10 +30,21 @@ const getWalletAddress = () => {
 const removeWalletAddress = () => {
     return localStorage.removeItem(walletAddress);
 }
-const getNickname = () => {
-    return localStorage.getItem(nickname);
+const getUserInfo = () => {
+    return JSON.parse(localStorage.getItem(userInfo) ?? 'null');
 }
-
+const setUserInfo = (data: object) => {
+    localStorage.setItem(userInfo, JSON.stringify(data));
+}
+const setIsProfileModalOpened = (isShow: boolean) => {
+    localStorage.setItem(isProfileModalOpened, JSON.stringify(isShow));
+}
+const getIsProfileModalOpened = () => {
+    return JSON.parse(localStorage.getItem(isProfileModalOpened) ?? 'null');
+}
+const removeIsProfileModalOpened = () => {
+    return localStorage.removeItem(isProfileModalOpened);
+}
 export const LocalStorage = {
     setAccessToken,
     getAccessToken,
@@ -43,5 +55,9 @@ export const LocalStorage = {
     setWalletAddress,
     getWalletAddress,
     removeWalletAddress,
-    getNickname,
+    getUserInfo,
+    setUserInfo,
+    setIsProfileModalOpened,
+    getIsProfileModalOpened,
+    removeIsProfileModalOpened
 }

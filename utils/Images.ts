@@ -33,6 +33,7 @@ export const TestailCoinImage = "/assets/images/testail_coin.png";
 export const HeadCoinImage = "/assets/icons/head.svg";
 export const TailCoinImage = "/assets/icons/tail.svg";
 export const GoldCupImage = "/assets/images/gold-cup.png";
+export const ArrowDownImage = "/assets/images/arrow-down.png";
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,

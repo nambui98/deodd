@@ -8,11 +8,13 @@ import { createRef } from "react";
 import { ScrollContainer } from 'react-indiana-drag-scroll';
 import { TransitionGroup } from "react-transition-group";
 import { Avatar2Image } from "utils/Images";
+import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 type Props = {};
 type dataUserRecent = {
     id: number;
+    avatarId: number | undefined;
     username: string;
     timeAgo: string;
     isWin: boolean;
@@ -26,6 +28,7 @@ function FlipRecent({ }: Props) {
         queryKey: ["getRecentFlipping"],
         queryFn: DeoddService.getRecentFlipping,
         select: (data) =>
+
             data.data.data.map(
                 (item: {
                     flipId: any;
@@ -35,11 +38,13 @@ function FlipRecent({ }: Props) {
                     flipChoice: any;
                     flipResult: any;
                     userName: any;
+                    avatarId: number | undefined;
                     currentStreak: number
                 }) => {
                     let isWin = item.flipResult === 1;
                     let data: dataUserRecent = {
                         id: item.flipId,
+                        avatarId: item.avatarId,
                         wallet: item.wallet,
                         amount: Format.formatMoneyFromBigNumberEther(item.amount),
                         isWin: isWin,
@@ -137,7 +142,7 @@ function UserActivity({ user }: { user: dataUserRecent }) {
                 <Avatar
                     sx={{ width: 32, height: 32 }}
                     alt="Remy Sharp"
-                    src={Avatar2Image}
+                    src={`/assets/images/${checkAvatar(user.avatarId)}.png`}
                 />
                 <Stack alignItems={"baseLine"} columnGap={1}>
                     <Typography variant="body2" fontWeight={500} lineHeight={"20px"}>
