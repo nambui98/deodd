@@ -45,6 +45,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           console.log(err);
         } finally {
           setIsLoading(false);
+          onClose();
         }
       }
     }
