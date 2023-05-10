@@ -93,7 +93,7 @@ export const PlayPart = React.memo(() => {
     <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
       {popup.body}
     </Box>} />
-    <MyModal open={true} setOpen={setOpenModalPendingTransaction} sx={{
+    <MyModal open={openModalPendingTransaction} setOpen={setOpenModalPendingTransaction} sx={{
       minWidth: 554, width: 554,
       textAlign: "center",
     }}>
