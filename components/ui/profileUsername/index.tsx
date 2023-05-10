@@ -28,13 +28,13 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           debugger
           const resService = await DeoddService.saveInfoUser({
             wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
+            username: currentProfile.username,
+            avatarId: currentProfile.avatar,
           });
           localStorage.setItem("nickname", JSON.stringify({
             wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
+            username: currentProfile.username,
+            avatarId: currentProfile.avatar,
           }));
           if (resService.data.meta.code === 1) {
             setErrorMessage(resService.data.meta.error_message);
