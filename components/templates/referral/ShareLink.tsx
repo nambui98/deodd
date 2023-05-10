@@ -6,6 +6,7 @@ import { useSiteContext } from 'contexts/SiteContext'
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share'
 import React from 'react'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
+import HowItWorkModal from './HowItWorkModal'
 
 type Props = {
     link: string
@@ -69,12 +70,7 @@ function ShareLink({ link }: Props) {
                     <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                 </FacebookShareButton>
             </Stack>
-            <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                <NotiIcon />
-                <Typography ml={1} variant='body2' textAlign={'center'}  >
-                    How it work
-                </Typography>
-            </Stack>
+            <HowItWorkModal />
         </Box>
     )
 }
