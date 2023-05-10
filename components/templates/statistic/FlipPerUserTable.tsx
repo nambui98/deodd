@@ -74,7 +74,7 @@ export function FlipPerUserTable({
           times
         </Typography>
         <Typography variant="body2" textTransform={"uppercase"}>
-          users
+          flip
         </Typography>
       </Box>
 
