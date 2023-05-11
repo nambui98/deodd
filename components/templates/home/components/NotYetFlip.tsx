@@ -98,7 +98,9 @@ function FormActions({ }: Props) {
                     <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>
                         <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
                             <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
-                            <BnbIcon />
+                            <Box width={20} height={20}>
+                                <BnbIcon width={'100%'} height={'100%'} />
+                            </Box>
                         </ButtonLoadingShadow>
                     </Box>
                 ))}

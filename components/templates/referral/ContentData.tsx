@@ -170,7 +170,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                         dataAvailable?.claimedReward ?? 0
                                     )}
                                 </Typography>
-                                <BnbIcon fill={Colors.secondaryDark} />
+                                <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                             </Stack>
                         </Stack>
                     </Stack>
@@ -266,7 +266,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                             {" "}
                                                             {row.profit}
                                                         </Typography>
-                                                        <BnbIcon fill={Colors.secondaryDark} />
+                                                        <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
@@ -324,7 +324,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                     dataAvailable?.totalReward ?? 0
                                 )}
                             </Typography>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Stack
@@ -340,7 +340,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             <Typography variant="body2">
                                 {Format.formatMoney(dataAvailable?.claimFee ?? 0)}{" "}
                             </Typography>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Typography variant="caption" color="secondary.100">

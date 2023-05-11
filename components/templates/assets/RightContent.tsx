@@ -59,7 +59,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                             Format.formatMoneyFromBigNumberEther(bnbBalance)
                         }
                         <Box display={"inline"} ml={0.5}>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Box>
                     </Typography>
                     <Stack direction={'row'} justifyContent={"flex-end"} alignItems={"center"}>
