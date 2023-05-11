@@ -29,6 +29,7 @@ import { useTheme } from '@mui/material/styles';
 import { ClickAwayListener } from '@mui/base';
 import ProfileUsername from "../profileUsername";
 import { LocalStorage } from "libs/LocalStorage";
+import MyImage from "../image";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -126,7 +127,7 @@ export function UserInfo() {
     return (
       <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
         {/* Box to refer to position */}
-        <Box position={"relative"} height={"3rem"} >
+        <Box position={"absolute"} height={"3rem"} width={1} >
           <ProfileUsername open={isProfileOpened} onClose={() => { setIsProfileOpened(false) }} />
           {/* Menu Container */}
           <Box
@@ -135,6 +136,7 @@ export function UserInfo() {
               position: "absolute",
               top: 0,
               right: 0,
+              width: matchesScreen ? "auto" : expanded ? 1 : "auto",
               borderRadius: "0.5rem",
               transition: "300ms outline",
               outline: `${expanded ? "2px solid #3F4251" : "2px solid transparent"}`,
@@ -147,7 +149,7 @@ export function UserInfo() {
               sx={
                 {
                   justifyContent: "space-between",
-                  padding: "0.875rem 0.75rem",
+                  padding: { xs: "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
                   gap: { xs: expanded ? 2 : 0, md: 2 },
                   transition: "300ms gap",
                   cursor: "pointer",
@@ -155,32 +157,30 @@ export function UserInfo() {
               }
             >
               <Stack direction="row" alignItems="center" gap={1}>
-                <Typography variant="h3" fontSize={"0.875rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
-                <BnbIcon fill={Colors.primaryDark} />
+                <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
+                <BnbIcon fill={Colors.primaryDark} height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
               </Stack>
               <Stack direction={"row"} gap={1} alignItems="center">
                 <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
                   <Stack direction={"row"} gap={1} alignItems="center">
-                    <Typography fontSize={"0.875rem"} variant="h3">
+                    <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
                       {
                         userInfo.username ? userInfo.username : Convert.convertWalletAddress(walletAddress, 5, 4)
                       }
                     </Typography>
-                    <Box
-                      sx={{
-                        borderRadius: "50%",
-                        width: "1.5rem",
-                        aspectRatio: "1",
-                        position: "relative",
-                      }}
-                      overflow={"hidden"}
-                    >
-                      <Image src={avatars[userInfo.avatar]} fill alt="avatar-image" />
-                    </Box>
+                    <MyImage
+                      src={avatars[userInfo.avatar]}
+                      height={matchesScreen ? "1.5rem" : expanded ? "1.5rem" : 0}
+                      width="1.5rem"
+                      sx={{ position: "relative", borderRadius: "50%" }} alt="avatar-image" />
                   </Stack>
                 </Collapse>
-                <Stack justifyContent="center" sx={{ transform: expanded ? "rotate(180deg)" : "", transition: "transform 300ms" }}>
-                  <ArrowDownIcon fill={"#F5F5FA"} />
+                <Stack sx={{
+                  transform: expanded ? "rotate(180deg)" : "", transition: "transform 300ms, color 300ms",
+                  color: matchesScreen ? "#F5F5FA" : expanded ? "#F5F5FA" : Colors.secondary
+                }}>
+                  <ArrowDownIcon
+                    height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
                 </Stack>
               </Stack>
             </Stack>
