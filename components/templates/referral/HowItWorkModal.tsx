@@ -16,7 +16,7 @@ export default function HowItWorkModal() {
           <NotiIcon />
         </Box>
         <Typography ml={1} variant='body2' textAlign={'center'} onClick={handleOpen} sx={{ cursor: "pointer" }} >
-          How it work
+          How it works
         </Typography>
       </Stack>
 
@@ -43,7 +43,7 @@ export default function HowItWorkModal() {
               borderRadius: "8px",
               boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
             }}>
-            <Typography variant="h2" fontWeight={700}>How it work</Typography>
+            <Typography variant="h2" fontWeight={700}>How it works</Typography>
             <Stack sx={{ gap: { xs: 0, sm: 2, md: 3 } }}>
               <Stack gap={2} width={1}>
                 <Typography variant="h3" textTransform={"uppercase"} fontWeight={600} color={"secondary.main"} >how to refer</Typography>
@@ -52,7 +52,7 @@ export default function HowItWorkModal() {
                   STEP 2: Send it to your friends <br />
                   STEP 3: Enjoy the game and receive profit from each time your friends flipped <br />
                   STEP 4: Invite more friends! <br />
-                  Remember: It’s not valid to refer player who already used another ref link before
+                  Remember: It’s not valid to refer player who already had a flip or used another ref link before
                 </Typography>
               </Stack>
               <Stack gap={2} width={1}>
