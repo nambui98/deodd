@@ -35,6 +35,13 @@ const getBalanceHistories = async (address: string) => {
         method: 'get',
     })
 }
+const claimTokenSpending = async () => {
+    return vhIdRequest({
+        url: `/jackpot/claim`,
+        method: 'post',
+        data: {}
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -43,4 +50,5 @@ export const DeoddService = {
     getAssetsBalance,
     getBalanceHistories,
     getUserByPublicAddress,
+    claimTokenSpending
 }

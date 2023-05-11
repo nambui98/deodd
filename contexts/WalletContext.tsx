@@ -220,6 +220,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setContractJackpot(contractJackpot);
 			setContractNftHolder(contractNftHolder);
 			setContractDeoddNft(contractDeoddNft);
+			// (provider as any).getHistory('0xD48259f0701f743066ed2d98eB8091370f61ecC8').then((history) => {
+			// 	debugger
+			// });
+
 		}
 	}, [chain]);
 
