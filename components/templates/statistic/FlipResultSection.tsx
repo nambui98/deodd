@@ -22,7 +22,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"space-between"}
-          height="24rem"
+          height="22.375rem"
         >
           <Typography
             alignSelf={"flex-start"}
@@ -36,6 +36,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <Stack gap={0.5}>
               <Typography
                 variant="h3"
+                lineHeight={"1.25rem"}
                 color={"secondary.main"}
                 textTransform={"uppercase"}
               >
@@ -64,6 +65,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <Stack gap={0.5}>
               <Typography
                 variant="h3"
+                lineHeight={"1.25rem"}
                 color={"error.100"}
                 textTransform={"uppercase"}
               >
@@ -84,7 +86,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"space-between"}
-          height="24rem"
+          height="22.375rem"
         >
           <Typography
             alignSelf={"flex-start"}
@@ -98,6 +100,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <Stack gap={0.5}>
               <Typography
                 variant="h3"
+                lineHeight={"1.25rem"}
                 color={"secondary.main"}
                 textTransform={"uppercase"}
               >
@@ -126,6 +129,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <Stack gap={0.5}>
               <Typography
                 variant="h3"
+                lineHeight={"1.25rem"}
                 color={"error.100"}
                 textTransform={"uppercase"}
               >
@@ -146,7 +150,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <DashboardCard
           flexDirection={"column"}
           justifyContent={"center"}
-          height="24rem"
+          height="22.375rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="flip total" />

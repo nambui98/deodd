@@ -31,17 +31,17 @@ export function TotalSection({
         xs={12}
         display={"flex"}
         flexDirection={"column"}
-        gap={2}
+        gap={3}
       >
         <DashboardCard
           justifyContent={"center"}
-          height="15.375rem"
+          height="13.375rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="fee total" />
           {error.haveFlipped ? (
             <Box>
-              <Typography mt={4} variant="h1" fontSize={"3rem"}>
+              <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
                 {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
@@ -81,13 +81,13 @@ export function TotalSection({
 
         <DashboardCard
           justifyContent={"center"}
-          height="15.375rem"
+          height="13.375rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="BNB total" />
           {error.haveFlipped ? (
             <Box>
-              <Typography mt={4} variant="h1" fontSize={"3rem"}>
+              <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
                 {+(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
                 <Typography
                   component={"span"}
@@ -143,13 +143,13 @@ export function TotalSection({
       <Grid item md={4} xs={12}>
         <DashboardCard
           justifyContent={"center"}
-          height="15.375rem"
+          height="13.375rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="win percentage" />
           <Box display={"flex"} alignItems={"center"} gap={1}>
             <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
-            <Typography variant="h1" fontSize={"3rem"}>
+            <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
               <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
                 %
@@ -161,13 +161,13 @@ export function TotalSection({
       <Grid item md={4} xs={12}>
         <DashboardCard
           justifyContent={"center"}
-          height="15.375rem"
+          height="13.375rem"
           position={"relative"}
         >
           <TitleTextAbsolute text="mobile flips" />
           <Box display={"flex"} alignItems={"center"} gap={1}>
             <MobileIcon fill={Colors.primary} width={"2.5rem"} />
-            <Typography variant="h1" fontSize={"3rem"}>
+            <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {error.haveFlipped ? "49" : "0"}
               <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
                 %
@@ -179,7 +179,7 @@ export function TotalSection({
       <Grid item md={4} xs={12}>
         <Box
           p={2}
-          height={"15.375rem"}
+          height={"13.375rem"}
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}

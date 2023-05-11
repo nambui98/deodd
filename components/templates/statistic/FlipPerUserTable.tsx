@@ -12,10 +12,10 @@ function RowItem({
 }) {
   return (
     <>
-      <Typography variant="body2">
+      <Typography variant="body2" lineHeight={"1.375rem"}>
         {times}
       </Typography>
-      <Box display={"flex"} alignItems={"center"}>
+      <Box display={"flex"} alignItems={"center"} px={{ xs: 0, sm: 2, md: 3.75 }}>
         <Box
           width={1}
           height={"0.25rem"}
@@ -30,8 +30,8 @@ function RowItem({
           ></Box>
         </Box>
       </Box>
-      <Typography variant="body2" textAlign={"right"}>{count}</Typography>
-      <Typography variant="body2" textAlign={"right"}>
+      <Typography variant="body2" textAlign={"right"} lineHeight={"1.375rem"} pr={0.75}>{count}</Typography>
+      <Typography variant="body2" textAlign={"right"} lineHeight={"1.375rem"} fontSize={"0.75rem"}>
         {percentage}%
       </Typography>
     </>
@@ -55,9 +55,9 @@ export function FlipPerUserTable({
       sx={{
         paddingInline: { xs: 1, sm: 2, md: 3 },
         width: "100%",
-        mt: 3,
+        mt: 3.25,
         height: { xs: "fit-content", md: "100%" },
-        maxHeight: "27rem",
+        maxHeight: "22.875rem",
         overflowY: "auto",
         overflowX: "hidden",
         position: "relative",
@@ -66,14 +66,13 @@ export function FlipPerUserTable({
       <Box
         display={"flex"}
         justifyContent={"space-between"}
-        mb={1.5}
         bgcolor={"secondary.300"}
         sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
       >
-        <Typography variant="body2" textTransform={"uppercase"}>
+        <Typography variant="body2" textTransform={"uppercase"} lineHeight={"1.375rem"}>
           times
         </Typography>
-        <Typography variant="body2" textTransform={"uppercase"}>
+        <Typography variant="body2" textTransform={"uppercase"} lineHeight={"1.375rem"}>
           flip
         </Typography>
       </Box>
@@ -83,7 +82,8 @@ export function FlipPerUserTable({
         display={"grid"}
         gridTemplateColumns={"auto 1fr auto auto"}
         alignItems={"center"}
-        gap={3}
+        rowGap={1.5}
+        columnGap={1.25}
       >
 
         {userFlipStat.map(

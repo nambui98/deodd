@@ -19,7 +19,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         <DashboardCard
           justifyContent={"center"}
           position={"relative"}
-          height="15.5rem"
+          height="13.5rem"
           sx={{
             backgroundImage: `url(${bgWinStreakImage})`,
             backgroundSize: "cover",
@@ -35,7 +35,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           >
             {error.haveFlipped ? (
               <>
-                <Typography variant="h1" fontSize={"3rem"}>
+                <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
                   {streak.winStreak < 10 && streak.winStreak >= 1
                     ? `0${streak.winStreak}`
                     : streak.winStreak}
@@ -56,7 +56,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         <DashboardCard
           justifyContent={"center"}
           position={"relative"}
-          height="15.5rem"
+          height="13.5rem"
           sx={{
             backgroundImage: `url(${bgLossStreakImage})`,
             backgroundRepeat: "no-repeat",
@@ -65,7 +65,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         >
           <TitleTextAbsolute text="highest loss streak" />
           {error.haveFlipped ? (
-            <Typography variant="h1" fontSize={"3rem"}>
+            <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
               {streak.lossStreak < 10 && streak.lossStreak >= 1
                 ? `0${streak.lossStreak}`
                 : streak.lossStreak}
