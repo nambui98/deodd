@@ -33,7 +33,7 @@ export function DonutDisplay({
         alignItems={"center"}
         zIndex={1}
       >
-        <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"}>
+        <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"} lineHeight={1.265}>
           {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
           {!error.haveFlipped
             ? "0"
