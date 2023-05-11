@@ -70,7 +70,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     const showNFT = (nftType: EnumNFT, amount: number) => {
         return <>
             <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nftType)}>
-                {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" /> : <ArrowDownIcon fill="#96A5C0" />}
+                {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" width={24} height={24} /> : <ArrowDownIcon fill="#96A5C0" width={24} height={24} />}
                 <Stack ml={1} direction={"row"} alignItems={"center"}>
                     <MyImage width={30} height={30} src={Utils.getImageNFTString(nftType)} alt="" />
                     <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>

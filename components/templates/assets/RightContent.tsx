@@ -91,7 +91,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                             ?
                             <div key={nft.type + index}>
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
-                                    {openNftType === nft.type ? <ArrowUpIcon /> : <ArrowDownIcon />}
+                                    {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} /> : <ArrowDownIcon width={24} height={24} />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
                                         <img width={30} src={Utils.getImageNFT(nft.type)} alt="" />
                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>

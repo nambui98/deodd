@@ -66,9 +66,9 @@ export function TotalSection({
                 }
               >
                 {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
-                  <ArrowDownIcon fill={Colors.decrease} />
+                  <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
                 ) : (
-                  <ArrowUpIcon fill={Colors.increase} />
+                  <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
                 )}
                 {Math.abs(flipDashboardStat.feeTotalCompareYesterdayPercentage)}
                 %
@@ -112,9 +112,9 @@ export function TotalSection({
                 }
               >
                 {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
-                  <ArrowDownIcon fill={Colors.decrease} />
+                  <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
                 ) : (
-                  <ArrowUpIcon fill={Colors.increase} />
+                  <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
                 )}
                 {Math.abs(flipDashboardStat.amountCompareYesterdayPercentage)}%
               </Typography>
