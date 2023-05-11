@@ -92,7 +92,11 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		if (statusGame === StatusGame.FLIPPING) {
 			timer = setTimeout(() => {
 				refetch().then(({ data }) => {
+					debugger
 					if (data === true) {
+
+						debugger
+						audioPlayer(AudioPlay.STOP);
 						setIsFinish(false);
 						setStatusGame(StatusGame.FLIP);
 						setOpenModalPendingTransaction(true);
@@ -120,7 +124,8 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				if (wallet === walletAddress) {
 					audio.loop = false;
 					audio.load();
-					// let res = await getUserByPublicAddress(walletAddress, fId.toString());
+					let res = await getUserByPublicAddress(walletAddress, fId.toString());
+
 					// console.log(res);
 					// console.log("result from backend: " + res);
 					// console.log(playerWin.toNumber());

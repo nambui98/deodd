@@ -25,7 +25,7 @@ export const AMOUNTS_REAL_RECEIVE: { [key: string]: number } = {
   '0.163': 0.16,
   '0.193': 0.19
 }
-export const TIMEOUT_FULLFILL = 6000 //miniseconds
+export const TIMEOUT_FULLFILL = 65000 //miniseconds
 export const SHARE = {
   title: 'Share the link on social media, let your friends join the game, and see your wallet skyrocket.',
 }

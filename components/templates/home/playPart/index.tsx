@@ -13,6 +13,7 @@ import { deoddContract } from "libs/contract";
 import { useContractWrite, useDisconnect } from "wagmi";
 import { Flipping } from "../components/Flipping";
 import NotYetFlip from "../components/NotYetFlip";
+import { useSiteContext } from "contexts/SiteContext";
 
 // const amounts = [0.1, 0.5, 1, 2, 5, 10]
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
@@ -38,6 +39,8 @@ type DataSelected = {
 export const PlayPart = React.memo(() => {
   const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useContractContext();
   const { disconnect } = useDisconnect()
+  const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const { writeAsync } = useContractWrite({
     address: deoddContract.address,
     mode: 'recklesslyUnprepared',
@@ -50,11 +53,26 @@ export const PlayPart = React.memo(() => {
     body: <></>
   })
   const handleRefun = () => {
-    writeAsync?.().then(res => {
-      debugger
-    }).catch(err => {
-      debugger
-    })
+    setIsLoading(true);
+    writeAsync?.()
+      .then(resWrite => {
+        return resWrite.wait();
+      })
+      .then((res) => {
+        setIsLoading(false);
+        setOpenModalPendingTransaction(false);
+        setIsSuccess(true);
+        setTitleSuccess('Successfully')
+        debugger
+      })
+      .catch(error => {
+        debugger
+        setIsLoading(false);
+        setIsError(true);
+        setTitleError(error.reason || 'Something went wrong. Please try again!');
+
+      })
+
   }
 
   const handleShowDisconnect = () => {
@@ -112,7 +130,7 @@ export const PlayPart = React.memo(() => {
             color: 'primary.300'
           }
         }}
-        loading={false}>
+        loading={isLoading}>
         <Typography variant='body2' textTransform={'uppercase'} fontSize={16} fontWeight={600} >
           Claim
         </Typography>

@@ -8,6 +8,8 @@ import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 import { BigNumber, ethers } from 'ethers';
 import { useDeoddContract } from 'hooks/useDeoddContract';
+import { deoddContract } from 'libs/contract';
+import { useContractRead } from 'wagmi'
 import { AudioPlay } from 'libs/types';
 import React, { useState } from 'react'
 import { BnbIcon } from 'utils/Icons';
@@ -26,47 +28,65 @@ type PropsActions = {}
 
 function FormActions({ }: Props) {
 
-    const { setIsFinish, setStatusGame, dataSelected, setDataSelected } = useContractContext();
-    const { contractDeodd, bnbBalance } = useWalletContext()
+    const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useContractContext();
+    const { contractDeodd, bnbBalance, walletAddress } = useWalletContext()
     const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 
     const { handleFlipToken } = useDeoddContract();
     const { setIsError, setTitleError, audioPlayer } = useSiteContext();
-
+    const { refetch } = useContractRead({
+        address: deoddContract.address,
+        abi: deoddContract.abi,
+        functionName: 'pendingRequestExists',
+        args: [walletAddress],
+        enabled: false,
+    })
 
     const handleFlip = async () => {
-        const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
-        let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
-        if (totalAmount.gte(bnbBalance)) {
-            setIsError(true);
-            setTitleError("Balance is not enough!");
-        }
-        else {
-            if (!statusLoadingFlip) {
-                setStatusLoadingFlip(true);
-                setIsFinish(false);
-                try {
-                    if (fee) {
-                        setIsFinish(true);
-                        const res = await handleFlipToken(
-                            dataSelected?.index || 0,
-                            dataSelected?.coinSide || 0,
-                            totalAmount
-                        )
-                        if (res.status) {
-                            setStatusLoadingFlip(false)
-                        }
-                    }
-                } catch (error: any) {
-                    debugger
-                    audioPlayer(AudioPlay.STOP);
-                    setStatusLoadingFlip(false)
-                    setStatusGame(StatusGame.FLIP)
-                    setIsError(true);
-                    setTitleError(error.reason || 'Something went wrong. Please try again!');
 
+        const ck = await refetch();
+        debugger
+        if (ck.data === false) {
+            const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
+            let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
+            if (totalAmount.gte(bnbBalance)) {
+                setIsError(true);
+                setTitleError("Balance is not enough!");
+            }
+            else {
+                if (!statusLoadingFlip) {
+                    setStatusLoadingFlip(true);
+                    setIsFinish(false);
+                    try {
+                        if (fee) {
+                            setIsFinish(true);
+                            const res = await handleFlipToken(
+                                dataSelected?.index || 0,
+                                dataSelected?.coinSide || 0,
+                                totalAmount
+                            )
+                            if (res.status) {
+                                setStatusLoadingFlip(false)
+                            }
+                        }
+                    } catch (error: any) {
+                        console.log(error);
+
+                        debugger
+                        audioPlayer(AudioPlay.STOP);
+                        setStatusLoadingFlip(false)
+                        setStatusGame(StatusGame.FLIP)
+                        setIsError(true);
+                        setTitleError(error.reason || 'Something went wrong. Please try again!');
+
+                    }
                 }
             }
+
+        } else {
+            audioPlayer(AudioPlay.STOP);
+            setStatusLoadingFlip(false)
+            setOpenModalPendingTransaction(true);
         }
     }
     return (
