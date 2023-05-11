@@ -12,7 +12,7 @@ export default function HowItWorkModal() {
   return (
     <Box>
       <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-        <Box onClick={handleOpen} sx={{ cursor: "pointer" }}>
+        <Box onClick={handleOpen} sx={{ cursor: "pointer", fontSize: 0 }} >
           <NotiIcon />
         </Box>
         <Typography ml={1} variant='body2' textAlign={'center'} onClick={handleOpen} sx={{ cursor: "pointer" }} >
