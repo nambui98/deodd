@@ -16,7 +16,7 @@ import {
 } from "utils/Icons";
 import { Colors } from "constants/index";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Utils } from "@/utils/index";
 import { Convert } from "utils/convert";
 import { useWalletContext } from "contexts/WalletContext";
@@ -110,6 +110,7 @@ export function UserInfo() {
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
   const [isProfileOpened, setIsProfileOpened] = useState(false);
+  const heightRef = useRef(0 as any);
 
   useEffect(() => {
     const isProfileModalOpened = LocalStorage.getIsProfileModalOpened();
@@ -127,7 +128,7 @@ export function UserInfo() {
     return (
       <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
         {/* Box to refer to position */}
-        <Box position={"absolute"} height={"3rem"} width={1} >
+        <Box position={"absolute"} height={`${heightRef.current.offsetHeight / 16}rem`} width={1} >
           <ProfileUsername open={isProfileOpened} onClose={() => { setIsProfileOpened(false) }} />
           {/* Menu Container */}
           <Box
@@ -143,6 +144,7 @@ export function UserInfo() {
             }}>
             {/* Summary Container */}
             <Stack
+              ref={heightRef}
               onClick={() => setExpanded(!expanded)}
               direction="row"
               divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
