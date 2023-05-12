@@ -128,11 +128,11 @@ function FormActions() {
     )
 }
 const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps> = ({ isHead, isSelected, ...props }) =>
-(<Button
-    variant='text'
+(<ButtonLoadingShadow
+    active={isSelected}
     sx={{
-        boxShadow: isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)",
-        border: isSelected ? " 1px solid #FEF156" : "1px solid transparent",
+        // boxShadow: isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)",
+        // border: isSelected ? " 1px solid #FEF156" : "1px solid transparent",
         py: { sm: 3, xs: 2 },
         borderRadius: 2,
         flex: '1 1 50%',
@@ -140,8 +140,8 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         transition: ".3s all",
         backgroundColor: "primary.100",
         cursor: 'pointer',
-        color: isSelected ? 'secondary.main' : "secondary.700",
-        '.disabled, .enabled': {
+        // color: isSelected ? 'secondary.main' : "secondary.700",
+        '.disabled': {
             position: 'absolute',
             inset: 0,
             zIndex: 1,
@@ -178,10 +178,10 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
             isHead ?
                 <>
                     <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                        <Box className="disabled" width={1}>
+                        <Box className="disabled" width={1} height={1}>
                             <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
                         </Box>
-                        <Box className="enabled" width={1} >
+                        <Box className="enabled" width={1} height={1}>
                             <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
                         </Box>
                     </Box>
@@ -191,10 +191,10 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                 </>
                 : <>
                     <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                        <Box className="disabled" width={1} >
+                        <Box className="disabled" width={1} height={1}>
                             <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
                         </Box>
-                        <Box className="enabled" width={1}>
+                        <Box className="enabled" width={1} height={1}>
                             <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
                         </Box>
                     </Box>
@@ -205,5 +205,5 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         }
     </Stack>
 
-</Button>
+</ButtonLoadingShadow>
 )
