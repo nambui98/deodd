@@ -337,6 +337,25 @@ export const darkTheme = createTheme({
 
 					}
 				},
+				{
+					props: { variant: 'text' },
+					style: () => {
+						return {
+							backgroundColor: 'transparent',
+							boxShadow: 'none',
+							border: 'none',
+							'&:hover': {
+
+								border: 'none',
+								backgroundColor: 'inherit'
+								// backgroundColor: (darkTheme.palette.dark as any)['60']
+							},
+
+
+						}
+
+					}
+				},
 			],
 		},
 		MuiIconButton: { defaultProps: { size: 'large' } },

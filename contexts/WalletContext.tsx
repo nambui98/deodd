@@ -154,10 +154,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
 
-	console.log('isConnected :', isConnected);
-	console.log('walletIsConnected :', walletIsConnected);
-
-
 	const { chain } = useNetwork();
 
 	const { disconnect } = useDisconnect()

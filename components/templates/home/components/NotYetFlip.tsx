@@ -14,19 +14,20 @@ import { AudioPlay } from 'libs/types';
 import React, { useState } from 'react'
 import { BnbIcon } from 'utils/Icons';
 
-type Props = {}
+type Props = {
+    isShowing: boolean
+}
 
-function NotYetFlip({ }: Props) {
-    return <Box>
+function NotYetFlip({ isShowing }: Props) {
+    return <Box display={isShowing ? 'block' : 'none'}>
         <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
         <FormActions />
     </Box>
 }
 
 export default NotYetFlip
-type PropsActions = {}
 
-function FormActions({ }: Props) {
+function FormActions() {
 
     const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useContractContext();
     const { contractDeodd, bnbBalance, walletAddress } = useWalletContext()

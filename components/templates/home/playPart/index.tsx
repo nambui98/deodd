@@ -38,7 +38,6 @@ type DataSelected = {
 // eslint-disable-next-line react/display-name
 export const PlayPart = React.memo(() => {
   const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useContractContext();
-  const { disconnect } = useDisconnect()
   const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { writeAsync } = useContractWrite({
@@ -46,11 +45,6 @@ export const PlayPart = React.memo(() => {
     mode: 'recklesslyUnprepared',
     abi: deoddContract.abi,
     functionName: 'rollbackUnfulfilled',
-  })
-
-  const [popup, setPopup] = useState<{ status: boolean, body: any }>({
-    status: false,
-    body: <></>
   })
   const handleRefun = () => {
     setIsLoading(true);
@@ -70,47 +64,11 @@ export const PlayPart = React.memo(() => {
         setIsLoading(false);
         setIsError(true);
         setTitleError(error.reason || 'Something went wrong. Please try again!');
-
       })
-
-  }
-
-  const handleShowDisconnect = () => {
-    setPopup({
-      status: true,
-      body: <Box>
-        <TitlePopup >Disconnect</TitlePopup>
-        <SubtitlePopup >Do you want to disconnect your wallet?</SubtitlePopup>
-        <Grid container >
-          <Grid item xs={12}>
-
-            <ButtonMain active={true} title={'NO'} onClick={() => setPopup({ ...popup, status: false })} sx={{ width: "100%", padding: "17px 0", marginBottom: '16px' }} />
-          </Grid>
-          <Grid item xs={12}>
-
-            <ButtonMain active={false} title={'YES'} onClick={() => disconnect()} sx={{ width: "100%", padding: "17px 0" }} />
-          </Grid>
-
-        </Grid>
-      </Box>
-    })
   }
 
   return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
-
     <RenderUi statusGame={statusGame} />
-    {/* <Stack position={'absolute'} top={{ md: 0, xs: 16 }} right={0} direction={'row'} gap={1} alignItems={'center'}>
-      <Stack alignItems={'flex-end'}>
-
-        <Typography variant="caption" fontWeight={400} color="secondary.100">Testail Coin</Typography>
-        <Typography variant="h3" fontWeight={600}>124</Typography>
-      </Stack>
-      <MyImage alt="" width={40} height={40} src={TestailCoinImage} />
-
-    </Stack> */}
-    <Popup status={popup.status} handleClose={() => { setPopup({ ...popup, status: false }) }} body={<Box>
-      {popup.body}
-    </Box>} />
     <MyModal open={openModalPendingTransaction} setOpen={setOpenModalPendingTransaction} sx={{
       minWidth: 554, width: 554,
       textAlign: "center",
@@ -141,23 +99,9 @@ export const PlayPart = React.memo(() => {
 
 // eslint-disable-next-line react/display-name
 const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
-  switch (statusGame) {
-    case StatusGame.FLIP:
-      return <NotYetFlip />
-    case StatusGame.FLIPPING:
-      return <Flipping />
-    case StatusGame.FLIP_RESULT:
-      return <Result />
-    default: return <Box></Box>
-  }
+  return <>
+    <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
+    <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
+    <Result isShowing={statusGame === StatusGame.FLIP_RESULT} />
+  </>
 })
-
-const TitlePopup = styled(Typography)(() => ({
-  ...TEXT_STYLE(24, 500, '#181536'),
-  marginBottom: 24,
-  textAlign: 'center'
-}))
-const SubtitlePopup = styled(Typography)(() => ({
-  ...TEXT_STYLE(14, 400, '#181536'),
-  marginBottom: 24
-}))

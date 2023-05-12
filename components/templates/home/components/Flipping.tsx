@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Bnb2Icon, BnbIcon } from "utils/Icons";
 import { HeadCoinImage, TailCoinImage } from "utils/Images";
 interface IProps {
+  isShowing: boolean;
   // amount: string,
   // isHead: boolean
 }
@@ -19,13 +20,13 @@ function HomeIcon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
-export const Flipping: React.FC<IProps> = () => {
+export const Flipping: React.FC<IProps> = ({ isShowing }) => {
 
   const { dataSelected } = useContractContext();
   let isHead = dataSelected?.coinSide === 0;
   let amount = dataSelected?.amount;
 
-  return <Box textAlign={'center'} >
+  return <Box textAlign={'center'} display={isShowing ? 'block' : 'none'}>
     <Box>
       <CoinAnimation mx="auto" width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} />
       <Stack my={{ md: 5, xs: 3 }} direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>

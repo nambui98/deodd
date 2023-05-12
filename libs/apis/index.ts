@@ -42,6 +42,12 @@ const claimTokenSpending = async () => {
         data: {}
     })
 }
+const getResultByFlipId = async (flipId: string | number) => {
+    return vhIdRequest({
+        url: `/users/flip?flipId=${flipId}`,
+        method: 'get',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -50,5 +56,6 @@ export const DeoddService = {
     getAssetsBalance,
     getBalanceHistories,
     getUserByPublicAddress,
-    claimTokenSpending
+    claimTokenSpending,
+    getResultByFlipId
 }
