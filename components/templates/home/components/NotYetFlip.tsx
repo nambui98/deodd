@@ -130,9 +130,8 @@ function FormActions() {
 const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps> = ({ isHead, isSelected, ...props }) =>
 (<ButtonLoadingShadow
     active={isSelected}
+    onClick={props.onClick}
     sx={{
-        // boxShadow: isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)",
-        // border: isSelected ? " 1px solid #FEF156" : "1px solid transparent",
         py: { sm: 3, xs: 2 },
         borderRadius: 2,
         flex: '1 1 50%',
@@ -140,8 +139,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         transition: ".3s all",
         backgroundColor: "primary.100",
         cursor: 'pointer',
-        // color: isSelected ? 'secondary.main' : "secondary.700",
-        '.disabled': {
+        '.disabled, .enabled': {
             position: 'absolute',
             inset: 0,
             zIndex: 1,
@@ -166,7 +164,6 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
             },
         },
     }}
-    onClick={props.onClick}
 >
     <Stack
         direction="row"

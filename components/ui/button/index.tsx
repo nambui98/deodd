@@ -88,6 +88,7 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
           fill: Colors.secondaryDark
         }
       },
+      ...props.sx
     }
     }
     variant="outlined"
