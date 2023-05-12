@@ -139,6 +139,10 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         // transition: ".3s all",
         backgroundColor: "primary.100",
         cursor: 'pointer',
+        display: 'flex',
+        gap: 3,
+        alignItems: 'center',
+        justifyContent: "center",
         color: isSelected ? 'secondary.main' : 'secondary.700',
         '.disabled, .enabled': {
             position: 'absolute',
@@ -166,42 +170,36 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         },
     }}
 >
-    <Stack
-        direction="row"
-        gap={3}
-        alignItems={'center'}
-        justifyContent={"center"}
-    >
-        {
-            isHead ?
-                <>
-                    <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                        <Box className="disabled" width={1} height={1}>
-                            <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
-                        </Box>
-                        <Box className="enabled" width={1} height={1}>
-                            <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
-                        </Box>
+
+    {
+        isHead ?
+            <>
+                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                    <Box className="disabled" width={1} height={1}>
+                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
                     </Box>
-                    <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                        HEAD
-                    </Typography>
-                </>
-                : <>
-                    <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                        <Box className="disabled" width={1} height={1}>
-                            <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
-                        </Box>
-                        <Box className="enabled" width={1} height={1}>
-                            <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
-                        </Box>
+                    <Box className="enabled" width={1} height={1}>
+                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
                     </Box>
-                    <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                        TAIL
-                    </Typography>
-                </>
-        }
-    </Stack>
+                </Box>
+                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                    HEAD
+                </Typography>
+            </>
+            : <>
+                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                    <Box className="disabled" width={1} height={1}>
+                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
+                    </Box>
+                    <Box className="enabled" width={1} height={1}>
+                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
+                    </Box>
+                </Box>
+                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                    TAIL
+                </Typography>
+            </>
+    }
 
 </ButtonLoadingShadow>
 )
