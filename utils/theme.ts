@@ -251,28 +251,28 @@ export const darkTheme = createTheme({
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					scrollbarColor: "#6b6b6b #2b2b2b",
+					scrollbarColor: "#FEF156 #2A2D3E",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
-						backgroundColor: "transparent",
-						width: '10px'
+						backgroundColor: "#2A2D3E",
+						width: '4px'
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,
-						backgroundColor: "#6b6b6b",
+						backgroundColor: "#FEF156",
 						minHeight: 20,
 						// border: "3px solid #2b2b2b",
 					},
 					"&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
-						backgroundColor: "#2b2b2b",
+						backgroundColor: "#2A2D3E",
 					},
 				},
 			},
