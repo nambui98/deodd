@@ -110,7 +110,6 @@ export function UserInfo() {
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
   const [isProfileOpened, setIsProfileOpened] = useState(false);
-  const heightRef = useRef(0 as any);
 
   useEffect(() => {
     const isProfileModalOpened = LocalStorage.getIsProfileModalOpened();
@@ -127,86 +126,97 @@ export function UserInfo() {
   } else {
     return (
       <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
-        {/* Box to refer to position */}
-        <Box position={"absolute"} height={`${heightRef.current.offsetHeight / 16}rem`} width={1} >
+        {/* Menu Container */}
+        <Box
+          sx={{
+            width: matchesScreen ? "auto" : expanded ? 1 : "auto",
+            position: "absolute",
+            right: 0,
+          }}>
           <ProfileUsername open={isProfileOpened} onClose={() => { setIsProfileOpened(false) }} />
-          {/* Menu Container */}
-          <Box
+          {/* Summary Container */}
+          <Stack
+            onClick={() => setExpanded(!expanded)}
+            direction="row"
+            divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
             sx={{
+              minWidth: matchesScreen ? "14rem" : "",
+              justifyContent: "space-between",
               backgroundColor: "primary.100",
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: matchesScreen ? "auto" : expanded ? 1 : "auto",
-              borderRadius: "0.5rem",
-              transition: "300ms outline",
-              outline: `${expanded ? "2px solid #3F4251" : "2px solid transparent"}`,
-            }}>
-            {/* Summary Container */}
-            <Stack
-              ref={heightRef}
-              onClick={() => setExpanded(!expanded)}
-              direction="row"
-              divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
-              sx={
-                {
-                  justifyContent: "space-between",
-                  padding: { xs: "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
-                  gap: { xs: expanded ? 2 : 0, md: 2 },
-                  transition: "300ms gap",
-                  cursor: "pointer",
-                }
-              }
-            >
-              <Stack direction="row" alignItems="center" gap={1}>
-                <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
-                <BnbIcon fill={Colors.primaryDark} height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
-              </Stack>
-              <Stack direction={"row"} gap={1} alignItems="center">
-                <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
-                  <Stack direction={"row"} gap={1} alignItems="center">
-                    <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
-                      {
-                        userInfo.username ? userInfo.username : Convert.convertWalletAddress(walletAddress, 5, 4)
-                      }
-                    </Typography>
-                    <MyImage
-                      src={avatars[userInfo.avatar]}
-                      height={matchesScreen ? "1.5rem" : expanded ? "1.5rem" : 0}
-                      width="1.5rem"
-                      sx={{ position: "relative", borderRadius: "50%" }} alt="avatar-image" />
-                  </Stack>
-                </Collapse>
-                <Stack sx={{
-                  transform: expanded ? "rotate(180deg)" : "", transition: "transform 300ms, color 300ms",
-                  color: matchesScreen ? "#F5F5FA" : expanded ? "#F5F5FA" : Colors.secondary
-                }}>
-                  <ArrowDownIcon
-                    height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
+              padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
+              gap: { xs: expanded ? 2 : 0, md: 2 },
+              transition: `box-shadow 300ms, 300ms gap, ${!expanded ? "300ms" : "0ms"} border-radius ${!expanded ? "150ms" : ""}`,
+              borderRadius: expanded ? "8px 8px 0 0" : "8px",
+              boxShadow: expanded ? "0 -2px 0 #3F4251, 2px 0px 0 #3F4251, -2px 0px 0 #3F4251" : "",
+              cursor: "pointer",
+            }}
+          >
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
+              <BnbIcon fill={Colors.primaryDark} height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
+            </Stack>
+            <Stack direction={"row"} gap={1} alignItems="center">
+              <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
+                <Stack direction={"row"} gap={1} alignItems="center">
+                  <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
+                    {
+                      userInfo.username ? userInfo.username : Convert.convertWalletAddress(walletAddress, 5, 4)
+                    }
+                  </Typography>
+                  <MyImage
+                    src={avatars[userInfo.avatar]}
+                    height={matchesScreen ? "1.5rem" : expanded ? "1.5rem" : 0}
+                    width="1.5rem"
+                    sx={{ position: "relative", borderRadius: "50%" }} alt="avatar-image" />
                 </Stack>
+              </Collapse>
+              <Stack sx={{
+                transform: expanded ? "rotate(180deg)" : "", transition: "transform 300ms, color 300ms",
+                color: matchesScreen ? "#F5F5FA" : expanded ? "#F5F5FA" : Colors.secondary
+              }}>
+                <ArrowDownIcon
+                  height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
               </Stack>
             </Stack>
+          </Stack>
 
-            {/* Details Container */}
-            <Collapse in={expanded}>
-              <Collapse
-                in={!matchesScreen ? expanded ? true : false : true}
-                timeout={100}
-                orientation="horizontal"
+          {/* Details Container */}
+          <Collapse in={expanded} sx={{
+            position: "absolute",
+            top: "100%",
+            right: 0,
+            width: 1,
+            backgroundColor: "primary.100",
+            borderRadius: "0 0 8px 8px",
+            transition: "300ms",
+            boxShadow: expanded ? "2px 0px 0 #3F4251, -2px 0px 0 #3F4251, 0px 2px 0 #3F4251" : "",
+          }}>
+            <Collapse
+              in={!matchesScreen ? expanded ? true : false : true}
+              orientation="horizontal"
+              timeout={100}
+              sx={{
+                ".MuiCollapse-wrapper": {
+                  flexFlow: "column nowrap",
+                  width: 1,
+                },
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Stack
                 sx={{
-                  ".MuiCollapse-wrapper": {
-                    flexFlow: "column wrap"
-                  },
+                  gap: 1.5,
+                  opacity: expanded ? 1 : 0,
+                  transition: "opacity 600ms",
+                  padding: "0 0.75rem",
                 }}
               >
-                <Stack
-                  sx={{ gap: 1.5, opacity: expanded ? 1 : 0, transition: "opacity 600ms", padding: "0 0.75rem" }}
-                >
-                  <Stack direction={"row"} spacing={1}>
-                    <UserInfoButton onClick={() => { setIsProfileOpened(true) }} text="Profile" startIcon={<ProfileCircleIcon />} />
-                    <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
-                  </Stack>
-                  {/* <Divider></Divider>
+                <Stack direction={"row"} spacing={1}>
+                  <UserInfoButton onClick={() => { setIsProfileOpened(true) }} text="Profile" startIcon={<ProfileCircleIcon />} />
+                  <UserInfoButton href="/assets" text="Assets" startIcon={<ArchiveIcon />} />
+                </Stack>
+                {/* <Divider></Divider>
                   <Typography
                     variant="h3"
                     fontSize={"0.875rem"}
@@ -217,34 +227,32 @@ export function UserInfo() {
                   <Stack gap={1} divider={<Divider />}>
                     <Typography textAlign={'center'} variant="h3">Empty</Typography>
                   </Stack> */}
-                  <Stack>
-                    <Divider></Divider>
-                    <Button
-                      variant="text"
-                      onClick={() => { disconnect(); setExpanded(false); }}
-                      startIcon={<LogoutIcon />}
-                      sx={{
-                        color: "secondary.400",
-                        fontSize: "0.75rem",
+                <Stack>
+                  <Divider></Divider>
+                  <Button
+                    variant="text"
+                    onClick={() => { disconnect(); setExpanded(false); }}
+                    startIcon={<LogoutIcon />}
+                    sx={{
+                      color: "secondary.400",
+                      fontSize: "0.75rem",
+                      border: "none",
+                      padding: "0.75rem 0",
+                      textTransform: "capitalize",
+                      "&:hover": {
                         border: "none",
-                        padding: "0.75rem 0",
-                        textTransform: "capitalize",
-                        "&:hover": {
-                          border: "none",
-                          color: "secondary.400",
-                          backgroundColor: "transparent"
-                        },
-                      }}
-                    >
-                      disconnect wallet
-                    </Button>
-                  </Stack>
+                        color: "secondary.400",
+                        backgroundColor: "transparent"
+                      },
+                    }}
+                  >
+                    disconnect wallet
+                  </Button>
                 </Stack>
-              </Collapse>
+              </Stack>
             </Collapse>
-
-          </Box>
-        </Box >
+          </Collapse>
+        </Box>
       </ClickAwayListener >
     );
   }
