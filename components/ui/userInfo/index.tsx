@@ -139,18 +139,17 @@ export function UserInfo() {
             onClick={() => setExpanded(!expanded)}
             direction="row"
             divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
-            sx={
-              {
-                justifyContent: "space-between",
-                backgroundColor: "primary.100",
-                padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
-                gap: { xs: expanded ? 2 : 0, md: 2 },
-                transition: `box-shadow 300ms, 300ms gap, ${!expanded ? "300ms" : "0ms"} border-radius ${!expanded ? "150ms" : ""}`,
-                borderRadius: expanded ? "8px 8px 0 0" : "8px",
-                boxShadow: expanded ? "0 -2px 0 #3F4251, 2px 0px 0 #3F4251, -2px 0px 0 #3F4251" : "",
-                cursor: "pointer",
-              }
-            }
+            sx={{
+              minWidth: matchesScreen ? "14rem" : "",
+              justifyContent: "space-between",
+              backgroundColor: "primary.100",
+              padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
+              gap: { xs: expanded ? 2 : 0, md: 2 },
+              transition: `box-shadow 300ms, 300ms gap, ${!expanded ? "300ms" : "0ms"} border-radius ${!expanded ? "150ms" : ""}`,
+              borderRadius: expanded ? "8px 8px 0 0" : "8px",
+              boxShadow: expanded ? "0 -2px 0 #3F4251, 2px 0px 0 #3F4251, -2px 0px 0 #3F4251" : "",
+              cursor: "pointer",
+            }}
           >
             <Stack direction="row" alignItems="center" gap={1}>
               <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
