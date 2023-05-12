@@ -151,11 +151,11 @@ export function UserInfo() {
               cursor: "pointer",
             }}
           >
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" alignItems="center" sx={{ gap: { xs: expanded ? 1 : 0.5, md: 1 } }}>
               <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
               <BnbIcon fill={Colors.primaryDark} height={matchesScreen ? 20 : expanded ? 20 : 16} width={matchesScreen ? 20 : expanded ? 20 : 16} />
             </Stack>
-            <Stack direction={"row"} gap={1} alignItems="center">
+            <Stack direction={"row"} alignItems="center" sx={{ gap: { xs: expanded ? 1 : 0.5, md: 1 } }}>
               <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={100}>
                 <Stack direction={"row"} gap={1} alignItems="center">
                   <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
