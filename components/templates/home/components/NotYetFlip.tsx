@@ -143,6 +143,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
         backgroundColor: "primary.100",
         cursor: 'pointer',
         color: isSelected ? 'secondary.main' : "secondary.700",
+        touchAction: 'manipulation',
         '.disabled, .enabled': {
             position: 'absolute',
             inset: 0,
