@@ -108,10 +108,10 @@ function FormActions() {
                 ))}
             </Stack>
             <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-                <Box flex={'1 1 50%'} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
+                <Box flex={'1 1 50%'} sx={{ touchAction: 'manipulation' }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
                     <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
                 </Box>
-                <Box flex={'1 1 50%'} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
+                <Box flex={'1 1 50%'} sx={{ touchAction: 'manipulation' }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
                     <SideCoin isSelected={dataSelected?.coinSide === 1} />
                 </Box >
             </Stack >
