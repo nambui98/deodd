@@ -128,8 +128,10 @@ function RightContent({ walletTokens, priceToken }: Props) {
             </Stack>
             <MyModal open={openModalWallet} setOpen={setOpenModalWallet} >
                 <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Wallet History</Typography>
-                <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
+
+                <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
             </MyModal>
 
         </Box>
