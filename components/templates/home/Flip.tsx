@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 // import { Button } from "../../../ui/button"
 // import { approvePurchase, createProfile, getAllowance, getCalculateFee, getLastFlipId, getPlayerAssets, getUserInfo, getWinningStreakAmount, getWinningStreakLength, handleFlipToken } from "../../../../libs/flipCoinContract"
-import { Box, Grid, styled, Typography } from "@mui/material";
-import { TEXT_STYLE } from "../../../../styles/common";
-import { Popup } from "../../../common/popup";
-import { ButtonLoading, ButtonMain } from "../../../ui/button";
-import { Result } from "../result";
+import { Box, Typography } from "@mui/material";
+// import { Popup } from "../../../common/popup";
+// import { ButtonLoading, ButtonMain } from "../../../ui/button";
 // import { feeManagerContract } from "libs/contract"
 import MyModal from "components/common/Modal";
+import { ButtonLoading } from "components/ui/button";
 import { StatusGame, useContractContext } from "contexts/ContractContext";
-import { deoddContract } from "libs/contract";
-import { useContractWrite, useDisconnect } from "wagmi";
-import { Flipping } from "../components/Flipping";
-import NotYetFlip from "../components/NotYetFlip";
 import { useSiteContext } from "contexts/SiteContext";
+import { deoddContract } from "libs/contract";
+import { useContractWrite } from "wagmi";
+import NotYetFlip from "./components/NotYetFlip";
+import Flipping from "./components/Flipping";
+import FlipResult from "./components/FlipResult";
+import FlipLogDetail from "./components/FlipLogDetail";
 
-// const amounts = [0.1, 0.5, 1, 2, 5, 10]
-// const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 const avatar = [
   'assets/images/avatar-yellow.png',
   'assets/images/avatar-orange.png',
@@ -25,18 +24,8 @@ const avatar = [
   'assets/images/avatar-green.png'
 ]
 
-interface IProps {
-  statusGame: StatusGame
-  setStatusGame: (status: StatusGame) => any
-}
-type DataSelected = {
-  coinSide?: 0 | 1,
-  amount?: number,
-  index?: number,
-} | undefined
-
 // eslint-disable-next-line react/display-name
-export const PlayPart = React.memo(() => {
+export const Flip = React.memo(() => {
   const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useContractContext();
   const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -57,18 +46,22 @@ export const PlayPart = React.memo(() => {
         setOpenModalPendingTransaction(false);
         setIsSuccess(true);
         setTitleSuccess('Successfully')
-        debugger
       })
       .catch(error => {
-        debugger
         setIsLoading(false);
         setIsError(true);
         setTitleError(error.reason || 'Something went wrong. Please try again!');
       })
   }
 
-  return <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
-    <RenderUi statusGame={statusGame} />
+  return <Box>
+
+    <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
+    <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+      <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
+      <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
+      <FlipResult isShowing={statusGame === StatusGame.FLIP_RESULT} />
+    </Box>
     <MyModal open={openModalPendingTransaction} setOpen={setOpenModalPendingTransaction} sx={{
       minWidth: 554, width: 554,
       textAlign: "center",
@@ -97,11 +90,4 @@ export const PlayPart = React.memo(() => {
   </Box>
 })
 
-// eslint-disable-next-line react/display-name
-const RenderUi = React.memo(({ statusGame }: { statusGame: StatusGame }) => {
-  return <>
-    <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
-    <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
-    <Result isShowing={statusGame === StatusGame.FLIP_RESULT} />
-  </>
-})
+

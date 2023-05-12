@@ -1,4 +1,6 @@
 import { Box, Typography, Stack } from "@mui/material";
+import { StatusGame, useContractContext } from "contexts/ContractContext";
+import { LeftIcon, RightIcon } from "utils/Icons";
 
 // Dummy data. Delete later
 const dummyData = [
@@ -44,9 +46,21 @@ function RowItem({ step, activities, fee }: { step: number; activities: string; 
   );
 }
 
-export default function FlipLogDetail() {
+export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
+
+  const { setStatusGame } = useContractContext();
+  const Empty = () => <>
+    <Typography></Typography>
+    <Typography color="dark.60" textAlign={'center'}>Empty</Typography>
+    <Typography></Typography>
+  </>
   return (
-    <Stack gap={3} alignItems={"center"}>
+    <Stack gap={3} mt={5} px={{ xs: 0, lg: 10, xl: 20 }} display={isShowing ? 'flex' : 'none'}>
+      <Stack direction={'row'} columnGap={2} sx={{ cursor: 'pointer' }} onClick={() => setStatusGame(StatusGame.FLIP)}>
+
+        <LeftIcon stroke="#fff" />
+        <Typography variant="body2" fontWeight={500}>Back to flipping</Typography>
+      </Stack>
       <Typography variant="h2" fontSize={"1.5rem"} fontWeight={700} color={"#fff"} alignSelf={"flex-start"} textTransform={"capitalize"}>flipping log detail</Typography>
       <Box
         display={"grid"}
@@ -58,9 +72,10 @@ export default function FlipLogDetail() {
         <Typography variant="body2" >Activities Log</Typography>
         <Typography variant="body2" textAlign={"right"}>Fee (BNB)</Typography>
         {/* Table Body */}
-        {dummyData.map(item => <RowItem key={item.step} step={item.step} activities={item.log} fee={item.fee} />)}
+        <Empty />
+        {/* {dummyData.map(item => <RowItem key={item.step} step={item.step} activities={item.log} fee={item.fee} />)} */}
       </Box>
-      <Typography variant="body2" lineHeight={"1.25rem"} color={"secondary.100"}>-End-</Typography>
+      <Typography variant="body2" lineHeight={"1.25rem"} textAlign={'center'} color={"secondary.100"}>-End-</Typography>
     </Stack>
   );
 }

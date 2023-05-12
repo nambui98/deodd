@@ -18,14 +18,13 @@ type Props = {
     isShowing: boolean
 }
 
-function NotYetFlip({ isShowing }: Props) {
+export default function NotYetFlip({ isShowing }: Props) {
     return <Box display={isShowing ? 'block' : 'none'}>
         <CoinAnimation width={{ md: 160, xs: 120 }} height={{ md: 160, xs: 120 }} mx={'auto'} textAlign={'center'} />
         <FormActions />
     </Box>
 }
 
-export default NotYetFlip
 
 function FormActions() {
 

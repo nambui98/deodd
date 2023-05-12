@@ -14,7 +14,7 @@ const dataTypeNFT: { [key in EnumNFT]: string } = {
   [EnumNFT.GOLD]: "/assets/images/gold.png",
   [EnumNFT.DIAMOND]: "/assets/images/diamond.png",
 }
-export const Result = ({ isShowing }: { isShowing: boolean }) => {
+export default function FlipResult({ isShowing }: { isShowing: boolean }) {
   const { gameResult, setStatusGame } = useContractContext();
   const {
     coinSide,
@@ -101,7 +101,7 @@ export const Result = ({ isShowing }: { isShowing: boolean }) => {
 
       </Grid>
 
-      {!isWinner && <Typography variant="body2" mt={3} fontWeight={400} color="dark.60">Fall where, double there, don’t give up</Typography>}
+      {!isWinner && <Typography variant="body2" mt={3} fontWeight={400} color="dark.60" textAlign={'center'}>Fall where, double there, don’t give up</Typography>}
       <Grid mt={5} mb={3} columnSpacing={{ xs: 2, md: 3 }} container justifyContent={'center'}>
         <Grid item xs={6}>
           <ButtonLoading title={!isWinner ? 'Try Again' : "Continue Flipping"} onClick={() => {

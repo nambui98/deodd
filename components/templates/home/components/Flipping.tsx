@@ -20,8 +20,7 @@ function HomeIcon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
-export const Flipping: React.FC<IProps> = ({ isShowing }) => {
-
+export default function Flipping({ isShowing }: IProps) {
   const { dataSelected } = useContractContext();
   let isHead = dataSelected?.coinSide === 0;
   let amount = dataSelected?.amount;

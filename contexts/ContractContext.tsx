@@ -131,20 +131,13 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				let {
 					wallet,
 					fId, randomValue, flipResult, timestamp
-					// flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet 
 				}: FlipResultType = (args[5] as any).args;
 				if (wallet === walletAddress) {
 					audio.loop = false;
 					audio.load();
 					let res = await DeoddService.getResultByFlipId(fId.toString());
-
-
-					// console.log(res);
-					// console.log("result from backend: " + res);
-					// console.log(playerWin.toNumber());
 					console.log("flip_id: ", fId)
 					console.log("current_streak: ", res.data.data.userProfile.currentStreakLength)
-					debugger
 					setGameResult({
 						amount: (dataSelected?.amount ?? 0),
 						coinSide: dataSelected?.coinSide ?? 0,

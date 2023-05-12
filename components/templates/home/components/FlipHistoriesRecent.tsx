@@ -23,7 +23,7 @@ type dataUserRecent = {
     wallet: string;
     nodeRef: any;
 };
-function FlipRecent({ }: Props) {
+export default function FlipHistoriesRecent() {
     const { data: dataRecent } = useQuery({
         queryKey: ["getRecentFlipping"],
         queryFn: DeoddService.getRecentFlipping,
@@ -125,7 +125,6 @@ function FlipRecent({ }: Props) {
     );
 }
 
-export default FlipRecent;
 function UserActivity({ user }: { user: dataUserRecent }) {
     return (
         <Box
