@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import CoinAnimation from 'components/common/CoinAnimation';
 import { ButtonLoading, ButtonLoadingShadow } from 'components/ui/button';
 import MyImage from 'components/ui/image';
@@ -53,6 +53,7 @@ function FormActions() {
             if (totalAmount.gte(bnbBalance)) {
                 setIsError(true);
                 setTitleError("Balance is not enough!");
+                setStatusLoadingFlip(false);
             }
             else {
                 if (!statusLoadingFlip) {
@@ -108,8 +109,12 @@ function FormActions() {
                 ))}
             </Stack>
             <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-                <SideCoin isHead isSelected={dataSelected?.coinSide === 0} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))} />
-                <SideCoin isSelected={dataSelected?.coinSide === 1} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))} />
+                <Button variant='text' sx={{ flex: '1 1 50%', padding: 0 }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
+                    <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
+                </Button>
+                <Button variant='text' sx={{ flex: '1 1 50%', padding: 0 }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
+                    <SideCoin isSelected={dataSelected?.coinSide === 1} />
+                </Button>
             </Stack >
             <Box mt={{ sm: 3, xs: 2 }}>
                 <ButtonLoading
@@ -122,13 +127,12 @@ function FormActions() {
         </Box >
     )
 }
-const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean, onClick: VoidFunction }> = ({ isHead, isSelected, onClick }) =>
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
 (<Stack
     direction="row"
     flex={'1 1 50%'}
     gap={3}
     borderRadius={2}
-    onClick={onClick}
     width={1}
     py={{ sm: 3, xs: 2 }}
     justifyContent={"center"}
@@ -140,7 +144,6 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean, onClick: VoidF
         backgroundColor: "primary.100",
         cursor: 'pointer',
         color: isSelected ? 'secondary.main' : "secondary.700",
-        touchAction: 'manipulation',
         '.disabled, .enabled': {
             position: 'absolute',
             inset: 0,
