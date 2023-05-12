@@ -7,7 +7,7 @@ type Props = {}
 enum Modal_Type {
     FAQ,
     HOW_TO_PLAY,
-    FLIP_RESPONSIBLY
+    PRIVACY_POLICY
 }
 function FaqHowtoplay({ }: Props) {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -20,7 +20,7 @@ function FaqHowtoplay({ }: Props) {
     const mapContent = {
         [Modal_Type.FAQ]: <FAQContent />,
         [Modal_Type.HOW_TO_PLAY]: <HowToPlay />,
-        [Modal_Type.FLIP_RESPONSIBLY]: <FlipResponsibly />
+        [Modal_Type.PRIVACY_POLICY]: <PrivacyPolicy />
     }
 
     return (
@@ -35,9 +35,12 @@ function FaqHowtoplay({ }: Props) {
             >
                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item> |
                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item> |
-                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FLIP_RESPONSIBLY)}>Flip responsibly</Item>
+                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.PRIVACY_POLICY)}>Privacy Policy</Item> |
+                <a href="https://docsend.com/view/nbwq8xa96nckf4zj" target='_blank' rel='noreferrer'>
+                    <Item variant='body2'>Whitepaper</Item>
+                </a>
             </Stack>
-            <MyModal open={openModal} sx={{ width: { xs: 400, sm: 544 } }} haveIconClosed setOpen={setOpenModal}>
+            <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed setOpen={setOpenModal}>
                 {
                     mapContent[modalType]
                 }
@@ -49,94 +52,92 @@ function FaqHowtoplay({ }: Props) {
 
 export default FaqHowtoplay;
 const FAQContent = () => (
-    <Stack gap={3}>
+    <Stack gap={3} maxHeight={"calc(100vh - 15rem)"}>
         <Typography variant='h5' fontWeight={700} textAlign={'center'}>
             FAQ
         </Typography>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                What is deODD?
-            </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                deODD is a smart contract that allows users to play the coin flip mechanism with their BNB, with odds of 50/50 with a xx fee.
-            </Typography>
-        </Stack>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                How do I know I can Trust deODD?
-            </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                Since deODD is an on-chain platform on the BSC network, using the ChainLink VRF (Verifiable Random Function) for random mechanism, all transactions can be tracked and audited by anyone.
-            </Typography>
-        </Stack>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                Where can I learn the essentials?
-            </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                Join us on Discord, and Twitter - Follow our social network to obtain our help in resolving any issues you may have.
-            </Typography>
+        <Stack overflow={"auto"} gap={3}>
+            <Stack gap={1}>
+                <Typography variant='body1' color='secondary.main' fontWeight={600}>
+                    What is deODD?
+                </Typography>
+                <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
+                    DeODD is a smart contract built on the BNB Chain Ecosystem that allows users to play a decentralized coin flip
+                    and lottery mechanism by your BNB, with the flipping odds of 50/50 and charge a 3.25% fee, and a portion
+                    allocated to the DeODD NFT Holders Pool.
+                </Typography>
+            </Stack>
+            <Stack gap={1}>
+                <Typography variant='body1' color='secondary.main' fontWeight={600}>
+                    How do I know I can Trust deODD?
+                </Typography>
+                <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
+                    As a decentralized coin flip and lottery product, DeODD uses technology and platforms to guarantee a fair system,
+                    especially with the use of Oracle VRF from the Binance Smart Chain ecosystem. This ensures transparency,
+                    making these games an innovative and exciting way for users to enjoy blockchain technology.
+                </Typography>
+            </Stack>
+            <Stack gap={1}>
+                <Typography variant='body1' color='secondary.main' fontWeight={600}>
+                    Where can I learn the essentials?
+                </Typography>
+                <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
+                    Follow our social media channels to stay updated and/or Read our {" "}
+                    <a href="https://docsend.com/view/nbwq8xa96nckf4zj" target='_blank' rel='noreferrer'>
+                        <Typography display={"inline"} variant='body2' sx={{ textDecoration: "underline" }} >
+                            WhitePaper
+                        </Typography>
+                    </a>.
+                </Typography>
+            </Stack>
         </Stack>
 
     </Stack>
 
 )
 const HowToPlay = () => (
-    <Stack gap={3}>
+    <Stack gap={3} maxHeight={"calc(100vh - 15rem)"}>
         <Typography variant='h5' fontWeight={700} textAlign={'center'}>
             How to play
         </Typography>
         <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-            1. Connect your Metamask Wallet.<br />
-            2. Pick either heads or tails.<br />
-            3. Select your Bet amount.<br />
-            4. Click “Double or Nothing”.<br />
-            5. Wait a few seconds and get the result.
+            Users need to follow these steps: <br />
+            Step 1: Visit the official DeODD website <br />
+            Step 2: Connect your Metamask Wallet (*). <br />
+            Step 3: Set your nickname (or display name) and choose an avatar from available options. <br />
+            Step 4: Pick either Heads or Tails <br />
+            Step 5: Select your bet amount with your BNB. <br />
+            Step 6: Click &ldquo;Double or Nothing&rdquo;. <br />
+            Step 7: Wait a few seconds and get the result. <br />
         </Typography>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                What is a Metamask Wallet?
-            </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                MetaMask provides an essential utility for blockchain players, token traders, crypto gamers, and developers. You are always in control when interacting on the new decentralized web. Visit metamask.io, add the wallet to chrome, and follow the instructions to create a wallet.
-            </Typography>
-        </Stack>
+        <Typography variant='body2' color="white" fontWeight={400} fontSize={"0.75rem"} lineHeight={'1rem'}>
+            (*) Metamask Wallet: provides users with a secure and convenient way to manage their digital assets and interact with Dapps without the need for a separate wallet or complicated technical knowledge. Visit https://metamask.io/ and add the wallet to your Chrome, follow the instructions to create a wallet.
+        </Typography>
     </Stack>
 
 )
-const FlipResponsibly = () => (
-    <Stack gap={3}>
-        <Typography variant='h5' fontWeight={700} textAlign={'center'}>
-            Flip responsibly
+const PrivacyPolicy = () => (
+    <Stack gap={3} maxHeight={"calc(100vh - 15rem)"}>
+        <Typography variant='h5' fontSize={"1.5rem"} fontWeight={700} lineHeight={"2rem"} textAlign={'center'}>
+            Privacy Policy
         </Typography>
-        <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-            <span style={{ color: Colors.secondaryDark }}>deODD</span> is a form of entertainment on Blockchain, we want our players to feel happy and enjoy participating at deODD, so we encourage responsible gaming.
-        </Typography>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                Resource
+        <Stack gap={3} sx={{ maxHeight: "30rem", overflow: "auto" }}>
+            <Typography variant='body2' fontSize='0.875rem' lineHeight='1.25rem' color="#fff" fontWeight={400}>
+                As a product based on a decentralized coin flip and lottery mechanism, the DeODD team (or &#34;We&#34;, &#34;Us&#34;) takes the privacy and security of our users&apos; information very seriously. This Privacy Policy section outlines the types of information we collect, how we use it, and the measures we take to protect it.
             </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                Chat: Our Discord<br />
-                Text: Team@deodd.io
+            <Typography variant='body2' fontSize='0.875rem' lineHeight='1.25rem' color="#fff" fontWeight={400}>
+                We may be compelled to acquire your personal information in order to provide our services to you. Therefore, this Privacy Policy is meant to explain how we will collect and secure your personal information.
+            </Typography>
+            <Typography variant='body2' fontSize='0.875rem' lineHeight='1.25rem' color="#fff" fontWeight={400}>
+                This Privacy Policy does not apply to third-party products or services, or the activities of organizations we do not own or control, including other companies you may engage with on or through our services, unless otherwise stated.
+            </Typography>
+            <Typography variant='body2' fontSize='0.875rem' lineHeight='1.25rem' color="#fff" fontWeight={400}>
+                This Privacy Policy was created in the English language. When a translated version clashes with the English version, the English version takes precedence. The last time this Privacy Policy was updated was in May 2023.
+            </Typography>
+            <Typography variant='body2' fontSize='0.875rem' lineHeight='1.25rem' color="#fff" fontWeight={400}>
+                At any moment, we retain the right to make modifications to this Privacy Policy. We recommend that you review this Privacy Policy on a frequent basis to ensure that you are aware of any changes and how your information may be used.
             </Typography>
         </Stack>
-        <Stack gap={1}>
-            <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                Do I have a flipping problem?
-            </Typography>
-            <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
-                If you feel you are having trouble with your gambling, ask yourself the following questions:<br />
-                Have other people ever criticized your flipping?<br />
-                Do you ever lie to cover up the money or time spent on your flipping?<br />
-                Do arguments, boredom, or frustration make you want to flip?<br />
-                Have you lost interest in family, friends, or entertainment due to flipping?<br />
-                When flipping and you run out of money, do you feel frustrated and hopeless and need to take it back ASAP?<br />
-                Have you lied, stolen, or borrowed to get money to flipping or to repay the flipping debt?<br />
-                The more you answer &quot;yes&quot; to these questions, the more likely you have serious gambling problems. Consider pausing your action of playing if you have the above signs.
-            </Typography>
-        </Stack >
-
     </Stack >
 
 )
@@ -145,25 +146,4 @@ const Item = styled(Typography)(({ theme }) => ({
     cursor: 'pointer',
     color: (theme.palette.secondary as any)["500"],
     fontWeight: 500
-}))
-const TitlePopup = styled(Typography)(() => ({
-    '& h3': {
-        marginBottom: 24,
-        textAlign: 'center',
-        lineHeight: "2rem",
-    }
-}))
-const BodyPopup = styled(Box)(() => ({
-    '& h5': {
-        marginBottom: 8,
-        lineHeight: "1.375rem",
-    },
-    '& p': {
-        marginBottom: 24,
-        lineHeight: "1.25rem",
-    },
-    '& a': {
-        color: '#FEF156',
-        textDecoration: 'underline'
-    }
 }))
