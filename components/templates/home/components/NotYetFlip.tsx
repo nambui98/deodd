@@ -108,12 +108,8 @@ function FormActions() {
                 ))}
             </Stack>
             <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-                <Box flex={'1 1 50%'} sx={{ touchAction: 'manipulation' }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
-                    <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
-                </Box>
-                <Box flex={'1 1 50%'} sx={{ touchAction: 'manipulation' }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
-                    <SideCoin isSelected={dataSelected?.coinSide === 1} />
-                </Box >
+                <SideCoin isHead isSelected={dataSelected?.coinSide === 0} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))} />
+                <SideCoin isSelected={dataSelected?.coinSide === 1} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))} />
             </Stack >
             <Box mt={{ sm: 3, xs: 2 }}>
                 <ButtonLoading
@@ -126,12 +122,13 @@ function FormActions() {
         </Box >
     )
 }
-const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean, onClick: VoidFunction }> = ({ isHead, isSelected, onClick }) =>
 (<Stack
     direction="row"
+    flex={'1 1 50%'}
     gap={3}
     borderRadius={2}
-    // maxWidth={256}
+    onClick={onClick}
     width={1}
     py={{ sm: 3, xs: 2 }}
     justifyContent={"center"}
