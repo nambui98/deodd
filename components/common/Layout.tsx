@@ -11,6 +11,7 @@ import LeftSidebar from "./LeftSidebar";
 import { Meta } from "./Meta";
 import RightSidebar from "./RightSidebar";
 import FaqHowtoplay from "./FaqHowtoplay";
+import { AppConfig } from "@/utils/AppConfig";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -40,7 +41,7 @@ const Layout = ({ children }: IProps) => {
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
-            <Meta title="DeODD" description="" />
+            <Meta title={AppConfig.title} description={AppConfig.description} />
             <AppBar
                 leftOpen={leftOpen}
                 rightOpen={rightOpen}

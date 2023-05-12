@@ -22,17 +22,17 @@ const Meta = (props: IMetaProps) => {
           content="width=device-width,initial-scale=1"
           key="viewport"
         />
-        <meta property="og:title" content="Live the Metaverse life!"></meta>
+        {/* <meta property="og:title" content="Live the Metaverse life!"></meta> */}
         <meta property="og:type" content="website"></meta>
-        <meta property="og:url" content="https://www.penpalnft.com/"></meta>
-        <meta
+        {/* <meta property="og:url" content="https://www.penpalnft.com/"></meta> */}
+        {/* <meta
           property="og:description"
           content="Penpal is an NFT collection that helps promote a healthy and open mindset about your own and others' body image."
-        ></meta>
-        <meta
+        ></meta> */}
+        {/* <meta
           property="og:image"
           content="/assets/images/thumbnail.jpeg"
-        ></meta>
+        ></meta> */}
         <link
           rel="apple-touch-icon"
           href={`${router.basePath}/apple-touch-icon.png`}
@@ -75,6 +75,25 @@ const Meta = (props: IMetaProps) => {
           url: props.canonical,
           locale: AppConfig.locale,
           site_name: AppConfig.site_name,
+          images: [
+            {
+              url: '/assets/images/thumb.jpeg',
+              width: 800,
+              height: 600,
+              alt: 'thumb',
+              type: 'image/jpeg',
+            },
+            {
+
+              url: '/assets/images/thumb.jpeg',
+              width: 900,
+              height: 800,
+              alt: 'thumb',
+              type: 'image/jpeg',
+            },
+            { url: '/assets/images/thumb.jpeg' },
+            { url: '/assets/images/thumb.jpeg' },
+          ],
         }}
       />
     </>
