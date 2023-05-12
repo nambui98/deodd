@@ -143,7 +143,7 @@ export function UserInfo() {
               {
                 justifyContent: "space-between",
                 backgroundColor: "primary.100",
-                padding: { xs: "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
+                padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
                 gap: { xs: expanded ? 2 : 0, md: 2 },
                 transition: `box-shadow 300ms, 300ms gap, ${!expanded ? "300ms" : "0ms"} border-radius ${!expanded ? "150ms" : ""}`,
                 borderRadius: expanded ? "8px 8px 0 0" : "8px",
