@@ -286,6 +286,7 @@ export const darkTheme = createTheme({
 					return {
 						border: `2px solid`,
 						borderRadius: '8px',
+						touchAction: 'manipulation',
 
 						'&:hover': {
 							backgroundColor: color != null && color != "inherit" ? darkTheme.palette[color].main : "inherit",
