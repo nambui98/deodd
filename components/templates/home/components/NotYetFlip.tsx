@@ -3,7 +3,7 @@ import CoinAnimation from 'components/common/CoinAnimation';
 import { ButtonLoading, ButtonLoadingShadow } from 'components/ui/button';
 import MyImage from 'components/ui/image';
 import { VRF_FEE, AMOUNTS } from 'constants/index';
-import { StatusGame, useContractContext } from 'contexts/ContractContext';
+import { DataSelected, StatusGame, useContractContext } from 'contexts/ContractContext';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 import { BigNumber, ethers } from 'ethers';
@@ -44,6 +44,7 @@ function FormActions() {
 
     const handleFlip = async () => {
 
+        setStatusLoadingFlip(true);
         const ck = await refetch();
         debugger
         if (ck.data === false) {
@@ -84,6 +85,7 @@ function FormActions() {
             }
 
         } else {
+
             audioPlayer(AudioPlay.STOP);
             setStatusLoadingFlip(false)
             setOpenModalPendingTransaction(true);
@@ -96,7 +98,7 @@ function FormActions() {
             <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
                 {AMOUNTS.map((item, index) => (
                     <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>
-                        <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected({ ...dataSelected, amount: item, index })}>
+                        <ButtonLoadingShadow active={index === dataSelected?.index} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, amount: item, index }))}>
                             <Typography variant="h3" mr={.5} fontWeight={600}>{item}</Typography>
                             <Box width={20} height={20}>
                                 <BnbIcon width={'100%'} height={'100%'} />
@@ -106,13 +108,13 @@ function FormActions() {
                 ))}
             </Stack>
             <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-                <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 0 })}>
+                <Box flex={'1 1 50%'} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
                     <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
                 </Box>
-                <Box flex={'1 1 50%'} onClick={() => setDataSelected({ ...dataSelected, coinSide: 1 })}>
+                <Box flex={'1 1 50%'} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
                     <SideCoin isSelected={dataSelected?.coinSide === 1} />
-                </Box>
-            </Stack>
+                </Box >
+            </Stack >
             <Box mt={{ sm: 3, xs: 2 }}>
                 <ButtonLoading
                     onClick={handleFlip}
@@ -121,7 +123,7 @@ function FormActions() {
                     <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
                 </ButtonLoading>
             </Box>
-        </Box>
+        </Box >
     )
 }
 const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
