@@ -13,6 +13,7 @@ import { useContractRead } from 'wagmi'
 import { AudioPlay } from 'libs/types';
 import React, { useState } from 'react'
 import { BnbIcon } from 'utils/Icons';
+import { ButtonProps } from '@mui/base';
 
 type Props = {
     isShowing: boolean
@@ -92,6 +93,9 @@ function FormActions() {
             setOpenModalPendingTransaction(true);
         }
     }
+    const handleClickSideCoin = (side: number) => {
+        setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: side }))
+    }
     return (
         <Box maxWidth={544} mx="auto" textAlign={'left'}>
 
@@ -109,12 +113,8 @@ function FormActions() {
                 ))}
             </Stack>
             <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
-                <Button variant='text' sx={{ flex: '1 1 50%', padding: 0 }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 0 }))}>
-                    <SideCoin isHead isSelected={dataSelected?.coinSide === 0} />
-                </Button>
-                <Button variant='text' sx={{ flex: '1 1 50%', padding: 0 }} onClick={() => setDataSelected((prev: DataSelected) => ({ ...prev, coinSide: 1 }))}>
-                    <SideCoin isSelected={dataSelected?.coinSide === 1} />
-                </Button>
+                <SideCoin isHead isSelected={dataSelected?.coinSide === 0} onClick={() => handleClickSideCoin(0)} />
+                <SideCoin isSelected={dataSelected?.coinSide === 1} onClick={() => handleClickSideCoin(1)} />
             </Stack >
             <Box mt={{ sm: 3, xs: 2 }}>
                 <ButtonLoading
@@ -127,19 +127,16 @@ function FormActions() {
         </Box >
     )
 }
-const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead, isSelected }) =>
-(<Stack
-    direction="row"
-    flex={'1 1 50%'}
-    gap={3}
-    borderRadius={2}
-    width={1}
-    py={{ sm: 3, xs: 2 }}
-    justifyContent={"center"}
-    border={isSelected ? " 1px solid #FEF156" : "1px solid transparent"}
-    boxShadow={isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)"}
-    alignItems={'center'}
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps> = ({ isHead, isSelected, ...props }) =>
+(<Button
+    variant='text'
     sx={{
+        boxShadow: isSelected ? "0px 2px 16px rgba(254, 241, 86, 0.5)" : "0px 2px 4px rgba(0, 0, 0, 0.15)",
+        border: isSelected ? " 1px solid #FEF156" : "1px solid transparent",
+        py: { sm: 3, xs: 2 },
+        borderRadius: 2,
+        flex: '1 1 50%',
+        width: '100%',
         transition: ".3s all",
         backgroundColor: "primary.100",
         cursor: 'pointer',
@@ -158,6 +155,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
         '&:hover': {
             border: "1px solid #FEF156",
             color: 'secondary.main',
+            backgroundColor: "primary.100",
             '.disabled': {
                 zIndex: 0,
                 opacity: 0,
@@ -168,35 +166,44 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean }> = ({ isHead,
             },
         },
     }}
+    onClick={props.onClick}
 >
-    {
-        isHead ?
-            <>
-                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                    <Box className="disabled" width={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
+    <Stack
+        direction="row"
+        gap={3}
+        alignItems={'center'}
+        justifyContent={"center"}
+    >
+        {
+            isHead ?
+                <>
+                    <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box className="disabled" width={1}>
+                            <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
+                        </Box>
+                        <Box className="enabled" width={1} >
+                            <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
+                        </Box>
                     </Box>
-                    <Box className="enabled" width={1} >
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
+                    <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        HEAD
+                    </Typography>
+                </>
+                : <>
+                    <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box className="disabled" width={1} >
+                            <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
+                        </Box>
+                        <Box className="enabled" width={1}>
+                            <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
+                        </Box>
                     </Box>
-                </Box>
-                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                    HEAD
-                </Typography>
-            </>
-            : <>
-                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                    <Box className="disabled" width={1} >
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
-                    </Box>
-                    <Box className="enabled" width={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
-                    </Box>
-                </Box>
-                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                    TAIL
-                </Typography>
-            </>
-    }
-</Stack>
+                    <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        TAIL
+                    </Typography>
+                </>
+        }
+    </Stack>
+
+</Button>
 )
