@@ -136,9 +136,10 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
         borderRadius: 2,
         flex: '1 1 50%',
         width: '100%',
-        transition: ".3s all",
+        // transition: ".3s all",
         backgroundColor: "primary.100",
         cursor: 'pointer',
+        color: isSelected ? 'secondary.main' : 'secondary.700',
         '.disabled, .enabled': {
             position: 'absolute',
             inset: 0,
