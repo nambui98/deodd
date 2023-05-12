@@ -117,7 +117,7 @@ const HowToPlay = () => (
 
 )
 const PrivacyPolicy = () => (
-    <Stack gap={3} maxHeight={"calc(100vh - 15rem)"}>
+    <Stack gap={3} maxHeight={"min(100vh - 15rem, 30.75rem)"}>
         <Typography variant='h5' fontSize={"1.5rem"} fontWeight={700} lineHeight={"2rem"} textAlign={'center'}>
             Privacy Policy
         </Typography>
