@@ -1,7 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import Loader from 'components/common/Loader';
-import MadalClaimSuccess from 'components/common/MadalClaimSuccess';
-import MadalError from 'components/common/MadalError';
+import ModalClaimSuccess from 'components/common/ModalClaimSuccess';
+import ModalError from 'components/common/ModalError';
 import { wagmiClient } from 'config/wagmi';
 import { Colors } from 'constants/index';
 import { ContractProvider } from 'contexts/ContractContext';
@@ -36,8 +36,8 @@ function MyApp(props: AppPropsCustom) {
                   <Component {...pageProps} />
                 </Layout>
                 <Loader />
-                <MadalClaimSuccess />
-                <MadalError />
+                <ModalClaimSuccess />
+                <ModalError />
                 <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />
 
               </ContractProvider>

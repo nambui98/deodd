@@ -1,7 +1,7 @@
 import { Utils } from '@/utils/index'
 import EastIcon from '@mui/icons-material/East'
 import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, styled } from '@mui/material'
-import MadalClaimSuccess from 'components/common/MadalError'
+import ModalClaimSuccess from 'components/common/ModalError'
 import MyModal from 'components/common/Modal'
 import { ButtonMain } from 'components/ui/button'
 import { Colors, MINXIMUM_BALANCE_DEPOSIT } from 'constants/index'
@@ -230,7 +230,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
                 <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
             </MyModal>
-            <MadalClaimSuccess />
+            <ModalClaimSuccess />
         </Box>
     )
 }

@@ -29,6 +29,7 @@ export default function MyModal({ open, setOpen, title, haveIconClosed, children
             disableScrollLock
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            // {...props}
             sx={{
                 display: 'flex',
                 justifyContent: 'center',
