@@ -15,7 +15,8 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (!isNotGet) {
             if (walletAddress) {
                 getLinkUser();
-            } else {
+            }
+            else {
                 setCkReferral(false);
             }
         }
@@ -69,9 +70,9 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         }
     }
 
-    const reload = useCallback(() => {
+    const reload = () => {
         setIsReload(!isReload);
-    }, [])
+    }
 
     return { ckReferral, link, dataAvailable, dataExpired, getLinkUser, reload }
 }

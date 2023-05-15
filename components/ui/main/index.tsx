@@ -11,16 +11,20 @@ export const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open
     rightOpen, leftOpen
     // , countOpen
 }) => {
-    let countOpen = useMemo(() => rightOpen && leftOpen ? 2 : (rightOpen || leftOpen) ? 1 : 0, [rightOpen, leftOpen])
+    // let countOpen = useMemo(() => rightOpen && leftOpen ? 2 : (rightOpen || leftOpen) ? 1 : 0, [rightOpen, leftOpen])
     return ({
         flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
         overflowX: "hidden",
+        position: 'fixed',
+        inset: 0,
         transition: theme.transitions.create(["margin", "width"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen
         }),
 
-        paddingBottom: theme.spacing(8),
+        // paddingBottom: theme.spacing(8),
         // marginLeft: `calc(-${theme.spacing(8.5)})`,
         // marginRight: `calc(-${theme.spacing(8.5)})`,
         // marginLeft: `-${DRAWER_WIDTH}px`,
@@ -31,10 +35,12 @@ export const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open
         // marginRight: rightOpen ? `${DRAWER_WIDTH}px` : 0,
 
         [theme.breakpoints.up('md')]: {
+            right: 320,
+            left: 320,
             marginRight: `calc(${theme.spacing(5)} - ${DRAWER_WIDTH}px)`,
 
             marginLeft: `calc(${theme.spacing(8.5)} - ${DRAWER_WIDTH}px)`,
-            paddingBottom: theme.spacing(8),
+            // paddingBottom: theme.spacing(8),
             ...((leftOpen) && {
                 transition: theme.transitions.create(["margin", "width"], {
                     easing: theme.transitions.easing.easeOut,

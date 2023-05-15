@@ -32,14 +32,14 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
                 <CoinAnimation width={40} height={40} />
-                <Typography mx={2} variant='h2'>Invite Friends To Get More Profit From Each Flip!</Typography>
+                <Typography mx={2} variant='h2' fontWeight={700} lineHeight={1.5} textAlign={'center'}>Invite Friends To Get More Profit From Each Flip!</Typography>
                 <CoinAnimation width={40} height={40} />
             </Stack>
             <Box mt={5} textAlign={'center'}>
                 {
                     !walletIsConnected &&
                     <>
-                        <Typography variant='h3'>Connect wallet to get your referral link</Typography>
+                        <Typography variant='h3' fontWeight={600}>Connect wallet to get your referral link</Typography>
 
                         <ButtonLoading
                             onClick={handleConnectWallet}

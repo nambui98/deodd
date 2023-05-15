@@ -218,10 +218,10 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                             width: 75, padding: "4px 16px", fontSize: 12
                         }} />
                     </Box>
-                    {
+                    {/* {
                         !nftSelected &&
                         <Typography mt={1} variant='caption' color={"error.100"}>Please choose your asset to claim</Typography>
-                    }
+                    } */}
                 </Box>
             </Stack>
             <MyModal open={openModal} width={380} setOpen={setOpenModal} >

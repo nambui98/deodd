@@ -53,7 +53,7 @@ function FormActions() {
             let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
             if (totalAmount.gte(bnbBalance)) {
                 setIsError(true);
-                setTitleError("Balance is not enough!");
+                setTitleError("Please make sure you have enough token to cover bet amount and other fee. Learn more in FAQ");
                 setStatusLoadingFlip(false);
             }
             else {
@@ -112,7 +112,7 @@ function FormActions() {
                     </Box>
                 ))}
             </Stack>
-            <Stack direction={'row'} gap={4} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
+            <Stack direction={'row'} gap={{ xs: 2, md: 4 }} mt={{ sm: 3.25, xs: 2 }} justifyContent={{ xs: 'space-evenly', md: 'space-between' }}>
                 <SideCoin isHead isSelected={dataSelected?.coinSide === 0} onClick={() => handleClickSideCoin(0)} />
                 <SideCoin isSelected={dataSelected?.coinSide === 1} onClick={() => handleClickSideCoin(1)} />
             </Stack >
