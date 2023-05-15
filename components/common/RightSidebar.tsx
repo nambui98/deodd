@@ -123,15 +123,31 @@ const DrawerContent = ({ open }: { open: boolean }) => {
                 </Stack>
             </Box>
             <Divider />
-            <Box p={2} overflow={'hidden'} sx={{ transition: open ? '3s all' : "", opacity: open ? 1 : 0 }} >
-                {
-                    Array.from(Array(50).keys()).map((item, key) =>
-                        <ChatItem handleClick={handleClick} id={id} isReport={key === 48} isMy={key === 49} key={key} />
-                    )
-                }
-            </Box>
+            {
+                process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ?
+                    <Stack
+                        height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
+                        justifyContent={'center'} alignItems={'center'}
+                        overflow={'hidden'}
+                    >
+                        <Typography variant='h3' fontWeight={600}>
+                            Welcome to DeODD!
+                        </Typography>
+                        <Typography mt={'10px'} variant='body2' fontWeight={400} color="dark.60">
+                            Coming soon
+                        </Typography>
+                    </Stack> :
+                    <Box p={2} overflow={'hidden'} sx={{ transition: open ? '3s all' : "", opacity: open ? 1 : 0 }} >
+                        {
+                            Array.from(Array(50).keys()).map((item, key) =>
+                                <ChatItem handleClick={handleClick} id={id} isReport={key === 48} isMy={key === 49} key={key} />
+                            )
+                        }
+                    </Box>
+            }
+
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
-                <Stack direction={'row'} p={2} alignItems={'center'} width={1} columnGap={2}>
+                <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
                     {
                         walletIsConnected ?
                             <Input
