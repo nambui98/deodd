@@ -9,10 +9,11 @@ export function GoldenHour() {
 
   return (
     <Stack width={'100%'} alignItems={isGoldenHour ? "center" : "initial"} justifyContent="center">
-      <Typography variant='body2' color={'primary.200'} >{isGoldenHour ? "Golden Hour" : "Golden Hour starts in"}</Typography>
+      <Typography variant='body2' color={'primary.200'} >{isGoldenHour ? "Golden hour ends in" : "Golden hour starts in"}</Typography>
       <CountdownTimer />
       <Tooltip title={<InfoPopup />}
         enterTouchDelay={0}
+        leaveTouchDelay={4000}
         arrow placement="top"
         TransitionComponent={Fade}
         TransitionProps={{ timeout: 150 }}
@@ -43,7 +44,10 @@ export function GoldenHour() {
           }
         }}>
         {/* Wrapping the icon in another element so that the tooltip displays correctly. In order for this to work I set width and height of the wrapper equal to the icon */}
-        <Stack justifyContent={"center"} sx={{ position: "absolute", right: "14px", height: "17px", width: "17px" }}>
+        <Stack
+          sx={{ position: "absolute", justifyContent: "center", right: "14px", height: "17px", width: "17px" }}
+          onClick={(e) => { e.stopPropagation(); e.preventDefault() }}
+        >
           <MyImage
             src={"/assets/icons/info-circle.svg"}
             width={17}
