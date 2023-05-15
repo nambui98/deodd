@@ -57,7 +57,10 @@ const Layout = ({ children }: IProps) => {
             <LeftSidebar mobileOpen={mobileOpenLeft} handleDrawerToggle={handleDrawerToggleLeft} open={leftOpen} />
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
-                <main> {router.pathname !== "/referral" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children} </main>
+                <main>
+                    {router.pathname !== "/referral" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children}
+                </main>
+
                 <FaqHowtoplay />
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />

@@ -30,6 +30,7 @@ import { ClickAwayListener } from '@mui/base';
 import ProfileUsername from "../profileUsername";
 import { LocalStorage } from "libs/LocalStorage";
 import MyImage from "../image";
+import { useRouter } from "next/router";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -106,6 +107,7 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
 
 export function UserInfo() {
   const theme = useTheme();
+  const router = useRouter();
   const matchesScreen = useMediaQuery(theme.breakpoints.up('md'));
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
@@ -119,7 +121,15 @@ export function UserInfo() {
     }
   }, [walletAddress, userInfo.username])
 
+  const handleDisconnect = () => {
+    disconnect();
+    setExpanded(false);
+    if (router.pathname === "/assets") {
 
+      router.replace("/");
+    }
+
+  }
   const { disconnect } = useDisconnect()
   if (!walletIsConnected) {
     return null;
@@ -231,7 +241,7 @@ export function UserInfo() {
                   <Divider></Divider>
                   <Button
                     variant="text"
-                    onClick={() => { disconnect(); setExpanded(false); }}
+                    onClick={() => handleDisconnect()}
                     startIcon={<LogoutIcon />}
                     sx={{
                       color: "secondary.400",

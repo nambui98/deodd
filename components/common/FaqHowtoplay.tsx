@@ -24,10 +24,8 @@ function FaqHowtoplay({ }: Props) {
     }
 
     return (
-        <Box position={{ xs: 'relative', md: 'fixed' }} mt={{ xs: '27px', md: 0 }} mb={{ xs: 3, md: 0 }} bottom={{
-            xs: 0, md: 24
-
-        }} width={'100%'} left={'50%'} sx={{ transform: 'translateX(-50%)' }}>
+        <Box mt={'auto'} mb={{ xs: 11.125, md: 3 }} bottom={{
+        }} >
 
             <Stack
                 direction={'row'} justifyContent={'center'}

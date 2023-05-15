@@ -13,10 +13,11 @@ import { Format } from 'utils/format'
 import EastIcon from '@mui/icons-material/East';
 import { ItemHistory, StatusTransfer } from './ItemHistory'
 import { Colors } from 'constants/index'
+import { Convert } from 'utils/convert'
 
-type Props = { walletTokens: TypeDataNFT, priceToken: number | undefined }
+type Props = { walletAddress: string, walletTokens: TypeDataNFT, priceToken: number | undefined }
 
-function RightContent({ walletTokens, priceToken }: Props) {
+function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
     const { bnbBalance } = useWalletContext();
     const [openModalWallet, setOpenModalWallet] = useState(false)
     const [openNftType, setOpenNftType] = useState<EnumNFT | undefined>()
@@ -37,7 +38,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
 
                 <Typography component={'span'} variant='h2' visibility={{ xs: 'hidden', md: 'visible' }}>
                     Wallet
-                    <Typography component={"span"} variant='caption'>{" "} (3535***3534)</Typography>
+                    <Typography component={"span"} variant='caption'>{" "} ({Convert.convertWalletAddress(walletAddress, 4, 4)})</Typography>
                 </Typography>
                 <ButtonBase onClick={() => setOpenModalWallet(true)}>
                     <Typography variant='body2' fontWeight={400} color={"secondary.main"}>

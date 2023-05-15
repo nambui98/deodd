@@ -85,18 +85,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     );
     let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
 
-    const listTabs: TypeTab[] = [
-        {
-            id: 1,
-            title: "Avaiable",
-            value: `(${rowsAvailable.length})`,
-        },
-        {
-            id: 2,
-            title: "Expired",
-            value: `(${rowsExpired.length})`,
-        },
-    ];
 
     const handleClaim = async () => {
         try {
@@ -213,7 +201,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 <TableHead>
                                     <TableRow sx={{ "td, th": { border: 0, py: 1 } }}>
                                         <TableCell sx={{ px: 0 }}>Users</TableCell>
-                                        <TableCell align="right">Expire Date</TableCell>
+                                        {
+                                            valueTab === 1 &&
+
+                                            <TableCell align="right">Expire Date</TableCell>
+                                        }
                                         <TableCell align="right">Profit</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -247,11 +239,15 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                         </Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography variant="caption" color="secondary.100">
-                                                        {row.expire}
-                                                    </Typography>
-                                                </TableCell>
+                                                {
+                                                    valueTab === 1 &&
+                                                    <TableCell align="right">
+                                                        <Typography variant="caption" fontWeight={400} color="secondary.100">
+                                                            {row.expire}
+                                                        </Typography>
+                                                    </TableCell>
+                                                }
+
                                                 <TableCell align="right">
                                                     <Stack
                                                         direction={"row"}
@@ -260,7 +256,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                         alignItems={"center"}
                                                     >
                                                         <Typography
-                                                            variant="caption"
+                                                            variant="body2"
                                                             color="secondary.main"
                                                         >
                                                             {" "}
