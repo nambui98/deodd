@@ -9,8 +9,9 @@ import Loader from 'components/common/Loader'
 type Props = {}
 
 function Content({ }: Props) {
-    const { ckReferral, link, dataAvailable, dataExpired, reload } = useReferral({ isNotGet: false });
+    const { ckReferral, link, dataAvailable, dataExpired, reload, dataReferralSuccess } = useReferral({ isNotGet: false });
     // const { walletAddress } = useWalletContext();
+
     return (
         <Box>:
             {
@@ -21,7 +22,7 @@ function Content({ }: Props) {
                             dataExpired={dataExpired}
                             reload={reload}
                             link={link ?? ''}
-                        /> : <ContentNoData link={link ?? ''} ckReferral={ckReferral ?? false} />)
+                        /> : <ContentNoData success={dataReferralSuccess ? true : false} dataReferralSuccess={dataReferralSuccess} link={link ?? ''} ckReferral={ckReferral ?? false} />)
                     : <Loader isLoadingProps />
             }
         </Box>

@@ -7,6 +7,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const { walletAddress } = useWalletContext();
     const [ckReferral, setCkReferral] = useState<boolean | undefined>();
     const [isReload, setIsReload] = useState<boolean>();
+    const [dataReferralSuccess, setDataReferralSuccess] = useState<any>();
 
     const [link, setLink] = useState<string | undefined>();
     const [dataAvailable, setDataAvailable] = useState<any[] | undefined>();
@@ -15,6 +16,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (!isNotGet) {
             if (walletAddress) {
                 getLinkUser();
+                checkUserIsValidForReferral();
             }
             else {
                 setCkReferral(false);
@@ -22,6 +24,18 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNotGet, walletAddress])
+
+    const checkUserIsValidForReferral = async () => {
+        const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
+
+        if (res.status === 200) {
+            if (res.data.data) {
+                if (res.data.data.isReferredByOthers) {
+                    setDataReferralSuccess(res.data.data.father);
+                }
+            }
+        }
+    }
 
     const getLinkUser = async () => {
         const ck = await DeoddService.checkUserReferral(walletAddress)
@@ -74,7 +88,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         setIsReload(!isReload);
     }
 
-    return { ckReferral, link, dataAvailable, dataExpired, getLinkUser, reload }
+    return { ckReferral, link, dataAvailable, dataExpired, getLinkUser, reload, dataReferralSuccess }
 }
 
 export default useReferral
