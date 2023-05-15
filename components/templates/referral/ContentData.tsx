@@ -63,7 +63,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         // format(new Date(2014, 1, 11), 'yyyy-MM-dd'),
                         item.expiredDateForFather,
-                        item.rewardFatherUnclaimed
+                        item.profitFather
                     )
                 )
                 : [],
@@ -77,7 +77,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         item.avatarIdChild,
                         item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         item.expiredDateForFather,
-                        item.rewardFatherUnclaimed
+                        item.profitFather
                     )
                 )
                 : [],
