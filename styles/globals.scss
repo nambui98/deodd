@@ -6,6 +6,7 @@
 	src: url("../public/fonts/BeVietnamPro-Thin.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 100;
@@ -13,6 +14,7 @@
 	src: url("../public/fonts/BeVietnamPro-ThinItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 200;
@@ -20,6 +22,7 @@
 	src: url("../public/fonts/BeVietnamPro-ExtraLight.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 200;
@@ -27,6 +30,7 @@
 	src: url("../public/fonts/BeVietnamPro-ExtraLightItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 300;
@@ -34,6 +38,7 @@
 	src: url("../public/fonts/BeVietnamPro-Light.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 300;
@@ -41,6 +46,7 @@
 	src: url("../public/fonts/BeVietnamPro-LightItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 400;
@@ -48,6 +54,7 @@
 	src: url("../public/fonts/BeVietnamPro-Regular.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 400;
@@ -55,6 +62,7 @@
 	src: url("../public/fonts/BeVietnamPro-Italic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 500;
@@ -62,6 +70,7 @@
 	src: url("../public/fonts/BeVietnamPro-Medium.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 500;
@@ -69,6 +78,7 @@
 	src: url("../public/fonts/BeVietnamPro-MediumItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 600;
@@ -76,6 +86,7 @@
 	src: url("../public/fonts/BeVietnamPro-SemiBold.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 600;
@@ -83,6 +94,7 @@
 	src: url("../public/fonts/BeVietnamPro-SemiBoldItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 700;
@@ -90,6 +102,7 @@
 	src: url("../public/fonts/BeVietnamPro-Bold.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 700;
@@ -97,6 +110,7 @@
 	src: url("../public/fonts/BeVietnamPro-BoldItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 800;
@@ -104,6 +118,7 @@
 	src: url("../public/fonts/BeVietnamPro-ExtraBold.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 800;
@@ -111,6 +126,7 @@
 	src: url("../public/fonts/BeVietnamPro-ExtraBoldItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 900;
@@ -118,6 +134,7 @@
 	src: url("../public/fonts/BeVietnamPro-Black.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "BeVietnamPro";
 	font-weight: 900;
@@ -125,18 +142,21 @@
 	src: url("../public/fonts/BeVietnamPro-BlackItalic.ttf");
 	font-display: swap;
 }
+
 @font-face {
 	font-family: Electrofied;
 	font-weight: 700;
 	src: local('Electrofied Bold'),
 		url('../public/fonts/ElectrofiedBold.ttf') format('truetype');
 }
+
 @font-face {
 	font-family: Electrofied;
 	font-weight: 300;
 	src: local('Electrofied Regular'),
 		url('../public/fonts/ElectrofiedRegular.ttf') format('truetype');
 }
+
 // #app { min-height: 100vh}
 html,
 body {
@@ -155,10 +175,12 @@ body {
 		Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue;
 	-webkit-tap-highlight-color: transparent;
 }
+
 * {
 	margin: 0;
 	padding: 0;
 }
+
 .swiper {
 	width: 100%;
 	height: 100%;
@@ -198,6 +220,7 @@ body {
 	height: 100%;
 	object-fit: cover;
 }
+
 .Toastify__toast-body {
 	font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, Segoe UI,
 		Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue;
@@ -212,7 +235,10 @@ body {
 	align-items: center;
 	justify-content: center;
 }
-.button-wrapper,.text,.text2 {
+
+.button-wrapper,
+.text,
+.text2 {
 	overflow: hidden;
 	position: absolute;
 	width: 100%;
@@ -222,11 +248,12 @@ body {
 }
 
 .text {
- 	top: 0
+	top: 0
 }
 
-.text,.text2 {
- 	transition: top 0.5s;
+.text,
+.text2 {
+	transition: top 0.5s;
 }
 
 .text2 {
@@ -239,30 +266,139 @@ body {
 
 
 .button:hover .text {
- top: -100%;
+	top: -100%;
 }
 
 .button:hover .text2 {
- top: 0;
+	top: 0;
 }
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+	-moz-appearance: textfield;
+	appearance: textfield;
 }
 
-ul.MuiList-root{
-	background: #181536;
-	color: #7071B3;
-	font-size: 14px;
-	font-weight: 500;
-	border: 1px solid #7071B3;
+// ul.MuiList-root{
+// 	background: #181536;
+// 	color: #7071B3;
+// 	font-size: 14px;
+// 	font-weight: 500;
+// 	border: 1px solid #7071B3;
+// }
+.spinner {
+	width: 60px;
+	height: 60px;
+	position: relative;
 }
 
+.spinner .dot {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+}
+
+.spinner .dot::after {
+	content: "";
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background-color: #FEF156;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spinner .dot {
+	animation: spin 2s infinite;
+}
+
+.spinner .dot:nth-child(2) {
+	animation-delay: 100ms;
+}
+
+.spinner .dot:nth-child(3) {
+	animation-delay: 200ms;
+}
+
+.spinner .dot:nth-child(4) {
+	animation-delay: 300ms;
+}
+
+.spinner .dot:nth-child(5) {
+	animation-delay: 400ms;
+}
+
+.burger {
+	position: relative;
+	width: 24px;
+	height: 18px;
+	background: transparent;
+	cursor: pointer;
+	display: block;
+}
+
+.burger input {
+	display: none;
+}
+
+.burger span {
+	display: block;
+	position: absolute;
+	height: 2px;
+	width: 100%;
+	background: #5A6178;
+	border-radius: 9px;
+	opacity: 1;
+	left: 0;
+	transform: rotate(0deg);
+	transition: .25s ease-in-out;
+}
+
+.burger span:nth-of-type(1) {
+	top: 0px;
+	transform-origin: left center;
+}
+
+.burger span:nth-of-type(2) {
+	top: 50%;
+	transform: translateY(-50%);
+	transform-origin: left center;
+}
+
+.burger span:nth-of-type(3) {
+	top: 100%;
+	transform-origin: left center;
+	transform: translateY(-100%);
+}
+
+.burger input:checked~span:nth-of-type(1) {
+	transform: rotate(45deg);
+	top: 0px;
+	left: 3px;
+}
+
+.burger input:checked~span:nth-of-type(2) {
+	width: 0%;
+	opacity: 0;
+}
+
+.burger input:checked~span:nth-of-type(3) {
+	transform: rotate(-45deg);
+	top: 17px;
+	left: 3px;
+}
+.burger input:checked .menuMobile{
+	transform: translateX(-100%);
+}
