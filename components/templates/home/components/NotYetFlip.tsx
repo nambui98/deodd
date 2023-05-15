@@ -116,6 +116,7 @@ function FormActions() {
                 <SideCoin isHead isSelected={dataSelected?.coinSide === 0} onClick={() => handleClickSideCoin(0)} />
                 <SideCoin isSelected={dataSelected?.coinSide === 1} onClick={() => handleClickSideCoin(1)} />
             </Stack >
+
             <Box mt={{ sm: 3, xs: 2 }}>
                 <ButtonLoading
                     onClick={handleFlip}
@@ -127,79 +128,74 @@ function FormActions() {
         </Box >
     )
 }
-const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps> = ({ isHead, isSelected, ...props }) =>
-(<ButtonLoadingShadow
-    active={isSelected}
-    onClick={props.onClick}
-    sx={{
-        py: { sm: 3, xs: 2 },
-        borderRadius: 2,
-        flex: '1 1 50%',
-        width: '100%',
-        // transition: ".3s all",
-        backgroundColor: "primary.100",
-        cursor: 'pointer',
-        display: 'flex',
-        gap: 3,
-        alignItems: 'center',
-        justifyContent: "center",
-        color: isSelected ? 'secondary.main' : 'secondary.700',
-        '.disabled, .enabled': {
-            position: 'absolute',
-            inset: 0,
-            zIndex: 1,
-            transition: "all .3s",
-            opacity: 1
-        },
-        '.enabled': {
-            zIndex: isSelected ? 1 : 0,
-            opacity: isSelected ? 1 : 0,
-        },
-        '&:hover': {
-            border: "1px solid #FEF156",
-            color: 'secondary.main',
-            backgroundColor: "primary.100",
-            '.disabled': {
-                zIndex: 0,
-                opacity: 0,
-            },
-            '.enabled': {
-                zIndex: 1,
+
+const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps> = ({ isHead, isSelected, ...props }) => {
+    return (
+        <ButtonLoadingShadow active={isSelected} onClick={props.onClick} sx={{
+            color: isSelected ? 'secondary.main' : 'secondary.700',
+            flex: '1 1 50%',
+            width: '100%',
+            py: { sm: 3, xs: 2 },
+            '.disabled, .enabled': {
+                position: 'absolute',
+                zIndex: -1,
+                pointerEvents: 'all',
+                transition: "all .3s",
                 opacity: 1
             },
-        },
-    }}
->
+            '.enabled': {
+                zIndex: isSelected ? 1 : 0,
+                opacity: isSelected ? 1 : 0,
+            },
+            '&:hover': {
+                border: "1px solid #FEF156",
+                color: 'secondary.main',
+                backgroundColor: "primary.100",
+                '.disabled': {
+                    zIndex: 0,
+                    opacity: 0,
+                },
+                '.enabled': {
+                    zIndex: 1,
+                    opacity: 1
+                },
+            },
+        }}>
 
-    {
-        isHead ?
-            <>
-                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                    <Box className="disabled" width={1} height={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
-                    </Box>
-                    <Box className="enabled" width={1} height={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
-                    </Box>
-                </Box>
-                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                    HEAD
-                </Typography>
-            </>
-            : <>
-                <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
-                    <Box className="disabled" width={1} height={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
-                    </Box>
-                    <Box className="enabled" width={1} height={1}>
-                        <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
-                    </Box>
-                </Box>
-                <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
-                    TAIL
-                </Typography>
-            </>
-    }
+            {
+                isHead ?
+                    <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                            <Box className="disabled" width={1} height={1}>
+                                <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
+                            </Box>
+                            <Box className="enabled" width={1} height={1}>
+                                <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                            HEAD
+                        </Typography>
 
-</ButtonLoadingShadow>
-)
+
+                    </Stack>
+                    :
+                    <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                            <Box className="disabled" width={1} height={1}>
+                                <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
+                            </Box>
+                            <Box className="enabled" width={1} height={1}>
+                                <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                            TAIL
+                        </Typography>
+                    </Stack>
+            }
+
+        </ButtonLoadingShadow>
+
+    )
+}

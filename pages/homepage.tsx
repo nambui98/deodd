@@ -20,7 +20,7 @@ const HomePage: React.FC = React.memo(() => {
       <Stack
         justifyContent='space-between'
       >
-        {walletIsConnected ? <Flip /> : <ConnectWallet />}
+        {!walletIsConnected ? <Flip /> : <ConnectWallet />}
       </Stack>
 
     </Stack>
