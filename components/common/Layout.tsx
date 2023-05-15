@@ -45,6 +45,8 @@ const Layout = ({ children }: IProps) => {
             Comming soon
         </Typography>
     )
+    console.log(router);
+
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
             <Meta title={AppConfig.title} description={AppConfig.description} />
@@ -58,7 +60,7 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main>
-                    {router.pathname !== "/referral" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children}
+                    {router.pathname !== "/referral" && router.pathname !== "/ref/[code]" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children}
                 </main>
 
                 <FaqHowtoplay />

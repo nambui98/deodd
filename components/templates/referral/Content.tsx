@@ -10,7 +10,7 @@ type Props = {}
 
 function Content({ }: Props) {
     const { ckReferral, link, dataAvailable, dataExpired, reload } = useReferral({ isNotGet: false });
-    const { walletAddress } = useWalletContext();
+    // const { walletAddress } = useWalletContext();
     return (
         <Box>:
             {
