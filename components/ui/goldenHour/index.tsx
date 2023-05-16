@@ -9,8 +9,8 @@ export function GoldenHour() {
 
   return (
     <Stack width={'100%'} alignItems={isGoldenHour ? "center" : "initial"} justifyContent="center">
-      <Typography variant='body2' color={'primary.200'} >{isGoldenHour ? "Golden hour ends in" : "Golden hour starts in"}</Typography>
-      <CountdownTimer />
+      <Typography variant='body2' color={'primary.200'} lineHeight={"1.25rem"}>{isGoldenHour ? "Golden hour ends in" : "Golden hour starts in"}</Typography>
+      <CountdownTimer color={"primary.200"} fontWeight={600} fontSize={"1rem"} lineHeight={"1.375rem"} />
       <Tooltip title={<InfoPopup />}
         enterTouchDelay={0}
         leaveTouchDelay={4000}
