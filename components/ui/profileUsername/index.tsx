@@ -59,7 +59,12 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
 
   return (
     <MyModal
-      open={open} setOpen={onClose}
+      open={open} setOpen={() => {
+        onClose();
+        if ((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username)) {
+          setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
+        }
+      }}
       haveIconClosed
       sx={{
         boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
