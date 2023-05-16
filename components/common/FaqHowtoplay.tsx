@@ -140,7 +140,13 @@ const PrivacyPolicy = () => (
 
 )
 const Item = styled(Typography)(({ theme }) => ({
-    fontSize: 14,
+    fontSize: 10,
+    [theme.breakpoints.up('sm')]: {
+        fontSize: 12,
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: 14,
+    },
     cursor: 'pointer',
     color: (theme.palette.secondary as any)["500"],
     fontWeight: 500
