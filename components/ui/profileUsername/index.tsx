@@ -55,16 +55,11 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
 
   useEffect(() => {
     setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
-  }, [userInfo.username, userInfo.avatar]);
+  }, [userInfo.username, userInfo.avatar, open]);
 
   return (
     <MyModal
-      open={open} setOpen={() => {
-        onClose();
-        if ((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username)) {
-          setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
-        }
-      }}
+      open={open} setOpen={onClose}
       haveIconClosed
       sx={{
         boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
