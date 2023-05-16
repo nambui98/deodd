@@ -105,13 +105,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             setTitleError("Something went wrong!");
         }
     };
-    console.log(
-        bnbBalance)
-    console.log(
-
-        // BigNumber.from(0.08)
-    )
-
 
     return (
         <Container>

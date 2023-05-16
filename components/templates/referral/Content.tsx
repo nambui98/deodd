@@ -13,7 +13,7 @@ function Content({ }: Props) {
     // const { walletAddress } = useWalletContext();
 
     return (
-        <Box>:
+        <Box>
             {
                 ckReferral !== undefined ?
                     (ckReferral ?

@@ -32,8 +32,13 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
             if (res.data.data) {
                 if (res.data.data.isReferredByOthers) {
                     setDataReferralSuccess(res.data.data.father);
+                } else {
+
+                    setDataReferralSuccess(undefined);
                 }
             }
+        } else {
+            setDataReferralSuccess(undefined);
         }
     }
 

@@ -16,7 +16,7 @@ type Props = {
     ckReferral: boolean;
     link: string;
     success?: boolean;
-    dataReferralSuccess?: { username: string, wallet: string } | undefined;
+    dataReferralSuccess?: { userName: string, wallet: string } | undefined;
 }
 
 function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props) {
@@ -58,7 +58,7 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                 }
                 {
                     success &&
-                    <Typography my={5} variant='h4' >You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
+                    <Typography my={5} variant='h4' >You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.userName} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
                 }
                 {
                     !ckReferral && walletIsConnected && <>
