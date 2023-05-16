@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Close2Icon, Flip2Icon, LotteryIcon, MenuIcon, MessageIcon } from 'utils/Icons';
+import { Archive2Icon, ArchiveIcon, Close2Icon, Flip2Icon, LotteryIcon, MenuIcon, MessageIcon } from 'utils/Icons';
 import { Avatar2Image } from 'utils/Images';
 import { checkAvatar } from 'utils/checkAvatar';
 
@@ -52,8 +52,8 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
         }, {
             label: '',
             value: 'avatar',
-            icon: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
-            iconActive: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
+            icon: <Archive2Icon width={'32px'} height={'32px'} fill="#96A5C0" />,
+            iconActive: <Archive2Icon width={'32px'} height={'32px'} fill="#fff" />,
             href: '/assets',
             onClick: () => { }
         },

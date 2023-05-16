@@ -20,6 +20,8 @@ export const ContentRef = (props: Props) => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
         if (res.status === 200) {
             if (res.data.data) {
+
+                getLinkUser();
                 if (res.data.data.isValidForReferred) {
                     const body = {
                         wallet: walletAddress,
@@ -28,12 +30,10 @@ export const ContentRef = (props: Props) => {
                     }
                     const res = await DeoddService.confirmReferralForUser(body);
                     if (res.status === 200 && res.data.data) {
-                        getLinkUser();
                         setSuccess(true);
                         setDataReferralSuccess(res.data.data);
                     }
                 } else if (res.data.data.isReferredByOthers) {
-                    getLinkUser();
                     setSuccess(true);
                     setDataReferralSuccess(res.data.data.father);
                 } else if (res.data.data.isReferredByOthers === false && res.data.data.isValidForReferred === false) {
