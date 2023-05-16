@@ -24,7 +24,7 @@ function FaqHowtoplay({ }: Props) {
     }
 
     return (
-        <Box mt={'auto'} mb={{ xs: 11.125, md: 3 }} bottom={{
+        <Box mt={'auto'} pt={3} mb={{ xs: 11.125, md: 3 }} bottom={{
         }} >
 
             <Stack
