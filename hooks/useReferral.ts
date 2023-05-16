@@ -2,9 +2,11 @@
 import { useWalletContext } from 'contexts/WalletContext';
 import { DeoddService } from 'libs/apis';
 import { useCallback, useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const { walletAddress } = useWalletContext();
+    const { isConnected } = useAccount();
     const [ckReferral, setCkReferral] = useState<boolean | undefined>();
     const [isReload, setIsReload] = useState<boolean>();
     const [dataReferralSuccess, setDataReferralSuccess] = useState<any>();
@@ -12,21 +14,35 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
     const [link, setLink] = useState<string | undefined>();
     const [dataAvailable, setDataAvailable] = useState<any[] | undefined>();
     const [dataExpired, setDataExpired] = useState<any[] | undefined>();
+    const [loading, setLoading] = useState<boolean | undefined>();
     useEffect(() => {
         if (!isNotGet) {
-            if (walletAddress) {
-                getLinkUser();
-                checkUserIsValidForReferral();
-            }
-            else {
+            setLoading(true);
+            if (isConnected) {
+                // if (walletIsConnected) {
+                if (walletAddress) {
+                    setCkReferral(undefined);
+                    setDataReferralSuccess(undefined);
+                    setLink(undefined);
+                    getLinkUser();
+                    checkUserIsValidForReferral();
+                }
+
+                // } else {
+                //     setCkReferral(undefined);
+                // }
+            } else {
                 setCkReferral(false);
+                setDataReferralSuccess(undefined);
             }
+
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isNotGet, walletAddress])
+    }, [isNotGet, walletAddress, isConnected])
 
     const checkUserIsValidForReferral = async () => {
-        const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
+        const res = await DeoddService.checkUserIsValidForReferral(walletAddress?.toString());
 
         if (res.status === 200) {
             if (res.data.data) {
@@ -56,7 +72,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
                 linkGenerate = await DeoddService.generateReferralLink(walletAddress);
             }
         }
-        if (ck.data && ck.data.data) {
+        if (ck.data && ck.data.data > 0) {
             setCkReferral(true);
         } else {
             setCkReferral(false);
