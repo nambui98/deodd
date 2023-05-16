@@ -67,7 +67,23 @@ const FAQContent = () => (
             </Stack>
             <Stack gap={1}>
                 <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                    How do I know I can Trust deODD?
+                    How much do I have to pay for a flip?
+                </Typography>
+                <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
+                    Each flip includes: <br />
+                    1. <Box component={"span"} fontWeight={700}>Bet amount:</Box> The multiple choice of bet amount as you can see on your flipping screen. <br />
+                    2. <Box component={"span"} fontWeight={700}>VRF fee (Verifiable Random Function):</Box> <Box component={"span"} color="text.secondary">0.003BNB</Box> will be charged by Binance Oracle, in order to generate pseudorandom output which is used for determining your result. <br />
+                    3. <Box component={"span"} fontWeight={700}>Service fee:</Box> <Box component={"span"} color="text.secondary">3.25%</Box> of bet amount <br />
+                    4. <Box component={"span"} fontWeight={700}>Gas fee:</Box> The fee charged on every blockchain transaction <br />
+                    <br />
+                    For example: <br />
+                    When you choose 0,01 BNB to flip, you actually spend: <br />
+                    0,01 + 0,003 + 3,25%*0,01 + 0,0007 = <Box component={"span"} color="text.secondary">0.014 BNB</Box> <Box component={"span"} fontStyle={"italic"}>(estimate)</Box>
+                </Typography>
+            </Stack>
+            <Stack gap={1}>
+                <Typography variant='body1' color='secondary.main' fontWeight={600}>
+                    How do I know I can Trust DeODD?
                 </Typography>
                 <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
                     As a decentralized coin flip and lottery product, DeODD uses technology and platforms to guarantee a fair system,
