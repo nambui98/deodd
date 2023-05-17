@@ -26,8 +26,9 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
     const router = useRouter();
-    const { isLoading, data: currentInfoIp } = useQuery({
+    const { isLoading, isFetching, data: currentInfoIp } = useQuery({
         queryKey: ["getCurrentIp"],
+        enabled: process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION",
         queryFn: DeoddService.getCurrentIp,
         select: (data: any) => {
             if (data.status === 200) {
@@ -37,7 +38,7 @@ const Layout = ({ children }: IProps) => {
             }
         },
     });
-
+    debugger
     const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
         if (mobileOpenRight) {
@@ -61,7 +62,7 @@ const Layout = ({ children }: IProps) => {
             Comming soon
         </Typography>
     )
-    if (isLoading) {
+    if (isFetching) {
         return <Loader isLoadingProps></Loader>
     }
     if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.country] !== undefined) {
