@@ -29,7 +29,7 @@ const Layout = ({ children }: IProps) => {
     const { isLoading, data: currentInfoIp } = useQuery({
         queryKey: ["getCurrentIp"],
         queryFn: DeoddService.getCurrentIp,
-        select(data) {
+        select: (data) => {
             if (data.status === 200) {
                 return data.data;
             } else {
