@@ -2,7 +2,14 @@ import axios from 'axios';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
-const apiRouter = process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV' ? 'https://deodd.io/deodd' : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION' ? 'https://pretestnet.deodd.io/deodd-pretest/' : ''
+const BASEURL_DEV = 'https://deodd.io/deodd';
+const BASEURL_PRODUCTION = 'https://pretestnet.deodd.io/deodd-pretest';
+
+const apiRouter =
+  process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+    ? BASEURL_DEV
+    : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+      ? BASEURL_PRODUCTION : ''
 const vhIdRequest = axios.create({
   baseURL: apiRouter,
   headers: {
