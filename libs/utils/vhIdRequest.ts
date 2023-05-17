@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
-// import { getLocalRefreshToken, updateLocalRefreshToken } from '../../services/token.service';
 
-const apiRouter = 'https://testapi.befitter.io/deodd'
+const apiRouter = process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV' ? 'https://deodd.io/deodd' : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION' ? 'https://pretestnet.deodd.io/deodd-pretest/' : ''
 const vhIdRequest = axios.create({
   baseURL: apiRouter,
   headers: {

@@ -1,6 +1,7 @@
 import vhIdRequest from "@/utils/vhIdRequest"
 import { ReferralApis } from "./referral"
 import { AuthApis } from "./auth"
+import { ChatApis } from "./chat"
 
 const saveInfoUser = async (body: object) => {
     return vhIdRequest({
@@ -51,6 +52,7 @@ const getResultByFlipId = async (flipId: string | number) => {
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
+    ...ChatApis,
     saveInfoUser,
     getRecentFlipping,
     getAssetsBalance,
