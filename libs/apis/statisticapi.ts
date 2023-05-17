@@ -1,23 +1,27 @@
 import vhIdRequest from "../utils/vhIdRequest";
 
-
+const baseURL =
+  process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+    ? '/deodd'
+    : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+      ? '/deodd-pretest' : ''
 export const getTopStreakToday = async () => {
   return vhIdRequest({
-    url: `/deodd/topstreak/today`,
+    url: baseURL + `/topstreak/today`,
     method: "get",
   });
 };
 
 export const getFlipPerUser = async () => {
   return vhIdRequest({
-    url: `/deodd/dashboard/flipperuser`,
+    url: baseURL + `/dashboard/flipperuser`,
     method: "get",
   });
 };
 
 export const getFlipDashboardStat = async () => {
   return vhIdRequest({
-    url: `/deodd/dashboard/flip`,
+    url: baseURL + `/dashboard/flip`,
     method: "get",
   });
 };

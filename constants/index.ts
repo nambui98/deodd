@@ -29,6 +29,22 @@ export const TIMEOUT_FULLFILL = 65000 //miniseconds
 export const SHARE = {
   title: 'Share the link on social media, let your friends join the game, and see your wallet skyrocket.',
 }
+export const IPS_NOT_SUPORT: { [key: string]: string } = {
+  VN: 'VN',
+  AE: 'AE',
+  BN: 'BN',
+  KH: 'KH',
+  KP: 'KP',
+  JP: 'JP',
+  CY: 'CY',
+  QA: 'QA',
+  RL: 'RL',
+  PL: 'PL',
+  SY: 'SY',
+  CU: 'CU',
+  TH: 'TH',
+  CN: 'CN'
+}
 // const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
 // export const BASE_URL_REFERRAL = window.origin + "/ref/"
 

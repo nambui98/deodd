@@ -1,9 +1,14 @@
+import { getCurrentIp } from './../../.history/libs/apis/ip_20230517145320';
 import vhIdRequest from "@/utils/vhIdRequest"
 import { ReferralApis } from "./referral"
 import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
 
-const baseURL = '/deodd'
+const baseURL =
+    process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+        ? '/deodd'
+        : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+            ? '/deodd-pretest' : ''
 const saveInfoUser = async (body: object) => {
     return vhIdRequest({
         url: baseURL + `/users/information`,
@@ -50,6 +55,7 @@ const getResultByFlipId = async (flipId: string | number) => {
         method: 'get',
     })
 }
+
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -60,5 +66,6 @@ export const DeoddService = {
     getBalanceHistories,
     getUserByPublicAddress,
     claimTokenSpending,
-    getResultByFlipId
+    getResultByFlipId,
+    getCurrentIp
 }

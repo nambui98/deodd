@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 
 import { IProps } from "../../libs/interfaces";
@@ -13,6 +13,11 @@ import RightSidebar from "./RightSidebar";
 import FaqHowtoplay from "./FaqHowtoplay";
 import { AppConfig } from "@/utils/AppConfig";
 import { useRouter } from "next/router";
+import { DeoddService } from "libs/apis";
+import { useQuery } from "@tanstack/react-query";
+import { IPS_NOT_SUPORT } from "constants/index";
+import Forbidden from "./Forbidden";
+import Loader from "./Loader";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -21,6 +26,17 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
     const router = useRouter();
+    const { isLoading, data: currentInfoIp } = useQuery({
+        queryKey: ["getCurrentIp"],
+        queryFn: DeoddService.getCurrentIp,
+        select(data) {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
 
     const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
@@ -45,7 +61,13 @@ const Layout = ({ children }: IProps) => {
             Comming soon
         </Typography>
     )
-    console.log(router);
+    if (isLoading) {
+        return <Loader isLoadingProps></Loader>
+    }
+    if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.countryCode] !== undefined) {
+        return <Forbidden ip={currentInfoIp.query} country={currentInfoIp.country} />
+    }
+
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
