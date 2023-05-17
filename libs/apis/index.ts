@@ -1,8 +1,8 @@
-import { getCurrentIp } from './../../.history/libs/apis/ip_20230517145320';
 import vhIdRequest from "@/utils/vhIdRequest"
 import { ReferralApis } from "./referral"
 import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
+import { getCurrentIp } from "./ip"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
