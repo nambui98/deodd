@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
-const BASEURL_DEV = 'https://deodd.io/deodd';
+const BASEURL_DEV = 'https://deodd.io';
 const BASEURL_PRODUCTION = 'https://pretestnet.deodd.io/deodd-pretest';
 
 const apiRouter =

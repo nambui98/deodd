@@ -23,33 +23,35 @@ function Chat({ open }: { open: boolean }) {
 
     })
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    const [messageHistory, setMessageHistory] = useState([]);
+    // const [messageHistory, setMessageHistory] = useState([]);
     const [content, setContent] = useState<string>('');
 
-    const { sendJsonMessage, lastMessage, lastJsonMessage, readyState } = useWebSocket('ws://deodd.io/degateway/connect/websocket');
-    useEffect(() => {
-        if (walletIsConnected) {
-            const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-            sendJsonMessage(message);
-        }
-    }, [walletIsConnected, sendJsonMessage])
+    // const { sendJsonMessage, lastMessage, lastJsonMessage, readyState } = useWebSocket('ws://deodd.io/degateway/connect/websocket');
+    // useEffect(() => {
+    //     if (walletIsConnected) {
+    //         const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+    //         sendJsonMessage(message);
+    //     }
+    // }, [walletIsConnected, sendJsonMessage])
 
-    useEffect(() => {
-        // sendMessage()
-        let data: { accessToken: string | null } = {
-            accessToken: LocalStorage.getAccessToken()
-        }
-        if (lastMessage !== null) {
-            console.log(lastMessage);
+    // useEffect(() => {
+    //     // sendMessage()
+    //     let data: { accessToken: string | null } = {
+    //         accessToken: LocalStorage.getAccessToken()
+    //     }
+    //     if (lastMessage !== null) {
 
-            // setMessageHistory((prev) => prev.concat(lastMessage));
-        }
-        if (lastJsonMessage) {
-            console.log(lastJsonMessage);
+    //         debugger
+    //         console.log(lastMessage);
 
-            debugger
-        }
-    }, [lastMessage, setMessageHistory, lastJsonMessage]);
+    //         // setMessageHistory((prev) => prev.concat(lastMessage));
+    //     }
+    //     if (lastJsonMessage) {
+    //         console.log(lastJsonMessage);
+
+    //         debugger
+    //     }
+    // }, [lastMessage, setMessageHistory, lastJsonMessage]);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -61,8 +63,7 @@ function Chat({ open }: { open: boolean }) {
 
     const handleSendMessage = (event: any) => {
         event.preventDefault();
-        sendMessage.mutate(content);
-
+        // sendMessage.mutate(content);
     }
     const id = Boolean(anchorEl) ? 'simple-popover' : undefined;
     const refContainerChat = useRef<HTMLElement>(null);
@@ -77,13 +78,13 @@ function Chat({ open }: { open: boolean }) {
             }, 1000);
         }
     }, [refContainerChat, open])
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Open',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Closed',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState];
+    // const connectionStatus = {
+    //     [ReadyState.CONNECTING]: 'Connecting',
+    //     [ReadyState.OPEN]: 'Open',
+    //     [ReadyState.CLOSING]: 'Closing',
+    //     [ReadyState.CLOSED]: 'Closed',
+    //     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+    // }[readyState];
 
 
     return (
@@ -96,7 +97,6 @@ function Chat({ open }: { open: boolean }) {
             </Box>
             <Divider />
 
-            <span>The WebSocket is currently {connectionStatus}</span>
             {
                 process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ?
                     <Stack

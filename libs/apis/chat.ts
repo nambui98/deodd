@@ -1,6 +1,6 @@
 import vhIdRequest from "@/utils/vhIdRequest"
 
-const baseURLChat = 'https://deodd.io/dejaw'
+const baseURLChat = '/dejaw'
 const sendMessage = async ({ from, content }: { from: string, content: string }) => {
     debugger
     return await vhIdRequest({
