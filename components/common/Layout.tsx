@@ -64,8 +64,8 @@ const Layout = ({ children }: IProps) => {
     if (isLoading) {
         return <Loader isLoadingProps></Loader>
     }
-    if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.countryCode] !== undefined) {
-        return <Forbidden ip={currentInfoIp.query} country={currentInfoIp.country} />
+    if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.country] !== undefined) {
+        return <Forbidden ip={currentInfoIp.ip} country={currentInfoIp.country} />
     }
 
 
