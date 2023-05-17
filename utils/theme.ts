@@ -117,12 +117,14 @@ export const lightTheme = responsiveFontSizes(createTheme({
 declare module '@mui/material/styles' {
 	interface Palette {
 		neutral: Palette['primary'];
+		dark: Palette['primary'];
 		border: Palette['primary'];
 	}
 
 	// allow configuration using `createTheme`
 	interface PaletteOptions {
 		neutral?: PaletteOptions['primary'];
+		dark?: PaletteOptions['primary'] & { 60: string };
 		border?: PaletteOptions['primary'];
 	}
 }
@@ -131,11 +133,12 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Button' {
 	interface ButtonPropsColorOverrides {
 		neutral: true;
+		dark: true;
 		border: true;
 	}
 }
 
-export const darkTheme = responsiveFontSizes(createTheme({
+export const darkTheme = createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
@@ -155,12 +158,18 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			'500': '#E4EDF4',
 			'600': '#F5F5FA',
 			'700': '#677286',
+			'800': '#48505f',
+			'900': '#3F4251',
 
 
+		},
+		dark: {
+			"60": '#96A5C0'
 		},
 		neutral: {
 			main: ' #2A2D3E',
 			A100: '#48505F',
+			A200: '#11131A'
 		},
 		border: {
 			main: '#FEF156',
@@ -175,7 +184,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		},
 		background: {
 			default: "#161821",
-			paper: "#11131A",
+			paper: "#2A2D3E",
 
 		},
 		text: {
@@ -198,6 +207,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 	typography: {
 		fontFamily: 'BeVietnamPro',
 		fontSize: 14,
+		// fontWeight: 400,
 		subtitle1: {
 			fontFamily: 'Electrofied',
 			lineHeight: 1.2,
@@ -211,6 +221,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 			fontSize: 14,
 			fontWeight: 500
 		},
+
 		button: {
 			fontSize: 16,
 		},
@@ -240,27 +251,28 @@ export const darkTheme = responsiveFontSizes(createTheme({
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					scrollbarColor: "#6b6b6b #2b2b2b",
+					scrollbarColor: "#FEF156 #2A2D3E",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
-						backgroundColor: "transparent",
+						backgroundColor: "#2A2D3E",
+						width: '4px'
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,
-						backgroundColor: "#6b6b6b",
-						minHeight: 24,
-						border: "3px solid #2b2b2b",
+						backgroundColor: "#FEF156",
+						minHeight: 20,
+						// border: "3px solid #2b2b2b",
 					},
 					"&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
-						backgroundColor: "#959595",
+						backgroundColor: "#FEF156",
 					},
 					"&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
-						backgroundColor: "#2b2b2b",
+						backgroundColor: "#2A2D3E",
 					},
 				},
 			},
@@ -274,6 +286,7 @@ export const darkTheme = responsiveFontSizes(createTheme({
 					return {
 						border: `2px solid`,
 						borderRadius: '8px',
+						// touchAction: 'manipulation',
 
 						'&:hover': {
 							backgroundColor: color != null && color != "inherit" ? darkTheme.palette[color].main : "inherit",
@@ -313,14 +326,32 @@ export const darkTheme = responsiveFontSizes(createTheme({
 							},
 							'&:hover': {
 								borderColor: darkTheme.palette.border.dark,
-								color: darkTheme.palette.background.paper,
-
+								color: (darkTheme.palette.neutral as any).A200
 								// color: darkTheme.palette.background.default,
 							},
 							'&:hover svg': {
 
-								stroke: darkTheme.palette.background.paper
+								stroke: (darkTheme.palette.neutral as any).A200
 							}
+
+						}
+
+					}
+				},
+				{
+					props: { variant: 'text' },
+					style: () => {
+						return {
+							backgroundColor: 'transparent',
+							boxShadow: 'none',
+							border: 'none',
+							'&:hover': {
+
+								border: 'none',
+								backgroundColor: 'inherit'
+								// backgroundColor: (darkTheme.palette.dark as any)['60']
+							},
+
 
 						}
 
@@ -352,11 +383,12 @@ export const darkTheme = responsiveFontSizes(createTheme({
 	breakpoints: {
 		values: {
 			xs: 0,
-			sm: 768,
+			sm: 600,
 			md: 900,
 			lg: 1200,
-			xl: 1536
+			xl: 1567,
+			// xl: 1536
 		},
 	},
-}), {});
+});
 

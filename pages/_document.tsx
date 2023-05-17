@@ -7,6 +7,7 @@ export default function Document() {
 			<Head>
 				<link rel="icon" href="/favicon.ico" />
 				<meta name="color-scheme" content="light only"></meta>
+
 				{/* <meta
 					name="google-site-verification"
 					content="HYiuC-O79F8rJ09CK5wwhKFlBQjNnMA9QAgaJsejIzs"

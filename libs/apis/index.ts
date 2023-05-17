@@ -1,73 +1,71 @@
 import vhIdRequest from "@/utils/vhIdRequest"
+import { ReferralApis } from "./referral"
+import { AuthApis } from "./auth"
+import { ChatApis } from "./chat"
+import { getCurrentIp } from "./ip"
 
+const baseURL =
+    process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+        ? '/deodd'
+        : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+            ? '/deodd-pretest' : ''
 const saveInfoUser = async (body: object) => {
     return vhIdRequest({
-        url: `/users/information`,
+        url: baseURL + `/users/information`,
         method: 'put',
         data: body
     })
 }
-const checkUserReferral = async (address: string) => {
+
+const getUserByPublicAddress = async (wallet: string) => {
     return vhIdRequest({
-        url: `/users/ref/checkref?address=${address}`,
-        method: 'get'
-    })
-}
-const getReferralRewardAvailable = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/available?wallet=${address}`,
-        method: 'get'
-    })
-}
-const getReferralRewardExpired = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/expired?wallet=${address}`,
-        method: 'get'
-    })
-}
-const checkUserIsValidForReferral = async (address: string) => {
-    return vhIdRequest({
-        url: `/users/ref/check?address=${address}`,
+        url: baseURL + `/users/fetch?address=${wallet}`,
         method: 'get',
     })
 }
-const findGenerateReferralLinkByWallet = async (address: string) => {
+
+const getRecentFlipping = async () => {
     return vhIdRequest({
-        url: `/users/ref/findLink?address=${address}`,
+        url: baseURL + `/recent`,
         method: 'get',
     })
 }
-const generateReferralLink = async (address: string) => {
+const getAssetsBalance = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/generate`,
-        method: 'put',
-        data: JSON.stringify({ wallet: address })
+        url: baseURL + `/assets/balance?wallet=${address}`,
+        method: 'get',
     })
 }
-const confirmReferralForUser = async (body: any) => {
+const getBalanceHistories = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/confirm`,
-        method: 'post',
-        data: JSON.stringify(body)
+        url: baseURL + `/spending?wallet=${address}`,
+        method: 'get',
     })
 }
-const ClaimReferral = async (address: string) => {
-    return await vhIdRequest({
-        url: `/users/ref/claim`,
+const claimTokenSpending = async () => {
+    return vhIdRequest({
+        url: baseURL + `/jackpot/claim`,
         method: 'post',
-        data: JSON.stringify({
-            wallet: address
-        })
+        data: {}
     })
 }
+const getResultByFlipId = async (flipId: string | number) => {
+    return vhIdRequest({
+        url: baseURL + `/users/flip?flipId=${flipId}`,
+        method: 'get',
+    })
+}
+
 export const DeoddService = {
-    generateReferralLink,
-    checkUserIsValidForReferral,
-    getReferralRewardExpired,
-    findGenerateReferralLinkByWallet,
-    getReferralRewardAvailable,
+    ...ReferralApis,
+    ...AuthApis,
+    ...ChatApis,
     saveInfoUser,
-    checkUserReferral,
-    confirmReferralForUser,
-    ClaimReferral
+    getRecentFlipping,
+    getAssetsBalance,
+    getBalanceHistories,
+    getUserByPublicAddress,
+    claimTokenSpending,
+    getResultByFlipId,
+    getCurrentIp
 }

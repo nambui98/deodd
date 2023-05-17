@@ -6,8 +6,8 @@ import { useSiteContext } from "contexts/SiteContext";
 import { getPriceToken } from "libs/apis/coinmarketcap";
 import { EnumNFT } from "libs/types";
 export type TypeNFT = {
-    id: number,
-    type: number,
+    id: number | string,
+    type: number | string,
     amount: number,
 }
 
@@ -22,7 +22,6 @@ export type TypeDataNFT = {
 
 export const useDeoddNFTContract = () => {
     const { contractDeoddNft, walletAddress } = useWalletContext();
-    const [spendingTokens, setSpendingTokens] = useState<TypeDataNFT>();
     const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
     const [nftSelected, setNftSelected] = useState<TypeNFT | undefined>();
     const [reload, setReload] = useState<boolean>(false);
@@ -113,11 +112,6 @@ export const useDeoddNFTContract = () => {
 
     useEffect(() => {
         if (walletAddress) {
-            getSpendingTokens().then((res) => {
-                if (res && res.data.length > 0) {
-                    setSpendingTokens(res);
-                }
-            });
             getWalletTokens().then(res => {
                 if (res && res.data.length > 0) {
                     setWalletTokens(res);
@@ -130,6 +124,7 @@ export const useDeoddNFTContract = () => {
             })
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reload, walletAddress])
 
     const handleClickNFT = (nft: TypeNFT) => {
@@ -143,7 +138,6 @@ export const useDeoddNFTContract = () => {
         try {
             setIsLoading(true);
             let res = await claimToWallet();
-
             setIsLoading(false);
             if (res.status) {
                 setTitleSuccess('Claimed successfully')
@@ -156,5 +150,5 @@ export const useDeoddNFTContract = () => {
             setIsError(true);
         }
     }
-    return { walletTokens, spendingTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken }
+    return { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken }
 }

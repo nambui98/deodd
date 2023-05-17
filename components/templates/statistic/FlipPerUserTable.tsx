@@ -2,29 +2,20 @@ import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
 
 function RowItem({
-  totalUser,
   times,
   percentage,
+  count,
 }: {
-  totalUser: number;
   times: string;
   percentage: number;
+  count: number;
 }) {
   return (
-    <Box
-      sx={{
-        gap: { xs: 1, sm: 2, md: 3 },
-      }}
-      width={1}
-      display={"flex"}
-      gap={1}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-    >
-      <Typography variant="body2" minWidth={"3rem"}>
+    <>
+      <Typography variant="body2" lineHeight={"1.375rem"}>
         {times}
       </Typography>
-      <Box height={1} width={1}>
+      <Box display={"flex"} alignItems={"center"} px={{ xs: 0, sm: 2, md: 3.75 }}>
         <Box
           width={1}
           height={"0.25rem"}
@@ -39,11 +30,11 @@ function RowItem({
           ></Box>
         </Box>
       </Box>
-      <Typography variant="body2">{totalUser}</Typography>
-      <Typography variant="body2" minWidth={"2.3rem"} textAlign={"right"}>
+      <Typography variant="body2" textAlign={"right"} lineHeight={"1.375rem"} pr={0.75}>{count}</Typography>
+      <Typography variant="body2" textAlign={"right"} lineHeight={"1.375rem"} fontSize={"0.75rem"}>
         {percentage}%
       </Typography>
-    </Box>
+    </>
   );
 }
 
@@ -52,13 +43,11 @@ type FlipPerUserType = {
     haveFlipped: boolean;
     errorMessage: string;
   };
-  userPerFlip: any;
-  totalUser: number;
+  userFlipStat: any;
 };
 
 export function FlipPerUserTable({
-  userPerFlip,
-  totalUser,
+  userFlipStat,
   error,
 }: FlipPerUserType) {
   return (
@@ -66,54 +55,64 @@ export function FlipPerUserTable({
       sx={{
         paddingInline: { xs: 1, sm: 2, md: 3 },
         width: "100%",
-        mt: 3,
-        height: "fit-content",
-        maxHeight: "27rem",
+        mt: 3.25,
+        height: { xs: "fit-content", md: "100%" },
+        maxHeight: "22.875rem",
         overflowY: "auto",
         overflowX: "hidden",
+        position: "relative",
       }}
     >
       <Box
         display={"flex"}
         justifyContent={"space-between"}
-        mb={1.5}
         bgcolor={"secondary.300"}
         sx={{ position: "sticky", top: "0px", paddingBlockEnd: 2 }}
       >
-        <Typography variant="body2" textTransform={"uppercase"}>
+        <Typography variant="body2" textTransform={"uppercase"} lineHeight={"1.375rem"}>
           times
         </Typography>
-        <Typography variant="body2" textTransform={"uppercase"}>
-          users
+        <Typography variant="body2" textTransform={"uppercase"} lineHeight={"1.375rem"}>
+          flip
         </Typography>
       </Box>
 
-      <Box
+      {error.haveFlipped ? (<Box
         width={1}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        gap={3}
+        display={"grid"}
+        gridTemplateColumns={"auto 1fr auto auto"}
+        alignItems={"center"}
+        rowGap={1.5}
+        columnGap={1.25}
       >
-        {error.haveFlipped ? (
-          userPerFlip.map(
-            ([property, value]: [string, number], index: number) => {
-              return (
-                <RowItem
-                  key={index}
-                  totalUser={totalUser}
-                  times={property}
-                  percentage={value}
-                />
-              );
-            }
-          )
-        ) : (
-          <Typography variant="h2" textAlign={"center"}>
-            {error.errorMessage}
-          </Typography>
+
+        {userFlipStat.map(
+          ([property, { percentFlip, numberFlip }]: [string, { percentFlip: number, numberFlip: number }], index: number) => {
+            return (
+              <RowItem
+                key={index}
+                times={property}
+                percentage={percentFlip}
+                count={numberFlip}
+              />
+            );
+          }
         )}
-      </Box>
+
+      </Box>) : (
+        <Typography
+          variant="h2"
+          textAlign={"center"}
+          width={1}
+          // Center the text when the viewport is bigger. This is a temporary implementation, still thinking of better solution.
+          sx={
+            {
+              paddingBlockEnd: { xs: "2rem", md: 0 }, top: { md: "50%" }, left: { md: "50%" }, transform: { md: "translate(-50%, -100%)" }, position: { md: "absolute" }
+            }
+          }>
+          {error.errorMessage}
+        </Typography>
+      )}
     </Box>
   );
 }

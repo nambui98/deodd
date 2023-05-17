@@ -1,191 +1,335 @@
-import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, Drawer as DrawerMobile, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 
 import { Drawer } from 'components/ui/drawer';
-import { Colors } from 'constants/index';
+import { Colors, DRAWER_WIDTH } from 'constants/index';
 import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyIcon, Ref2EarnIcon, ShopIcon } from 'utils/Icons';
 import { LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
+import MyImage from "components/ui/image";
+import { GoldenHour } from 'components/ui/goldenHour';
+import { useSiteContext } from 'contexts/SiteContext';
+import GoldenHourIcon from 'components/ui/goldenHour/GoldenHourIcon';
 
 type Props = {
     open: boolean;
+    mobileOpen: boolean;
+    handleDrawerToggle: VoidFunction;
+    window?: () => Window;
 }
-const SIDE_BAR_LEFT = [
+type TypeSideBarItem = {
+    id: number,
+    icon?: JSX.Element,
+    title?: string,
+    path?: string,
+    highLight?: boolean,
+    highLightText?: boolean,
+    disabledHover?: boolean,
+    child?: JSX.Element,
+    comming?: boolean,
+    isOnlyComponent?: boolean,
+    isActive?: boolean,
+    isLink?: boolean
+}
+const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     {
+        id: 1,
         icon: <HomeIcon />,
         title: 'Home',
         path: '/',
+        isLink: true,
     },
     {
+        id: 2,
         icon: <CoinFlipIcon />,
         title: 'Coin Flip',
         path: '/',
-        hightLightText: true
+        highLightText: true,
+        isLink: true,
     },
     {
-        icon: <img src={MoneyBagImage} alt="" />,
+        id: 3,
+        icon: <MyImage src={MoneyBagImage} width={40} height={40} alt="" />,
         title: '',
         path: '/',
-        hightLight: true,
-        child: <Stack width={'100%'}>
-            <Typography variant='body2' color={'primary.200'}>Golden Hour start in</Typography>
-            <Typography variant='h3' fontWeight={600} color={'primary.200'}>20:53:10</Typography>
-        </Stack>
-    }, {
+        highLight: true,
+        disabledHover: true,
+        child: <GoldenHour />,
+        isLink: true
+    },
+    {
+        id: 4,
         icon: <DashboardIcon />,
         title: 'Dashboard',
         path: '/statistic',
-    }, {
+        isLink: true,
+    },
+    {
+        id: 5,
         icon: <FlipIcon />,
         title: 'Flip',
         path: '/',
-    }, {
-        icon: <CampaignIcon />,
-        title: 'Campaign',
-        path: '/campaign',
-    }, {
+        isLink: true
+    },
+    {
+        id: 6,
         icon: <Ref2EarnIcon />,
         title: 'Ref 2 Earn',
         path: '/referral',
-    }, {
+        isLink: true
+    },
+    {
+        id: 7,
+        icon: <CampaignIcon />,
+        title: 'Campaign',
+        path: '/campaign',
+        isLink: true
+    },
+    {
+        id: 8,
         icon: <LoyaltyIcon />,
         title: 'Loyalty',
         path: '/loyalty',
+        isLink: true
     },
     {
+        id: 9,
         icon: <ShopIcon />,
         title: 'Shop',
-        path: '/',
+        path: '/shop',
+        isLink: true
     },
-]
-
-const SIDE_BAR_LEFT_BOTTOM = [
     {
-        icon: <img src={LotteryImage} alt="" />,
+        id: 10,
+        isOnlyComponent: true,
+        child: <Divider sx={{ mx: 3, mt: 3 }} />
+    },
+    {
+        id: 11,
+        icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
-        path: '/',
-        // hightLight: true,
-        hightLightText: false,
+        path: '/lottery',
+        comming: true,
+        highLightText: false,
+        disabledHover: true,
         child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
             <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery</Typography>
-            <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} mr={-3}>
-                <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
-            </Box>
-        </Stack>
+
+        </Stack>,
+        isLink: true
     },
+    {
+        id: 12,
+        isOnlyComponent: true,
+        child: <Divider sx={{ mx: 3, mt: 1 }} />
+    }
 ]
-const styleButton = (item: any, open: boolean) => {
+
+
+const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean) => {
     return {
         minHeight: 48,
         justifyContent: open ? 'initial' : 'center',
-        px: item.hightLight ? 1.5 : 3,
-        py: item.hightLight ? 1 : 2,
-        bgcolor: item.hightLight && open ? 'secondary.main' : 'transparent',
-        borderRadius: item.hightLight ? 2 : 0,
-        boxShadow: item.hightLight ? '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px',
-        mx: item.hightLight ? 2 : 0,
+        px: item.highLight ? 1.5 : 3,
+        py: item.highLight ? open ? 1 : 0 : 2,
+        bgcolor: item.highLight && open ? isGoldenHour ? 'rgba(255, 252, 221, 1)' : 'secondary.main' : 'transparent',
+        backgroundImage: item.highLight ? open ? isGoldenHour ? `url(assets/images/golden-hour-bg.png)` : `url(assets/images/bg_button_sidebar.png)` : 'none' : 'none',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100%',
+        backgroundPosition: 'center',
+        borderRadius: item.highLight ? 2 : 0,
+        boxShadow: item.highLight ? open ? isGoldenHour ? '0px 2px 24px 0px rgba(254, 241, 86, 0.8)' : '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px' : '0px',
+        mx: item.highLight && open ? 2 : 0,
         mt: 1,
-        color: item.hightLightText ? 'text.primary' : 'text.disabled',
+        mb: item.highLight ? 3 : 0,
+        color: item.isActive ? 'secondary.main' : item.highLightText ? 'text.primary' : 'text.disabled',
         transition: '.3s all',
         svg: {
-            fill: Colors.secondary
+            fill: item.isActive ? Colors.secondaryDark : Colors.secondary
         },
         '&::before': {
             content: '""',
             position: 'absolute',
             inset: 0,
-            width: 0,
+            width: item.isActive ? 1 : 0,
             backgroundImage: 'linear-gradient(90deg, rgba(254, 241, 86, 0.3) 0%, rgba(254, 241, 86, 0) 100%);',
             transition: '.3s all',
         },
-        '&:hover': {
-            color: 'secondary.main',
+
+        '&:hover': item.disabledHover || item.isActive ? {
+            backgroundColor: item.highLight && open ? isGoldenHour ? 'rgba(255, 252, 221, 1)' : 'secondary.main' : 'transparent',
+            backgroundSize: '110%',
+        } : {
+            color: 'primary.main',
+            backgroundColor: 'transparent',
             svg: {
-                fill: Colors.secondaryDark
+                fill: Colors.white
             },
             '&::before': {
-                width: '100%',
+                // width: '100%',
             }
         }
     }
 }
-function LeftSidebar({ open }: Props) {
-    return (
-        <Drawer
-            variant="permanent"
-            anchor="left"
-            open={open}
-        >
+
+function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
+    const [idActive, setIdActive] = useState<number | undefined>();
+    const route = useRouter();
+    const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.pathname])
+    const container = window !== undefined ? () => window().document.body : undefined;
+    const { isGoldenHour } = useSiteContext();
+    useEffect(() => {
+        if (idCurrentActive) {
+            setIdActive(idCurrentActive);
+        } else {
+            setIdActive(undefined);
+        }
+    }, [idCurrentActive])
+
+    const handleSetActive = (id: number | undefined) => {
+        // debugger
+        if (id !== idActive) {
+            setIdActive(prev => prev !== id ? id : prev);
+        }
+        if (mobileOpen) {
+            handleDrawerToggle();
+        }
+    }
+
+
+    const drawer = (
+        <>
             <List>
-                {SIDE_BAR_LEFT.map((item, index) => (
-                    <ListItem key={item.path + index} disablePadding sx={{ display: 'block' }}>
-                        <Link href={item.path}>
-                            <ListItemButton
-                                // href={item.path}
-                                sx={styleButton(item, open)}
+                {SIDE_BAR_LEFT.map((item, index) => {
+                    item.isActive = idActive === item.id;
+                    return (
+                        item.isOnlyComponent ? item.child :
+                            <ListItem
+                                key={item.id ?? '' + index}
+                                disablePadding
+                                sx={{ display: "block", }}
                             >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: open ? 2 : 'auto',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {item.icon}
-                                </ListItemIcon>
+                                <ListItemButton LinkComponent={item.isLink && route.asPath !== item.path ? Link : undefined} href={route.asPath !== item.path && item?.path ? item?.path : ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open, isGoldenHour)}>
+                                    {/* If is currently golden hour then remove item of item 3 */}
+                                    {!open && item.id == 3
+                                        ? (<ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                mr: open ? 2 : "auto",
+                                                justifyContent: "center",
+                                            }}
+                                        >
+                                            <GoldenHourIcon />
+                                        </ListItemIcon>)
+                                        : isGoldenHour && open && item.id == 3
+                                            ? ""
+                                            : (<ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 2 : "auto",
+                                                    justifyContent: "center",
+                                                }}
+                                            >
+                                                {item.icon}
+                                            </ListItemIcon>)}
+                                    {item.child && (
+                                        <Stack width={"100%"} display={open ? "block" : "none"}>
+                                            {item.child}
+                                        </Stack>
+                                    )}
+                                    {item.title && (
+                                        <ListItemText
+                                            primary={
+                                                <Typography
+                                                    variant="body2"
+                                                    fontSize={item.highLightText ? 16 : 14}
+                                                    lineHeight={item.highLightText ? "1.375rem" : "1.25rem"}
+                                                >
+                                                    {item.title}
+                                                </Typography>
+                                            }
+                                            sx={{ opacity: open ? 1 : 0, margin: 0 }}
+                                        />
+                                    )}
+                                </ListItemButton>
                                 {
-                                    item.child && <Stack width={'100%'} display={open ? 'block' : 'none'}>
-                                        {item.child}
-                                    </Stack>
-
+                                    item?.comming && open &&
+                                    <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
+                                        transform: 'translateY(-50%)'
+                                    }}>
+                                        <Typography variant='h3' fontWeight={600} color={'primary.main'}>Coming soon</Typography>
+                                    </Box>
                                 }
-                                {
-                                    item.title &&
-                                    <ListItemText primary={<Typography variant='body2' fontSize={item.hightLightText ? 16 : 14}  >{item.title}</Typography>} sx={{ opacity: open ? 1 : 0 }} />
-                                }
-                            </ListItemButton>
 
-                        </Link>
-                    </ListItem>
-                ))}
+                            </ListItem>
+                    )
+                })}
 
-                <Divider sx={{ mx: 3, mt: 3 }} />
-                {SIDE_BAR_LEFT_BOTTOM.map((item, index) => (
-                    <ListItem key={item.path + index} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            // href={item.path}
-                            sx={{ ...styleButton(item, open), mt: index !== 0 ? 1 : 0, py: 3 }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 2 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                {item.icon}
-                            </ListItemIcon>
-                            {
-                                item.child && <Stack width={'100%'} display={open ? 'block' : 'none'}>
-                                    {item.child}
-                                </Stack>
-                            }
-                            {
-                                item.title &&
-                                <ListItemText primary={<Typography variant='body2' fontSize={item?.hightLightText ? 16 : 14}  >{item.title}</Typography>} sx={{ opacity: open ? 1 : 0 }} />
-                            }
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-                <Divider sx={{ mx: 3 }} />
             </List>
-            <Box mt={'auto'} width="100%">
+            <Box display={open ? 'block' : 'none'} mt={"auto"} width="100%">
                 <Contact />
             </Box>
-        </Drawer>
-    )
+
+        </>
+    );
+    return (
+        <Box
+            component="nav"
+            sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { sm: 0 }, position: 'relative' }}
+            aria-label="mailbox folders"
+        >
+            <DrawerMobile
+                container={container}
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                }}
+                sx={{
+                    display: { xs: 'block', md: 'none', },
+                    '& .MuiDrawer-paper': {
+                        paddingBottom: 8,
+                        boxShadow: '4px 0px 24px rgba(0, 0, 0, 0.25)',
+                        boxSizing: 'border-box', width: DRAWER_WIDTH, bgcolor: 'primary.200', backgroundImage: 'none'
+                    },
+                }}
+            >
+                {drawer}
+            </DrawerMobile>
+            <Drawer
+                variant="permanent"
+                anchor="left"
+                open={open}
+                sx={{
+                    display: { xs: 'none', md: 'block' },
+                    '&:after': {
+                        content: '""',
+                        position: 'fixed',
+                        left: open ? DRAWER_WIDTH : (theme) => theme.spacing(8.5),
+                        background: isGoldenHour ? 'radial-gradient(50% 50% at 50% 50%, #FEF156 0%, rgba(254, 241, 86, 0) 100%)' : '',
+                        filter: 'blur(20px)',
+                        width: 30,
+                        height: '100vh',
+                        pointerEvents: 'none',
+                        zIndex: (theme) => theme.zIndex?.appBar + 1,
+                        transition: (theme) => theme.transitions.create('left', {
+                            easing: theme.transitions.easing.sharp,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                    },
+                }}
+            >
+                {drawer}
+            </Drawer>
+        </Box>
+    );
+
 }
 
-export default LeftSidebar
+export default React.memo(LeftSidebar)
 
 

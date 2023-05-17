@@ -4,38 +4,46 @@ import { DeoddService } from 'libs/apis';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import ContentNoData from '../referral/ContentNoData';
+import { useSiteContext } from 'contexts/SiteContext';
 
 type Props = {}
 
 export const ContentRef = (props: Props) => {
     const { walletAddress, userInfo } = useWalletContext();
+    const { setIsError, setTitleError } = useSiteContext();
 
     const { link, getLinkUser } = useReferral({ isNotGet: true });
     const router = useRouter();
     const { code } = router.query;
     const [success, setSuccess] = useState(false);
-    const [dataReferralSuccess, setDataReferralSuccess] = useState<{ username: string, wallet: string } | undefined>();
-    console.log(code);
+    const [dataReferralSuccess, setDataReferralSuccess] = useState<{ userName: string, wallet: string } | undefined>();
 
     const checkUserIsValidForReferral = async () => {
         const res = await DeoddService.checkUserIsValidForReferral(walletAddress);
         if (res.status === 200) {
             if (res.data.data) {
-                const body = {
-                    wallet: walletAddress,
-                    username: userInfo.userName,
-                    referralLink: code,
-                }
-                const res = await DeoddService.confirmReferralForUser(body);
 
-                debugger
-                if (res.status === 200 && res.data.data) {
-                    getLinkUser();
+                getLinkUser();
+                if (res.data.data.isValidForReferred) {
+                    const body = {
+                        wallet: walletAddress,
+                        username: userInfo?.username,
+                        referralLink: code,
+                    }
+                    const res = await DeoddService.confirmReferralForUser(body);
+                    if (res.status === 200 && res.data.data) {
+                        setSuccess(true);
+                        setDataReferralSuccess(res.data.data);
+                    } else if (res.status === 200 && res.data.meta.code === 2001) {
+                        setIsError(true);
+                        setTitleError(res.data.meta.error_message);
+                    }
+                } else if (res.data.data.isReferredByOthers) {
                     setSuccess(true);
-                    setDataReferralSuccess(res.data.data);
+                    setDataReferralSuccess(res.data.data.father);
+                } else if (res.data.data.isReferredByOthers === false && res.data.data.isValidForReferred === false) {
+                    router.push('/referral');
                 }
-            } else {
-                router.push('/referral');
             }
         }
         return res;
@@ -44,6 +52,7 @@ export const ContentRef = (props: Props) => {
         if (walletAddress && code) {
             checkUserIsValidForReferral();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletAddress, code])
 
 

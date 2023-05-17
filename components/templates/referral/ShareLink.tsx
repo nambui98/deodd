@@ -1,11 +1,12 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonTertiary } from 'components/ui/button'
-import { Colors } from 'constants/index'
+import { Colors, SHARE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share'
 import React from 'react'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
+import HowItWorkModal from './HowItWorkModal'
 
 type Props = {
     link: string
@@ -20,24 +21,26 @@ function ShareLink({ link }: Props) {
     }
     return (
         <Box>
-            <Box sx={{ height: '1px', margin: "40px 0", bgcolor: 'secondary.100' }}>
+            <Box sx={{ height: '1px', my: 3, bgcolor: 'secondary.300' }}>
             </Box>
-            <Typography variant='h4' textAlign={'center'} mt={5}>
+            <Typography variant='h4' textAlign={'center'}>
                 Your referral link
             </Typography>
             <ButtonTertiary fullWidth sx={{
-                mt: 1, py: '12px',
+                mt: 3, py: '12px',
                 color: 'secondary.main',
                 'svg': {
+                    stroke: 'transparent',
                     fill: Colors.primaryDark,
                 },
                 '&:hover': {
                     svg: {
-                        fill: Colors.secondary
+                        stroke: 'transparent',
+                        fill: Colors.bg80
                     }
                 }
             }} onClick={handleCopy} >
-                <Typography variant='h4' mr={3} textTransform={'none'} >
+                <Typography variant='h4' fontSize={16} fontWeight={600} mr={3} textTransform={'none'} >
                     {
                         link
                     }
@@ -45,34 +48,32 @@ function ShareLink({ link }: Props) {
                 <CopyIcon />
             </ButtonTertiary>
 
-            <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
+            <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={3}>
                 Share to
             </Typography>
             <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                <TelegramShareButton url={link}
-                    title={'share title'}>
-                    <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
+                <TelegramShareButton
+                    url={link}
+                    title={SHARE.title}>
+                    <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
                 </TelegramShareButton>
                 <TwitterShareButton
                     url={link}
-                    title={'share title'}
+                    title={SHARE.title}
+                    hashtags={['#Deodd']}
                 >
-                    <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
+                    <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
                 </TwitterShareButton>
                 <FacebookShareButton
                     url={link}
-                    quote={'share title'}
-                    hashtag={'#deodd'}
+                    title={SHARE.title}
+                    quote={SHARE.title}
+                    hashtag={'#Deodd'}
                 >
-                    <IconButton color="primary" ><FacebookIcon fill="#7071B3" /></IconButton>
+                    <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                 </FacebookShareButton>
             </Stack>
-            <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                <NotiIcon />
-                <Typography ml={1} variant='body2' textAlign={'center'} textTransform={'uppercase'} >
-                    HOW it work
-                </Typography>
-            </Stack>
+            <HowItWorkModal />
         </Box>
     )
 }

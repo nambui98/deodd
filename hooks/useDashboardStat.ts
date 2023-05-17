@@ -6,7 +6,7 @@ import {
 } from "libs/apis/statisticapi";
 import { useSiteContext } from "contexts/SiteContext";
 
-// This is sort function for userPerFlip
+// This is sort function for userFlipStat
 function matchValue(str: string): any {
   const matches = str.match(/\d+/g);
   if (matches != null) {
@@ -19,7 +19,7 @@ function sortFunction([a]: any, [b]: any) {
   if (matchValue(a) - matchValue(b) > 0) {
     return 1;
   } else {
-    return -1;
+    return 0;
   }
 }
 // -----
@@ -28,16 +28,17 @@ export function useDashboardStat() {
   const { setIsLoading } = useSiteContext();
   const [statistic, setStatistic] = useState({
     error: {
-      haveFlipped: true,
+      haveFlipped: false,
       errorMessage: "",
     },
     streak: {
       winStreak: 0,
       lossStreak: 0,
       username: "",
+      winWallet: "",
     },
     flipDashboardStat: {},
-    userPerFlip: [],
+    userFlipStat: {},
     totalUser: 0,
   });
 
@@ -55,9 +56,10 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             streak: {
-              winStreak: streakData.highestWinStreak.currentStreakLength,
-              lossStreak: streakData.highestLossStreak.currentStreakLength,
+              winStreak: streakData.highestWinStreak.maxStreakLength,
+              lossStreak: streakData.highestLossStreak.maxStreakLength,
               username: streakData.highestWinStreak.username,
+              winWallet: streakData.highestWinStreak.wallet,
             },
             error: {
               ...prev.error,
@@ -68,7 +70,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: streakResult.data.meta.error_message,
             },
           }));
@@ -85,7 +87,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: statResult.data.meta.error_message,
             },
           }));
@@ -94,11 +96,11 @@ export function useDashboardStat() {
         const flipData = flipResult.data.data;
         if (flipData != null) {
           const sortedFlip = (
-            Object.entries(flipData.userPerFlip) as any
+            Object.entries(flipData.flipStat) as any
           ).toSorted(sortFunction);
           setStatistic((prev) => ({
             ...prev,
-            userPerFlip: sortedFlip,
+            userFlipStat: sortedFlip,
             totalUser: flipData.totalUser,
             error: {
               ...prev.error,
@@ -109,7 +111,7 @@ export function useDashboardStat() {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              ...prev.error,
+              haveFlipped: false,
               errorMessage: flipResult.data.meta.error_message,
             },
           }));

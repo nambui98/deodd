@@ -9,6 +9,12 @@ import { CampaignImage, CampaignImage2, CampaignImage3 } from '../utils/Images'
 type Props = {}
 
 function Campaign({ }: Props) {
+    return (
+        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+            Comming soon
+        </Typography>
+    );
+
     const [openModal, setOpenModal] = useState(false);
     const [valueTab, setValueTab] = useState(1);
     const listTabs: TypeTab[] = [
@@ -29,11 +35,12 @@ function Campaign({ }: Props) {
             isNoti: true
         },
     ]
+
     const MapTap: { [key: number]: JSX.Element } = {
         1: <>
             <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} />
             <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} />
-            <CampaignItem title='referral campaign' time='24/12/2022' image={CampaignImage3} />
+            <CampaignItem title='referral 0campaign' time='24/12/2022' image={CampaignImage3} />
 
         </>,
         2: <>
@@ -43,6 +50,7 @@ function Campaign({ }: Props) {
         </>,
         3: <ClaimReward />
     }
+
     return (
         <Box>
             <Box bgcolor={"background.paper"} p={"35px 0px"}>

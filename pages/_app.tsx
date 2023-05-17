@@ -1,45 +1,53 @@
 import CssBaseline from '@mui/material/CssBaseline';
+import Loader from 'components/common/Loader';
+import ModalClaimSuccess from 'components/common/ModalClaimSuccess';
+import ModalError from 'components/common/ModalError';
+import { wagmiClient } from 'config/wagmi';
+import { Colors } from 'constants/index';
+import { ContractProvider } from 'contexts/ContractContext';
+import { SiteProvider } from 'contexts/SiteContext';
+import NextProgress from "next-progress";
+import { WagmiConfig } from 'wagmi';
+import Layout from '../components/common/Layout';
 import { ColorModeProvider } from '../contexts/ColorModeContext';
-import { WalletProvider, useWalletContext } from '../contexts/WalletContext';
+import { WalletProvider } from '../contexts/WalletContext';
 import { AppPropsCustom } from '../libs/types';
 import '../styles/globals.css';
 import '../styles/globals.scss';
-import Layout from '../components/common/Layout';
-import { WagmiConfig } from 'wagmi';
-import { wagmiClient } from 'config/wagmi';
-import { useEffect, useState } from 'react';
-import { ContractProvider } from 'contexts/ContractContext';
-import Loader from 'components/common/Loader';
-import MadalClaimSuccess from 'components/common/MadalClaimSuccess';
-import { SiteProvider } from 'contexts/SiteContext';
-import MadalError from 'components/common/MadalError';
-
+import 'react-indiana-drag-scroll/dist/style.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// Create a client
+const queryClient = new QueryClient()
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // const [mounted, setMounted] = useState(false);
+  // useEffect(() => setMounted(true), []);
   return (
-    <WagmiConfig client={wagmiClient}>
+    <QueryClientProvider client={queryClient}>
 
-      <SiteProvider>
-        <ColorModeProvider {...props}>
-          <WalletProvider>
-            <ContractProvider>
-              <CssBaseline />
-              {
-                mounted && <Layout>
+      <WagmiConfig client={wagmiClient}>
+
+        <SiteProvider>
+          <ColorModeProvider {...props}>
+            <WalletProvider>
+              <ContractProvider>
+                <CssBaseline />
+                <Layout>
                   <Component {...pageProps} />
-                  <Loader />
-                  <MadalClaimSuccess />
-                  <MadalError />
                 </Layout>
-              }
-            </ContractProvider>
-          </WalletProvider>
-        </ColorModeProvider>
+                <Loader />
+                <ModalClaimSuccess />
+                <ModalError />
+                <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />
 
-      </SiteProvider>
-    </WagmiConfig>
+              </ContractProvider>
+            </WalletProvider>
+          </ColorModeProvider>
+
+        </SiteProvider>
+      </WagmiConfig>
+
+    </QueryClientProvider>
   )
 }
 
