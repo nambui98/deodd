@@ -54,10 +54,8 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
   }
 
   useEffect(() => {
-    if (userInfo.username && userInfo.avatar) {
-      setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
-    }
-  }, [userInfo.username, userInfo.avatar]);
+    setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
+  }, [userInfo.username, userInfo.avatar, open]);
 
   return (
     <MyModal
