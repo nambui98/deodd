@@ -24,7 +24,7 @@ function FaqHowtoplay({ }: Props) {
     }
 
     return (
-        <Box mt={'auto'} mb={{ xs: 11.125, md: 3 }} bottom={{
+        <Box mt={'auto'} pt={3} mb={{ xs: 11.125, md: 3 }} bottom={{
         }} >
 
             <Stack
@@ -67,7 +67,21 @@ const FAQContent = () => (
             </Stack>
             <Stack gap={1}>
                 <Typography variant='body1' color='secondary.main' fontWeight={600}>
-                    How do I know I can Trust deODD?
+                    How much do I have to pay for a flip?
+                </Typography>
+                <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
+                    In addition to the bet amount, each flip you will have to pay the following fees: <br />
+                    1. VRF fee (Verifiable Random Function): 0.003 BNB <br />
+                    2. DeODD Services fee: 3.25% of bet amounts <br />
+                    3. Blockchain gas fee: Estimated number <br />
+                    <br />
+                    For example: When you choose 0.01 BNB to flip, you actually spend: <br />
+                    0.01 + 0.003 + 0.01*3.25% + 0.0007 = 0.014 BNB <Box component="span" fontStyle={"italic"}>(estimate)</Box>
+                </Typography>
+            </Stack>
+            <Stack gap={1}>
+                <Typography variant='body1' color='secondary.main' fontWeight={600}>
+                    How do I know I can Trust DeODD?
                 </Typography>
                 <Typography variant='body2' color="white" fontWeight={400} lineHeight={'20px'}>
                     As a decentralized coin flip and lottery product, DeODD uses technology and platforms to guarantee a fair system,
@@ -140,7 +154,13 @@ const PrivacyPolicy = () => (
 
 )
 const Item = styled(Typography)(({ theme }) => ({
-    fontSize: 14,
+    fontSize: 10,
+    [theme.breakpoints.up('sm')]: {
+        fontSize: 12,
+    },
+    [theme.breakpoints.up('md')]: {
+        fontSize: 14,
+    },
     cursor: 'pointer',
     color: (theme.palette.secondary as any)["500"],
     fontWeight: 500
