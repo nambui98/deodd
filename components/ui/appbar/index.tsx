@@ -36,7 +36,7 @@ function AppBar({ leftOpen, rightOpen, handleDrawerLeft, handleDrawerRight }: Pr
                 </ButtonSecondRemex>
                 <Header />
 
-                <Box width={65}>
+                <Box width={{ xs: 0, md: 32 }}>
 
                     <ButtonSecondRemex
                         aria-label="open drawer"

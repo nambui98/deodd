@@ -1,7 +1,7 @@
 import { Utils } from '@/utils/index'
 import EastIcon from '@mui/icons-material/East'
 import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, styled } from '@mui/material'
-import MadalClaimSuccess from 'components/common/MadalError'
+import ModalClaimSuccess from 'components/common/ModalError'
 import MyModal from 'components/common/Modal'
 import { ButtonMain } from 'components/ui/button'
 import { Colors, MINXIMUM_BALANCE_DEPOSIT } from 'constants/index'
@@ -16,8 +16,9 @@ import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Format } from 'utils/format'
 import { ItemHistory, StatusTransfer } from './ItemHistory'
 import { DeoddService } from 'libs/apis'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
+import { useSiteContext } from 'contexts/SiteContext'
 
 type Props = {
     // spendingTokens: TypeDataNFT,
@@ -31,10 +32,11 @@ type Props = {
 function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }: Props) {
     const [openNftType, setOpenNftType] = useState<EnumNFT | undefined>()
     const [openModal, setOpenModal] = useState(false)
-    const { tossPoint } = useJackpotContract();
-    const { handleClaimBnb } = useDeoddContract();
+
+    // const { handleClaimBnb } = useDeoddContract();
     const { walletAddress } = useWalletContext();
-    const { data: assets } = useQuery({
+    const { setIsSuccess, setTitleSuccess, setIsError, setTitleError } = useSiteContext();
+    const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
         queryKey: ["getAssetsBalance"],
         enabled: !!walletAddress,
         queryFn: () => DeoddService.getAssetsBalance(walletAddress),
@@ -51,6 +53,23 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 }
             }
     });
+    const handleClaim = useMutation({
+        mutationFn: DeoddService.claimTokenSpending,
+        onSuccess: (data) => {
+            debugger
+            if (data.data.meta.code === 200) {
+
+                refetchGetAssetsBalance();
+            } else {
+                setIsError(true);
+                setTitleError(data.data.meta.error_message)
+            }
+        },
+        onError: (error) => {
+
+        }
+
+    })
     const { data: histories, refetch } = useQuery({
         queryKey: ["getBalanceHistories"],
         enabled: false,
@@ -70,7 +89,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     const showNFT = (nftType: EnumNFT, amount: number) => {
         return <>
             <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nftType)}>
-                {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" /> : <ArrowDownIcon fill="#96A5C0" />}
+                {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" width={24} height={24} /> : <ArrowDownIcon fill="#96A5C0" width={24} height={24} />}
                 <Stack ml={1} direction={"row"} alignItems={"center"}>
                     <MyImage width={30} height={30} src={Utils.getImageNFTString(nftType)} alt="" />
                     <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>
@@ -143,7 +162,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                             Format.formatMoney(bnbAssets)
                         }
                         <Box display={"inline"} ml={0.5}>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Box>
                     </Typography>
                     <Stack direction={'row'} justifyContent={"flex-end"} alignItems={"center"}>
@@ -157,7 +176,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                         </Box>
                     </Stack>
                     <Box sx={{ display: "block" }} mt={2}>
-                        <ButtonMain active={true} title="Claim" disabled={bnbAssets <= 0} onClick={() => { handleClaimBnb() }} sx={{
+                        <ButtonMain active={true} title="Claim" disabled={bnbAssets <= 0} onClick={() => { handleClaim.mutate() }} sx={{
                             width: 75, padding: "4px 16px", fontSize: 12
                         }} />
                     </Box>
@@ -199,18 +218,19 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                             width: 75, padding: "4px 16px", fontSize: 12
                         }} />
                     </Box>
-                    {
+                    {/* {
                         !nftSelected &&
                         <Typography mt={1} variant='caption' color={"error.100"}>Please choose your asset to claim</Typography>
-                    }
+                    } */}
                 </Box>
             </Stack>
             <MyModal open={openModal} width={380} setOpen={setOpenModal} >
                 <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Balance History</Typography>
-                <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
+                {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
             </MyModal>
-            <MadalClaimSuccess />
+            <ModalClaimSuccess />
         </Box>
     )
 }

@@ -1,22 +1,20 @@
 import { Avatar, Box, Collapse, List, Stack, Typography } from "@mui/material";
-import IntervalManager from "libs/IntervalManager";
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
-import { TransitionGroup } from "react-transition-group";
 import {
-    useQuery,
-    useMutation,
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
+    useQuery
 } from "@tanstack/react-query";
-import { Avatar2Image } from "utils/Images";
+import { BigNumber } from "ethers";
 import { DeoddService } from "libs/apis";
+import { createRef } from "react";
+import { ScrollContainer } from 'react-indiana-drag-scroll';
+import { TransitionGroup } from "react-transition-group";
+import { Avatar2Image } from "utils/Images";
+import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
-import { BigNumber, ethers } from "ethers";
 type Props = {};
 type dataUserRecent = {
     id: number;
+    avatarId: number | undefined;
     username: string;
     timeAgo: string;
     isWin: boolean;
@@ -25,11 +23,12 @@ type dataUserRecent = {
     wallet: string;
     nodeRef: any;
 };
-function FlipRecent({ }: Props) {
+export default function FlipHistoriesRecent() {
     const { data: dataRecent } = useQuery({
         queryKey: ["getRecentFlipping"],
         queryFn: DeoddService.getRecentFlipping,
         select: (data) =>
+
             data.data.data.map(
                 (item: {
                     flipId: any;
@@ -38,17 +37,19 @@ function FlipRecent({ }: Props) {
                     time: any;
                     flipChoice: any;
                     flipResult: any;
-                    username: any;
+                    userName: any;
+                    avatarId: number | undefined;
                     currentStreak: number
                 }) => {
                     let isWin = item.flipResult === 1;
                     let data: dataUserRecent = {
                         id: item.flipId,
+                        avatarId: item.avatarId,
                         wallet: item.wallet,
                         amount: Format.formatMoneyFromBigNumberEther(item.amount),
                         isWin: isWin,
                         timeAgo: Convert.convertTimeStamp(item.time),
-                        username: item.username,
+                        username: item.userName,
                         streak: item.currentStreak,
                         nodeRef: createRef(),
                     };
@@ -57,40 +58,12 @@ function FlipRecent({ }: Props) {
             ),
         refetchInterval: 5000,
     });
-    // console.log(data);
 
-    // const [dataRecent, setDataRecent] = useState<dataUserRecent[]>(
-    //     Array.from(Array(100).keys()).map((item, index) => {
-    //         return {
-    //             id: index,
-    //             username: 'username' + index,
-    //             amount: index % 2,
-    //             isWin: index % 2 === 0,
-    //             timeAgo: '17 sec ago',
-    //             streak: index % 2 === 1 ? 3 : 0,
-    //             nodeRef: createRef(),
-    //         }
-    //     })
-    // );
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setDataRecent((dataRecent) => [
-    //             { id: dataRecent.length, amount: 2, isWin: dataRecent.length % 2 === 0, timeAgo: '5h ago', username: 'username' + dataRecent.length, streak: dataRecent.length % 2 === 1 ? 4 : 0, nodeRef: createRef() },
-    //             ...dataRecent,
-
-    //         ])
-    //     }, 3000);
-    //     return () => {
-    //         clearInterval(interval);
-    //     }
-    // }, []);
-
-    // let dataRecent: dataUserRecent[] = useMemo(() => data?.data.data.map(item => { id: item.flu, amount: 2, isWin: dataRecent.length % 2 === 0, timeAgo: '5h ago', username: 'username' + dataRecent.length, streak: dataRecent.length % 2 === 1 ? 4 : 0, nodeRef: createRef() }),
-    //     [data])
     return (
+
         <Box
-            overflow={"hidden"}
+            // overflow={"hidden"}
+
             sx={{
                 position: "relative",
                 // cursor: '',
@@ -117,38 +90,41 @@ function FlipRecent({ }: Props) {
                 },
             }}
         >
-            <List component={Stack} flexDirection="row">
-                <TransitionGroup component={Stack} flexDirection="row" columnGap={1}>
-                    {dataRecent?.map((item: dataUserRecent, index: number) => (
-                        <Collapse
-                            addEndListener={(e) => (e.style.opacity = "1")}
-                            timeout={1500}
-                            in={true}
-                            key={item.id}
-                            sx={{
-                                "&.MuiCollapse-horizontal": {
-                                    opacity: 0,
-                                    transition: ".5s all",
-                                    "&.MuiCollapse-entered": {
-                                        opacity: 1,
+
+            <ScrollContainer>
+                <List component={Stack} flexDirection="row">
+                    <TransitionGroup component={Stack} flexDirection="row" columnGap={1}>
+                        {dataRecent?.map((item: dataUserRecent, index: number) => (
+                            <Collapse
+                                addEndListener={(e) => (e.style.opacity = "1")}
+                                timeout={1500}
+                                in={true}
+                                key={item.id}
+                                sx={{
+                                    "&.MuiCollapse-horizontal": {
+                                        opacity: 0,
+                                        transition: ".5s all",
+                                        "&.MuiCollapse-entered": {
+                                            opacity: 1,
+                                        },
                                     },
-                                },
-                            }}
-                            easing={{ enter: "200ms", exit: "1000s" }}
-                            orientation="horizontal"
-                        >
-                            <Box ref={item.nodeRef} className="item">
-                                <UserActivity user={item} />
-                            </Box>
-                        </Collapse>
-                    ))}
-                </TransitionGroup>
-            </List>
+                                }}
+                                easing={{ enter: "200ms", exit: "1000s" }}
+                                orientation="horizontal"
+                            >
+                                <Box ref={item.nodeRef} className="item">
+                                    <UserActivity user={item} />
+                                </Box>
+                            </Collapse>
+                        ))}
+                    </TransitionGroup>
+                </List>
+            </ScrollContainer>
         </Box>
+
     );
 }
 
-export default FlipRecent;
 function UserActivity({ user }: { user: dataUserRecent }) {
     return (
         <Box
@@ -165,11 +141,11 @@ function UserActivity({ user }: { user: dataUserRecent }) {
                 <Avatar
                     sx={{ width: 32, height: 32 }}
                     alt="Remy Sharp"
-                    src={Avatar2Image}
+                    src={`/assets/images/${checkAvatar(user.avatarId)}.png`}
                 />
                 <Stack alignItems={"baseLine"} columnGap={1}>
                     <Typography variant="body2" fontWeight={500} lineHeight={"20px"}>
-                        {user.username !== undefined
+                        {user.username
                             ? user.username
                             : Convert.convertWalletAddress(user.wallet, 6, 3)}
                     </Typography>

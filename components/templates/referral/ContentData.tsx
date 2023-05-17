@@ -25,6 +25,8 @@ import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
+import { checkAvatar } from "utils/checkAvatar";
+import { format } from "date-fns";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -32,10 +34,12 @@ type Props = {
     link: string;
     reload: Function;
 };
-function createData(name: string, expire: string, profit: BigNumber) {
+function createData(avatar: number | undefined, name: string, expire: string, profit: BigNumber) {
+    debugger
     return {
-        name: Convert.convertWalletAddress(name, 5, 5),
-        expire,
+        avatar: checkAvatar(avatar),
+        name,
+        expire: format(new Date(expire), 'dd/MM/yyyy'),
         profit: Format.formatMoneyFromBigNumberEther(profit),
     };
 }
@@ -55,9 +59,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataAvailable && dataAvailable?.referralEarningRoleFatherList
                 ? dataAvailable?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.userNameReferred + "(" + item.userWalletReferred + ")",
+                        item.avatarIdChild,
+                        item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
+                        // format(new Date(2014, 1, 11), 'yyyy-MM-dd'),
                         item.expiredDateForFather,
-                        item.rewardFatherUnclaimed
+                        item.profitFather
                     )
                 )
                 : [],
@@ -68,9 +74,10 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             dataExpired && dataExpired?.referralEarningRoleFatherList
                 ? dataExpired?.referralEarningRoleFatherList.map((item: any) =>
                     createData(
-                        item.userNameReferred + "(" + item.userWalletReferred + ")",
+                        item.avatarIdChild,
+                        item.userNameReferred ? item.userNameReferred : "(" + Convert.convertWalletAddress(item.userWalletReferred, 5, 5) + ")",
                         item.expiredDateForFather,
-                        item.rewardFatherUnclaimed
+                        item.profitFather
                     )
                 )
                 : [],
@@ -78,18 +85,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     );
     let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
 
-    const listTabs: TypeTab[] = [
-        {
-            id: 1,
-            title: "Avaiable",
-            value: `(${rowsAvailable.length})`,
-        },
-        {
-            id: 2,
-            title: "Expired",
-            value: `(${rowsExpired.length})`,
-        },
-    ];
 
     const handleClaim = async () => {
         try {
@@ -110,13 +105,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             setTitleError("Something went wrong!");
         }
     };
-    console.log(
-        bnbBalance)
-    console.log(
-
-        // BigNumber.from(0.08)
-    )
-
 
     return (
         <Container>
@@ -163,7 +151,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                         dataAvailable?.claimedReward ?? 0
                                     )}
                                 </Typography>
-                                <BnbIcon fill={Colors.secondaryDark} />
+                                <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                             </Stack>
                         </Stack>
                     </Stack>
@@ -206,7 +194,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 <TableHead>
                                     <TableRow sx={{ "td, th": { border: 0, py: 1 } }}>
                                         <TableCell sx={{ px: 0 }}>Users</TableCell>
-                                        <TableCell align="right">Expire Date</TableCell>
+                                        {
+                                            valueTab === 1 &&
+
+                                            <TableCell align="right">Expire Date</TableCell>
+                                        }
                                         <TableCell align="right">Profit</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -233,18 +225,22 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                             width={24}
                                                             height={24}
                                                             alt=""
-                                                            src={AvatarImage}
+                                                            src={`/assets/images/${row.avatar}.png`}
                                                         />
                                                         <Typography variant="caption">
                                                             {row.name}
                                                         </Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell align="right">
-                                                    <Typography variant="caption" color="secondary.100">
-                                                        {row.expire.replaceAll("-", "/")}
-                                                    </Typography>
-                                                </TableCell>
+                                                {
+                                                    valueTab === 1 &&
+                                                    <TableCell align="right">
+                                                        <Typography variant="caption" fontWeight={400} color="secondary.100">
+                                                            {row.expire}
+                                                        </Typography>
+                                                    </TableCell>
+                                                }
+
                                                 <TableCell align="right">
                                                     <Stack
                                                         direction={"row"}
@@ -253,13 +249,13 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                                         alignItems={"center"}
                                                     >
                                                         <Typography
-                                                            variant="caption"
+                                                            variant="body2"
                                                             color="secondary.main"
                                                         >
                                                             {" "}
                                                             {row.profit}
                                                         </Typography>
-                                                        <BnbIcon fill={Colors.secondaryDark} />
+                                                        <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                                                     </Stack>
                                                 </TableCell>
                                             </TableRow>
@@ -317,7 +313,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                     dataAvailable?.totalReward ?? 0
                                 )}
                             </Typography>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Stack
@@ -333,7 +329,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             <Typography variant="body2">
                                 {Format.formatMoney(dataAvailable?.claimFee ?? 0)}{" "}
                             </Typography>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Stack>
                     </Stack>
                     <Typography variant="caption" color="secondary.100">
@@ -347,10 +343,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                         disabled={
                             ethers.utils.parseEther(
                                 (dataAvailable?.availableReward || 0).toString()
-                            ).lte(BigNumber.from(0)) ||
-                            bnbBalance.lte(
-                                ethers.utils.parseEther((dataAvailable?.claimFee || 0).toString())
-                            )
+                            ).lte(BigNumber.from(0))
                         }
                         sx={{
                             px: 5, py: 2, mt: 3,

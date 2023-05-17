@@ -4,6 +4,8 @@ import MyImage from "components/ui/image";
 import { ButtonMain } from "components/ui/button";
 import { useWalletContext } from "contexts/WalletContext";
 import { DeoddService } from "libs/apis";
+import { LocalStorage } from "libs/LocalStorage";
+import MyModal from "components/common/Modal";
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -28,23 +30,24 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
           debugger
           const resService = await DeoddService.saveInfoUser({
             wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
+            username: currentProfile.username ? currentProfile.username : null,
+            avatarId: currentProfile.avatar,
           });
-          localStorage.setItem("nickname", JSON.stringify({
-            wallet: walletAddress,
-            username: currentProfile.username || userInfo.username,
-            avatarId: currentProfile.avatar || userInfo.avatar,
-          }));
           if (resService.data.meta.code === 1) {
             setErrorMessage(resService.data.meta.error_message);
+            setIsLoading(false);
           } else {
             setUserInfo(currentProfile);
+            LocalStorage.setUserInfo({
+              wallet: walletAddress,
+              username: currentProfile.username,
+              avatarId: currentProfile.avatar ?? 0,
+            });
+            setIsLoading(false);
+            onClose();
           }
         } catch (err) {
           console.log(err);
-        } finally {
-          setIsLoading(false);
         }
       }
     }
@@ -52,36 +55,22 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
 
   useEffect(() => {
     setCurrentProfile({ username: userInfo.username, avatar: userInfo.avatar });
-  }, [userInfo]);
+  }, [userInfo.username, userInfo.avatar, open]);
 
   return (
-    <Modal aria-labelledby="profile-nickname-modal" open={open} onClose={onClose} sx={{ display: "flex", justifyContent: "center" }}>
+    <MyModal
+      open={open} setOpen={onClose}
+      haveIconClosed
+      sx={{
+        boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
+        minWidth: "22rem",
+      }}
+    >
       <Zoom in={open}>
         <Stack gap={3} alignItems={"center"} sx={{
-          position: 'fixed',
-          top: "20%",
-          maxWidth: "22rem",
           bgcolor: "primary.200",
           borderRadius: "0.5rem",
-          boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
-          p: 3,
         }}>
-          <Box sx={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            cursor: "pointer",
-            transition: "300ms opacity, 300ms transform",
-            ":hover": {
-              opacity: 0.8,
-              transform: "scale(1.1)"
-            }
-          }}
-            onClick={onClose}
-          >
-            <MyImage src="/assets/icons/close-square2.svg" width={14} height={14} alt="close-modal-icon" />
-          </Box>
-
           <Typography variant="h3" fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>Your profile</Typography>
           <MyImage src={currentProfile.avatar !== null ? avatars[currentProfile.avatar] : avatars[userInfo.avatar]} width={120} height={120} alt="profile-avatar" />
           <Stack direction={"row"} spacing={2} >
@@ -93,7 +82,6 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
               backgroundColor: "#2A2D3E",
               borderRadius: "0.5rem",
               padding: "0.75rem 2rem",
-              marginBlockEnd: "1rem",
               input: {
                 textAlign: "center",
                 fontSize: "14px",
@@ -113,24 +101,28 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
                 setErrorMessage("");
               }
             }}
-            onKeyDown={(e) => { if (e.key === "Enter") { handleSetProfile() } }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && ((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username))) {
+                handleSetProfile();
+              }
+            }}
           />
-          <Box position={"relative"}>
-            <Typography variant="body2" color={"#EE3E3E"} fontSize={"0.75rem"} lineHeight={"1rem"} sx={{ position: "absolute", top: "-1.25rem", transform: "translateY(-50%)" }}>
+          {/* The box and relative, absolute position is here to maintain the space if there are no error message */}
+          <Box alignSelf={"flex-start"} width={1} sx={{ display: "flex", alignItems: "center", position: "relative", marginBlockStart: "-0.3rem", marginBlockEnd: "-0.3rem" }}>
+            <Typography variant="body2" color={"#EE3E3E"} fontSize={"0.75rem"} lineHeight={"1rem"} position={"absolute"} >
               {errorMessage}
             </Typography>
-            <Typography variant="body2" fontSize={"0.75rem"} lineHeight={"1rem"}>*If you change a Nickname, you will be charged some gas fee for this.</Typography>
           </Box>
           <ButtonMain
             active={true}
-            disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username && currentProfile.username !== null)) ? false : true}
+            disabled={((currentProfile.avatar !== userInfo.avatar) || (currentProfile.username !== userInfo.username)) ? false : true}
             sx={{ width: 1, height: "3.375rem" }}
             title={isLoading ? <CircularProgress size={26} color="inherit" /> : 'SAVE'}
             onClick={() => { handleSetProfile() }}
           ></ButtonMain>
         </Stack>
       </Zoom>
-    </Modal >
+    </MyModal >
   );
 
 }

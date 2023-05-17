@@ -88,6 +88,7 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
           fill: Colors.secondaryDark
         }
       },
+      ...props.sx
     }
     }
     variant="outlined"
@@ -102,6 +103,7 @@ export const ButtonFourth: React.FC<ButtonProps & { active: boolean, label: stri
     sx={{
       bgcolor: active ? "secondary.300" : 'primary.200',
       border: "1px solid",
+      color: active ? 'white' : 'dark.60',
       borderColor: active ? "secondary.main" : 'primary.200',
       textTransform: "none",
       fontSize: 14,

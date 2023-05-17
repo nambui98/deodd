@@ -30,6 +30,7 @@ import TwitterIcon from "public/assets/icons/mdi_twitter.svg";
 import ChatBoxIcon from "public/assets/icons/bubble-chat_1.svg";
 import ProfileCircleIcon from "public/assets/icons/profile-circle.svg";
 import ArchiveIcon from "public/assets/icons/archive.svg";
+import Archive2Icon from "public/assets/icons/archive2.svg";
 import HeadCoinIcon from "public/assets/icons/head.svg";
 import TailCoinIcon from "public/assets/icons/tail.svg";
 import MessageIcon from "public/assets/icons/message.svg";
@@ -64,6 +65,7 @@ function Bnb2Icon(props: SvgIconProps) {
   );
 }
 export {
+  Archive2Icon,
   ArrowLeft2Icon,
   Bnb2Icon,
   ArrowDown2Icon,

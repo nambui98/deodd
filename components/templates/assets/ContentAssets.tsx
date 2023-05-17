@@ -36,13 +36,13 @@ function ContentAssets({ }: Props) {
                         valueTab === 1 ?
                             <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected} handleClaimNFT={handleClaimNFT} />
                             :
-                            <RightContent priceToken={priceToken} walletTokens={walletTokens} />
+                            <RightContent walletAddress={walletAddress} priceToken={priceToken} walletTokens={walletTokens} />
                     }
                 </Box>
             </Box>
             <Stack display={{ xs: 'none', md: 'flex' }} direction="row" mt={3} columnGap={4}>
                 <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected} handleClaimNFT={handleClaimNFT} />
-                <RightContent priceToken={priceToken} walletTokens={walletTokens} />
+                <RightContent walletAddress={walletAddress} priceToken={priceToken} walletTokens={walletTokens} />
             </Stack >
         </Container >
     )

@@ -47,7 +47,7 @@ export function useGoldenHour() {
     timeLeft: 0,
   });
 
-  const {isGoldenHour, setIsGoldenHour} = useSiteContext();
+  const { isGoldenHour, setIsGoldenHour } = useSiteContext();
 
   // Set isGoldenHour state
   useEffect(() => {
@@ -56,7 +56,11 @@ export function useGoldenHour() {
       countdown.timeCurrent < timeline.endHour
     ) {
       if (!isGoldenHour) {
-        setIsGoldenHour(true);
+        if (process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY)) {
+          setIsGoldenHour(false);
+        } else {
+          setIsGoldenHour(true);
+        }
       }
     } else {
       if (isGoldenHour) {

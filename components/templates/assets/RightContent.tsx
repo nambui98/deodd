@@ -13,10 +13,11 @@ import { Format } from 'utils/format'
 import EastIcon from '@mui/icons-material/East';
 import { ItemHistory, StatusTransfer } from './ItemHistory'
 import { Colors } from 'constants/index'
+import { Convert } from 'utils/convert'
 
-type Props = { walletTokens: TypeDataNFT, priceToken: number | undefined }
+type Props = { walletAddress: string, walletTokens: TypeDataNFT, priceToken: number | undefined }
 
-function RightContent({ walletTokens, priceToken }: Props) {
+function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
     const { bnbBalance } = useWalletContext();
     const [openModalWallet, setOpenModalWallet] = useState(false)
     const [openNftType, setOpenNftType] = useState<EnumNFT | undefined>()
@@ -37,7 +38,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
 
                 <Typography component={'span'} variant='h2' visibility={{ xs: 'hidden', md: 'visible' }}>
                     Wallet
-                    <Typography component={"span"} variant='caption'>{" "} (3535***3534)</Typography>
+                    <Typography component={"span"} variant='caption'>{" "} ({Convert.convertWalletAddress(walletAddress, 4, 4)})</Typography>
                 </Typography>
                 <ButtonBase onClick={() => setOpenModalWallet(true)}>
                     <Typography variant='body2' fontWeight={400} color={"secondary.main"}>
@@ -59,7 +60,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                             Format.formatMoneyFromBigNumberEther(bnbBalance)
                         }
                         <Box display={"inline"} ml={0.5}>
-                            <BnbIcon fill={Colors.secondaryDark} />
+                            <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
                         </Box>
                     </Typography>
                     <Stack direction={'row'} justifyContent={"flex-end"} alignItems={"center"}>
@@ -91,7 +92,7 @@ function RightContent({ walletTokens, priceToken }: Props) {
                             ?
                             <div key={nft.type + index}>
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
-                                    {openNftType === nft.type ? <ArrowUpIcon /> : <ArrowDownIcon />}
+                                    {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} /> : <ArrowDownIcon width={24} height={24} />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
                                         <img width={30} src={Utils.getImageNFT(nft.type)} alt="" />
                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>
@@ -128,8 +129,10 @@ function RightContent({ walletTokens, priceToken }: Props) {
             </Stack>
             <MyModal open={openModalWallet} setOpen={setOpenModalWallet} >
                 <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Wallet History</Typography>
-                <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
+
+                <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
             </MyModal>
 
         </Box>

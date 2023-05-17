@@ -17,27 +17,27 @@ export const ColorModeProvider: React.FC<AppPropsCustom & IProps> = (props) => {
     const clientSideEmotionCache = createEmotionCache();
     const { emotionCache = clientSideEmotionCache, pageProps, children } = props;
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const [darkMode, setDarkMode] = useState<boolean>(prefersDarkMode);
-    useEffect(() => {
-        // const mode = localStorage.getItem("mode") === "true";
-        // set mode
-        setDarkMode(true);
-    }, []);
-    const _setDarkMode = (newmode: boolean) => {
-        console.log(`set localStore ${newmode}`);
-        localStorage.setItem("mode", newmode.toString());
-        setDarkMode(newmode);
-    };
-    const value = {
-        darkMode,
-        setDarkMode: _setDarkMode
-    }
+    // const [darkMode, setDarkMode] = useState<boolean>(prefersDarkMode);
+    // useEffect(() => {
+    //     // const mode = localStorage.getItem("mode") === "true";
+    //     // set mode
+    //     setDarkMode(true);
+    // }, []);
+    // const _setDarkMode = (newmode: boolean) => {
+    //     console.log(`set localStore ${newmode}`);
+    //     localStorage.setItem("mode", newmode.toString());
+    //     setDarkMode(newmode);
+    // };
+    // const value = {
+    //     darkMode,
+    //     setDarkMode: _setDarkMode
+    // }
     return <CacheProvider value={emotionCache}>
-        <ColorModeContext.Provider value={value}>
-            {/* theme={darkMode ? darkTheme : lightTheme} */}
-            <ThemeProvider theme={darkTheme}>
-                {children}
-            </ThemeProvider>
-        </ColorModeContext.Provider>
+        {/* <ColorModeContext.Provider value={value}> */}
+        {/* theme={darkMode ? darkTheme : lightTheme} */}
+        <ThemeProvider theme={darkTheme}>
+            {children}
+        </ThemeProvider>
+        {/* </ColorModeContext.Provider> */}
     </CacheProvider>
 }

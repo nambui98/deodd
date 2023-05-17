@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Typography, Grid } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import { useDashboardStat } from "hooks/useDashboardStat";
 import { StreakSection } from "@/templates/statistic/StreakSection";
 import { FlipResultSection } from "@/templates/statistic/FlipResultSection";
@@ -14,7 +14,12 @@ export default function Statistic() {
       <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
         Today stat
       </Typography>
-      <Grid container rowSpacing={3} columnSpacing={4}>
+      <Box
+        display={"grid"}
+        rowGap={3}
+        columnGap={4}
+        gridTemplateColumns={"repeat(6, 1fr)"}
+      >
         <StreakSection error={error} streak={streak} />
         <FlipResultSection
           error={error}
@@ -26,7 +31,7 @@ export default function Statistic() {
           userFlipStat={userFlipStat}
           totalUser={totalUser}
         />
-      </Grid>
+      </Box>
     </Container>
   );
 }

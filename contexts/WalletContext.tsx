@@ -67,7 +67,7 @@ const networks: Map = {
 
 const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
 
-interface wallerContextType {
+interface walletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
 	setWalletAddress: (account: any) => void
@@ -75,6 +75,7 @@ interface wallerContextType {
 	isLoading: boolean;
 	bnbBalance: BigNumber,
 	userInfo: { username: string, avatar: number },
+	setUserInfo: Function,
 	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
 	contractDeoddNft: Contract | undefined,
@@ -90,7 +91,7 @@ interface IProps {
 	children: ReactNode
 }
 
-const WalletContext = createContext<wallerContextType>({
+const WalletContext = createContext<walletContextType>({
 	walletAddress: null,
 	walletIsConnected: false,
 	setWalletAddress: () => { },
@@ -98,6 +99,7 @@ const WalletContext = createContext<wallerContextType>({
 	setIsLoading: () => { },
 	bnbBalance: BigNumber.from(0),
 	userInfo: { username: '', avatar: 0 },
+	setUserInfo: () => { },
 	contractDeodd: undefined,
 	contractProfile: undefined,
 	contractFeeManager: undefined,
@@ -151,7 +153,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
-
 
 	const { chain } = useNetwork();
 
@@ -215,6 +216,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setContractJackpot(contractJackpot);
 			setContractNftHolder(contractNftHolder);
 			setContractDeoddNft(contractDeoddNft);
+			// (provider as any).getHistory('0xD48259f0701f743066ed2d98eB8091370f61ecC8').then((history) => {
+			// 	debugger
+			// });
+
 		}
 	}, [chain]);
 
@@ -223,7 +228,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		const accessToken = LocalStorage.getAccessToken();
 		const refreshToken = LocalStorage.getRefreshToken();
 		const walletAddressLocal = LocalStorage.getWalletAddress();
-		debugger
 		if (isConnected && address) {
 			if (accessToken && refreshToken && walletAddressLocal === address) {
 				setWalletIsConnected(isConnected);
@@ -243,12 +247,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const handleAuthenticate = ({ wallet, signature }: {
 		wallet: string, signature: string
 	}) => {
-		debugger
 		DeoddService.loginWithWallet({ wallet, signature }).then((res) => {
 			const { accessToken, refreshToken } = res.data.data;
 			LocalStorage.setAccessToken(accessToken);
 			LocalStorage.setRefreshToken(refreshToken);
 			LocalStorage.setWalletAddress(wallet);
+			LocalStorage.setIsProfileModalOpened(false);
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
 			setIsConnectingWallet(false)
@@ -290,7 +294,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const handleSignMessage = () => {
 		DeoddService.getUserNonce(`${address}`)
 			.then(res => {
-				debugger
 				if (res.data.data) {
 					return res;
 				} else {
@@ -309,7 +312,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				return handleAuthenticate({ wallet: `${address}`, signature: res })
 			})
 			.catch(err => {
-				debugger
 				return disconnect();
 			});
 
@@ -320,7 +322,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			window.ethereum &&
 			!window.ethereum.isMetaMask &&
 			!window.ethereum.isCoinbaseWallet;
-		debugger
 		setIsConnectingWallet(true);
 		if (needsInjectedWalletFallback === undefined) {
 			let a = document.createElement('a');
@@ -335,7 +336,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 					return DeoddService.getUserNonce(`${resultAddress}`);
 				})
 				.then(res => {
-					debugger
 					if (res.data.data) {
 						return res;
 					} else {
@@ -344,7 +344,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				})
 				.then(
 					({ data }) => {
-						debugger
 						const nonce = data.data.nonce || data.data;
 						return signMessageAsync({
 							message: `Sign message to verify you are owner of wallet ${nonce}`,
@@ -373,13 +372,19 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName, avatar: user?.avatarId });
+			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
+			LocalStorage.setUserInfo({
+				wallet: walletAddress,
+				username: user.userName,
+				avatarId: user.avatarId ?? 0,
+			});
 		}
 		if (walletAddress) {
 			const walletAddressLocal = LocalStorage.getWalletAddress();
-			const nicknameLocal = LocalStorage.getNickname();
-			if (nicknameLocal != null && walletAddressLocal == JSON.parse(nicknameLocal).wallet) {
-				setUserInfo({ username: JSON.parse(nicknameLocal).username, avatar: JSON.parse(nicknameLocal).avatarId });
+			const userInfoLocal = LocalStorage.getUserInfo();
+			if (userInfoLocal != null && walletAddressLocal == userInfoLocal.wallet) {
+				setUserInfo({ username: userInfoLocal.username, avatar: userInfoLocal.avatarId ?? 0 });
+
 			} else {
 				getUserInfo();
 			}
@@ -387,7 +392,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 
 	}, [walletAddress]);
 
-	const value: wallerContextType = useMemo(() => {
+	const value: walletContextType = useMemo(() => {
 		return {
 			walletIsConnected,
 			walletAddress,
@@ -396,6 +401,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			isLoading,
 			bnbBalance,
 			userInfo,
+			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
 			contractProfile,

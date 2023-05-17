@@ -33,6 +33,7 @@ export const TestailCoinImage = "/assets/images/testail_coin.png";
 export const HeadCoinImage = "/assets/icons/head.svg";
 export const TailCoinImage = "/assets/icons/tail.svg";
 export const GoldCupImage = "/assets/images/gold-cup.png";
+export const ArrowDownImage = "/assets/images/arrow-down.png";
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,
@@ -49,3 +50,5 @@ export const MapIconNFTString: { [key in EnumNFT]: string } = {
   [EnumNFT.GOLD]: GoldImage,
   [EnumNFT.DIAMOND]: DiamondImage,
 };
+
+export const HowRef2EarnWorkImage = "/assets/images/how-ref2earn-work.png"

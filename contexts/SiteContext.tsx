@@ -35,7 +35,7 @@ export const SiteProvider = ({ children }: IProps) => {
     const [audioLost, setAudioLost] = useState<HTMLAudioElement | undefined>();
     const [audioWin, setAudioWin] = useState<HTMLAudioElement | undefined>();
     const [isTurnOffAudio, setIsTurnOffAudio] = useState<boolean>(false);
-    const [isGoldenHour, setIsGoldenHour] = useState(false as boolean);
+    const [isGoldenHour, setIsGoldenHour] = useState<boolean>(false);
     useEffect(() => {
         setAudioPlay(new Audio("/assets/roll.mp3"))
         setAudioWin(new Audio("/assets/win.mp3"))
@@ -117,6 +117,7 @@ export const SiteProvider = ({ children }: IProps) => {
             isGoldenHour,
             setIsGoldenHour,
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         isLoading,
         isError,

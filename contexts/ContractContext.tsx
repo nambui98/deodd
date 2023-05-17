@@ -5,10 +5,11 @@ import { UserService } from "../services/user.service";
 import { deoddContract } from '../libs/contract';
 import { useWalletContext } from './WalletContext';
 import { getUserByPublicAddress } from '../libs/apis/flipCoin';
-import { AudioPlay, FlipResultType } from '../libs/types';
+import { AudioPlay, EnumNFT, FlipResultType } from '../libs/types';
 import { useContractEvent, useContractRead } from 'wagmi';
 import { useSiteContext } from './SiteContext';
 import { TIMEOUT_FULLFILL } from 'constants/index';
+import { DeoddService } from 'libs/apis';
 // import { watchContractEvent } from '@wagmi/core'
 // import { Contract, EventData, providers } from '@wagmi/contract';
 
@@ -19,17 +20,18 @@ export enum StatusGame {
 	FLIP,
 	FLIPPING,
 	FLIP_RESULT,
+	FLIP_LOG_DETAIL
 }
 export type GameResultType = {
 	amount: number,
-	coinSide: number,
-	isWinner: boolean
-	tokenId?: BigNumber,
-	typeId?: BigNumber,
-	jackpotWin?: BigNumber,
-	tossPoints?: BigNumber,
+	coinSide?: number,
+	isWinner?: boolean
+	tokenId?: string,
+	typeId?: EnumNFT,
+	jackpotWin?: number,
+	tossPoints?: number,
 	winningStreakAmount?: string,
-	winningStreakLength?: string
+	winningStreakLength?: number
 } | undefined;
 
 interface ContractContextType {
@@ -73,7 +75,17 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	const { walletAddress, contractDeodd, refresh, setRefresh } = useWalletContext();
 	const { audioPlayer } = useSiteContext();
 	const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.FLIP);
-	const [gameResult, setGameResult] = useState<GameResultType>(undefined);
+	const [gameResult, setGameResult] = useState<GameResultType>({
+		coinSide: undefined,
+		amount: 0,
+		isWinner: undefined,
+		jackpotWin: undefined,
+		tokenId: undefined,
+		tossPoints: undefined,
+		typeId: undefined,
+		winningStreakAmount: undefined,
+		winningStreakLength: undefined,
+	});
 	const [isFinish, setIsFinish] = useState<boolean>(false);
 	const [openModalPendingTransaction, setOpenModalPendingTransaction] = useState<boolean>(false);
 
@@ -92,7 +104,11 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		if (statusGame === StatusGame.FLIPPING) {
 			timer = setTimeout(() => {
 				refetch().then(({ data }) => {
+					debugger
 					if (data === true) {
+
+						debugger
+						audioPlayer(AudioPlay.STOP);
 						setIsFinish(false);
 						setStatusGame(StatusGame.FLIP);
 						setOpenModalPendingTransaction(true);
@@ -115,31 +131,31 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 				let {
 					wallet,
 					fId, randomValue, flipResult, timestamp
-					// flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet 
 				}: FlipResultType = (args[5] as any).args;
 				if (wallet === walletAddress) {
 					audio.loop = false;
 					audio.load();
-					// let res = await getUserByPublicAddress(walletAddress, fId.toString());
-					// console.log(res);
-					// console.log("result from backend: " + res);
-					// console.log(playerWin.toNumber());
-
-					debugger
+					let res = await DeoddService.getResultByFlipId(fId.toString());
+					console.log("flip_id: ", fId)
+					console.log("current_streak: ", res.data.data.userProfile.currentStreakLength)
 					setGameResult({
 						amount: (dataSelected?.amount ?? 0),
 						coinSide: dataSelected?.coinSide ?? 0,
 						isWinner: flipResult.toNumber() === 0 ? false : true,
+
 						// flipResult: flipResult.toNumber(),
 
 						// coinSide: flipChoice.toNumber(),
 						// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
 						// tokenId: tokenId,
 						// typeId,
-						// jackpotWin: jackpotReward,
-						// tossPoints: tpoint,
-						// winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
-						// winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
+						// jackpotWin: jackpotReward
+						jackpotWin: res.status === 200 && res.data ? res.data.data.flip.jackpot_reward : 0,
+						tokenId: res.status === 200 && res.data ? res.data.data.flip.token_id : 0,
+						typeId: res.status === 200 && res.data ? res.data.data.flip.type_id : 0,
+						tossPoints: res.status === 200 && res.data ? res.data.data.flip.toss_point : 0,
+						// winningStreakAmount: res.status === 200 && res.data ? res.data.data.userProfile.currentStreakAmount : 0,
+						winningStreakLength: res.status === 200 && res.data ? res.data.data.userProfile.currentStreakLength : 0
 					})
 					setStatusGame(StatusGame.FLIP_RESULT);
 					setRefresh(!refresh);
@@ -161,47 +177,7 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		audioInit.loop = true;
 		setAudio(audioInit)
 	}, [])
-	// useEffect(() => {
-	// 	let eventName = 'FlipCoinResult';
 
-	// 	contractDeodd?.on(eventName, async (...args) => {
-	// 		debugger
-	// 		if (isFinish) {
-	// 			const latestFlipId: BigNumber = await contractDeodd?.getPlayerLatestFlipId(walletAddress)
-	// 			console.log("latestFlipId: " + latestFlipId);
-
-	// 			let { amount, fId, flipChoice, jackpotReward, playerWin, timestamp, tokenId, tpoint, typeId, wallet }: FlipResultType = (args[10] as any).args;
-	// 			if (latestFlipId?.eq(fId)) {
-	// 				audio.loop = false;
-	// 				audio.load();
-	// 				let res = await getUserByPublicAddress(walletAddress, fId.toString());
-	// 				console.log(res);
-	// 				console.log("result from backend: " + res);
-	// 				console.log(playerWin.toNumber());
-
-	// 				debugger
-	// 				setGameResult({
-	// 					amount: parseFloat(ethers.utils.formatUnits(amount)).toString(),
-	// 					coinSide: flipChoice.toNumber(),
-	// 					flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
-	// 					tokenId: tokenId,
-	// 					typeId,
-	// 					jackpotWin: jackpotReward,
-	// 					tossPoints: tpoint,
-	// 					winningStreakAmount: res.status === 200 && res.data ? res.data.data.currentStreakAmount : 0,
-	// 					winningStreakLength: res.status === 200 && res.data ? res.data.data.currentStreakLength : 0
-	// 				})
-	// 				setStatusGame(StatusGame.result);
-	// 				setRefresh(!refresh);
-	// 				setIsFinish(false);
-	// 				const audioResult = new Audio(`/assets/${playerWin.gt(BigNumber.from(0)) ? 'win' : 'lost'}.mp3`);
-	// 				audioResult.play();
-	// 				// audioResult.load();
-	// 			}
-	// 		}
-	// 	});
-
-	// }, [contractDeodd])
 	const value = {
 		statusGame,
 		setStatusGame,
@@ -214,7 +190,6 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		setDataSelected,
 		openModalPendingTransaction,
 		setOpenModalPendingTransaction
-
 	}
 	// const value: ContractContextType = useMemo(() => {
 	// 	return (

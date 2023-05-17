@@ -2,7 +2,7 @@ import { Box, IconButton, Stack, Typography } from '@mui/material'
 import CoinAnimation from 'components/common/CoinAnimation'
 import { TelegramIcon, TwiterIcon } from 'components/common/icons'
 import { ButtonLoading, ButtonMain, ButtonTertiary } from 'components/ui/button'
-import { Colors } from 'constants/index'
+import { Colors, SHARE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import {
@@ -10,12 +10,13 @@ import {
 } from 'next-share'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
+import HowItWorkModal from './HowItWorkModal'
 
 type Props = {
     ckReferral: boolean;
     link: string;
     success?: boolean;
-    dataReferralSuccess?: { username: string, wallet: string } | undefined;
+    dataReferralSuccess?: { userName: string, wallet: string } | undefined;
 }
 
 function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props) {
@@ -26,19 +27,20 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
+    console.log(dataReferralSuccess);
 
     return (
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
                 <CoinAnimation width={40} height={40} />
-                <Typography mx={2} variant='h2'>Invite Friends To Get More Profit From Each Flip!</Typography>
+                <Typography mx={2} variant='h2' fontWeight={700} lineHeight={1.5} textAlign={'center'}>Invite Friends To Get More Profit From Each Flip!</Typography>
                 <CoinAnimation width={40} height={40} />
             </Stack>
             <Box mt={5} textAlign={'center'}>
                 {
                     !walletIsConnected &&
                     <>
-                        <Typography variant='h3'>Connect wallet to get your referral link</Typography>
+                        <Typography variant='h3' fontWeight={600}>Connect wallet to get your referral link</Typography>
 
                         <ButtonLoading
                             onClick={handleConnectWallet}
@@ -56,7 +58,7 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                 }
                 {
                     success &&
-                    <Typography my={5} variant='h4' >You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.username} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
+                    <Typography my={5} variant='h4' >You have been referred successfully by <Typography variant='h4' color="secondary.main" component={'span'}>{dataReferralSuccess?.userName} ({Convert.convertWalletAddress(dataReferralSuccess?.wallet ?? '', 4, 4)})</Typography></Typography>
                 }
                 {
                     !ckReferral && walletIsConnected && <>
@@ -87,31 +89,29 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                         </Typography>
                         <Stack direction={'row'} mt={2} justifyContent={'center'}>
                             <TelegramShareButton url={link}
-                                title={'next-share is a social share buttons for your next React apps.'}>
+
+                                title={SHARE.title}>
                                 <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
                             </TelegramShareButton>
                             <TwitterShareButton
                                 url={link}
-                                title={'next-share is a social share buttons for your next React apps.'}
+                                title={SHARE.title}
+                                hashtags={["#Deodd"]}
                             >
                                 <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
                             </TwitterShareButton>
                             <FacebookShareButton
                                 url={link}
-                                quote={''}
-                                hashtag={'#deodd'}
+                                title={SHARE.title}
+                                quote={SHARE.title}
+                                hashtag={'#Deodd'}
                             >
                                 <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                             </FacebookShareButton>
                         </Stack>
                     </>
                 }
-                <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                    <NotiIcon />
-                    <Typography ml={1} variant='body2' textAlign={'center'}  >
-                        How it work
-                    </Typography>
-                </Stack>
+                <HowItWorkModal />
             </Box>
         </>
     )

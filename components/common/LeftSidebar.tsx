@@ -12,6 +12,7 @@ import React from 'react';
 import MyImage from "components/ui/image";
 import { GoldenHour } from 'components/ui/goldenHour';
 import { useSiteContext } from 'contexts/SiteContext';
+import GoldenHourIcon from 'components/ui/goldenHour/GoldenHourIcon';
 
 type Props = {
     open: boolean;
@@ -75,16 +76,16 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     },
     {
         id: 6,
-        icon: <CampaignIcon />,
-        title: 'Campaign',
-        path: '/campaign',
+        icon: <Ref2EarnIcon />,
+        title: 'Ref 2 Earn',
+        path: '/referral',
         isLink: true
     },
     {
         id: 7,
-        icon: <Ref2EarnIcon />,
-        title: 'Ref 2 Earn',
-        path: '/referral',
+        icon: <CampaignIcon />,
+        title: 'Campaign',
+        path: '/campaign',
         isLink: true
     },
     {
@@ -110,7 +111,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         id: 11,
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
-        path: '/',
+        path: '/lottery',
         comming: true,
         highLightText: false,
         disabledHover: true,
@@ -133,16 +134,17 @@ const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean
         minHeight: 48,
         justifyContent: open ? 'initial' : 'center',
         px: item.highLight ? 1.5 : 3,
-        py: item.highLight ? 1 : 2,
+        py: item.highLight ? open ? 1 : 0 : 2,
         bgcolor: item.highLight && open ? isGoldenHour ? 'rgba(255, 252, 221, 1)' : 'secondary.main' : 'transparent',
-        backgroundImage: item.highLight ? isGoldenHour ? `url(assets/images/golden-hour-bg.png)` : `url(assets/images/bg_button_sidebar.png)` : 'none',
+        backgroundImage: item.highLight ? open ? isGoldenHour ? `url(assets/images/golden-hour-bg.png)` : `url(assets/images/bg_button_sidebar.png)` : 'none' : 'none',
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%',
         backgroundPosition: 'center',
         borderRadius: item.highLight ? 2 : 0,
-        boxShadow: item.highLight ? isGoldenHour ? '0px 2px 24px 0px rgba(254, 241, 86, 0.8)' : '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px',
-        mx: item.highLight ? 2 : 0,
+        boxShadow: item.highLight ? open ? isGoldenHour ? '0px 2px 24px 0px rgba(254, 241, 86, 0.8)' : '0px 2px 4px rgba(0, 0, 0, 0.15)' : '0px' : '0px',
+        mx: item.highLight && open ? 2 : 0,
         mt: 1,
+        mb: item.highLight ? 3 : 0,
         color: item.isActive ? 'secondary.main' : item.highLightText ? 'text.primary' : 'text.disabled',
         transition: '.3s all',
         svg: {
@@ -208,21 +210,31 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                             <ListItem
                                 key={item.id ?? '' + index}
                                 disablePadding
-                                sx={{ display: "block" }}
+                                sx={{ display: "block", }}
                             >
                                 <ListItemButton LinkComponent={item.isLink && route.asPath !== item.path ? Link : undefined} href={route.asPath !== item.path && item?.path ? item?.path : ''} onClick={() => handleSetActive(item.id)} className={item.id === idActive ? 'active' : ''} sx={styleButton(item, open, isGoldenHour)}>
                                     {/* If is currently golden hour then remove item of item 3 */}
-                                    {isGoldenHour && item.id == 3
-                                        ? ""
-                                        : (<ListItemIcon
+                                    {!open && item.id == 3
+                                        ? (<ListItemIcon
                                             sx={{
                                                 minWidth: 0,
                                                 mr: open ? 2 : "auto",
                                                 justifyContent: "center",
                                             }}
                                         >
-                                            {item.icon}
-                                        </ListItemIcon>)}
+                                            <GoldenHourIcon />
+                                        </ListItemIcon>)
+                                        : isGoldenHour && open && item.id == 3
+                                            ? ""
+                                            : (<ListItemIcon
+                                                sx={{
+                                                    minWidth: 0,
+                                                    mr: open ? 2 : "auto",
+                                                    justifyContent: "center",
+                                                }}
+                                            >
+                                                {item.icon}
+                                            </ListItemIcon>)}
                                     {item.child && (
                                         <Stack width={"100%"} display={open ? "block" : "none"}>
                                             {item.child}
@@ -234,11 +246,12 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                                 <Typography
                                                     variant="body2"
                                                     fontSize={item.highLightText ? 16 : 14}
+                                                    lineHeight={item.highLightText ? "1.375rem" : "1.25rem"}
                                                 >
                                                     {item.title}
                                                 </Typography>
                                             }
-                                            sx={{ opacity: open ? 1 : 0 }}
+                                            sx={{ opacity: open ? 1 : 0, margin: 0 }}
                                         />
                                     )}
                                 </ListItemButton>
@@ -256,7 +269,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                 })}
 
             </List>
-            <Box mt={"auto"} width="100%">
+            <Box display={open ? 'block' : 'none'} mt={"auto"} width="100%">
                 <Contact />
             </Box>
 

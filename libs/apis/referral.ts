@@ -1,52 +1,57 @@
 import vhIdRequest from "@/utils/vhIdRequest"
 
+const baseURL =
+    process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+        ? '/deodd'
+        : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+            ? '/deodd-pretest' : ''
 const checkUserReferral = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/checkref?address=${address}`,
+        url: baseURL + `/users/ref/checkref?address=${address}`,
         method: 'get'
     })
 }
 const getReferralRewardAvailable = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/available?wallet=${address}`,
+        url: baseURL + `/users/ref/available?wallet=${address}`,
         method: 'get'
     })
 }
 const getReferralRewardExpired = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/expired?wallet=${address}`,
+        url: baseURL + `/users/ref/expired?wallet=${address}`,
         method: 'get'
     })
 }
 const checkUserIsValidForReferral = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/check?address=${address}`,
+        url: baseURL + `/users/ref/check?address=${address}`,
         method: 'get',
     })
 }
 const findGenerateReferralLinkByWallet = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/findLink?address=${address}`,
+        url: baseURL + `/users/ref/findLink?address=${address}`,
         method: 'get',
     })
 }
 const generateReferralLink = async (address: string) => {
     return vhIdRequest({
-        url: `/users/ref/generate`,
+        url: baseURL + `/users/ref/generate`,
         method: 'put',
         data: JSON.stringify({ wallet: address })
     })
 }
 const confirmReferralForUser = async (body: any) => {
     return vhIdRequest({
-        url: `/users/ref/confirm`,
+        url: baseURL + `/users/ref/confirm`,
         method: 'post',
         data: JSON.stringify(body)
     })
 }
 const claimReferral = async (address: string) => {
     return await vhIdRequest({
-        url: `/users/ref/claim`,
+        url: baseURL + `/users/ref/claim`,
         method: 'post',
         data: JSON.stringify({
             wallet: address
