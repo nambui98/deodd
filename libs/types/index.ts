@@ -57,3 +57,8 @@ export enum EnumNFT {
     GOLD = 'GOLD',
     DIAMOND = 'DIAMOND'
 }
+export enum HISTORY_TYPE {
+    RECEIVE_TOSS_POINT = 'Reward Tosspoint when flip',
+    RECEIVE_JACKPOT_REWARD = 'Jackpot Reward',
+    CLAIM_JACKPOT_REWARD = 'Claim Jackpot Reward'
+}
