@@ -217,7 +217,7 @@ const Item: React.FC<TypeItem> = ({ title, isDeposit, status, value, date }) => 
             <Typography color={"secondary"} mt={0.5}>{value}</Typography>
         </Stack>
         <Stack ml="auto" textAlign={"end"}>
-            <Typography color={"secondary.200"} variant='caption'>{StatusTransfer[status]}</Typography>
+            {/* <Typography color={"secondary.200"} variant='caption'>{StatusTransfer[status]}</Typography> */}
             <Typography color={"secondary.200"} variant='caption' mt={0.5}>{date}</Typography>
         </Stack>
     </Stack>
