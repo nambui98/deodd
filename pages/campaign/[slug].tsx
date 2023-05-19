@@ -24,7 +24,7 @@ function DetailCampaign({ }: Props) {
     const handleClick = () => {
         setOpen(!open);
     };
-    let rows = [
+    let rows: any[] = [
         createData('Win/Lose Streak Campaign',
             'Arlene McCoy (3535***3534)',
             '1000'),
