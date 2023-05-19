@@ -34,6 +34,7 @@
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-indiana-drag-scroll": "^3.0.3-alpha",
     "react-responsive": "^9.0.0",
     "react-transition-group": "^4.4.5",

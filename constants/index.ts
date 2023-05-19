@@ -46,4 +46,6 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
   CN: 'CN'
 }
 
+export const UPSTREAM_MESSAGE = "7";
+export const DOWNSTREAM_MESSAGE = "8";
 

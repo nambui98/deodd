@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useSiteContext } from 'contexts/SiteContext';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
@@ -36,9 +37,9 @@ vhIdRequest.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config
+    console.log(err);
 
     if (err.response) {
-      debugger
       // Token was expired
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true
@@ -61,8 +62,9 @@ vhIdRequest.interceptors.response.use(
           window.location.reload();
         }
       } else {
+
         // ToastUtils.error(err.response.meta.message)
-        return false;
+        return Promise.reject(err)
       }
     }
 

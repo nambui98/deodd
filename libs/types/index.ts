@@ -62,3 +62,8 @@ export enum HISTORY_TYPE {
     RECEIVE_JACKPOT_REWARD = 'Jackpot Reward',
     CLAIM_JACKPOT_REWARD = 'Claim Jackpot Reward'
 }
+export enum MessageCommand {
+    NEW_MESSAGE = 1,
+    PINNED_MESSAGE = 2,
+    UNPINNED_MESSAGE = 3,
+}

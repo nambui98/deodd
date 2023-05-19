@@ -19,7 +19,6 @@ const style = {
     borderRadius: "8px",
     minWidth: 400
 };
-
 export default function MyModal({ open, setOpen, title, haveIconClosed, children, sx }: Props) {
     const handleClose = () => setOpen(false);
     return (

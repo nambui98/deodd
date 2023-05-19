@@ -2,7 +2,6 @@ import vhIdRequest from "@/utils/vhIdRequest"
 
 const baseURLChat = '/dejaw'
 const sendMessage = async ({ from, content }: { from: string, content: string }) => {
-    debugger
     return await vhIdRequest({
         url: baseURLChat + `/message`,
         method: 'POST',
@@ -12,7 +11,17 @@ const sendMessage = async ({ from, content }: { from: string, content: string })
         })
     })
 }
-const getMessages = async ({ limit }: { limit: number }) => {
+const getMessagesWithAuth = async ({ limit, lastCreatedAt }: { limit: number, lastCreatedAt: null | string }) => {
+    return await vhIdRequest({
+        url: baseURLChat + `/messages`,
+        method: 'POST',
+        data: JSON.stringify({
+            limit,
+            lastCreatedAt
+        })
+    })
+}
+const getMessagesWithoutAuth = async () => {
     return await vhIdRequest({
         url: baseURLChat + `/message`,
         method: 'GET',
@@ -31,7 +40,8 @@ const getPinnedMessages = async () => {
     })
 }
 export const ChatApis = {
-    getMessages,
+    getMessagesWithAuth,
+    getMessagesWithoutAuth,
     sendMessage,
     reportMessage,
     getPinnedMessages
