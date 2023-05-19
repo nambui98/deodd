@@ -2,12 +2,18 @@ import { Box, BoxProps, Modal, Typography, Zoom, styled } from '@mui/material'
 import React, { ReactNode } from 'react'
 import { CloseSquareIcon2 } from 'utils/Icons'
 
+type IconProps = {
+    width: string | number;
+    color: string;
+}
+
 type Props = BoxProps & {
     open: boolean,
     setOpen: Function,
     haveIconClosed?: boolean,
     title?: string,
-    children: ReactNode
+    children: ReactNode,
+    iconProps?: IconProps,
 }
 const style = {
     position: 'absolute',
@@ -19,7 +25,8 @@ const style = {
     borderRadius: "8px",
     minWidth: 400
 };
-export default function MyModal({ open, setOpen, title, haveIconClosed, children, sx }: Props) {
+
+export default function MyModal({ open, setOpen, title, haveIconClosed, children, sx, iconProps }: Props) {
     const handleClose = () => setOpen(false);
     return (
         <Modal
@@ -48,8 +55,8 @@ export default function MyModal({ open, setOpen, title, haveIconClosed, children
                         {children}
                     </Box>
                     {
-                        haveIconClosed && <Box sx={{ cursor: 'pointer' }} onClick={handleClose} position={'absolute'} top={'16px'} right={'16px'}>
-                            <CloseSquareIcon2 />
+                        haveIconClosed && <Box sx={{ cursor: 'pointer' }} onClick={handleClose} position={'absolute'} top={'16px'} right={'16px'} lineHeight={0}>
+                            <CloseSquareIcon2 {...iconProps} />
                         </Box>
 
                     }
