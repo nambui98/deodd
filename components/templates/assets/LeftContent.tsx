@@ -10,7 +10,7 @@ import { BigNumber, ethers } from 'ethers'
 import { useDeoddContract } from 'hooks/useDeoddContract'
 import { TypeDataNFT, TypeNFT } from 'hooks/useDeoddNFTContract'
 import { useJackpotContract } from 'hooks/useJackpotContract'
-import { EnumNFT } from 'libs/types'
+import { EnumNFT, HISTORY_TYPE } from 'libs/types'
 import React, { useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Format } from 'utils/format'
@@ -19,6 +19,7 @@ import { DeoddService } from 'libs/apis'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
 import { useSiteContext } from 'contexts/SiteContext'
+import { Convert } from 'utils/convert'
 
 type Props = {
     // spendingTokens: TypeDataNFT,
@@ -65,16 +66,32 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 setTitleError(data.data.meta.error_message)
             }
         },
-        onError: (error) => {
-
-        }
-
-    })
-    const { data: histories, refetch } = useQuery({
+    });
+    //get balance histories
+    // const {data:balanceHistories} = useQuery({
+    //     queryKey: ["getBalanceHistories"],
+    //     enabled: walletAddress,
+    //     queryFn: () => DeoddService.getBalanceHistories(walletAddress),
+    //     select: (data: any) => {
+    //         debugger
+    //         if (data.status === 200) {
+    //             return data.data;
+    //         } else {
+    //             return undefined
+    //         }
+    //     },
+    // })
+    const { data: histories, refetch: refetchBalanceHistories } = useQuery({
         queryKey: ["getBalanceHistories"],
         enabled: false,
         queryFn: () => DeoddService.getBalanceHistories(walletAddress),
-        // select: (data) => data.data ? data.data.data : null
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
     });
 
     console.log(histories);
@@ -117,8 +134,16 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
         </>
     }
     const showBalanceHistories = () => {
-        setOpenModal(true); refetch()
+        setOpenModal(true);
+        refetchBalanceHistories();
+    }
+    const getTimeHistory = (time?: string) => {
+        if (!time) {
+            return '';
+        } else {
 
+            return Convert.convertTimeStamp((new Date(time)).getTime() / 1000);
+        }
     }
     let bnbAssets = assets?.bnbToken ?? 0;
 
@@ -226,9 +251,17 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
             </Stack>
             <MyModal open={openModal} width={380} setOpen={setOpenModal} >
                 <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Balance History</Typography>
-                <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
-                {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
+                {
+                    histories && histories.length > 0
+                        ? histories.map((history: any) => <ItemHistory
+                            key={history.id}
+                            isDeposit={history.changedBalance < 0}
+                            title={HISTORY_TYPE[history.historyType as keyof typeof HISTORY_TYPE]}
+                            date={getTimeHistory(history.createdAt)}
+                            status={history.historyStatus}
+                            value={(history.changedBalance > 0 ? '+' : '') + Format.formatMoney(history.changedBalance, 5) + ' BNB'} />)
+                        : <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
+                }
             </MyModal>
             <ModalClaimSuccess />
         </Box>

@@ -45,6 +45,5 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
   TH: 'TH',
   CN: 'CN'
 }
-// const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
-// export const BASE_URL_REFERRAL = window.origin + "/ref/"
+
 

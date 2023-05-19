@@ -31,6 +31,7 @@ const Layout = ({ children }: IProps) => {
         enabled: process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION",
         queryFn: DeoddService.getCurrentIp,
         select: (data: any) => {
+            debugger
             if (data.status === 200) {
                 return data.data;
             } else {
@@ -38,7 +39,6 @@ const Layout = ({ children }: IProps) => {
             }
         },
     });
-    debugger
     const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
         if (mobileOpenRight) {
