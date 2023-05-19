@@ -38,7 +38,7 @@ function FaqHowtoplay({ }: Props) {
                     <Item variant='body2'>Whitepaper</Item>
                 </a>
             </Stack>
-            <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed setOpen={setOpenModal}>
+            <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModal}>
                 {
                     mapContent[modalType]
                 }

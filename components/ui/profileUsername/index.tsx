@@ -6,6 +6,7 @@ import { useWalletContext } from "contexts/WalletContext";
 import { DeoddService } from "libs/apis";
 import { LocalStorage } from "libs/LocalStorage";
 import MyModal from "components/common/Modal";
+import { Colors } from 'constants/index';
 
 const avatars = [
   '/assets/images/avatar-yellow.png',
@@ -61,6 +62,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
     <MyModal
       open={open} setOpen={onClose}
       haveIconClosed
+      iconProps={{ width: 16, color: Colors.secondary }}
       sx={{
         boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
         minWidth: "22rem",
