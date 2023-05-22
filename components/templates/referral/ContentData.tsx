@@ -35,7 +35,6 @@ type Props = {
     reload: Function;
 };
 function createData(avatar: number | undefined, name: string, expire: string, profit: BigNumber) {
-    debugger
     return {
         avatar: checkAvatar(avatar),
         name,

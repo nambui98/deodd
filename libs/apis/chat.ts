@@ -21,9 +21,9 @@ const getMessagesWithAuth = async ({ limit, lastCreatedAt }: { limit: number, la
         })
     })
 }
-const getMessagesWithoutAuth = async () => {
+const getMessagesWithoutAuth = async (isLoadMore: boolean) => {
     return await vhIdRequest({
-        url: baseURLChat + `/message`,
+        url: baseURLChat + `/message` + (isLoadMore ? '?limit=10' : ''),
         method: 'GET',
     })
 }

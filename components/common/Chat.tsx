@@ -11,12 +11,16 @@ import EmojiPicker from 'emoji-picker-react'
 import { LocalStorage } from 'libs/LocalStorage'
 import { DeoddService } from 'libs/apis'
 import { MessageCommand } from 'libs/types'
-import { KeyboardEventHandler, useEffect, useRef, useState } from 'react'
+import { KeyboardEventHandler, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
+import Loader from './Loader'
+import { useAccount } from 'wagmi'
+import { connected } from 'process'
+import { useInView } from 'react-intersection-observer'
 type MessageType = {
     userInfo: {
         userName: string | undefined,
@@ -31,24 +35,23 @@ type MessageType = {
 }
 function Chat({ open }: { open: boolean }) {
     const { walletIsConnected, handleConnectWallet, walletAddress } = useWalletContext();
-
-
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [anchorElOptionMore, setAnchorOptionMore] = useState<HTMLButtonElement | null>(null);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null)
     const [isScrollBottom, setIsScrollBottom] = useState<boolean>(true);
-    useQuery({
+    const { setIsError, setTitleError } = useSiteContext();
+    const { refetch: getMessages } = useQuery({
         queryKey: ["getMessages"],
-        enabled: walletAddress !== null && walletAddress !== undefined,
-        queryFn: () => DeoddService.getMessagesWithAuth({ limit: 10, lastCreatedAt: lastCreatedAt }),
+        enabled: false,
+        queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
         onSuccess(data) {
             if (data && data.data) {
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
-                if (lastCreatedAt !== data.data[data.data.length - 1].createdAt) {
+                if (lastCreatedAt !== data.data[data.data.length - 1].created_at) {
                     setMessages((prev) => ([...prev, ...data.data]))
-                    setLastCreatedAt(data.data[data.data.length - 1].createdAt);
+                    setLastCreatedAt(data.data[data.data.length - 1].created_at);
                 }
             }
         },
@@ -62,14 +65,22 @@ function Chat({ open }: { open: boolean }) {
     });
 
     //get messages without auth
-    useQuery({
+    const [isLoadMoreWithoutAuth, setIsLoadMoreWithoutAuth] = useState<boolean>(false)
+    const { refetch: getMessagesWithoutAuth } = useQuery({
         queryKey: ["getMessagesWithoutAuth"],
-        enabled: walletAddress === null || walletAddress === undefined,
-        queryFn: () => DeoddService.getMessagesWithoutAuth(),
+        enabled: false,
+        retry: false,
+        queryFn: () => DeoddService.getMessagesWithoutAuth(isLoadMoreWithoutAuth),
         onSuccess(data) {
             if (data && data.data) {
+                setIsLoadMoreWithoutAuth(true);
                 setMessages(data.data)
             }
+        },
+        onError(err: any) {
+            setIsLoadMoreWithoutAuth(false);
+            setIsError(true)
+            setTitleError(err.response?.data?.meta.error_message)
         },
         select: (data: any) => {
             if (data.status === 200) {
@@ -79,7 +90,7 @@ function Chat({ open }: { open: boolean }) {
             }
         },
     });
-    const { sendJsonMessage, sendMessage, lastMessage, readyState } = useWebSocket('wss://deodd.io/degateway/connect/websocket',
+    const { sendJsonMessage, readyState } = useWebSocket('wss://deodd.io/degateway/connect/websocket',
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)
@@ -89,7 +100,7 @@ function Chat({ open }: { open: boolean }) {
                     }
                 }
             },
-            shouldReconnect: (closeEvent) => true
+            shouldReconnect: () => true
         },
     );
 
@@ -110,26 +121,27 @@ function Chat({ open }: { open: boolean }) {
         return result;
     }
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorOptionMore(event.currentTarget);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setAnchorOptionMore(null);
     };
 
 
-    const id = Boolean(anchorEl) ? 'simple-popover' : undefined;
-    const refContainerChat = useRef<HTMLDivElement>(null);
+    const id = Boolean(anchorElOptionMore) ? 'pop-up-option-more' : undefined;
+    // const refTopChat = useRef<HTMLDivElement>(null);
+    const refBottomChat = useRef<HTMLDivElement>(null);
     const handleScrollToBottom = () => {
-        refContainerChat.current?.scrollIntoView({ behavior: "smooth" })
+        refBottomChat.current?.scrollIntoView({ behavior: "smooth" })
     };
     useEffect(() => {
-        if (refContainerChat.current && open) {
+        if (refBottomChat.current && open) {
             setTimeout(() => {
                 handleScrollToBottom();
             }, 1000);
         }
-    }, [refContainerChat, open])
+    }, [refBottomChat, open])
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
@@ -140,19 +152,63 @@ function Chat({ open }: { open: boolean }) {
 
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -50;
-        console.log(e.target.scrollTop);
-
         if (bottom) {
             setIsScrollBottom(true);
-            console.log("bottom")
         } else {
             setIsScrollBottom(false);
         }
     }
-    console.log(readyState);
-    console.log(ReadyState.OPEN);
-
     console.log(connectionStatus);
+    const scrollObserver = useCallback(
+        (node: Element) => {
+            new IntersectionObserver(entries => {
+                entries.forEach(en => {
+                    if (en.intersectionRatio > 0) {
+                        if (walletAddress) {
+
+                            getMessages();
+                        }
+                    }
+                });
+            }).observe(node);
+        },
+        [getMessages, walletAddress]
+    );
+    const scrollObserverWithoutauth = useCallback(
+        (node: Element) => {
+            new IntersectionObserver(entries => {
+                entries.forEach(en => {
+                    if (en.intersectionRatio > 0) {
+                        getMessagesWithoutAuth();
+                    }
+                });
+            }).observe(node);
+        },
+        [getMessagesWithoutAuth]
+    );
+    // useEffect(() => {
+    //     if (refTopChat.current) {
+    //         debugger
+    //         if (walletAddress) {
+    //             scrollObserver(refTopChat.current);
+    //         } else {
+
+    //             scrollObserverWithoutauth(refTopChat.current);
+    //         }
+    //     }
+
+    // }, [scrollObserver, walletAddress, scrollObserverWithoutauth, refTopChat]);
+    const [refTopChat, inView] = useInView();
+    useEffect(() => {
+        if (inView) {
+            if (walletAddress) {
+                getMessages()
+            } else {
+                getMessagesWithoutAuth();
+            }
+        }
+    }, [inView, walletAddress])
+
 
     return (
         <Box position={'relative'} overflow={'hidden'} >
@@ -177,21 +233,27 @@ function Chat({ open }: { open: boolean }) {
                             Coming soon
                         </Typography>
                     </Stack> :
+                    // <IntersectionObserver onChange={handleIntersection}>
                     <Box
                         height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
                         display={'flex'}
                         flexDirection={'column-reverse'}
                         onScroll={handleScroll}
                         p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
-                        <Box
-                            ref={refContainerChat}
-                        />
+                        <Box ref={refBottomChat} />
+
                         {
                             messages.map((message) => {
                                 return <ChatItem key={message.id} data={message} handleClick={handleClick} id={message.id} isMy={message.from === walletAddress} />
                             })
                         }
+                        {
+                            isLoadMoreWithoutAuth === true || walletAddress && <Loader isLoadingProps isInComponent size={30} />
+                        }
+                        <Box ref={refTopChat} />
                     </Box>
+
+                // </IntersectionObserver>
             }
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
                 <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
@@ -239,7 +301,7 @@ function Chat({ open }: { open: boolean }) {
                     </Button>
                 }
             </Box>
-            <PopoverItem id={id} anchorEl={anchorEl} handleClose={handleClose} />
+            <PopoverItem id={id} anchorEl={anchorElOptionMore} handleClose={handleClose} />
         </Box>
     )
 }
@@ -247,17 +309,12 @@ function Chat({ open }: { open: boolean }) {
 export default Chat
 const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAddress: string }) => {
     const { setIsError, setTitleError } = useSiteContext();
-    const [isShowEmojiPicker, setIsShowEmojiPicker] = useState<boolean>(false)
     const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
     const refInput = useRef(null);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorElEmoji, setAnchorElEmoji] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(anchorEl ? null : event.currentTarget);
-    };
-
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popper' : undefined;
+    const open = Boolean(anchorElEmoji);
+    const id = open ? 'pop-up-emoji' : undefined;
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
     }
@@ -289,19 +346,6 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
         debugger
     }
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
-
-        {/* <ClickAwayListener onClickAway={() => {
-            debugger
-            setIsShowEmojiPicker(prev => !prev)
-        }}>
-            <Box position={'absolute'} display={isShowEmojiPicker ? 'block' : 'none'} bottom={50} right={0} >
-
-
-                <EmojiPicker width={288} onEmojiClick={handleEmoji} />
-            </Box>
-
-        </ClickAwayListener> */}
-
         <InputBase
             inputRef={refInput}
             {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
@@ -313,12 +357,12 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
             endAdornment={
 
                 <InputAdornment position="end" sx={{ pr: 2 }}>
-                    <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                    <ClickAwayListener onClickAway={() => setAnchorElEmoji(null)}>
                         <Box>
                             <Popper
                                 id={id}
                                 open={open}
-                                anchorEl={anchorEl}
+                                anchorEl={anchorElEmoji}
                                 placement='top-end'
                                 sx={{
                                     zIndex: (theme) => theme.zIndex.drawer + 1
@@ -330,8 +374,7 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
                                 aria-label="Toggle emoji"
                                 aria-describedby={id}
                                 onClick={(event: React.MouseEvent<HTMLElement>) => {
-                                    debugger
-                                    setAnchorEl(anchorEl ? null : event.currentTarget);
+                                    setAnchorElEmoji(anchorElEmoji ? null : event.currentTarget);
                                 }}
                                 edge="end"
                                 sx={{ mr: -1, }}
