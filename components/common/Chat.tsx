@@ -78,7 +78,7 @@ function Chat({ open }: { open: boolean }) {
             }
         },
     });
-    const { sendJsonMessage, sendMessage, lastMessage, readyState } = useWebSocket('ws://deodd.io/degateway/connect/websocket',
+    const { sendJsonMessage, sendMessage, lastMessage, readyState } = useWebSocket('wss://deodd.io/degateway/connect/websocket',
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)
@@ -148,6 +148,8 @@ function Chat({ open }: { open: boolean }) {
             setIsScrollBottom(false);
         }
     }
+    console.log(readyState);
+    console.log(ReadyState.OPEN);
 
     console.log(connectionStatus);
 
