@@ -1,5 +1,6 @@
 import { Utils } from '@/utils/index'
-import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Stack, Typography } from '@mui/material'
+import { ClickAwayListener } from '@mui/base'
+import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Popper, Stack, Typography } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
 import { Input } from 'components/ui/input'
@@ -249,6 +250,14 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
     const [isShowEmojiPicker, setIsShowEmojiPicker] = useState<boolean>(false)
     const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
     const refInput = useRef(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popper' : undefined;
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
     }
@@ -280,9 +289,19 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
         debugger
     }
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
-        <Box position={'absolute'} display={isShowEmojiPicker ? 'block' : 'none'} bottom={50} right={0} >
-            <EmojiPicker width={288} onEmojiClick={handleEmoji} />
-        </Box>
+
+        {/* <ClickAwayListener onClickAway={() => {
+            debugger
+            setIsShowEmojiPicker(prev => !prev)
+        }}>
+            <Box position={'absolute'} display={isShowEmojiPicker ? 'block' : 'none'} bottom={50} right={0} >
+
+
+                <EmojiPicker width={288} onEmojiClick={handleEmoji} />
+            </Box>
+
+        </ClickAwayListener> */}
+
         <InputBase
             inputRef={refInput}
             {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
@@ -294,14 +313,34 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
             endAdornment={
 
                 <InputAdornment position="end" sx={{ pr: 2 }}>
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => { setIsShowEmojiPicker((prev) => !prev) }}
-                        edge="end"
-                        sx={{ mr: -1, }}
-                    >
-                        <EmojiIcon />
-                    </IconButton>
+                    <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                        <Box>
+                            <Popper
+                                id={id}
+                                open={open}
+                                anchorEl={anchorEl}
+                                placement='top-end'
+                                sx={{
+                                    zIndex: (theme) => theme.zIndex.drawer + 1
+                                }}
+                            >
+                                <EmojiPicker onEmojiClick={handleEmoji} />
+                            </Popper>
+                            <IconButton
+                                aria-label="Toggle emoji"
+                                aria-describedby={id}
+                                onClick={(event: React.MouseEvent<HTMLElement>) => {
+                                    debugger
+                                    setAnchorEl(anchorEl ? null : event.currentTarget);
+                                }}
+                                edge="end"
+                                sx={{ mr: -1, }}
+                            >
+                                <EmojiIcon />
+                            </IconButton>
+                        </Box>
+                    </ClickAwayListener>
+
                     <IconButton
                         aria-label="toggle password visibility"
                         type='submit'
