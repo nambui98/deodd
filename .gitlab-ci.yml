@@ -36,6 +36,7 @@ deploy_production:
     - ssh "$DEV_USER@$DEV_HOST" 'rm -rf ~/deodd || true'
     - ssh "$DEV_USER@$DEV_HOST" 'mkdir -p ~/deodd/ || true'
     - scp -r ./* "$DEV_USER@$DEV_HOST:~/deodd/"
+    - ssh "$DEV_USER@$DEV_HOST" "cp .env.production deodd/.env.production"
     - ssh "$DEV_USER@$DEV_HOST" "cd deodd; yarn install; yarn build"
     - ssh "$DEV_USER@$DEV_HOST" "cd deodd; yarn start -p 3001 > /dev/null 2>&1 &"
   only:
