@@ -51,6 +51,7 @@ import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
 import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
+import EmojiIcon from "public/assets/icons/emoji-happy.svg";
 function Bnb2Icon(props: SvgIconProps) {
   console.log(props);
 
@@ -65,6 +66,7 @@ function Bnb2Icon(props: SvgIconProps) {
   );
 }
 export {
+  EmojiIcon,
   Archive2Icon,
   ArrowLeft2Icon,
   Bnb2Icon,

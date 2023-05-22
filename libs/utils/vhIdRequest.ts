@@ -3,7 +3,7 @@ import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
 const BASEURL_DEV = 'https://deodd.io';
-const BASEURL_PRODUCTION = 'https://pretestnet.deodd.io';
+const BASEURL_PRODUCTION = 'https://testnet.deodd.io';
 
 const apiRouter =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
@@ -36,9 +36,9 @@ vhIdRequest.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config
+    console.log(err);
 
     if (err.response) {
-      debugger
       // Token was expired
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true
@@ -61,8 +61,9 @@ vhIdRequest.interceptors.response.use(
           window.location.reload();
         }
       } else {
+
         // ToastUtils.error(err.response.meta.message)
-        return false;
+        return Promise.reject(err)
       }
     }
 

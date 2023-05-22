@@ -52,3 +52,4 @@ export const MapIconNFTString: { [key in EnumNFT]: string } = {
 };
 
 export const HowRef2EarnWorkImage = "/assets/images/how-ref2earn-work.png"
+export const GoldenHourSidebarImage = "/assets/images/golden-hour-sidebar.svg"

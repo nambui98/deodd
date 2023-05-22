@@ -7,4 +7,15 @@ export const checkAvatar = (avatar: number | undefined) => {
     case 4: return 'avatar-green';
     default: return 'avatar-yellow'
   }
+}
+export const getPathAvatar = (avatarId: number | undefined) => {
+  const basePath = '/assets/images';
+  switch (avatarId) {
+    case 0: return basePath + '/avatar-yellow.png';
+    case 1: return basePath + '/avatar-orange.png';
+    case 2: return basePath + '/avatar-pink.png';
+    case 3: return basePath + '/avatar-violet.png';
+    case 4: return basePath + '/avatar-green.png';
+    default: return basePath + '/avatar-yellow.png'
+  }
 } 

@@ -1,4 +1,4 @@
-import { Box, Drawer as DrawerMobile } from '@mui/material'
+import { Box, Drawer as DrawerMobile, useMediaQuery, useTheme } from '@mui/material'
 import { Drawer } from 'components/ui/drawer'
 import { DRAWER_WIDTH } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
@@ -12,6 +12,8 @@ type Props = {
 }
 function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     const container = window !== undefined ? () => window().document.body : undefined;
+    const theme = useTheme();
+    const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { isGoldenHour } = useSiteContext();
 
     return (
@@ -45,9 +47,12 @@ function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                     },
                 }}
             >
-                <Chat open={open} />
-            </DrawerMobile>
+                {
+                    isMediumScreen &&
 
+                    <Chat open={open} />
+                }
+            </DrawerMobile>
             <Drawer
                 sx={{
                     bgcolor: 'primary.200',
