@@ -6,13 +6,14 @@ import { Input } from 'components/ui/input'
 import { DOWNSTREAM_MESSAGE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
+import EmojiPicker from 'emoji-picker-react'
 import { LocalStorage } from 'libs/LocalStorage'
 import { DeoddService } from 'libs/apis'
 import { MessageCommand } from 'libs/types'
 import { KeyboardEventHandler, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
+import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
 type MessageType = {
@@ -77,8 +78,7 @@ function Chat({ open }: { open: boolean }) {
             }
         },
     });
-    const didUnmount = useRef(false);
-    const { sendJsonMessage, lastMessage, readyState } = useWebSocket('ws://deodd.io/degateway/connect/websocket',
+    const { sendJsonMessage, sendMessage, lastMessage, readyState } = useWebSocket('ws://deodd.io/degateway/connect/websocket',
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)
@@ -88,18 +88,10 @@ function Chat({ open }: { open: boolean }) {
                     }
                 }
             },
-            reconnectInterval: 59000,
-            shouldReconnect: (closeEvent) => {
-                return didUnmount.current === false;
-            },
+            shouldReconnect: (closeEvent) => true
         },
     );
 
-    useEffect(() => {
-        return () => {
-            didUnmount.current = true;
-        };
-    }, []);
     useEffect(() => {
         if (walletIsConnected) {
             const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
@@ -124,7 +116,6 @@ function Chat({ open }: { open: boolean }) {
         setAnchorEl(null);
     };
 
-    console.log(messages);
 
     const id = Boolean(anchorEl) ? 'simple-popover' : undefined;
     const refContainerChat = useRef<HTMLDivElement>(null);
@@ -146,7 +137,6 @@ function Chat({ open }: { open: boolean }) {
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
 
-    // console.log(refContainerChat.current?.scrollHeight - refContainerChat.current?.scrollTop);
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -50;
         console.log(e.target.scrollTop);
@@ -158,6 +148,9 @@ function Chat({ open }: { open: boolean }) {
             setIsScrollBottom(false);
         }
     }
+
+    console.log(connectionStatus);
+
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -204,7 +197,6 @@ function Chat({ open }: { open: boolean }) {
                             <SendMessage disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
                             : <ButtonLoading
                                 onClick={handleConnectWallet}
-
                                 sx={{
                                     py: 1,
                                     borderRadius: 2,
@@ -252,7 +244,9 @@ function Chat({ open }: { open: boolean }) {
 export default Chat
 const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAddress: string }) => {
     const { setIsError, setTitleError } = useSiteContext();
-    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
+    const [isShowEmojiPicker, setIsShowEmojiPicker] = useState<boolean>(false)
+    const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
+    const refInput = useRef(null);
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
     }
@@ -276,23 +270,50 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
             handleSubmit(onSubmit)()
         }
     }
-    return <Box component={'form'} sx={{ width: 1 }} onSubmit={handleSubmit(onSubmit)}>
+    const handleEmoji = (emojiObject: any) => {
+        const cursor = (refInput?.current as any).selectionStart;
+        const content = watch('content');
+        const text = content.slice(0, cursor) + emojiObject.emoji + content.slice(cursor);
+        setValue('content', text);
+        debugger
+    }
+    return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
+        <Box position={'absolute'} display={isShowEmojiPicker ? 'block' : 'none'} bottom={50} right={0} >
+            <EmojiPicker width={288} onEmojiClick={handleEmoji} />
+        </Box>
         <InputBase
-            {...register("content", { required: true, maxLength: 200 })}
+            inputRef={refInput}
+            {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
             onKeyDown={(e) => handleOnKeydown(e)}
             sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
             placeholder='Type your messsages'
             multiline
             maxRows={3}
             endAdornment={
+
                 <InputAdornment position="end" sx={{ pr: 2 }}>
+                    <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => { setIsShowEmojiPicker((prev) => !prev) }}
+                        edge="end"
+                        sx={{ mr: -1, }}
+                    >
+                        <EmojiIcon />
+                    </IconButton>
                     <IconButton
                         aria-label="toggle password visibility"
                         type='submit'
                         disabled={disabled}
                         edge="end"
+                        sx={{ px: 0, mr: -4 }}
                     >
-                        <SendIcon />
+                        <Stack width={60} alignItems={'center'}>
+                            <SendIcon />
+                            <Typography fontSize={10} mt={.5} fontWeight={400} color="dark.60">
+                                {watch('content')?.length ?? 0}/200
+                            </Typography>
+
+                        </Stack>
                     </IconButton>
                 </InputAdornment>
             }
@@ -502,12 +523,12 @@ const ChatItem = ({ isMy, isReport, id, data, handleClick }: { isReport?: boolea
         </Stack>
         <Stack direction={'row'} alignItems={'baseLine'} gap={1} mt={.5}>
             <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{Format.formatDateTime(data.updated_at, 'HH:mm')}</Typography>
-            <Typography whiteSpace={'normal'} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100"> {data.content}</Typography>
+            <Typography whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100"> {data.content}</Typography>
         </Stack>
-        <Box position="absolute" className="more" sx={{ top: 0, right: 0 }}>
+        {/* <Box position="absolute" className="more" sx={{ top: 0, right: 0 }}>
             <IconButton aria-describedby={id} onClick={handleClick} aria-label="delete">
                 <MoreSquareIcon />
             </IconButton>
-        </Box>
+        </Box> */}
     </Box>
 }
