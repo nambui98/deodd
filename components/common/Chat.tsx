@@ -348,6 +348,9 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
         <InputBase
             inputRef={refInput}
+            inputProps={{
+                maxLength: 200
+            }}
             {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
             onKeyDown={(e) => handleOnKeydown(e)}
             sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
