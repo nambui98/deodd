@@ -29,6 +29,7 @@ const Layout = ({ children }: IProps) => {
     const { isLoading, isFetching, data: currentInfoIp } = useQuery({
         queryKey: ["getCurrentIp"],
         enabled: process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION",
+        refetchOnWindowFocus: false,
         queryFn: DeoddService.getCurrentIp,
         select: (data: any) => {
             debugger
