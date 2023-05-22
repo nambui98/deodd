@@ -85,23 +85,6 @@ export function TotalSection({
           error={error}
         />
       </DashboardCard>
-      <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
-        justifyContent={"center"}
-        height="13.375rem"
-        position={"relative"}
-      >
-        <TitleTextAbsolute text="win percentage" />
-        <Box display={"flex"} alignItems={"center"} gap={1}>
-          <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
-          <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-            {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
-            <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
-              %
-            </Typography>
-          </Typography>
-        </Box>
-      </DashboardCard>
 
       <DashboardCard
         gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
@@ -149,6 +132,23 @@ export function TotalSection({
         )}
       </DashboardCard>
 
+      <DashboardCard
+        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        justifyContent={"center"}
+        height="13.375rem"
+        position={"relative"}
+      >
+        <TitleTextAbsolute text="win percentage" />
+        <Box display={"flex"} alignItems={"center"} gap={1}>
+          <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
+          <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
+            {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
+            <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
+              %
+            </Typography>
+          </Typography>
+        </Box>
+      </DashboardCard>
 
       <DashboardCard
         gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
