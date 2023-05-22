@@ -159,45 +159,6 @@ function Chat({ open }: { open: boolean }) {
         }
     }
     console.log(connectionStatus);
-    const scrollObserver = useCallback(
-        (node: Element) => {
-            new IntersectionObserver(entries => {
-                entries.forEach(en => {
-                    if (en.intersectionRatio > 0) {
-                        if (walletAddress) {
-
-                            getMessages();
-                        }
-                    }
-                });
-            }).observe(node);
-        },
-        [getMessages, walletAddress]
-    );
-    const scrollObserverWithoutauth = useCallback(
-        (node: Element) => {
-            new IntersectionObserver(entries => {
-                entries.forEach(en => {
-                    if (en.intersectionRatio > 0) {
-                        getMessagesWithoutAuth();
-                    }
-                });
-            }).observe(node);
-        },
-        [getMessagesWithoutAuth]
-    );
-    // useEffect(() => {
-    //     if (refTopChat.current) {
-    //         debugger
-    //         if (walletAddress) {
-    //             scrollObserver(refTopChat.current);
-    //         } else {
-
-    //             scrollObserverWithoutauth(refTopChat.current);
-    //         }
-    //     }
-
-    // }, [scrollObserver, walletAddress, scrollObserverWithoutauth, refTopChat]);
     const [refTopChat, inView] = useInView();
     useEffect(() => {
         if (inView) {

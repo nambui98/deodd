@@ -10,7 +10,7 @@ import { BigNumber, ethers } from 'ethers'
 import { useDeoddContract } from 'hooks/useDeoddContract'
 import { TypeDataNFT, TypeNFT } from 'hooks/useDeoddNFTContract'
 import { useJackpotContract } from 'hooks/useJackpotContract'
-import { EnumNFT, HISTORY_TYPE } from 'libs/types'
+import { EnumNFT, HISTORY_TYPE, HISTORY_TYPE_VALUE } from 'libs/types'
 import React, { useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Format } from 'utils/format'
@@ -259,7 +259,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                             title={HISTORY_TYPE[history.historyType as keyof typeof HISTORY_TYPE]}
                             date={getTimeHistory(history.createdAt)}
                             status={history.historyStatus}
-                            value={(history.changedBalance > 0 ? '+' : '') + Format.formatMoney(history.changedBalance, 5) + ' BNB'} />)
+                            value={(history.changedBalance > 0 ? '+' : '') + Format.formatMoney(history.changedBalance, 5) + ' ' + HISTORY_TYPE_VALUE[history.historyType as keyof typeof HISTORY_TYPE_VALUE]} />)
                         : <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
                 }
             </MyModal>
