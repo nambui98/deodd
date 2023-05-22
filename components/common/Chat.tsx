@@ -90,7 +90,7 @@ function Chat({ open }: { open: boolean }) {
             }
         },
     });
-    const { sendJsonMessage, readyState } = useWebSocket('wss://deodd.io/degateway/connect/websocket',
+    const { sendJsonMessage, readyState } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)

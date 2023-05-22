@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { useSiteContext } from 'contexts/SiteContext';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
 const BASEURL_DEV = 'https://deodd.io';
-const BASEURL_PRODUCTION = 'https://pretestnet.deodd.io';
+const BASEURL_PRODUCTION = 'https://testnet.deodd.io';
 
 const apiRouter =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
