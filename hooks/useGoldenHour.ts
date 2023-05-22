@@ -56,11 +56,7 @@ export function useGoldenHour() {
       countdown.timeCurrent < timeline.endHour
     ) {
       if (!isGoldenHour) {
-        if (process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY)) {
-          setIsGoldenHour(false);
-        } else {
-          setIsGoldenHour(true);
-        }
+        setIsGoldenHour(true);
       }
     } else {
       if (isGoldenHour) {

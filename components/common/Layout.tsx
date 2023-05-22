@@ -84,7 +84,7 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main>
-                    {router.pathname !== "/referral" && router.pathname !== "/ref/[code]" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children}
+                    {children}
                 </main>
 
                 <FaqHowtoplay />
