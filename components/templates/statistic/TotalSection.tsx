@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
-import { CupIcon, MobileIcon, ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
+import { CupIcon, MobileIcon } from "utils/Icons";
 import { LogoImage } from "utils/Images";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { FlipPerUserTable } from "./FlipPerUserTable";
+import { CompareText } from "./CompareText";
 
 type TotalPropsType = {
   error: {
@@ -45,27 +46,7 @@ export function TotalSection({
                 bnb
               </Typography>
             </Typography>
-            <Typography
-              mt={2}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={1}
-              variant="body2"
-              color={
-                flipDashboardStat.feeTotalCompareYesterdayPercentage < 0
-                  ? Colors.decrease
-                  : Colors.increase
-              }
-            >
-              {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
-                <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
-              ) : (
-                <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
-              )}
-              {Math.abs(flipDashboardStat.feeTotalCompareYesterdayPercentage)}
-              %
-            </Typography>
+            <CompareText data={flipDashboardStat.feeTotalCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
           <Typography variant="body2">{error.errorMessage}</Typography>
@@ -106,26 +87,7 @@ export function TotalSection({
                 bnb
               </Typography>
             </Typography>
-            <Typography
-              mt={2}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              gap={1}
-              variant="body2"
-              color={
-                flipDashboardStat.feeTotalCompareYesterdayPercentage < 0
-                  ? Colors.decrease
-                  : Colors.increase
-              }
-            >
-              {flipDashboardStat.feeTotalCompareYesterdayPercentage < 0 ? (
-                <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
-              ) : (
-                <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
-              )}
-              {Math.abs(flipDashboardStat.amountCompareYesterdayPercentage)}%
-            </Typography>
+            <CompareText data={flipDashboardStat.amountCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
           <Typography variant="body2">{error.errorMessage}</Typography>
