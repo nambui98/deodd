@@ -1,4 +1,5 @@
 import { BigNumber, ethers } from "ethers";
+import { format } from "date-fns";
 
 export const Format = {
     formatMoney: (value: string | number, fixed?: number) => {
@@ -38,4 +39,7 @@ export const Format = {
             maximumFractionDigits: fixed || 5,
         });
     },
+
+
+    formatDateTime: (date: string, type = 'dd/MM/yyyy') => format(new Date(date), type),
 } 

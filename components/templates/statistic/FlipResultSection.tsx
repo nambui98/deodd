@@ -6,6 +6,7 @@ import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { DonutDisplay } from "./DonutDisplay";
+import { CompareText } from "./CompareText";
 
 type FlipPropsType = {
   error: {
@@ -150,46 +151,23 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         justifyContent={"center"}
         height="22.375rem"
         position={"relative"}
+        gap={2}
       >
         <TitleTextAbsolute text="flip total" />
-        <Box
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          flexDirection={"column"}
-          gap={2}
-        >
-          <Image src={coin0} width={80} height={80} alt="coin-img" />
-          {error.haveFlipped ? (
-            <>
-              <Typography variant="h1" fontSize={"3rem"}>
-                {flipDashboardStat.numberFlipToday < 10
-                  ? "0" + flipDashboardStat.numberFlipToday
-                  : flipDashboardStat.numberFlipToday}
-              </Typography>
-              <Typography
-                display={"flex"}
-                alignItems={"center"}
-                gap={1}
-                variant="body2"
-                color={
-                  flipDashboardStat.flipCompareYesterdayPercentage < 0
-                    ? Colors.decrease
-                    : Colors.increase
-                }
-              >
-                {flipDashboardStat.flipCompareYesterdayPercentage < 0 ? (
-                  <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
-                ) : (
-                  <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
-                )}
-                {Math.abs(flipDashboardStat.flipCompareYesterdayPercentage)}%
-              </Typography>
-            </>
-          ) : (
-            <Typography variant="body2">{error.errorMessage}</Typography>
-          )}
-        </Box>
+
+        <Image src={coin0} width={80} height={80} alt="coin-img" />
+        {error.haveFlipped ? (
+          <>
+            <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.8125rem"}>
+              {flipDashboardStat.numberFlipToday < 10
+                ? "0" + flipDashboardStat.numberFlipToday
+                : flipDashboardStat.numberFlipToday}
+            </Typography>
+            <CompareText data={flipDashboardStat.flipCompareYesterdayPercentage} />
+          </>
+        ) : (
+          <Typography variant="body2">{error.errorMessage}</Typography>
+        )}
       </DashboardCard>
     </>
   );

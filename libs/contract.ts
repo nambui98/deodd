@@ -18,6 +18,7 @@ const addresses: Map = {
 	['dev']: CONTRACT_DEV,
 }
 
+
 const address = addresses[ENVIRONMENT_SWITCH];
 
 export const deoddContract = { address: address.deodd, abi: deoddAbi.abi }

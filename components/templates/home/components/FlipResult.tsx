@@ -131,11 +131,11 @@ export default function FlipResult({ isShowing }: { isShowing: boolean }) {
 
       </Grid>
 
-      <Box display="flex" justifyContent={'center'} sx={{ cursor: 'pointer' }} onClick={() => setStatusGame(StatusGame.FLIP_LOG_DETAIL)}>
+      {/* <Box display="flex" justifyContent={'center'} sx={{ cursor: 'pointer' }} onClick={() => setStatusGame(StatusGame.FLIP_LOG_DETAIL)}>
         <Typography mr={.5} variant="body2" fontWeight={400} textTransform={'none'}>Fliping Log Detail
         </Typography>
         <RightIcon stroke="#fff" />
-      </Box>
+      </Box> */}
     </Box>
   </Box >
 }

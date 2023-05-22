@@ -6,6 +6,7 @@ import MyModal from '../../components/common/Modal'
 import { ButtonTertiary } from '../../components/ui/button'
 import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, NotiIcon } from '../../utils/Icons'
 import { AvatarImage, CoinEmptyImage, Rank1Image, Rank2Image, Rank3Image, ReferralImage } from '../../utils/Images'
+import { StatusTransfer } from '@/templates/assets/ItemHistory'
 
 type Props = {}
 function createData(
@@ -23,7 +24,7 @@ function DetailCampaign({ }: Props) {
     const handleClick = () => {
         setOpen(!open);
     };
-    let rows = [
+    let rows: any[] = [
         createData('Win/Lose Streak Campaign',
             'Arlene McCoy (3535***3534)',
             '1000'),
@@ -188,21 +189,17 @@ function DetailCampaign({ }: Props) {
                 </Stack >
             </Container >
             <MyModal open={openModal} title='Balance History' setOpen={setOpenModal} >
-                <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <Item isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
+                <Item isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
             </MyModal>
             <MyModal open={openModalWallet} title='Wallet History' setOpen={setOpenModalWallet} >
-                <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <Item isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
+                <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
+                <Item isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
             </MyModal>
         </Box >
     )
 }
-enum StatusTransfer {
-    Inprogress,
-    Complete,
-    Failed
-}
+
 type TypeItem = {
     isDeposit: boolean,
     title: string,
@@ -220,7 +217,7 @@ const Item: React.FC<TypeItem> = ({ title, isDeposit, status, value, date }) => 
             <Typography color={"secondary"} mt={0.5}>{value}</Typography>
         </Stack>
         <Stack ml="auto" textAlign={"end"}>
-            <Typography color={"secondary.200"} variant='caption'>{StatusTransfer[status]}</Typography>
+            {/* <Typography color={"secondary.200"} variant='caption'>{StatusTransfer[status]}</Typography> */}
             <Typography color={"secondary.200"} variant='caption' mt={0.5}>{date}</Typography>
         </Stack>
     </Stack>
