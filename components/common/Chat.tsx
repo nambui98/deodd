@@ -97,6 +97,9 @@ function Chat({ open }: { open: boolean }) {
                 if (dataMessage.message === DOWNSTREAM_MESSAGE) {
                     if (dataMessage.data.data.data.command === MessageCommand.NEW_MESSAGE) {
                         setMessages((prev) => [dataMessage.data.data.data.data, ...prev])
+                        setTimeout(() => {
+                            handleScrollToBottom();
+                        }, 100);
                     }
                 }
             },
@@ -151,7 +154,7 @@ function Chat({ open }: { open: boolean }) {
     }[readyState];
 
     const handleScroll = (e: any) => {
-        const bottom = e.target.scrollTop > -50;
+        const bottom = e.target.scrollTop > -80;
         if (bottom) {
             setIsScrollBottom(true);
         } else {
