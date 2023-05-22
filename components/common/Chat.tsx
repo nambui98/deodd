@@ -183,42 +183,24 @@ function Chat({ open }: { open: boolean }) {
                 </Stack>
             </Box>
             <Divider />
-            {
-                process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ?
-                    <Stack
-                        height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
-                        justifyContent={'center'} alignItems={'center'}
-                        overflow={'hidden'}
-                    >
-                        <Typography variant='h3' fontWeight={600}>
-                            Welcome to DeODD!
-                        </Typography>
-                        <Typography mt={'10px'} variant='body2' fontWeight={400} color="dark.60">
-                            Coming soon
-                        </Typography>
-                    </Stack> :
-                    // <IntersectionObserver onChange={handleIntersection}>
-                    <Box
-                        height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
-                        display={'flex'}
-                        flexDirection={'column-reverse'}
-                        onScroll={handleScroll}
-                        p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
-                        <Box ref={refBottomChat} />
+            <Box
+                height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
+                display={'flex'}
+                flexDirection={'column-reverse'}
+                onScroll={handleScroll}
+                p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
+                <Box ref={refBottomChat} />
 
-                        {
-                            messages.map((message) => {
-                                return <ChatItem key={message.id} data={message} handleClick={handleClick} id={message.id} isMy={message.from === walletAddress} />
-                            })
-                        }
-                        {
-                            isLoadMoreWithoutAuth === true || walletAddress && <Loader isLoadingProps isInComponent size={30} />
-                        }
-                        <Box ref={refTopChat} />
-                    </Box>
-
-                // </IntersectionObserver>
-            }
+                {
+                    messages.map((message) => {
+                        return <ChatItem key={message.id} data={message} handleClick={handleClick} id={message.id} isMy={message.from === walletAddress} />
+                    })
+                }
+                {
+                    isLoadMoreWithoutAuth === true || walletAddress && <Loader isLoadingProps isInComponent size={30} />
+                }
+                <Box ref={refTopChat} />
+            </Box>
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
                 <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
                     {

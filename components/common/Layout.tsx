@@ -29,6 +29,7 @@ const Layout = ({ children }: IProps) => {
     const { isLoading, isFetching, data: currentInfoIp } = useQuery({
         queryKey: ["getCurrentIp"],
         enabled: process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION",
+        refetchOnWindowFocus: false,
         queryFn: DeoddService.getCurrentIp,
         select: (data: any) => {
             debugger
@@ -83,7 +84,7 @@ const Layout = ({ children }: IProps) => {
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
                 <main>
-                    {router.pathname !== "/referral" && router.pathname !== "/ref/[code]" && process.env.NEXT_PUBLIC_RELEASE_EARLY && JSON.parse(process.env.NEXT_PUBLIC_RELEASE_EARLY) ? <ComingSoon /> : children}
+                    {children}
                 </main>
 
                 <FaqHowtoplay />
