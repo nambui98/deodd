@@ -314,6 +314,8 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
     //is ended typing
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
+        setIsTyping(false);
+        sendMessageCancelTyping();
     }
     const sendMessage = useMutation({
         mutationFn: (content: string) => {
