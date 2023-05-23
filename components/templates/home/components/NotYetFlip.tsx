@@ -122,7 +122,7 @@ function FormActions() {
                     onClick={handleFlip}
                     disabled={dataSelected?.coinSide !== undefined && dataSelected?.coinSide >= 0 && dataSelected?.amount ? false : true}
                     loading={statusLoadingFlip}>
-                    <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
+                    <Typography variant={"h3"} fontWeight={600}>FLIP NOW</Typography>
                 </ButtonLoading>
             </Box>
         </Box >
