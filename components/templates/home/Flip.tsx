@@ -15,6 +15,7 @@ import NotYetFlip from "./components/NotYetFlip";
 import Flipping from "./components/Flipping";
 import FlipResult from "./components/FlipResult";
 import FlipLogDetail from "./components/FlipLogDetail";
+import TestailPoint from "./components/TestailPoint";
 
 const avatar = [
   'assets/images/avatar-yellow.png',
@@ -58,6 +59,7 @@ export const Flip = React.memo(() => {
 
     <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
     <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+      <TestailPoint />
       <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
       <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
       <FlipResult isShowing={statusGame === StatusGame.FLIP_RESULT} />
