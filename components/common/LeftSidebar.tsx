@@ -29,7 +29,7 @@ type TypeSideBarItem = {
     highLightText?: boolean,
     disabledHover?: boolean,
     child?: JSX.Element,
-    comming?: boolean,
+    coming?: boolean,
     isOnlyComponent?: boolean,
     isActive?: boolean,
     isLink?: boolean
@@ -112,7 +112,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
         path: '/lottery',
-        comming: true,
+        coming: true,
         highLightText: false,
         disabledHover: true,
         child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
@@ -256,7 +256,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                     )}
                                 </ListItemButton>
                                 {
-                                    item?.comming && open &&
+                                    item?.coming && open &&
                                     <Box px={.75} py={.5} bgcolor={'secondary.400'} borderRadius={'4px 0px 0px 4px'} position={'absolute'} right={0} top={'50%'} sx={{
                                         transform: 'translateY(-50%)'
                                     }}>

@@ -6,7 +6,7 @@ type Props = {}
 export default function Profile({ }: Props) {
     return (
         <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-            Comming soon
+            Coming soon
         </Typography>
     )
 }

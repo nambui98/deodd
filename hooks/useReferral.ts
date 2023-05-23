@@ -19,7 +19,6 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (!isNotGet) {
             setLoading(true);
             if (isConnected) {
-                // if (walletIsConnected) {
                 if (walletAddress) {
                     setCkReferral(undefined);
                     setDataReferralSuccess(undefined);
@@ -27,16 +26,10 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
                     getLinkUser();
                     checkUserIsValidForReferral();
                 }
-
-                // } else {
-                //     setCkReferral(undefined);
-                // }
             } else {
                 setCkReferral(false);
                 setDataReferralSuccess(undefined);
             }
-
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNotGet, walletAddress, isConnected])

@@ -1,77 +1,49 @@
 
-import { Box, Container, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import { DiscordIcon, TelegramIcon, TwiterIcon } from 'components/common/icons'
-import React, { useState } from 'react'
-import MyModal from '../../components/common/Modal'
-import { ButtonTertiary } from '../../components/ui/button'
-import { ArrowLeftIcon, ArrowRightIcon, CopyIcon, NotiIcon } from '../../utils/Icons'
-import { AvatarImage, CoinEmptyImage, Rank1Image, Rank2Image, Rank3Image, ReferralImage } from '../../utils/Images'
 import { StatusTransfer } from '@/templates/assets/ItemHistory'
+import RightContent from '@/templates/campaign/CampaignDetail/RightContent'
+import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import MyImage from 'components/ui/image'
+import { useWalletContext } from 'contexts/WalletContext'
+import { DeoddService } from 'libs/apis'
+import React, { useState } from 'react'
+import { getPathAvatar } from 'utils/checkAvatar'
+import { Convert } from 'utils/convert'
+import MyModal from '../../components/common/Modal'
+import { ButtonLoading } from '../../components/ui/button'
+import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
+import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
 
 type Props = {}
-function createData(
-    name: string,
-    userName: string,
-    quantityFriends: string | undefined,
-) {
-    return { name, userName, quantityFriends };
-}
+
 function DetailCampaign({ }: Props) {
     const [open, setOpen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
+    const { walletAddress, handleConnectWallet, walletIsConnected } = useWalletContext();
+    const { data, refetch: getLeaderboardReferral } = useQuery({
+        queryKey: ["getLeaderboardReferral"],
+        enabled: walletAddress !== undefined && walletAddress !== null,
+        queryFn: () => DeoddService.getLeaderboardReferral(walletAddress),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+    console.log(data);
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
-    let rows: any[] = [
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-        createData('Win/Lose Streak Campaign',
-            'Arlene McCoy (3535***3534)',
-            '1000'),
-    ];
     const MapRank: { [key: string]: string } = {
-        0: Rank1Image,
-        1: Rank2Image,
-        2: Rank3Image,
+        1: Rank1Image,
+        2: Rank2Image,
+        3: Rank3Image,
     }
+    const rows = data?.referralPointUsers?.length > 50 ? data?.referralPointUsers.slice(0, 51) : data?.referralPointUsers || []
     return (
-        <Box>
-            <Box bgcolor={"background.paper"} p={"35px 0px"}>
+        <Box mt={5}>
+            {/* <Box bgcolor={"background.paper"} p={"35px 0px"}>
                 <Container>
 
                     <Typography variant='caption' color={"secondary.100"}>
@@ -81,112 +53,124 @@ function DetailCampaign({ }: Props) {
                         Referral
                     </Typography>
                 </Container>
-            </Box>
+            </Box> */}
+
+
+
+
             <Container>
-                <Stack direction="row" mt={3} columnGap={4}>
-                    <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
-                        <Typography variant='h2' textTransform={'uppercase'}>
-                            Leaderboard
-                        </Typography>
-                        <TableContainer sx={{ mt: 1, backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
-                            <Table stickyHeader aria-label="simple table">
-                                <TableHead>
-                                    <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-                                        <TableCell sx={{ textTransform: "uppercase" }}>Rank</TableCell>
-                                        <TableCell sx={{ textTransform: "uppercase" }} align="left">Users</TableCell>
-                                        <TableCell sx={{ textTransform: "uppercase" }} align="right">Friends invited</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody sx={{ bgcolor: 'background.paper' }}>
-                                    {rows.length > 0 && rows.map((row, index) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                'td, th': { border: 0, py: 1 }
-                                            }}
-                                        >
-                                            <TableCell component="th" scope="row">
-                                                {
-                                                    index < 3 ?
-                                                        <img src={MapRank[index]} alt="" />
-                                                        : <Typography variant='caption'>{index}</Typography>
-                                                }
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                    <img src={AvatarImage} width={24} alt="" />
-                                                    <Typography variant='caption'>{row.userName}</Typography>
-                                                </Stack>
-                                            </TableCell>
-                                            <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.quantityFriends}</Typography></TableCell>
-                                        </TableRow>
-                                    ))}
-                                    <TableRow
-                                        sx={{
-                                            position: 'sticky',
-                                            bottom: 0,
-                                            right: 0,
-                                            left: 0,
-                                            'td, th': { border: 0, py: 1 },
-                                            bgcolor: 'secondary.main',
-                                            color: 'background.paper'
-                                        }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            <Typography variant='caption' color="background.paper" >3</Typography>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                <img src={AvatarImage} width={24} alt="" />
-                                                <Typography variant='caption' color="background.paper" >{"nambui"}</Typography>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="right" ><Typography variant='caption' color="background.paper"> 100</Typography></TableCell>
-                                    </TableRow>
+                {
+                    !walletIsConnected ?
+                        <Stack justifyContent={'center'} alignItems={'center'}>
+                            <Typography variant='h3' fontWeight={600}>Connect wallet to get your referral link</Typography>
 
-                                </TableBody>
+                            <ButtonLoading
+                                onClick={handleConnectWallet}
+                                sx={{
+                                    px: 5, py: 2, mt: 3,
+                                    borderRadius: 2,
+                                    width: 'auto',
+                                    textTransform: 'none',
+                                }}
+                                loading={false}>
+                                <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
+                            </ButtonLoading>
 
-                            </Table>
-                            {
-                                rows.length <= 0 &&
-                                <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
-                                    <img width={144} src={CoinEmptyImage} alt="" />
-                                    <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
-                                </Box>
-                            }
-
-                        </TableContainer>
-
-
-                    </Box>
-                    <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
-                        <img src={ReferralImage} width={"100%"} alt="" />
-                        <Typography variant='h4' textAlign={'center'} mt={5}>
-                            Your referral link
-                        </Typography>
-                        <ButtonTertiary sx={{ mt: 1, py: '12px', width: '100%' }}>
-                            <Typography variant='h4' mr={3} textTransform={'none'} >
-                                https://www.deodd.io/ref/53sdkgj3434
-                            </Typography>
-                            <CopyIcon />
-                        </ButtonTertiary>
-                        <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={2}>
-                            Share to
-                        </Typography>
-                        <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                            <IconButton color="primary" ><DiscordIcon fill="#7071B3" /></IconButton>
-                            <IconButton color="primary" ><TelegramIcon fill="#7071B3" /></IconButton>
-                            <IconButton color="primary" ><TwiterIcon fill="#7071B3" /></IconButton>
-                        </Stack>
-                        <Stack mt={5} direction={'row'} justifyContent={'center'} alignItems={'center'}>
-                            <NotiIcon />
-                            <Typography ml={1} variant='body2' textAlign={'center'} textTransform={'uppercase'} >
-                                HOW it work
-                            </Typography>
 
                         </Stack>
-                    </Box>
-                </Stack >
+
+                        :
+                        <Stack direction="row" mt={3} columnGap={4}>
+
+                            <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
+                                <Stack direction={'row'} alignItems={'center'} gap={1} >
+                                    <MyImage src={LeaderboardImage} width={32} height={32} alt="" />
+
+                                    <Typography variant='h2' fontWeight={700} >
+
+                                        Leaderboard
+                                    </Typography>
+                                </Stack>
+                                <TableContainer sx={{ mt: 1, backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
+                                    <Table stickyHeader aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
+                                                <TableCell >Rank</TableCell>
+                                                <TableCell align="left">Users</TableCell>
+                                                <TableCell align="right">Friends invited</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody sx={{ bgcolor: 'background.paper' }}>
+                                            {
+                                                rows.length > 0 && rows.map((row: any, index: number) => (
+                                                    <TableRow
+                                                        key={row.name + index}
+                                                        sx={{
+                                                            'td, th': { border: 0, py: 1 }
+                                                        }}
+                                                    >
+                                                        <TableCell component="th" scope="row">
+                                                            {
+                                                                row.rank < 4 ?
+                                                                    <img src={MapRank[row.rank]} alt="" />
+                                                                    : <Typography variant='caption'>{index}</Typography>
+                                                            }
+                                                        </TableCell>
+                                                        <TableCell align="left">
+                                                            <Stack direction={'row'} columnGap={1} alignItems={'center'}>
+                                                                <img src={getPathAvatar(row.avatar_id)} width={24} alt="" />
+                                                                <Typography variant='caption'>{(row.user_name_father ?? '') + '(' + Convert.convertWalletAddress(row.user_wallet_father, 4, 4) + ")"}</Typography>
+                                                            </Stack>
+                                                        </TableCell>
+                                                        <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.number_child}</Typography></TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            <TableRow
+                                                sx={{
+                                                    position: 'sticky',
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    'td, th': { border: 0, py: 1 },
+                                                    bgcolor: 'secondary.main',
+                                                    color: 'background.paper'
+                                                }}
+                                            >
+                                                <TableCell component="th" scope="row">
+                                                    {
+                                                        data && data.connectWallet.rank < 4 ?
+                                                            <img src={MapRank[data.connectWallet.rank]} alt="" />
+                                                            : <Typography variant='caption' color="background.paper">{data?.connectWallet?.rank}</Typography>
+                                                    }
+
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    <Stack direction={'row'} columnGap={1} alignItems={'center'}>
+                                                        <img src={getPathAvatar(data?.connectWallet?.avatar_id)} width={24} alt="" />
+
+                                                        <Typography variant='caption' color="background.paper">{(data?.connectWallet?.user_name_father ?? '') + '(' + Convert.convertWalletAddress(data?.connectWallet?.user_wallet_father, 4, 4) + ")"}</Typography>
+                                                    </Stack>
+                                                </TableCell>
+                                                <TableCell align="right" ><Typography variant='caption' color="background.paper"> {data?.connectWallet?.number_child}</Typography></TableCell>
+                                            </TableRow>
+
+                                        </TableBody>
+
+                                    </Table>
+                                    {
+                                        !data || data?.referralPointUsers.length <= 0 &&
+                                        <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
+                                            <img width={144} src={CoinEmptyImage} alt="" />
+                                            <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
+                                        </Box>
+                                    }
+
+                                </TableContainer>
+                            </Box>
+                            <RightContent />
+                        </Stack >
+
+                }
             </Container >
             <MyModal open={openModal} title='Balance History' setOpen={setOpenModal} >
                 <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />

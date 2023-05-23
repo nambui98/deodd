@@ -25,8 +25,7 @@ const Layout = ({ children }: IProps) => {
 
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
-    const router = useRouter();
-    const { isLoading, isFetching, data: currentInfoIp } = useQuery({
+    const { isFetching, data: currentInfoIp } = useQuery({
         queryKey: ["getCurrentIp"],
         enabled: process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION",
         refetchOnWindowFocus: false,
@@ -60,16 +59,18 @@ const Layout = ({ children }: IProps) => {
     };
     const ComingSoon = () => (
         <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-            Comming soon
+            Coming soon
         </Typography>
     )
     if (isFetching) {
-        return <Loader isLoadingProps></Loader>
+        return <Box>
+            <Meta title={'Loading page'} description={AppConfig.description} />
+            <Loader isLoadingProps></Loader>
+        </Box>
     }
     if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.country] !== undefined) {
         return <Forbidden ip={currentInfoIp.ip} country={currentInfoIp.country} />
     }
-
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
@@ -86,7 +87,6 @@ const Layout = ({ children }: IProps) => {
                 <main>
                     {children}
                 </main>
-
                 <FaqHowtoplay />
             </Main>
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />

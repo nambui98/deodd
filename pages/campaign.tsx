@@ -9,11 +9,11 @@ import { CampaignImage, CampaignImage2, CampaignImage3 } from '../utils/Images'
 type Props = {}
 
 function Campaign({ }: Props) {
-    return (
-        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-            Comming soon
-        </Typography>
-    );
+    // return (
+    //     <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+    //         Coming soon
+    //     </Typography>
+    // );
 
     const [openModal, setOpenModal] = useState(false);
     const [valueTab, setValueTab] = useState(1);
@@ -21,52 +21,54 @@ function Campaign({ }: Props) {
         {
             id: 1,
             title: 'Ongoing',
-            value: "(12)"
+            value: "(1)"
         },
         {
             id: 2,
             title: 'Ended',
-            value: "(6)",
+            value: "(0)",
         },
         {
             id: 3,
             title: 'Claim reward',
             value: undefined,
-            isNoti: true
+            // isNoti: true
         },
     ]
 
     const MapTap: { [key: number]: JSX.Element } = {
         1: <>
-            <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} />
-            <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} />
-            <CampaignItem title='referral 0campaign' time='24/12/2022' image={CampaignImage3} />
+            {/* <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} /> */}
+            {/* <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} /> */}
+            <CampaignItem title='Referral Campaign' time='24/12/2022' image={CampaignImage3} />
 
         </>,
-        2: <>
-            <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} />
+        2: <Box>
+            {/* <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} />
             <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} />
-            <CampaignItem title='referral campaign' time='24/12/2022' image={CampaignImage3} />
-        </>,
-        3: <ClaimReward />
+            <CampaignItem title='referral campaign' time='24/12/2022' image={CampaignImage3} /> */}
+        </Box>,
+        3: <Box width={1}>
+
+            {/* <ClaimReward /> */}
+        </Box>
     }
 
     return (
-        <Box>
-            <Box bgcolor={"background.paper"} p={"35px 0px"}>
-                <Container>
-                    <Typography variant='h2' textTransform={'uppercase'}>
-                        CAMPAIGN
-                    </Typography>
-                </Container>
+        <Box >
+
+            <Box mx={2}>
+                <Stack display={"grid"} mt={3} alignItems={"center"} justifyContent={"flex-start"} sx={{
+                    width: { xs: 1, sm: 360, md: 544 },
+                    mx: 'auto'
+                }} columnGap={4}>
+                    <MyTabs listTabs={listTabs} value={valueTab} setValue={setValueTab} />
+                    {
+                        MapTap[valueTab]
+                    }
+                </Stack >
+
             </Box>
-            <Stack display={"grid"} mt={3} alignItems={"center"} justifyContent={"center"} sx={{
-            }} columnGap={4}>
-                <MyTabs listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-                {
-                    MapTap[valueTab]
-                }
-            </Stack >
             <MyModal open={openModal} title='Balance History' setOpen={setOpenModal} >
             </MyModal>
         </Box >

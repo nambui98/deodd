@@ -71,4 +71,5 @@ export enum MessageCommand {
     NEW_MESSAGE = 1,
     PINNED_MESSAGE = 2,
     UNPINNED_MESSAGE = 3,
+    USERS_TYPING = 10,
 }
