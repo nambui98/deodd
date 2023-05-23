@@ -7,7 +7,7 @@ import { Box, Container, Typography } from "@mui/material";
 const LoyaltyPage: React.FC = () => {
     return (
         <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-            Comming soon
+            Coming soon
         </Typography>
     );
 

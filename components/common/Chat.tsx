@@ -11,7 +11,7 @@ import EmojiPicker from 'emoji-picker-react'
 import { LocalStorage } from 'libs/LocalStorage'
 import { DeoddService } from 'libs/apis'
 import { MessageCommand } from 'libs/types'
-import { KeyboardEventHandler, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEventHandler, useCallback, useDeferredValue, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
@@ -33,13 +33,18 @@ type MessageType = {
     is_hidden: boolean,
     updated_at: string
 }
+type UserTyping = {
+    walletAddress: string | undefined,
+    userName: string | undefined
+}
 function Chat({ open }: { open: boolean }) {
-    const { walletIsConnected, handleConnectWallet, walletAddress } = useWalletContext();
+    const { walletIsConnected, handleConnectWallet, walletAddress, userInfo } = useWalletContext();
     const [anchorElOptionMore, setAnchorOptionMore] = useState<HTMLButtonElement | null>(null);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null)
     const [isScrollBottom, setIsScrollBottom] = useState<boolean>(true);
     const { setIsError, setTitleError } = useSiteContext();
+    const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
     const { refetch: getMessages } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
@@ -97,10 +102,17 @@ function Chat({ open }: { open: boolean }) {
                 if (dataMessage.message === DOWNSTREAM_MESSAGE) {
                     if (dataMessage.data.data.data.command === MessageCommand.NEW_MESSAGE) {
                         setMessages((prev) => [dataMessage.data.data.data.data, ...prev])
-                        setTimeout(() => {
-                            handleScrollToBottom();
-                        }, 100);
+                        // setTimeout(() => {
+                        //     handleScrollToBottom();
+                        // }, 100);
                     }
+
+                }
+                if (dataMessage?.message === MessageCommand.USERS_TYPING) {
+                    debugger
+                    const filterTyping = (dataMessage.data.data.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
+                    debugger
+                    setUsersTyping(filterTyping);
                 }
             },
             shouldReconnect: () => true
@@ -117,8 +129,9 @@ function Chat({ open }: { open: boolean }) {
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
+        // debugger
         const result = {
-            message: parseJson[0][0],
+            message: parseInt(parseJson[0][0]),
             data: parseJson[0][1]
         }
         return result;
@@ -133,7 +146,6 @@ function Chat({ open }: { open: boolean }) {
 
 
     const id = Boolean(anchorElOptionMore) ? 'pop-up-option-more' : undefined;
-    // const refTopChat = useRef<HTMLDivElement>(null);
     const refBottomChat = useRef<HTMLDivElement>(null);
     const handleScrollToBottom = () => {
         refBottomChat.current?.scrollIntoView({ behavior: "smooth" })
@@ -161,7 +173,6 @@ function Chat({ open }: { open: boolean }) {
             setIsScrollBottom(false);
         }
     }
-    console.log(connectionStatus);
     const [refTopChat, inView] = useInView();
     useEffect(() => {
         if (inView) {
@@ -171,9 +182,42 @@ function Chat({ open }: { open: boolean }) {
                 getMessagesWithoutAuth();
             }
         }
-    }, [inView, walletAddress])
+    }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
 
-
+    //typing
+    const sendMessageTyping = () => {
+        if (walletIsConnected) {
+            debugger
+            const message: any = [
+                9,
+                {
+                    "data": {
+                        usersTyping: [
+                            ...usersTyping,
+                            {
+                                walletAddress,
+                                userName: userInfo.username || Convert.convertWalletAddress(walletAddress, 4, 5),
+                            }
+                        ]
+                    }
+                }
+            ];
+            sendJsonMessage(message);
+        }
+    }
+    const sendMessageCancelTyping = () => {
+        debugger
+        const message: any = [
+            9,
+            {
+                "data": {
+                    usersTyping: [...usersTyping.filter((user) => user.walletAddress !== walletAddress)]
+                }
+            }
+        ];
+        sendJsonMessage(message);
+    }
+    let textTyping = usersTyping.length === 1 ? usersTyping[0].userName + ' is typing' : usersTyping.length === 2 ? `${usersTyping[0].userName} and ${usersTyping[1].userName} are typing` : usersTyping.length > 2 ? 'some users are typing' : ''
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -202,10 +246,15 @@ function Chat({ open }: { open: boolean }) {
                 <Box ref={refTopChat} />
             </Box>
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
-                <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
+                <Stack direction={'row'} p={2} height={80} alignItems={'center'} width={1} columnGap={2}>
                     {
                         walletIsConnected ?
-                            <SendMessage disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                            <Stack>
+                                <Box height={10}>
+                                    <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping || ''}</Typography>
+                                </Box>
+                                <SendMessage sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                            </Stack>
                             : <ButtonLoading
                                 onClick={handleConnectWallet}
                                 sx={{
@@ -253,16 +302,20 @@ function Chat({ open }: { open: boolean }) {
 }
 
 export default Chat
-const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAddress: string }) => {
+
+const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCancelTyping }: { disabled: boolean, sendMessageCancelTyping: VoidFunction, sendMessageTyping: VoidFunction, walletAddress: string }) => {
     const { setIsError, setTitleError } = useSiteContext();
     const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
     const refInput = useRef(null);
     const [anchorElEmoji, setAnchorElEmoji] = useState<null | HTMLElement>(null);
-
+    const [isTyping, setIsTyping] = useState<boolean>(false);
     const open = Boolean(anchorElEmoji);
     const id = open ? 'pop-up-emoji' : undefined;
+    //is ended typing
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
+        setIsTyping(false);
+        sendMessageCancelTyping();
     }
     const sendMessage = useMutation({
         mutationFn: (content: string) => {
@@ -291,13 +344,45 @@ const SendMessage = ({ disabled, walletAddress }: { disabled: boolean, walletAdd
         setValue('content', text);
         debugger
     }
+    useEffect(() => {
+        function onTimeout() {
+            setIsTyping(false);
+            sendMessageCancelTyping();
+
+            debugger
+        }
+        let content = watch('content');
+        if (content !== undefined && content !== null && content) {
+            setIsTyping(true);
+            const timeoutId = setTimeout(onTimeout, 5000);
+            return () => {
+                clearTimeout(timeoutId);
+            };
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [watch('content')]);
+
+    useEffect(() => {
+        if (isTyping) {
+            // debugger
+            sendMessageTyping();
+        }
+        console.log(isTyping)
+    }, [isTyping])
+
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
         <InputBase
             inputRef={refInput}
             inputProps={{
-                maxLength: 200
+                maxLength: 200,
+                // onChange: handleOnChange
             }}
             {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
+            onBlur={() => {
+                setIsTyping(false)
+                sendMessageCancelTyping();
+            }}
             onKeyDown={(e) => handleOnKeydown(e)}
             sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
             placeholder='Type your messsages'

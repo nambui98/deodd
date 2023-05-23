@@ -35,7 +35,6 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
   BN: 'BN',
   KH: 'KH',
   KP: 'KP',
-  JP: 'JP',
   CY: 'CY',
   QA: 'QA',
   RL: 'RL',
@@ -46,6 +45,6 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
   CN: 'CN'
 }
 
-export const UPSTREAM_MESSAGE = "7";
-export const DOWNSTREAM_MESSAGE = "8";
+export const UPSTREAM_MESSAGE = 7;
+export const DOWNSTREAM_MESSAGE = 8;
 

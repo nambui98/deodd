@@ -56,7 +56,7 @@ export default function FlipHistoriesRecent() {
                     return data;
                 }
             ),
-        refetchInterval: 5000,
+        refetchInterval: 10000,
     });
 
     return (

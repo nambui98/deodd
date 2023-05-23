@@ -10,7 +10,7 @@ type Props = {
 
 function Forbidden({ ip, country }: Props) {
     return (<Stack height={'100vh'} width={1} alignItems={'center'} justifyContent={'center'} >
-        <Meta title={AppConfig.title} description={AppConfig.description} />
+        <Meta title={'Forbidden page'} description={AppConfig.description} />
         <Box position={'absolute'} zIndex={0} sx={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: .2 }}>
             <Typography fontWeight={700} fontSize={{ xs: 60, sm: 90, md: 120 }} color="secondary.main">FORBIDDEN</Typography>
         </Box>

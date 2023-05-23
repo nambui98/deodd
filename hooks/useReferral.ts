@@ -19,7 +19,6 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         if (!isNotGet) {
             setLoading(true);
             if (isConnected) {
-                // if (walletIsConnected) {
                 if (walletAddress) {
                     setCkReferral(undefined);
                     setDataReferralSuccess(undefined);
@@ -27,16 +26,10 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
                     getLinkUser();
                     checkUserIsValidForReferral();
                 }
-
-                // } else {
-                //     setCkReferral(undefined);
-                // }
             } else {
                 setCkReferral(false);
                 setDataReferralSuccess(undefined);
             }
-
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNotGet, walletAddress, isConnected])
@@ -63,7 +56,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
         console.log(ck);
         const ckLinkExist = await DeoddService.findGenerateReferralLinkByWallet(walletAddress);
 
-        debugger
+        // debugger
         let linkGenerate;
         if (ckLinkExist.status === 200) {
             if (ckLinkExist.data && ckLinkExist.data.data) {
@@ -96,7 +89,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
             DeoddService.getReferralRewardAvailable(walletAddress),
             DeoddService.getReferralRewardExpired(walletAddress)
         ]);
-        debugger
+        // debugger
         if (available && available.status === 200 && available.data && available.data.data) {
             setDataAvailable(available.data.data);
         }
