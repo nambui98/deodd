@@ -29,6 +29,9 @@ export default function HowItWorkModal() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          '& .MuiModal-backdrop': {
+            backgroundColor: "#5f5c5c1d"
+          }
         }}>
         <Zoom in={open}>
           <Stack
@@ -36,15 +39,16 @@ export default function HowItWorkModal() {
             p={3}
             alignItems={"center"}
             sx={{
-              maxWidth: "46rem",
-              maxHeight: "80%",
-              overflowY: "auto",
+              width: "min(46rem, 100vw - 1.5rem)",
+              maxHeight: "calc(100vh - 10rem)",
+              overflow: "hidden",
               backgroundColor: "primary.200",
               borderRadius: "8px",
               boxShadow: "0px 0px 40px rgba(112, 113, 179, 0.3)",
             }}>
             <Typography variant="h2" fontWeight={700}>How it works</Typography>
-            <Stack sx={{ gap: { xs: 0, sm: 2, md: 3 } }}>
+
+            <Stack sx={{ gap: { xs: 0, sm: 2, md: 3 }, maxHeight: "38.25rem", overflowY: "auto" }}>
               <Stack gap={2} width={1}>
                 <Typography variant="h3" textTransform={"uppercase"} fontWeight={600} color={"secondary.main"} >how to refer</Typography>
                 <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
@@ -65,11 +69,11 @@ export default function HowItWorkModal() {
                   Thenceforth, there is no more share from them.
                 </Typography>
               </Stack>
-
             </Stack>
+
             <ButtonMain
               active={true}
-              sx={{ width: 1, minHeight: "3.375rem", fontWeight: 600, position: "sticky", bottom: 0, backgroundColor: "primary.200" }}
+              sx={{ width: 1, minHeight: "3.375rem", fontWeight: 600 }}
               title={"Got it"}
               onClick={handleClose}
             />
