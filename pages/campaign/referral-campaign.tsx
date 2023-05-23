@@ -40,7 +40,7 @@ function DetailCampaign({ }: Props) {
         2: Rank2Image,
         3: Rank3Image,
     }
-    const rows = data?.referralPointUsers?.length > 50 ? data?.referralPointUsers.slice(0, 51) : data?.referralPointUsers || []
+    const rows = data?.referralPointUsers?.length > 50 ? data?.referralPointUsers.slice(0, 50) : data?.referralPointUsers || []
     return (
         <Box mt={5}>
             {/* <Box bgcolor={"background.paper"} p={"35px 0px"}>

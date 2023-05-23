@@ -246,14 +246,13 @@ function Chat({ open }: { open: boolean }) {
                 <Box ref={refTopChat} />
             </Box>
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
-                <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
+                <Stack direction={'row'} p={2} height={80} alignItems={'center'} width={1} columnGap={2}>
                     {
                         walletIsConnected ?
                             <Stack>
-                                {
-                                    textTyping &&
-                                    <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping}</Typography>
-                                }
+                                <Box height={10}>
+                                    <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping || ''}</Typography>
+                                </Box>
                                 <SendMessage sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
                             </Stack>
                             : <ButtonLoading
