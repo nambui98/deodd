@@ -35,6 +35,8 @@ export const TailCoinImage = "/assets/icons/tail.svg";
 export const GoldCupImage = "/assets/images/gold-cup.png";
 export const ArrowDownImage = "/assets/images/arrow-down.png";
 export const LeaderboardImage = "/assets/images/leaderboard.png";
+export const BnbLogoImage = "/assets/images/bnbo-logo.png";
+
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,
