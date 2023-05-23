@@ -122,9 +122,9 @@ export default function TestailPoint() {
 
         <Box display={"grid"} gridTemplateColumns={"1.2fr 0.8fr 1fr 0.8fr auto"} gap={1}>
           {/* Table Header */}
-          < TableText gridColumn={"2 / span 2"} mb={1}>Normal Hour</TableText>
-          <TableText gridColumn={"auto / span 2"}>Golden Hour</TableText>
-          <TableText mb={1}>Bet Amount</TableText>
+          < TableText gridColumn={"2 / span 2"} mb={1}>Normal hour</TableText>
+          <TableText gridColumn={"auto / span 2"}>Golden hour</TableText>
+          <TableText mb={1}>Bet amount</TableText>
           <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
           <TableText textTransform={"uppercase"} color={"#26BC7F"}>win</TableText>
           <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
