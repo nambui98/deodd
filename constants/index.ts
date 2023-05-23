@@ -31,18 +31,6 @@ export const SHARE = {
 }
 export const IPS_NOT_SUPORT: { [key: string]: string } = {
   VN: 'VN',
-  AE: 'AE',
-  BN: 'BN',
-  KH: 'KH',
-  KP: 'KP',
-  CY: 'CY',
-  QA: 'QA',
-  RL: 'RL',
-  PL: 'PL',
-  SY: 'SY',
-  CU: 'CU',
-  TH: 'TH',
-  CN: 'CN'
 }
 
 export const UPSTREAM_MESSAGE = 7;
