@@ -44,6 +44,7 @@ function Chat({ open }: { open: boolean }) {
     const [lastCreatedAt, setLastCreatedAt] = useState<string | null>(null)
     const [isScrollBottom, setIsScrollBottom] = useState<boolean>(true);
     const { setIsError, setTitleError } = useSiteContext();
+    const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
     const { refetch: getMessages } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
@@ -105,10 +106,13 @@ function Chat({ open }: { open: boolean }) {
                         //     handleScrollToBottom();
                         // }, 100);
                     }
-                    if (dataMessage.data.data.data.command === MessageCommand.USERS_TYPING) {
-                        debugger
 
-                    }
+                }
+                if (dataMessage?.message === MessageCommand.USERS_TYPING) {
+                    debugger
+                    const filterTyping = (dataMessage.data.data.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
+                    debugger
+                    setUsersTyping(filterTyping);
                 }
             },
             shouldReconnect: () => true
@@ -125,10 +129,9 @@ function Chat({ open }: { open: boolean }) {
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-
-        debugger
+        // debugger
         const result = {
-            message: parseJson[0][0],
+            message: parseInt(parseJson[0][0]),
             data: parseJson[0][1]
         }
         return result;
@@ -190,9 +193,10 @@ function Chat({ open }: { open: boolean }) {
                 {
                     "data": {
                         usersTyping: [
+                            ...usersTyping,
                             {
-                                address: walletAddress,
-                                userName: userInfo.username,
+                                walletAddress,
+                                userName: userInfo.username || Convert.convertWalletAddress(walletAddress, 4, 5),
                             }
                         ]
                     }
@@ -201,6 +205,19 @@ function Chat({ open }: { open: boolean }) {
             sendJsonMessage(message);
         }
     }
+    const sendMessageCancelTyping = () => {
+        debugger
+        const message: any = [
+            9,
+            {
+                "data": {
+                    usersTyping: [...usersTyping.filter((user) => user.walletAddress !== walletAddress)]
+                }
+            }
+        ];
+        sendJsonMessage(message);
+    }
+    let textTyping = usersTyping.length === 1 ? usersTyping[0].userName + ' is typing' : usersTyping.length === 2 ? `${usersTyping[0].userName} and ${usersTyping[1].userName} are typing` : usersTyping.length > 2 ? 'some users are typing' : ''
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -232,7 +249,13 @@ function Chat({ open }: { open: boolean }) {
                 <Stack direction={'row'} p={2} height={70} alignItems={'center'} width={1} columnGap={2}>
                     {
                         walletIsConnected ?
-                            <SendMessage sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                            <Stack>
+                                {
+                                    textTyping &&
+                                    <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping}</Typography>
+                                }
+                                <SendMessage sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                            </Stack>
                             : <ButtonLoading
                                 onClick={handleConnectWallet}
                                 sx={{
@@ -281,7 +304,7 @@ function Chat({ open }: { open: boolean }) {
 
 export default Chat
 
-const SendMessage = ({ disabled, walletAddress, sendMessageTyping }: { disabled: boolean, sendMessageTyping: VoidFunction, walletAddress: string }) => {
+const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCancelTyping }: { disabled: boolean, sendMessageCancelTyping: VoidFunction, sendMessageTyping: VoidFunction, walletAddress: string }) => {
     const { setIsError, setTitleError } = useSiteContext();
     const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
     const refInput = useRef(null);
@@ -323,21 +346,25 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping }: { disabled:
     useEffect(() => {
         function onTimeout() {
             setIsTyping(false);
+            sendMessageCancelTyping();
+
+            debugger
         }
         let content = watch('content');
         if (content !== undefined && content !== null && content) {
             setIsTyping(true);
+            const timeoutId = setTimeout(onTimeout, 5000);
+            return () => {
+                clearTimeout(timeoutId);
+            };
         }
-        const timeoutId = setTimeout(onTimeout, 5000);
-        return () => {
-            clearTimeout(timeoutId);
-        };
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch('content')]);
 
     useEffect(() => {
         if (isTyping) {
-            debugger
+            // debugger
             sendMessageTyping();
         }
         console.log(isTyping)
@@ -351,6 +378,10 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping }: { disabled:
                 // onChange: handleOnChange
             }}
             {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
+            onBlur={() => {
+                setIsTyping(false)
+                sendMessageCancelTyping();
+            }}
             onKeyDown={(e) => handleOnKeydown(e)}
             sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
             placeholder='Type your messsages'

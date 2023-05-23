@@ -6,7 +6,7 @@ type TypeItem = {
     image: string
 }
 const CampaignItem: React.FC<TypeItem> = ({ title, time, image }) => {
-    return <Link href="/campaign/123" style={{ width: "100%", display: 'block' }}>
+    return <Link href="/campaign/referral-campaign" style={{ width: "100%", display: 'block' }}>
         {/* <Box display={'block'} mx={6} my={3} height={"1px"} bgcolor={"secondary.300"}></Box> */}
         <Stack mt={3} direction={'row'} justifyContent={"space-between"}>
             <Typography variant='h3' >
@@ -16,9 +16,17 @@ const CampaignItem: React.FC<TypeItem> = ({ title, time, image }) => {
                 End in: {time}
             </Typography> */}
         </Stack>
-        <Box mt={1}>
-            <img style={{ objectFit: 'cover', width: '100%' }} src={image} alt="" />
-        </Box>
+        <Stack mt={1} sx={{
+            borderRadius: 2,
+            border: '2px solid transparent',
+            transition: '.3s all',
+            '&:hover': {
+                border: '2px solid',
+                borderColor: 'secondary.main',
+            }
+        }}>
+            <img style={{ objectFit: 'cover', width: '100%', height: '100%' }} src={image} alt="" />
+        </Stack>
     </Link>
 }
 export default CampaignItem;

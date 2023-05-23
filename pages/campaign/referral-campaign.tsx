@@ -113,7 +113,7 @@ function DetailCampaign({ }: Props) {
                                                             {
                                                                 row.rank < 4 ?
                                                                     <img src={MapRank[row.rank]} alt="" />
-                                                                    : <Typography variant='caption'>{index}</Typography>
+                                                                    : <Typography variant='caption'>{row.rank}</Typography>
                                                             }
                                                         </TableCell>
                                                         <TableCell align="left">
@@ -138,11 +138,10 @@ function DetailCampaign({ }: Props) {
                                             >
                                                 <TableCell component="th" scope="row">
                                                     {
-                                                        data && data.connectWallet.rank < 4 ?
+                                                        data?.connectWallet.rank && data?.connectWallet.rank < 4 ?
                                                             <img src={MapRank[data.connectWallet.rank]} alt="" />
-                                                            : <Typography variant='caption' color="background.paper">{data?.connectWallet?.rank}</Typography>
+                                                            : <Typography variant='caption' color="background.paper">{data?.connectWallet?.rank || '--'}</Typography>
                                                     }
-
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
@@ -151,7 +150,7 @@ function DetailCampaign({ }: Props) {
                                                         <Typography variant='caption' color="background.paper">{(data?.connectWallet?.user_name_father ?? '') + '(' + Convert.convertWalletAddress(data?.connectWallet?.user_wallet_father, 4, 4) + ")"}</Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell align="right" ><Typography variant='caption' color="background.paper"> {data?.connectWallet?.number_child}</Typography></TableCell>
+                                                <TableCell align="right" ><Typography variant='caption' color="background.paper"> {data?.connectWallet?.number_child ?? '--'}</Typography></TableCell>
                                             </TableRow>
 
                                         </TableBody>

@@ -56,7 +56,6 @@ const getResultByFlipId = async (flipId: string | number) => {
     })
 }
 const getLeaderboardReferral = async (walletAddress: string | number) => {
-    debugger
     return vhIdRequest({
         url: baseURL + `/dashboard/referral?wallet=${walletAddress}`,
         method: 'GET',
