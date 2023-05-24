@@ -23,6 +23,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 3"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 3" }, // fallback
           backgroundImage: `url(${bgWinStreakImage})`,
           backgroundSize: "cover",
         })}
@@ -65,6 +66,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 3"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 3" }, // fallback
           backgroundImage: `url(${bgLossStreakImage})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "bottom",

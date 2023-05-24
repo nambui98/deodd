@@ -34,6 +34,7 @@ export function TotalSection({
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         justifyContent={"center"}
         height="13.375rem"
@@ -67,6 +68,7 @@ export function TotalSection({
         [theme.breakpoints.up("md").replace("@media", "@container")]: {
           gridColumn: "auto / span 4"
         },
+        gridColumn: { xs: "auto / span 6", md: "auto / span 4" } // fallback
       })}>
         <Typography
           alignSelf={"flex-start"}
@@ -89,6 +91,7 @@ export function TotalSection({
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         justifyContent={"center"}
         height="13.375rem"
@@ -123,6 +126,7 @@ export function TotalSection({
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         justifyContent={"center"}
         height="13.375rem"
@@ -148,6 +152,7 @@ export function TotalSection({
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         justifyContent={"center"}
         height="13.375rem"
@@ -172,6 +177,7 @@ export function TotalSection({
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         p={2}
         height={"13.375rem"}

@@ -27,6 +27,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         flexDirection={"column"}
         justifyContent={"space-between"}
@@ -97,6 +98,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         flexDirection={"column"}
         justifyContent={"space-between"}
@@ -167,6 +169,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
           [theme.breakpoints.up("md").replace("@media", "@container")]: {
             gridColumn: "auto / span 2"
           },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
         })}
         flexDirection={"column"}
         justifyContent={"center"}
