@@ -108,12 +108,28 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     return (
         <Container>
             <Stack
-                direction={{ xs: "column-reverse", md: "row" }}
+                sx={theme => ({
+                    [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                        flexDirection: "column-reverse",
+                    },
+                    [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                        flexDirection: "row",
+                    },
+                })}
+                direction={{ xs: "column-reverse", md: "row" }} // fallback
                 mt={2}
                 columnGap={4}
             >
                 <Box
                     flexGrow={1}
+                    sx={theme => ({
+                        [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                            mt: 2,
+                        },
+                        [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                            mt: 0,
+                        },
+                    })}
                     mt={{ xs: 2, md: 0 }}
                     flexShrink={1}
                     flexBasis={"60%"}
@@ -271,7 +287,16 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             )}
                         </TableContainer>
                     </Box>
-                    <Box display={{ xs: "block", md: "none" }}>
+                    <Box
+                        display={{ xs: "block", md: "none" }} // fallback
+                        sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                display: "block",
+                            },
+                            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                                display: "none",
+                            },
+                        })}>
                         <ShareLink link={link} />
                     </Box>
                 </Box>
@@ -359,7 +384,16 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             Claim reward
                         </Typography>
                     </ButtonLoading>
-                    <Box display={{ xs: "none", md: "block" }}>
+                    <Box
+                        display={{ xs: "none", md: "block" }} // fallback
+                        sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                display: "none",
+                            },
+                            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                                display: "block",
+                            },
+                        })}>
                         <ShareLink link={link} />
                     </Box>
                 </Box>
