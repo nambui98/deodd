@@ -155,10 +155,10 @@ const PrivacyPolicy = () => (
 )
 const Item = styled(Typography)(({ theme }) => ({
     fontSize: 10,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('sm').replace("@media", "@container")]: {
         fontSize: 12,
     },
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('md').replace("@media", "@container")]: {
         fontSize: 14,
     },
     cursor: 'pointer',
