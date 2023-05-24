@@ -46,3 +46,7 @@ a {
 .fade-exit-active .container {
   transition: opacity 500ms, transform 500ms;
 }
+
+.mainLayout {
+  container-type: inline-size;
+}
