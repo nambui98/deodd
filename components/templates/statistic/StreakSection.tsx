@@ -16,14 +16,20 @@ export function StreakSection({ error, streak }: StreakPropsType) {
   return (
     <>
       <DashboardCard
-        gridColumn={{ md: "auto / span 3", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 3"
+          },
+          backgroundImage: `url(${bgWinStreakImage})`,
+          backgroundSize: "cover",
+        })}
         justifyContent={"center"}
         position={"relative"}
         height="13.5rem"
-        sx={{
-          backgroundImage: `url(${bgWinStreakImage})`,
-          backgroundSize: "cover",
-        }}
+
       >
         <TitleTextAbsolute text="highest win streak" />
         <Box
@@ -52,15 +58,20 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         </Box>
       </DashboardCard>
       <DashboardCard
-        gridColumn={{ md: "auto / span 3", xs: "auto / span 6" }}
-        justifyContent={"center"}
-        position={"relative"}
-        height="13.5rem"
-        sx={{
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 3"
+          },
           backgroundImage: `url(${bgLossStreakImage})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "bottom",
-        }}
+        })}
+        justifyContent={"center"}
+        position={"relative"}
+        height="13.5rem"
       >
         <TitleTextAbsolute text="highest loss streak" />
         {error.haveFlipped ? (

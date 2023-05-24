@@ -10,7 +10,7 @@ export default function Statistic() {
     useDashboardStat();
 
   return (
-    <Container sx={{ mt: 2, mb: { md: 10, xs: 8.125 } }}>
+    <Container sx={{ mt: 2, mb: { md: 10, xs: 8.125 }, containerType: "inline-size" }}>
       <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
         Today stat
       </Typography>

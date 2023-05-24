@@ -27,7 +27,14 @@ export function TotalSection({
   return (
     <>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         justifyContent={"center"}
         height="13.375rem"
         position={"relative"}
@@ -51,9 +58,16 @@ export function TotalSection({
         ) : (
           <Typography variant="body2">{error.errorMessage}</Typography>
         )}
-      </DashboardCard>
+      </DashboardCard >
 
-      <DashboardCard flexDirection={"column"} height="100%" gridColumn={{ md: "auto / span 4", xs: "auto / span 6" }} gridRow={"auto / span 2"}>
+      <DashboardCard flexDirection={"column"} height="100%" gridRow={"auto / span 2"} sx={theme => ({
+        [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+          gridColumn: "auto / span 6"
+        },
+        [theme.breakpoints.up("md").replace("@media", "@container")]: {
+          gridColumn: "auto / span 4"
+        },
+      })}>
         <Typography
           alignSelf={"flex-start"}
           textTransform={"capitalize"}
@@ -68,7 +82,14 @@ export function TotalSection({
       </DashboardCard>
 
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         justifyContent={"center"}
         height="13.375rem"
         position={"relative"}
@@ -95,7 +116,14 @@ export function TotalSection({
       </DashboardCard>
 
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         justifyContent={"center"}
         height="13.375rem"
         position={"relative"}
@@ -113,7 +141,14 @@ export function TotalSection({
       </DashboardCard>
 
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         justifyContent={"center"}
         height="13.375rem"
         position={"relative"}
@@ -130,7 +165,14 @@ export function TotalSection({
         </Box>
       </DashboardCard>
       <Box
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         p={2}
         height={"13.375rem"}
         display={"flex"}

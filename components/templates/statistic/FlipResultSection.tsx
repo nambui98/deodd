@@ -20,7 +20,14 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
   return (
     <>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         flexDirection={"column"}
         justifyContent={"space-between"}
         height="22.375rem"
@@ -83,7 +90,14 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         </Box>
       </DashboardCard>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         flexDirection={"column"}
         justifyContent={"space-between"}
         height="22.375rem"
@@ -146,7 +160,14 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         </Box>
       </DashboardCard>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+        })}
         flexDirection={"column"}
         justifyContent={"center"}
         height="22.375rem"
