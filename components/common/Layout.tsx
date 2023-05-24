@@ -83,7 +83,7 @@ const Layout = ({ children }: IProps) => {
             <LeftSidebar mobileOpen={mobileOpenLeft} handleDrawerToggle={handleDrawerToggleLeft} open={leftOpen} />
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
                 <DrawerHeader />
-                <main className="mainLayout">
+                <main>
                     {children}
                 </main>
 
