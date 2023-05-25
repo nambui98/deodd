@@ -165,7 +165,16 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
             {
                 isHead ?
                     <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
-                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                height: 48,
+                                width: 48,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                height: 64,
+                                width: 64,
+                            },
+                        })}>
                             <Box className="disabled" width={1} height={1}>
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
                             </Box>
@@ -173,7 +182,14 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
                             </Box>
                         </Box>
-                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                fontSize: 24,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                fontSize: 40,
+                            },
+                        })}>
                             HEAD
                         </Typography>
 
@@ -181,7 +197,16 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                     </Stack>
                     :
                     <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
-                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                height: 48,
+                                width: 48,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                height: 64,
+                                width: 64,
+                            },
+                        })}>
                             <Box className="disabled" width={1} height={1}>
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
                             </Box>
@@ -189,7 +214,14 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
                             </Box>
                         </Box>
-                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                fontSize: 24,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                fontSize: 40,
+                            },
+                        })}>
                             TAIL
                         </Typography>
                     </Stack>

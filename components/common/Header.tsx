@@ -13,7 +13,7 @@ function Header({ }: Props) {
   const { turnOffAudio, isTurnOffAudio } = useSiteContext();
 
 
-  return <Container>
+  return <Container sx={{ containerType: "inline-size" }}>
     <Stack height={{ md: 112, xs: 72 }} position={'relative'} direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
       <ButtonSecondRemex
         aria-label="turn off, on audio"
