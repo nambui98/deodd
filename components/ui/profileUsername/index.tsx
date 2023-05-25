@@ -23,33 +23,30 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
   const [currentProfile, setCurrentProfile] = useState({ username: userInfo.username, avatar: userInfo.avatar } as { username: string; avatar: number });
 
   async function handleSetProfile() {
-    const format = /^(?=.{0,15}[\w\d\s\S]$)\S+$/; // No whitespace, 1-15 characters.
-    if (format.test(currentProfile.username.trim()) || currentProfile.username === "") {
-      if (!isLoading) {
-        setIsLoading(true);
-        try {
-          debugger
-          const resService = await DeoddService.saveInfoUser({
+    if (!isLoading) {
+      setIsLoading(true);
+      try {
+        debugger
+        const resService = await DeoddService.saveInfoUser({
+          wallet: walletAddress,
+          username: currentProfile.username ? currentProfile.username : null,
+          avatarId: currentProfile.avatar,
+        });
+        if (resService.data.meta.code === 1) {
+          setErrorMessage(resService.data.meta.error_message);
+          setIsLoading(false);
+        } else {
+          setUserInfo(currentProfile);
+          LocalStorage.setUserInfo({
             wallet: walletAddress,
-            username: currentProfile.username ? currentProfile.username : null,
-            avatarId: currentProfile.avatar,
+            username: currentProfile.username,
+            avatarId: currentProfile.avatar ?? 0,
           });
-          if (resService.data.meta.code === 1) {
-            setErrorMessage(resService.data.meta.error_message);
-            setIsLoading(false);
-          } else {
-            setUserInfo(currentProfile);
-            LocalStorage.setUserInfo({
-              wallet: walletAddress,
-              username: currentProfile.username,
-              avatarId: currentProfile.avatar ?? 0,
-            });
-            setIsLoading(false);
-            onClose();
-          }
-        } catch (err) {
-          console.log(err);
+          setIsLoading(false);
+          onClose();
         }
+      } catch (err) {
+        console.log(err);
       }
     }
   }
@@ -98,7 +95,13 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             fullWidth
             value={currentProfile.username}
             onChange={(e) => {
-              setCurrentProfile(prev => ({ ...prev, username: e.target.value.split(" ").join("") }));
+              setCurrentProfile(prev => {
+                const formattedUsername = e.target.value.split(" ").join("").replaceAll(/[^a-zA-Z0-9!@#\$%\^\&\~\*\(\)_\+`\-=\[\]\\{}|;':",\.<>\/\?]/g, '')
+                return {
+                  ...prev,
+                  username: formattedUsername,
+                }
+              });
               if (errorMessage) {
                 setErrorMessage("");
               }
