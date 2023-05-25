@@ -149,7 +149,16 @@ export function UserInfo() {
           <Stack
             onClick={() => setExpanded(!expanded)}
             direction="row"
-            divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
+            divider={<Divider flexItem sx={theme => ({
+              width: "1px", backgroundColor: "primary.300",
+              [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                display: expanded ? "block" : "none",
+              },
+              [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                display: "block",
+              },
+              display: { xs: expanded ? "block" : "none", md: "block" } // fallback
+            })} />}
             sx={theme => ({
               [theme.breakpoints.up("xs").replace("@media", "@container")]: {
                 padding: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem",
