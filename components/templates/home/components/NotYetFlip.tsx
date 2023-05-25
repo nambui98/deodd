@@ -96,7 +96,6 @@ function FormActions() {
     return (
         <Box maxWidth={544} mx="auto" textAlign={'left'}>
 
-            <TestailPoint />
             <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
             <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
                 {AMOUNTS.map((item, index) => (
