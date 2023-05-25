@@ -105,11 +105,18 @@ export function FlipPerUserTable({
           textAlign={"center"}
           width={1}
           // Center the text when the viewport is bigger. This is a temporary implementation, still thinking of better solution.
-          sx={
-            {
-              paddingBlockEnd: { xs: "2rem", md: 0 }, top: { md: "50%" }, left: { md: "50%" }, transform: { md: "translate(-50%, -100%)" }, position: { md: "absolute" }
-            }
-          }>
+          sx={theme => ({
+            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+              paddingBlockEnd: "2rem",
+            },
+            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+              paddingBlockEnd: 0,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -100%)",
+              position: "absolute",
+            },
+          })}>
           {error.errorMessage}
         </Typography>
       )}

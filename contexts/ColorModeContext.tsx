@@ -24,7 +24,6 @@ export const ColorModeProvider: React.FC<AppPropsCustom & IProps> = (props) => {
     //     setDarkMode(true);
     // }, []);
     // const _setDarkMode = (newmode: boolean) => {
-    //     console.log(`set localStore ${newmode}`);
     //     localStorage.setItem("mode", newmode.toString());
     //     setDarkMode(newmode);
     // };

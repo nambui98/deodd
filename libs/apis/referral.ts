@@ -58,6 +58,12 @@ const claimReferral = async (address: string) => {
         })
     })
 }
+const getLeaderboardReferral = async (walletAddress: string | number) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/referral?wallet=${walletAddress}`,
+        method: 'GET',
+    })
+}
 export const ReferralApis = {
     findGenerateReferralLinkByWallet,
     checkUserReferral,
@@ -66,5 +72,6 @@ export const ReferralApis = {
     checkUserIsValidForReferral,
     generateReferralLink,
     confirmReferralForUser,
-    claimReferral
+    claimReferral,
+    getLeaderboardReferral
 }

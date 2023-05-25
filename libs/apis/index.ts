@@ -55,16 +55,17 @@ const getResultByFlipId = async (flipId: string | number) => {
         method: 'get',
     })
 }
-const getLeaderboardReferral = async (walletAddress: string | number) => {
+const getUserTestail = async () => {
     return vhIdRequest({
-        url: baseURL + `/dashboard/referral?wallet=${walletAddress}`,
-        method: 'GET',
+        url: baseURL + `/users/testail`,
+        method: 'get',
     })
 }
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
+    getUserTestail,
     saveInfoUser,
     getRecentFlipping,
     getAssetsBalance,
@@ -73,5 +74,4 @@ export const DeoddService = {
     claimTokenSpending,
     getResultByFlipId,
     getCurrentIp,
-    getLeaderboardReferral
 }

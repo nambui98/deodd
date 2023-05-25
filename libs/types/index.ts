@@ -45,12 +45,12 @@ export type FlipResultType = {
     // tokenId: BigNumber,
     // tpoint: BigNumber,
     // typeId: BigNumber,
-    wallet: string,
-
+    wallet: string
     fId: BigNumber,
-    randomValue: BigNumber,
-    flipResult: BigNumber,
-    timestamp: BigNumber,
+    requestId: BigNumber,
+    amount: BigNumber,
+    flipChoice: BigNumber,
+    requestedAt: BigNumber,
 }
 export enum EnumNFT {
     BRONZE = 'BRONZE',
@@ -73,3 +73,17 @@ export enum MessageCommand {
     UNPINNED_MESSAGE = 3,
     USERS_TYPING = 10,
 }
+export type TypeNFT = {
+    id: number | string,
+    type: number | string,
+    amount: number,
+}
+
+export type TypeDataNFT = {
+    total: number | undefined;
+    data: {
+        type: EnumNFT,
+        list: TypeNFT[]
+    }[];
+
+} | undefined;

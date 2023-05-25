@@ -33,7 +33,6 @@ function DetailCampaign({ }: Props) {
             }
         },
     });
-    console.log(data);
 
     const MapRank: { [key: string]: string } = {
         1: Rank1Image,

@@ -53,8 +53,6 @@ import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 import EmojiIcon from "public/assets/icons/emoji-happy.svg";
 function Bnb2Icon(props: SvgIconProps) {
-  console.log(props);
-
   return (
     <SvgIcon {...props}>
       <path d="M10.375 1.95835L5.96666 6.36668C5.8 6.53335 5.8 6.79168 5.96666 6.95835L7.04166 8.03335C7.20832 8.20002 7.46666 8.20002 7.63333 8.03335L10.375 5.29168C10.5417 5.12502 10.8 5.12502 10.9667 5.29168L13.7083 8.03335C13.875 8.20002 14.1333 8.20002 14.3 8.03335L15.375 6.95835C15.5417 6.79168 15.5417 6.53335 15.375 6.36668L10.9667 1.95835C10.8 1.80002 10.5333 1.80002 10.375 1.95835Z" />

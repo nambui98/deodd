@@ -1,72 +1,14 @@
 import { BigNumber, Contract, ethers } from "ethers";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { UserService } from "../services/user.service";
-import { ENVIRONMENT_SWITCH } from "../libs/common";
-import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
-import { useAccount, useBalance, useConnect, useContractRead, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
-import { bscTestnet } from "wagmi/chains";
-import { DeoddService } from "libs/apis";
 import { LocalStorage } from "libs/LocalStorage";
+import { DeoddService } from "libs/apis";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
+import { bscTestnet } from "wagmi/chains";
+import { deoddContract } from "../libs/contract";
 
 interface Map {
 	[key: string]: any;
 }
-
-const networks: Map = {
-	['bscTestnet']: {
-		chainId: `0x${Number(97).toString(16)}`,
-		chainName: 'Binance Smart Chain Testnet',
-		nativeCurrency: {
-			name: "Binance Chain Native Token",
-			symbol: "tBNB",
-			decimals: 18
-		},
-		rpcUrls: [
-			"https://data-seed-prebsc-1-s1.binance.org:8545",
-			"https://data-seed-prebsc-2-s1.binance.org:8545",
-			"https://data-seed-prebsc-1-s2.binance.org:8545",
-			"https://data-seed-prebsc-2-s2.binance.org:8545",
-			"https://data-seed-prebsc-1-s3.binance.org:8545",
-			"https://data-seed-prebsc-2-s3.binance.org:8545"
-		],
-		blockExplorerUrls: ["https://testnet.bscscan.com"],
-	},
-	['bscMainnet']: {
-		chainId: `0x${Number(56).toString(16)}`,
-		chainName: 'BNB Chain',
-		nativeCurrency: {
-			name: "Binance Chain Native Token",
-			symbol: "BNB",
-			decimals: 18
-		},
-		rpcUrls: [
-			"https://bsc-dataseed.binance.org/",
-			"https://bsc-dataseed1.binance.org/",
-			"https://bsc-dataseed2.binance.org/",
-			"https://bsc-dataseed3.binance.org/",
-			"https://bsc-dataseed4.binance.org/",
-			"https://bsc-dataseed1.defibit.io/",
-			"https://bsc-dataseed2.defibit.io/",
-			"https://bsc-dataseed3.defibit.io/",
-			"https://bsc-dataseed4.defibit.io/",
-			"https://bsc-dataseed1.ninicoin.io/",
-			"https://bsc-dataseed2.ninicoin.io/",
-			"https://bsc-dataseed3.ninicoin.io/",
-			"https://bsc-dataseed4.ninicoin.io/"
-		],
-		blockExplorerUrls: ["https://bscscan.com/"],
-	},
-	['localhost8545']: {
-		chainId: `0x${Number(1337).toString(16)}`,
-		chainName: 'Localhost 8545',
-		nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-		rpcUrls: ['http://127.0.0.1:8545'],
-		blockExplorerUrls: ['']
-	}
-};
-
-const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
-
 interface walletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
@@ -76,12 +18,7 @@ interface walletContextType {
 	bnbBalance: BigNumber,
 	userInfo: { username: string, avatar: number },
 	setUserInfo: Function,
-	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
-	contractDeoddNft: Contract | undefined,
-	contractFeeManager: Contract | undefined,
-	contractJackpot: Contract | undefined,
-	contractNftHolder: Contract | undefined,
 	handleConnectWallet: () => any,
 	setRefresh: (refresh: boolean) => void,
 	refresh: boolean
@@ -101,11 +38,6 @@ const WalletContext = createContext<walletContextType>({
 	userInfo: { username: '', avatar: 0 },
 	setUserInfo: () => { },
 	contractDeodd: undefined,
-	contractProfile: undefined,
-	contractFeeManager: undefined,
-	contractJackpot: undefined,
-	contractNftHolder: undefined,
-	contractDeoddNft: undefined,
 	handleConnectWallet: () => { },
 	refresh: false,
 	setRefresh: () => { },
@@ -166,29 +98,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		watch: true
 	})
 
-	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
-		address: luckyProfile.address,
-		abi: luckyProfile.abi,
-		functionName: 'getUserInfo',
-		args: [walletAddress],
-		watch: true
-	})
-	const [contractProfile, setContractProfile] = useState<
-		Contract | undefined
-	>();
 	const [contractDeodd, setContractDeodd] = useState<
-		Contract | undefined
-	>();
-	const [contractFeeManager, setContractFeeManager] = useState<
-		Contract | undefined
-	>();
-	const [contractJackpot, setContractJackpot] = useState<
-		Contract | undefined
-	>();
-	const [contractNftHolder, setContractNftHolder] = useState<
-		Contract | undefined
-	>();
-	const [contractDeoddNft, setContractDeoddNft] = useState<
 		Contract | undefined
 	>();
 	useEffect(() => {
@@ -204,22 +114,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 				window.ethereum as any
 			);
 			const signer = provider.getSigner();
-			const contractProfile = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
-			const contractFeeManager = new ethers.Contract(feeManagerContract.address, feeManagerContract.abi, signer)
-			const contractJackpot = new ethers.Contract(jackpotContract.address, jackpotContract.abi, signer)
-			const contractNftHolder = new ethers.Contract(nftHolderContract.address, nftHolderContract.abi, signer)
-			const contractDeoddNft = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
-			setContractProfile(contractProfile);
 			setContractDeodd(contractDeodd);
-			setContractFeeManager(contractFeeManager);
-			setContractJackpot(contractJackpot);
-			setContractNftHolder(contractNftHolder);
-			setContractDeoddNft(contractDeoddNft);
-			// (provider as any).getHistory('0xD48259f0701f743066ed2d98eB8091370f61ecC8').then((history) => {
-			// 	debugger
-			// });
-
 		}
 	}, [chain]);
 
@@ -404,11 +300,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
-			contractProfile,
-			contractFeeManager,
-			contractJackpot,
-			contractNftHolder,
-			contractDeoddNft,
 			refresh,
 			setRefresh
 		}
@@ -421,11 +312,6 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		bnbBalance,
 		userInfo,
 		contractDeodd,
-		contractProfile,
-		contractFeeManager,
-		contractJackpot,
-		contractNftHolder,
-		contractDeoddNft,
 		refresh,
 	])
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>

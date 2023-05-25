@@ -53,9 +53,7 @@ function useReferral({ isNotGet }: { isNotGet?: boolean | undefined }) {
 
     const getLinkUser = async () => {
         const ck = await DeoddService.checkUserReferral(walletAddress)
-        console.log(ck);
         const ckLinkExist = await DeoddService.findGenerateReferralLinkByWallet(walletAddress);
-
         // debugger
         let linkGenerate;
         if (ckLinkExist.status === 200) {

@@ -109,9 +109,7 @@ function Chat({ open }: { open: boolean }) {
 
                 }
                 if (dataMessage?.message === MessageCommand.USERS_TYPING) {
-                    debugger
                     const filterTyping = (dataMessage.data.data.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
-                    debugger
                     setUsersTyping(filterTyping);
                 }
             },
@@ -129,7 +127,6 @@ function Chat({ open }: { open: boolean }) {
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-        // debugger
         const result = {
             message: parseInt(parseJson[0][0]),
             data: parseJson[0][1]
@@ -187,7 +184,6 @@ function Chat({ open }: { open: boolean }) {
     //typing
     const sendMessageTyping = () => {
         if (walletIsConnected) {
-            debugger
             const message: any = [
                 9,
                 {
@@ -206,7 +202,6 @@ function Chat({ open }: { open: boolean }) {
         }
     }
     const sendMessageCancelTyping = () => {
-        debugger
         const message: any = [
             9,
             {
@@ -342,14 +337,11 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
         const content = watch('content');
         const text = content.slice(0, cursor) + emojiObject.emoji + content.slice(cursor);
         setValue('content', text);
-        debugger
     }
     useEffect(() => {
         function onTimeout() {
             setIsTyping(false);
             sendMessageCancelTyping();
-
-            debugger
         }
         let content = watch('content');
         if (content !== undefined && content !== null && content) {
@@ -365,11 +357,9 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
 
     useEffect(() => {
         if (isTyping) {
-            // debugger
             sendMessageTyping();
         }
-        console.log(isTyping)
-    }, [isTyping])
+    }, [isTyping, sendMessageTyping])
 
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
         <InputBase
