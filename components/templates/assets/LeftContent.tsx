@@ -1,25 +1,21 @@
 import { Utils } from '@/utils/index'
 import EastIcon from '@mui/icons-material/East'
 import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, styled } from '@mui/material'
-import ModalClaimSuccess from 'components/common/ModalError'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import MyModal from 'components/common/Modal'
+import ModalClaimSuccess from 'components/common/ModalError'
 import { ButtonMain } from 'components/ui/button'
+import MyImage from 'components/ui/image'
 import { Colors, MINXIMUM_BALANCE_DEPOSIT } from 'constants/index'
+import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
-import { BigNumber, ethers } from 'ethers'
-import { useDeoddContract } from 'hooks/useDeoddContract'
-import { TypeDataNFT, TypeNFT } from 'hooks/useDeoddNFTContract'
-import { useJackpotContract } from 'hooks/useJackpotContract'
-import { EnumNFT, HISTORY_TYPE, HISTORY_TYPE_VALUE } from 'libs/types'
+import { DeoddService } from 'libs/apis'
+import { EnumNFT, HISTORY_TYPE, HISTORY_TYPE_VALUE, TypeNFT } from 'libs/types'
 import React, { useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
-import { Format } from 'utils/format'
-import { ItemHistory, StatusTransfer } from './ItemHistory'
-import { DeoddService } from 'libs/apis'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import MyImage from 'components/ui/image'
-import { useSiteContext } from 'contexts/SiteContext'
 import { Convert } from 'utils/convert'
+import { Format } from 'utils/format'
+import { ItemHistory } from './ItemHistory'
 
 type Props = {
     // spendingTokens: TypeDataNFT,
@@ -71,6 +67,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     //     enabled: walletAddress,
     //     queryFn: () => DeoddService.getBalanceHistories(walletAddress),
     //     select: (data: any) => {
+    //         debugger
     //         if (data.status === 200) {
     //             return data.data;
     //         } else {
