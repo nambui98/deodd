@@ -111,7 +111,7 @@ export default function TestailPoint() {
   });
   if (testailCoin) {
     return (
-      <Box position={"absolute"} right={0}>
+      <Box position={"absolute"} top={0} right={0}>
         <Stack direction={"row"} gap={1}>
           <Stack alignItems={"flex-end"}>
             <Typography sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} fontSize={"0.75rem"} lineHeight={"1rem"} color={"secondary.100"}>Testail Point</Typography>

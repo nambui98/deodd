@@ -63,7 +63,7 @@ export default function Flipping({ isShowing }: IProps) {
         }
 
       </Stack>
-      <Typography variant="body2" color="secondary.100" fontSize={{ md: 14, xs: 12 }}>Gambling is not about how well you play the games, it’s really about how well you handle your money.</Typography>
+      <Typography variant="body2" color="secondary.100" fontSize={{ md: 14, xs: 12 }}>Investing in uncertain outcomes is not about how well you play the games, it’s really about how well you handle your money.</Typography>
     </Box>
   </Box >
 }

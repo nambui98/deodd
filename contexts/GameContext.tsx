@@ -92,7 +92,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 	});
 	const [isFinish, setIsFinish] = useState<boolean>(false);
 	const [openModalPendingTransaction, setOpenModalPendingTransaction] = useState<boolean>(false);
-
+	const queryClient = useQueryClient();
 	const [dataSelected, setDataSelected] = useState<DataSelected>()
 	const { refetch } = useContractRead({
 		address: deoddContract.address,
@@ -123,6 +123,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 			setStatusGame(StatusGame.FLIP_RESULT);
 			setRefresh(!refresh);
 			setIsFinish(false);
+			queryClient.invalidateQueries({ queryKey: ['getTestail'] });
 			audioPlayer(AudioPlay.STOP);
 			if (flipData?.flip_result === EnumResult.WIN) {
 				audioPlayer(AudioPlay.WIN);
