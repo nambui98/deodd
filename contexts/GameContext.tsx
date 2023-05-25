@@ -101,33 +101,18 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		args: [walletAddress],
 		enabled: false,
 	})
-	console.log(
-
-
-		parseFloat(ethers.utils.formatEther('10000000000000000')),
-	);
 
 	const getResultByFlipId = useMutation({
 		mutationFn: (fId: BigNumber) => {
 			return DeoddService.getResultByFlipId(fId.toString())
 		},
-		// onSettled(data, error, variables, context) {
-		// 	debugger
-		// },
 		onSuccess(data, variables, context) {
 			const flipData = data?.data?.data?.flip;
 			const userData = data?.data?.data?.userProfile;
-			console.log(
-				ethers.utils.formatEther((flipData?.amount ?? 0).toString())
-			);
-
-			debugger
 			setGameResult({
 				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
 				coinSide: flipData?.flip_choice,
 				isWinner: flipData?.flip_result === EnumResult.WIN,
-				// tokenId: tokenId,
-				// typeId,
 				// jackpotWin: jackpotReward
 				jackpotWin: flipData?.jackpot_reward ?? 0,
 				tokenId: flipData?.token_id,

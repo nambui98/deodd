@@ -27,7 +27,6 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-    console.log(dataReferralSuccess);
 
     return (
         <>

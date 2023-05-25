@@ -62,11 +62,9 @@ export const SiteProvider = ({ children }: IProps) => {
             localStorage.setItem("audioTurnOff", 'false');
             setIsTurnOffAudio(false);
         } else {
-            debugger
             localStorage.setItem("audioTurnOff", 'true');
             setIsTurnOffAudio(true);
             if (isTurnOffAudio) {
-                debugger
                 audioPlay!.muted = true;
                 audioLost!.muted = true;
                 audioWin!.muted = true;

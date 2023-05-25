@@ -20,7 +20,6 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
     const { userInfo } = useWalletContext();
     const [value, setValue] = useState('');
     const route = useRouter();
-    console.log(route);
 
     const MENU_MOBILE = [
         {
@@ -30,9 +29,7 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
             iconActive: <Close2Icon fill="#fff" />,
             href: '',
             onClick: () => {
-                console.log("aaaaaaaaaaaaaa");
                 handleOpenLeftSidebar();
-
             }
         },
         {
@@ -70,7 +67,6 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
     ]
 
     const valueCurrentActive: string | undefined = useMemo(() => MENU_MOBILE.find(menu => menu.href === route.pathname)?.value, [route.isReady])
-    console.log(valueCurrentActive);
     useEffect(() => {
         if (valueCurrentActive) {
             setValue(valueCurrentActive);

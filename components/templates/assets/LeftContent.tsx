@@ -57,9 +57,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     const handleClaim = useMutation({
         mutationFn: DeoddService.claimTokenSpending,
         onSuccess: (data) => {
-            debugger
             if (data.data.meta.code === 200) {
-
                 refetchGetAssetsBalance();
             } else {
                 setIsError(true);
@@ -73,7 +71,6 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     //     enabled: walletAddress,
     //     queryFn: () => DeoddService.getBalanceHistories(walletAddress),
     //     select: (data: any) => {
-    //         debugger
     //         if (data.status === 200) {
     //             return data.data;
     //         } else {
@@ -94,7 +91,6 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
         },
     });
 
-    console.log(histories);
 
     const handleClick = (nftType: EnumNFT) => {
         if (nftType === openNftType) {

@@ -34,7 +34,6 @@ export const Convert = {
             }
             return objItem;
         })
-        debugger
         return newData;
     }
 }

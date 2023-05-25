@@ -31,7 +31,6 @@ export const getHistory = async (walletAddress: string, offset: number) => {
 }
 
 export const getUserByPublicAddress = async (walletAddress: string, flipId: string) => {
-  debugger
   return vhIdRequest({
     url: `/deodd/users/address?address=${walletAddress}&flipId=${flipId}`,
     method: 'get',

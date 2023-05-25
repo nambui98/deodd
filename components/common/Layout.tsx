@@ -31,7 +31,6 @@ const Layout = ({ children }: IProps) => {
         refetchOnWindowFocus: false,
         queryFn: DeoddService.getCurrentIp,
         select: (data: any) => {
-            debugger
             if (data.status === 200) {
                 return data.data;
             } else {

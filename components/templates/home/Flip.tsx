@@ -17,6 +17,7 @@ import FlipResult from "./components/FlipResult";
 import FlipLogDetail from "./components/FlipLogDetail";
 import { DeoddService } from "libs/apis";
 import { useQuery } from "@tanstack/react-query";
+import TestailPoint from "./components/TestailPoint";
 
 const avatar = [
   'assets/images/avatar-yellow.png',
@@ -37,17 +38,7 @@ export const Flip = React.memo(() => {
     abi: deoddContract.abi,
     functionName: 'rollbackUnfulfilled',
   })
-  const { data: dataTestail } = useQuery({
-    queryKey: ["getMessagesWithoutAuth"],
-    queryFn: () => DeoddService.getUserTestail(),
-    select: (data: any) => {
-      if (data.status === 200) {
-        return data.data;
-      } else {
-        return undefined
-      }
-    },
-  });
+
   const handleRefun = () => {
     setIsLoading(true);
     writeAsync?.()
@@ -71,6 +62,7 @@ export const Flip = React.memo(() => {
 
     <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
     <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+      <TestailPoint />
       <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
       <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
       <FlipResult isShowing={statusGame === StatusGame.FLIP_RESULT} />

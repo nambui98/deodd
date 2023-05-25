@@ -190,7 +190,6 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
     }, [idCurrentActive])
 
     const handleSetActive = (id: number | undefined) => {
-        // debugger
         if (id !== idActive) {
             setIdActive(prev => prev !== id ? id : prev);
         }

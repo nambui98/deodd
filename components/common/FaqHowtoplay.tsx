@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, Stack, Typography, styled } from '@mui/material'
+import { Box, Button, Container, Divider, Grid, Stack, Typography, TypographyProps, styled, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import MyModal from './Modal';
 import { Colors } from 'constants/index';
@@ -25,27 +25,83 @@ function FaqHowtoplay({ }: Props) {
         [Modal_Type.HOW_TO_PLAY]: <HowToPlay />,
         [Modal_Type.PRIVACY_POLICY]: <PrivacyPolicy />
     }
-
     return (
         <Container sx={{ mt: 'auto', pt: 3, }} >
             <Divider />
-            <Box sx={{ display: 'flex', justifyContent: "space-between", alignItems: 'center', mb: { xs: 10.125, md: 2 }, mt: 2 }}  >
-                <Link href="/">
-                    <MyImage src={LogoImage} height={40} width={66.67} alt="logo" />
-                </Link>
-                <Stack
-                    direction={'row'} justifyContent={'center'}
-                    gap={2}
-                >
-                    <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item> |
-                    <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item> |
-                    <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.PRIVACY_POLICY)}>Privacy Policy</Item> |
-                    <a href="https://docsend.com/view/nbwq8xa96nckf4zj" target='_blank' rel='noreferrer'>
-                        <Item variant='body2'>Whitepaper</Item>
-                    </a>
-                </Stack>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 10.125, md: 2 }, mt: 2 }}  >
+                <Grid container rowSpacing={2}>
+                    <Grid item
+                        xs={12}
 
-                <MyImage src={BnbLogoImage} height={24} width={193} alt="logo" />
+                        lg={1.5}
+                        xl={3}
+                        alignItems={'center'}>
+                        <Box component={Link} href="/">
+                            <MyImage src={LogoImage} height={40} width={66.67} alt="logo" />
+                        </Box>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={12}
+                        lg={7.5}
+                        xl={6}
+                        justifyContent={{ xs: 'flex-start', lg: 'center' }}
+                        alignItems={'center'}
+                        component={Stack}
+
+                    >
+                        <Stack
+                            divider={
+                                <Divider flexItem sx={{ mx: { xs: 1.5, xl: 2 }, display: { xs: 'none', lg: 'block' }, borderWidth: 1, bgcolor: 'white' }} />
+                            }
+                            direction={{ xs: "column", lg: 'row' }}
+                            rowGap={2}
+                        >
+                            <Stack
+                                direction={'row'} justifyContent={{ xs: 'flex-start', lg: 'center' }}
+                                rowGap={1}
+                                divider={
+                                    <Divider flexItem sx={{ mx: { xs: 1.5, xl: 2 }, borderWidth: 1, bgcolor: 'white' }} />
+                                }
+                            >
+                                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item>
+                                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item>
+
+                            </Stack>
+                            <Stack
+                                direction={'row'} justifyContent={{ xs: 'flex-start', lg: 'center' }}
+                                rowGap={1}
+                                divider={
+                                    <Divider flexItem sx={{ mx: { xs: 1.5, xl: 2 }, borderWidth: 1, bgcolor: 'white' }} />
+                                }
+                            >
+
+                                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.PRIVACY_POLICY)}>Privacy Policy</Item>
+                                <Item variant='body2'>
+                                    <a href="https://docsend.com/view/nbwq8xa96nckf4zj" target='_blank' rel='noreferrer'>
+                                        Whitepaper
+                                    </a>
+                                </Item>
+                            </Stack>
+
+
+                        </Stack>
+
+
+                    </Grid>
+                    <Grid item xs={12} lg={3}
+                        sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'flex-start', lg: 'flex-end' } }}
+                    >
+                        <Box width={193} height={24} component={Link} href="https://oracle.binance.com/" target='_blank' rel='noreferrer'>
+                            <MyImage src={BnbLogoImage} height={'100%'} width={'100%'} alt="logo" />
+                        </Box>
+
+
+                    </Grid>
+
+
+
+                </Grid>
                 <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModal}>
                     {
                         mapContent[modalType]
@@ -163,14 +219,15 @@ const PrivacyPolicy = () => (
     </Stack >
 
 )
-const Item = styled(Typography)(({ theme }) => ({
-    fontSize: 10,
-    [theme.breakpoints.up('sm')]: {
-        fontSize: 12,
-    },
-    [theme.breakpoints.up('md')]: {
-        fontSize: 14,
-    },
+const Item = styled(Typography)<TypographyProps>(({ theme }) => ({
+    fontSize: 14,
+    // flex: '1 1 50%',
+    // [theme.breakpoints.up('sm').replace("@media", "@container")]: {
+    //     fontSize: 12,
+    // },
+    // [theme.breakpoints.up('md').replace("@media", "@container")]: {
+    //     fontSize: 14,
+    // },
     cursor: 'pointer',
     color: (theme.palette.secondary as any)["500"],
     fontWeight: 500

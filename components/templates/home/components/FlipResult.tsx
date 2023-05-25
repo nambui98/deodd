@@ -40,7 +40,6 @@ export default function FlipResult({ isShowing }: { isShowing: boolean }) {
       return 'tail-disable'
     }
   }
-  console.log(typeId);
 
   return <Box display={isShowing ? 'block' : 'none'}>
     <MyImage mx="auto" width={120} height={120} alt="" src={`/assets/icons/${renderImage()}.svg`} />

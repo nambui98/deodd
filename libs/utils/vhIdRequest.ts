@@ -36,8 +36,6 @@ vhIdRequest.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config
-    console.log(err);
-
     if (err.response) {
       // Token was expired
       if (err.response.status === 401 && !originalConfig._retry) {
@@ -47,7 +45,6 @@ vhIdRequest.interceptors.response.use(
             const response = await DeoddService.refreshToken();
             const { accessToken } = response.data.data;
             LocalStorage.setAccessToken(accessToken);
-            debugger
             err.config.headers['Authorization'] = 'Bearer ' + accessToken;
             return vhIdRequest.request(err.config);
           } catch (error) {

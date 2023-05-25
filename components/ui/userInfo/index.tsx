@@ -107,7 +107,7 @@ function UserInfoButton(props: ButtonProps & { text: string }) {
 export function UserInfo() {
   const theme = useTheme();
   const router = useRouter();
-  const matchesScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const matchesScreen = useMediaQuery(theme.breakpoints.up('xl'));
   const [expanded, setExpanded] = useState<boolean>(false);
   const { walletIsConnected, walletAddress, bnbBalance, userInfo } = useWalletContext();
   const [isProfileOpened, setIsProfileOpened] = useState(false);
@@ -148,26 +148,62 @@ export function UserInfo() {
           <Stack
             onClick={() => setExpanded(!expanded)}
             direction="row"
-            divider={<Divider flexItem sx={{ width: "1px", backgroundColor: "primary.300", display: { xs: expanded ? "block" : "none", md: "block" } }} />}
-            sx={{
+            divider={<Divider flexItem sx={theme => ({
+              width: "1px", backgroundColor: "primary.300",
+              [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                display: expanded ? "block" : "none",
+              },
+              [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                display: "block",
+              },
+              display: { xs: expanded ? "block" : "none", md: "block" } // fallback
+            })} />}
+            sx={theme => ({
+              [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                padding: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem",
+                gap: expanded ? 2 : 0,
+              },
+              [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                padding: "0.875rem 0.75rem",
+                gap: 2,
+              },
+              padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" }, // fallback
+              gap: { xs: expanded ? 2 : 0, md: 2 }, // fallback
               minWidth: matchesScreen ? "14rem" : "",
               justifyContent: "space-between",
               backgroundColor: "primary.100",
-              padding: { xs: expanded ? "0.875rem 0.75rem" : "0.5rem 0.75rem", md: "0.875rem 0.75rem" },
-              gap: { xs: expanded ? 2 : 0, md: 2 },
               transition: `box-shadow 300ms, 300ms gap, 300ms padding, ${!expanded ? "300ms" : "0ms"} border-radius ${!expanded ? "150ms" : ""}`,
               borderRadius: expanded ? "8px 8px 0 0" : "8px",
               boxShadow: expanded ? "0 -2px 0 #3F4251, 2px 0px 0 #3F4251, -2px 0px 0 #3F4251" : "",
               cursor: "pointer",
-            }}
+            })}
           >
-            <Stack direction="row" alignItems="center" sx={{ gap: { xs: expanded ? 1 : 0.5, md: 1 } }}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={theme => ({
+                [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                  gap: expanded ? 1 : 0.5,
+                },
+                [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                  gap: 1,
+                },
+                gap: { xs: expanded ? 1 : 0.5, md: 1 } // fallback
+              })}>
               <Typography variant="h3" fontSize={"0.875rem"} fontWeight={500} lineHeight={"1.25rem"}>{Format.formatMoneyFromBigNumberEther(bnbBalance)}</Typography>
               <BnbIcon fill={Colors.primaryDark} width={matchesScreen ? 20 : expanded ? 20 : 16} />
             </Stack>
-            <Stack direction={"row"} alignItems="center" sx={{ gap: { xs: expanded ? 1 : 0.5, md: 1 } }}>
+            <Stack direction={"row"} alignItems="center" sx={theme => ({
+              [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                gap: expanded ? 1 : 0.5,
+              },
+              [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                gap: 1,
+              },
+              gap: { xs: expanded ? 1 : 0.5, md: 1 } // fallback
+            })}>
               <Collapse in={!matchesScreen ? expanded ? true : false : true} orientation="horizontal" timeout={300}>
-                <Stack direction={"row"} gap={1} alignItems="center" >
+                <Stack direction={"row"} gap={1} alignItems="center">
                   <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
                     {
                       userInfo.username ? userInfo.username : Convert.convertWalletAddress(walletAddress, 5, 4)
