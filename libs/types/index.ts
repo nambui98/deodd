@@ -45,12 +45,12 @@ export type FlipResultType = {
     // tokenId: BigNumber,
     // tpoint: BigNumber,
     // typeId: BigNumber,
-    wallet: string,
-
+    wallet: string
     fId: BigNumber,
-    randomValue: BigNumber,
-    flipResult: BigNumber,
-    timestamp: BigNumber,
+    requestId: BigNumber,
+    amount: BigNumber,
+    flipChoice: BigNumber,
+    requestedAt: BigNumber,
 }
 export enum EnumNFT {
     BRONZE = 'BRONZE',

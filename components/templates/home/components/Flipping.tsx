@@ -3,7 +3,7 @@ import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import CoinAnimation from "components/common/CoinAnimation";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
-import { useContractContext } from "contexts/ContractContext";
+import { useGameContext } from "contexts/GameContext";
 import Image from 'next/image';
 import { Bnb2Icon, BnbIcon } from "utils/Icons";
 import { HeadCoinImage, TailCoinImage } from "utils/Images";
@@ -21,7 +21,7 @@ function HomeIcon(props: SvgIconProps) {
   );
 }
 export default function Flipping({ isShowing }: IProps) {
-  const { dataSelected } = useContractContext();
+  const { dataSelected } = useGameContext();
   let isHead = dataSelected?.coinSide === 0;
   let amount = dataSelected?.amount;
 

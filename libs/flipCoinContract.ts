@@ -1,6 +1,3 @@
-import { BigNumber, Contract, ethers } from "ethers"
-import { bftBusdToken, deoddContract, feeManagerContract, luckyProfile } from "./contract"
-
 // export const handleFlipToken = async (etherSinger: any, index: number, coinSide: number, bnbSend: BigNumber) => {
 //   const contract = new ethers.Contract(deoddContract.address, deoddContract.abi, etherSinger)
 //   const res = await contract.flipTheCoin(

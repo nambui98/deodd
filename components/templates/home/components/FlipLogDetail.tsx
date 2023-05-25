@@ -1,5 +1,5 @@
 import { Box, Typography, Stack } from "@mui/material";
-import { StatusGame, useContractContext } from "contexts/ContractContext";
+import { StatusGame, useGameContext } from "contexts/GameContext";
 import { LeftIcon, RightIcon } from "utils/Icons";
 
 // Dummy data. Delete later
@@ -48,7 +48,7 @@ function RowItem({ step, activities, fee }: { step: number; activities: string; 
 
 export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
 
-  const { setStatusGame } = useContractContext();
+  const { setStatusGame } = useGameContext();
   const Empty = () => <>
     <Typography></Typography>
     <Typography color="dark.60" textAlign={'center'}>Empty</Typography>

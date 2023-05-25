@@ -3,7 +3,7 @@ import CoinAnimation from 'components/common/CoinAnimation';
 import { ButtonLoading, ButtonLoadingShadow } from 'components/ui/button';
 import MyImage from 'components/ui/image';
 import { VRF_FEE, AMOUNTS } from 'constants/index';
-import { DataSelected, StatusGame, useContractContext } from 'contexts/ContractContext';
+import { DataSelected, StatusGame, useGameContext } from 'contexts/GameContext';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 import { BigNumber, ethers } from 'ethers';
@@ -29,7 +29,7 @@ export default function NotYetFlip({ isShowing }: Props) {
 
 function FormActions() {
 
-    const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useContractContext();
+    const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useGameContext();
     const { contractDeodd, bnbBalance, walletAddress } = useWalletContext()
     const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 

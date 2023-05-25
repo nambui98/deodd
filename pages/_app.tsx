@@ -4,7 +4,7 @@ import ModalClaimSuccess from 'components/common/ModalClaimSuccess';
 import ModalError from 'components/common/ModalError';
 import { wagmiClient } from 'config/wagmi';
 import { Colors } from 'constants/index';
-import { ContractProvider } from 'contexts/ContractContext';
+import { GameProvider } from 'contexts/GameContext';
 import { SiteProvider } from 'contexts/SiteContext';
 import NextProgress from "next-progress";
 import { WagmiConfig } from 'wagmi';
@@ -30,7 +30,7 @@ function MyApp(props: AppPropsCustom) {
         <SiteProvider>
           <ColorModeProvider {...props}>
             <WalletProvider>
-              <ContractProvider>
+              <GameProvider>
                 <CssBaseline />
                 <Layout>
                   <Component {...pageProps} />
@@ -40,7 +40,7 @@ function MyApp(props: AppPropsCustom) {
                 <ModalError />
                 <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />
 
-              </ContractProvider>
+              </GameProvider>
             </WalletProvider>
           </ColorModeProvider>
 

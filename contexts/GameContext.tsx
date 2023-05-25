@@ -10,6 +10,7 @@ import { useContractEvent, useContractRead } from 'wagmi';
 import { useSiteContext } from './SiteContext';
 import { TIMEOUT_FULLFILL } from 'constants/index';
 import { DeoddService } from 'libs/apis';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 // import { watchContractEvent } from '@wagmi/core'
 // import { Contract, EventData, providers } from '@wagmi/contract';
 
@@ -34,7 +35,7 @@ export type GameResultType = {
 	winningStreakLength?: number
 } | undefined;
 
-interface ContractContextType {
+interface GameContextType {
 	statusGame: StatusGame,
 	setStatusGame: Function,
 	gameResult: GameResultType,
@@ -48,7 +49,7 @@ interface ContractContextType {
 	setOpenModalPendingTransaction: Function
 }
 
-const ContractContext = createContext<ContractContextType>({
+const GameContext = createContext<GameContextType>({
 	statusGame: StatusGame.FLIP,
 	setStatusGame: () => { },
 	gameResult: undefined,
@@ -68,9 +69,12 @@ export type DataSelected = {
 } | undefined
 
 
-export const useContractContext = () => useContext(ContractContext);
-
-export const ContractProvider: React.FC<IProps> = ({ children }) => {
+export const useGameContext = () => useContext(GameContext);
+export enum EnumResult {
+	LOST,
+	WIN
+}
+export const GameProvider: React.FC<IProps> = ({ children }) => {
 
 	const { walletAddress, contractDeodd, refresh, setRefresh } = useWalletContext();
 	const { audioPlayer } = useSiteContext();
@@ -97,17 +101,60 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		args: [walletAddress],
 		enabled: false,
 	})
+	console.log(
 
+
+		parseFloat(ethers.utils.formatEther('10000000000000000')),
+	);
+
+	const getResultByFlipId = useMutation({
+		mutationFn: (fId: BigNumber) => {
+			return DeoddService.getResultByFlipId(fId.toString())
+		},
+		// onSettled(data, error, variables, context) {
+		// 	debugger
+		// },
+		onSuccess(data, variables, context) {
+			const flipData = data?.data?.data?.flip;
+			const userData = data?.data?.data?.userProfile;
+			console.log(
+				ethers.utils.formatEther((flipData?.amount ?? 0).toString())
+			);
+
+			debugger
+			setGameResult({
+				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
+				coinSide: flipData?.flip_choice,
+				isWinner: flipData?.flip_result === EnumResult.WIN,
+				// tokenId: tokenId,
+				// typeId,
+				// jackpotWin: jackpotReward
+				jackpotWin: flipData?.jackpot_reward ?? 0,
+				tokenId: flipData?.token_id,
+				typeId: flipData?.type_id,
+				tossPoints: flipData?.toss_point ?? 0,
+				winningStreakLength: userData?.currentStreakLength ?? 0,
+			})
+			setStatusGame(StatusGame.FLIP_RESULT);
+			setRefresh(!refresh);
+			setIsFinish(false);
+			audioPlayer(AudioPlay.STOP);
+			if (flipData?.flip_result === EnumResult.WIN) {
+				audioPlayer(AudioPlay.WIN);
+			} else {
+				audioPlayer(AudioPlay.LOST);
+			}
+		},
+		retry: 15,
+		retryDelay: 2000
+	});
 	//check pending transaction
 	useEffect(() => {
 		let timer: string | number | NodeJS.Timeout | undefined;
 		if (statusGame === StatusGame.FLIPPING) {
 			timer = setTimeout(() => {
 				refetch().then(({ data }) => {
-					debugger
 					if (data === true) {
-
-						debugger
 						audioPlayer(AudioPlay.STOP);
 						setIsFinish(false);
 						setStatusGame(StatusGame.FLIP);
@@ -120,52 +167,23 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [statusGame])
 
+	// useEffect(() => {
+	// }, [third])
 
 	useContractEvent({
 		address: deoddContract.address,
 		abi: deoddContract.abi,
-		eventName: 'FlipResult',
-		async listener(...args) {
+		eventName: 'Flip',
+		listener(...args) {
 			if (isFinish) {
-				debugger
 				let {
 					wallet,
-					fId, randomValue, flipResult, timestamp
-				}: FlipResultType = (args[5] as any).args;
+					fId
+				}: FlipResultType = (args[6] as any).args;
 				if (wallet === walletAddress) {
 					audio.loop = false;
 					audio.load();
-					let res = await DeoddService.getResultByFlipId(fId.toString());
-					console.log("flip_id: ", fId)
-					console.log("current_streak: ", res.data.data.userProfile.currentStreakLength)
-					setGameResult({
-						amount: (dataSelected?.amount ?? 0),
-						coinSide: dataSelected?.coinSide ?? 0,
-						isWinner: flipResult.toNumber() === 0 ? false : true,
-
-						// flipResult: flipResult.toNumber(),
-
-						// coinSide: flipChoice.toNumber(),
-						// flipResult: playerWin.toNumber() === 1 ? flipChoice.toNumber() : (flipChoice.toNumber() === 0 ? 1 : 0),
-						// tokenId: tokenId,
-						// typeId,
-						// jackpotWin: jackpotReward
-						jackpotWin: res.status === 200 && res.data ? res.data.data.flip.jackpot_reward : 0,
-						tokenId: res.status === 200 && res.data ? res.data.data.flip.token_id : 0,
-						typeId: res.status === 200 && res.data ? res.data.data.flip.type_id : 0,
-						tossPoints: res.status === 200 && res.data ? res.data.data.flip.toss_point : 0,
-						// winningStreakAmount: res.status === 200 && res.data ? res.data.data.userProfile.currentStreakAmount : 0,
-						winningStreakLength: res.status === 200 && res.data ? res.data.data.userProfile.currentStreakLength : 0
-					})
-					setStatusGame(StatusGame.FLIP_RESULT);
-					setRefresh(!refresh);
-					setIsFinish(false);
-					audioPlayer(AudioPlay.STOP);
-					if (flipResult.toNumber() === 1) {
-						audioPlayer(AudioPlay.WIN);
-					} else {
-						audioPlayer(AudioPlay.LOST);
-					}
+					getResultByFlipId.mutateAsync(fId)
 				}
 			}
 		},
@@ -213,5 +231,5 @@ export const ContractProvider: React.FC<IProps> = ({ children }) => {
 	// 	isFinish,
 	// 	dataSelected,
 	// ])
-	return <ContractContext.Provider value={value}>{children}</ContractContext.Provider>
+	return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
