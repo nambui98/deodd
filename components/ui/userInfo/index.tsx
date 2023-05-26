@@ -201,6 +201,7 @@ export function UserInfo() {
                 [theme.breakpoints.up("md").replace("@media", "@container")]: {
                   width: 20,
                 },
+                width: { xs: expanded ? 20 : 16, md: 20 }, // fallback
                 display: "flex",
                 alignItems: "center"
               })}>
@@ -256,6 +257,7 @@ export function UserInfo() {
                   color: "#F5F5FA",
                   width: 20,
                 },
+                width: { xs: expanded ? 20 : 16, md: 20 }, // fallback
                 color: { xs: expanded ? "#F5F5FA" : Colors.secondary, md: "#F5F5FA" }, // fallback
               })}>
                 <ArrowDownIcon
