@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
 import { useWalletContext } from 'contexts/WalletContext'
 import { DeoddService } from 'libs/apis'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getPathAvatar } from 'utils/checkAvatar'
 import { Convert } from 'utils/convert'
 import MyModal from '../../components/common/Modal'
@@ -36,6 +36,7 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
     const { data: referral, refetch: getLeaderboardReferral } = useQuery({
         queryKey: ["getLeaderboardReferral"],
         enabled: campaign.href === 'referral-campaign',
+        refetchInterval: 2000,
         queryFn: () => DeoddService.getLeaderboardReferral(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
@@ -48,6 +49,7 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
     const { data: testails, refetch: getLeaderboardTestail } = useQuery({
         queryKey: ["getLeaderboardTestail"],
         enabled: campaign.href === 'testnet-campaign',
+        refetchInterval: 2000,
         queryFn: () => DeoddService.getLeaderboardTestail(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
@@ -57,6 +59,16 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
             }
         },
     });
+    useEffect(() => {
+
+        if (campaign.href === 'referral-campaign') {
+            debugger
+            getLeaderboardReferral();
+        } else {
+            getLeaderboardTestail();
+        }
+    }, [campaign.href, getLeaderboardReferral, getLeaderboardTestail, walletAddress])
+
     const MapRank: { [key: string]: string } = {
         1: Rank1Image,
         2: Rank2Image,
@@ -126,7 +138,7 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                                                 <TableCell align="left">
                                                     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                                                         <MyImage width={24} height={24} src={getPathAvatar(row.avatar_id)} alt="" />
-                                                        <Typography variant='caption'>{((row.user_name || row.user_name_father) ?? '') + '(' + Convert.convertWalletAddress((row.user_name || row.user_name_father), 4, 4) + ")"}</Typography>
+                                                        <Typography variant='caption'>{((row.user_name || row.user_name_father) ?? '') + '(' + Convert.convertWalletAddress((row.wallet || row.user_wallet_father), 4, 4) + ")"}</Typography>
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.number_child || row.testail_point}</Typography></TableCell>
