@@ -30,23 +30,12 @@ function FaqHowtoplay({ }: Props) {
         <Container sx={{ mt: 'auto', pt: 3, }} >
             <Divider />
             <Box sx={{ display: 'flex', justifyContent: "space-between", alignItems: 'center', mb: { xs: 10.125, md: 2 }, mt: 2 }}  >
-                <Box sx={theme => ({
-                    [theme.breakpoints.up("xs").replace("@media", "@container")]: {
-                        display: "none",
-                    },
-                    [theme.breakpoints.up("md").replace("@media", "@container")]: {
-                        display: "flex",
-                    },
-                    flex: 1,
-                })} >
-                    <Link href="/">
-                        <MyImage src={LogoImage} height={40} width={66.67} alt="DeODD logo" />
-                    </Link>
-                </Box>
+                <Link href="/">
+                    <MyImage src={LogoImage} height={40} width={66.67} alt="logo" />
+                </Link>
                 <Stack
                     direction={'row'} justifyContent={'center'}
                     gap={2}
-                    mx={"auto"}
                 >
                     <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item> |
                     <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item> |
@@ -55,18 +44,8 @@ function FaqHowtoplay({ }: Props) {
                         <Item variant='body2'>Whitepaper</Item>
                     </a>
                 </Stack>
-                <Box sx={theme => ({
-                    [theme.breakpoints.up("xs").replace("@media", "@container")]: {
-                        display: "none",
-                    },
-                    [theme.breakpoints.up("md").replace("@media", "@container")]: {
-                        display: "flex",
-                    },
-                    flex: 1,
-                    justifyContent: "flex-end",
-                })} >
-                    <MyImage src={BnbLogoImage} height={24} width={193} alt="BNB logo" />
-                </Box>
+
+                <MyImage src={BnbLogoImage} height={24} width={193} alt="logo" />
                 <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModal}>
                     {
                         mapContent[modalType]
