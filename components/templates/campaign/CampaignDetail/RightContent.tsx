@@ -6,17 +6,17 @@ import React, { useEffect, Suspense } from 'react'
 import { ReferralImage } from 'utils/Images'
 
 
-function RightContent() {
+function RightContent({ image }: { image: string }) {
     const { walletAddress } = useWalletContext();
     const { link, getLinkUser } = useReferral({ isNotGet: true });
     useEffect(() => {
         if (walletAddress) {
             getLinkUser();
         }
-    }, [walletAddress])
+    }, [walletAddress, getLinkUser])
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
-            <img src={ReferralImage} width={"100%"} alt="" />
+            <img src={image} width={"100%"} alt="" />
             <ShareLink link={link ? link : ''} />
 
         </Box>

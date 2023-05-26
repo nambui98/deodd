@@ -40,7 +40,9 @@ function Header({ }: Props) {
             isTurnOffAudio ? <MyImage src={VolumeTurnOffImage} alt="volume-off-icon" width={24} height={24} /> : <MyImage src={VolumnImage} alt="volume-on-icon" width={24} height={24} />
           }
         </ButtonSecondRemex>
-        <TBNBPopup />
+        <Box display={{ xs: 'none', md: 'flex', alignItems: 'center' }}>
+          <TBNBPopup />
+        </Box>
       </Stack>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>

@@ -24,7 +24,7 @@ const LinkButton = (props: any) => (
 )
 
 export default function TBNBPopup() {
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => {
     setOpen(true);
   }
@@ -38,6 +38,7 @@ export default function TBNBPopup() {
         textTransform: "none",
         px: 1.5,
         py: 1.25,
+        width: 1,
         svg: {
           border: "none",
           stroke: "transparent",

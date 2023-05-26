@@ -64,7 +64,14 @@ const getLeaderboardReferral = async (walletAddress: string | number) => {
         method: 'GET',
     })
 }
+const getLeaderboardTestail = async (walletAddress: string | number) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/testail-point?wallet=${walletAddress}`,
+        method: 'GET',
+    })
+}
 export const ReferralApis = {
+    getLeaderboardTestail,
     findGenerateReferralLinkByWallet,
     checkUserReferral,
     getReferralRewardAvailable,

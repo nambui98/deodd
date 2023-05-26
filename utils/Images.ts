@@ -6,6 +6,7 @@ export const DiamondImage = "/assets/images/diamond.png";
 export const CampaignImage = "/assets/images/campaign.png";
 export const CampaignImage2 = "/assets/images/campaign2.png";
 export const CampaignImage3 = "/assets/images/campaign3.png";
+export const CampaignImage4 = "/assets/images/campaign4.png";
 export const CoinEmptyImage = "/assets/images/coin-empty.png";
 export const Rank1Image = "/assets/images/rank_diamond.png";
 export const Rank2Image = "/assets/images/rank_gold.png";
