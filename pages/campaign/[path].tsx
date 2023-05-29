@@ -1,21 +1,18 @@
 import { StatusTransfer } from '@/templates/assets/ItemHistory'
 import RightContent from '@/templates/campaign/CampaignDetail/RightContent'
+import HowItWorkModal from '@/templates/referral/HowItWorkModal'
 import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
 import { useWalletContext } from 'contexts/WalletContext'
 import { DeoddService } from 'libs/apis'
+import { CAMPAIGNS, Campaign } from 'pages/campaign'
 import React, { useEffect, useState } from 'react'
 import { getPathAvatar } from 'utils/checkAvatar'
 import { Convert } from 'utils/convert'
 import MyModal from '../../components/common/Modal'
-import { ButtonLoading } from '../../components/ui/button'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
-import { CAMPAIGNS, Campaign } from 'pages/campaign'
-import { GetStaticProps, NextPageContext } from 'next'
-import { createDiffieHellmanGroup } from 'crypto'
-import HowItWorkModal from '@/templates/referral/HowItWorkModal'
 
 export async function getStaticPaths() {
     const paths = CAMPAIGNS.map((campaign) => ({
@@ -79,7 +76,6 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
     let rows;
     let mymine;
     if (campaign.href === 'testnet-campaign') {
-
         rows = testails?.testAilPointUserDtos;
         mymine = testails?.connectWallet;
     } else {
@@ -88,21 +84,6 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
     }
     return (
         <Box mt={5}>
-            {/* <Box bgcolor={"background.paper"} p={"35px 0px"}>
-                <Container>
-
-                    <Typography variant='caption' color={"secondary.100"}>
-                        Campaign
-                    </Typography>
-                    <Typography variant='h2' textTransform={'uppercase'}>
-                        Referral
-                    </Typography>
-                </Container>
-            </Box> */}
-
-
-
-
             <Container>
                 <Stack sx={{
                     [theme.breakpoints.up('xs').replace("@media", "@container")]: {
@@ -195,16 +176,13 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                         </TableContainer>
                     </Box>
                     <Box>
-                        <RightContent image={campaign.imageDetail} />
+                        <RightContent image={campaign.imageDetail} campaign={campaign} />
                         {
                             campaign.href === 'referral-campaign' &&
                             <HowItWorkModal />
                         }
-
                     </Box>
                 </Stack >
-
-
             </Container >
             <MyModal open={openModal} title='Balance History' setOpen={setOpenModal} >
                 <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
