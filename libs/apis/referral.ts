@@ -60,11 +60,18 @@ const claimReferral = async (address: string) => {
 }
 const getLeaderboardReferral = async (walletAddress: string | number) => {
     return vhIdRequest({
-        url: baseURL + `/dashboard/referral?wallet=${walletAddress}`,
+        url: baseURL + `/dashboard/referral${walletAddress ? `?wallet=${walletAddress}` : ''}`,
+        method: 'GET',
+    })
+}
+const getLeaderboardTestail = async (walletAddress: string | number) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/testail-point${walletAddress ? `?wallet=${walletAddress}` : ''}`,
         method: 'GET',
     })
 }
 export const ReferralApis = {
+    getLeaderboardTestail,
     findGenerateReferralLinkByWallet,
     checkUserReferral,
     getReferralRewardAvailable,

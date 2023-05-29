@@ -21,8 +21,6 @@ function ShareLink({ link }: Props) {
     }
     return (
         <Box>
-            <Box sx={{ height: '1px', my: 3, bgcolor: 'secondary.300' }}>
-            </Box>
             <Typography variant='h4' textAlign={'center'}>
                 Your referral link
             </Typography>
@@ -73,7 +71,6 @@ function ShareLink({ link }: Props) {
                     <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
                 </FacebookShareButton>
             </Stack>
-            <HowItWorkModal />
         </Box>
     )
 }

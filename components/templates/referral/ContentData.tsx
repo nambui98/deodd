@@ -11,22 +11,21 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import { TypeTab } from "components/common/Tabs";
 import { ButtonFourth, ButtonLoading } from "components/ui/button";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
+import { format } from "date-fns";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { useMemo, useState } from "react";
 import { BnbIcon } from "utils/Icons";
-import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
+import { BnbImage, CoinEmptyImage } from "utils/Images";
+import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
-import { checkAvatar } from "utils/checkAvatar";
-import { format } from "date-fns";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -297,7 +296,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "none",
                             },
                         })}>
-                        <ShareLink link={link} />
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
+
                     </Box>
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"}>
@@ -394,7 +397,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "block",
                             },
                         })}>
-                        <ShareLink link={link} />
+
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
                     </Box>
                 </Box>
             </Stack>

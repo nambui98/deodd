@@ -1,27 +1,43 @@
 import CampaignItem from '@/templates/campaign/CampaignItem'
 import ClaimReward from '@/templates/campaign/ClaimReward'
-import { Box, Container, Stack, Typography } from '@mui/material'
+import { Box, Container, Divider, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
-import { CampaignImage, CampaignImage2, CampaignImage3 } from '../utils/Images'
+import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage } from '../utils/Images'
 
 type Props = {}
-
+export type Campaign = {
+    id: number | string,
+    href: string,
+    label: string,
+    image: string,
+    imageDetail: string
+}
+export const CAMPAIGNS: Campaign[] = [
+    {
+        id: 1,
+        href: 'testnet-campaign',
+        label: 'Testnet Campaign',
+        image: CampaignImage4,
+        imageDetail: CampaignImage4
+    },
+    {
+        id: 2,
+        href: 'referral-campaign',
+        label: 'Referral Campaign',
+        image: CampaignImage3,
+        imageDetail: ReferralImage
+    },
+]
 function Campaign({ }: Props) {
-    // return (
-    //     <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-    //         Coming soon
-    //     </Typography>
-    // );
-
     const [openModal, setOpenModal] = useState(false);
     const [valueTab, setValueTab] = useState(1);
     const listTabs: TypeTab[] = [
         {
             id: 1,
             title: 'Ongoing',
-            value: "(1)"
+            value: `(${CAMPAIGNS.length})`
         },
         {
             id: 2,
@@ -37,12 +53,13 @@ function Campaign({ }: Props) {
     ]
 
     const MapTap: { [key: number]: JSX.Element } = {
-        1: <>
-            {/* <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} /> */}
-            {/* <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} /> */}
-            <CampaignItem title='Referral Campaign' time='24/12/2022' image={CampaignImage3} />
-
-        </>,
+        1: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
+            {
+                CAMPAIGNS.map((campaign) =>
+                    <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
+                )
+            }
+        </Stack>,
         2: <Box>
             {/* <CampaignItem title='volume of bets campaign' time='24/12/2022' image={CampaignImage} />
             <CampaignItem title='win/lose streak campaign' time='24/12/2022' image={CampaignImage2} />
