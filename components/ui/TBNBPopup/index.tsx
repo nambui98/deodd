@@ -75,7 +75,7 @@ export default function TBNBPopup() {
           <Typography variant="h2" fontWeight={700} lineHeight={"2rem"}>How to get BNB testnet</Typography>
           <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>There are 2 ways you can retrieve tBNB to join Testnet:</Typography>
           <Stack direction={"row"} gap={3}>
-            <a href="https://gnfd-bsc-faucet.bnbchain.org/" target="_blank" rel="noreferrer">
+            <a href="https://faucet.quicknode.com/binance-smart-chain/bnb-testnet" target="_blank" rel="noreferrer">
               <LinkButton bgColor={"#1A92E8"}>
                 <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
                   Via Twitter
