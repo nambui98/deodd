@@ -10,7 +10,7 @@ import { Colors, MINXIMUM_BALANCE_DEPOSIT } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import { DeoddService } from 'libs/apis'
-import { EnumNFT, HISTORY_TYPE, HISTORY_TYPE_VALUE, TypeNFT } from 'libs/types'
+import { EnumNFT, EnumNFTTitle, HISTORY_TYPE, HISTORY_TYPE_VALUE, TypeNFT } from 'libs/types'
 import React, { useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
@@ -43,7 +43,9 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 tossPoint: 0,
                 bnbToken: 0,
                 nftItemHoldingDTOForUser: {
-                    nftItems: [],
+                    nftBronze: [],
+                    nftGold: [],
+                    nftDiamond: [],
                     totalDiamondNFT: 0,
                     totalGoldNFT: 0,
                     totalBronzeNFT: 0
@@ -96,13 +98,13 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
             setOpenNftType(nftType);
         }
     };
-    const showNFT = (nftType: EnumNFT, amount: number) => {
+    const showNFT = (nftType: EnumNFT, amount: number, list: any) => {
         return <>
             <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nftType)}>
                 {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" width={24} height={24} /> : <ArrowDownIcon fill="#96A5C0" width={24} height={24} />}
                 <Stack ml={1} direction={"row"} alignItems={"center"}>
                     <MyImage width={30} height={30} src={Utils.getImageNFTString(nftType)} alt="" />
-                    <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>
+                    <Typography color={"text.primary"} ml={1} variant='body2' >{EnumNFTTitle[nftType]}</Typography>
                 </Stack>
                 <Typography ml="auto" variant='h2' color={"secondary"}>
                     {
@@ -113,7 +115,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
             <Collapse in={openNftType === nftType} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     {
-                        assets?.nftItemHoldingDTOForUser.nftItems.filter(((nft: any) => nft.type === nftType)).map((nft: any, index: number) =>
+                        list.map((nft: any, index: number) =>
                             <ListItemButton key={nft.id + index} sx={{
                                 pl: 4, pr: 0
                             }} selected={nft.id === nftSelected?.id} onClick={() => handleClickNFT(nft)}>
@@ -219,15 +221,15 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 <ListCus sx={{ border: "none" }}>
                     {
                         assets && assets.nftItemHoldingDTOForUser && assets?.nftItemHoldingDTOForUser?.totalDiamondNFT > 0 &&
-                        showNFT(EnumNFT.DIAMOND, assets?.nftItemHoldingDTOForUser?.totalDiamondNFT)
+                        showNFT(EnumNFT.DIAMOND, assets?.nftItemHoldingDTOForUser?.totalDiamondNFT, assets?.nftItemHoldingDTOForUser?.nftDiamond)
                     }
                     {
                         assets && assets.nftItemHoldingDTOForUser && assets?.nftItemHoldingDTOForUser?.totalGoldNFT > 0 &&
-                        showNFT(EnumNFT.GOLD, assets?.nftItemHoldingDTOForUser?.totalGoldNFT)
+                        showNFT(EnumNFT.GOLD, assets?.nftItemHoldingDTOForUser?.totalGoldNFT, assets?.nftItemHoldingDTOForUser?.nftGold)
                     }
                     {
                         assets && assets.nftItemHoldingDTOForUser && assets?.nftItemHoldingDTOForUser?.totalBronzeNFT > 0 &&
-                        showNFT(EnumNFT.BRONZE, assets?.nftItemHoldingDTOForUser?.totalBronzeNFT)
+                        showNFT(EnumNFT.BRONZE, assets?.nftItemHoldingDTOForUser?.totalBronzeNFT, assets?.nftItemHoldingDTOForUser?.nftBronze)
                     }
                 </ListCus>
                 {/* <Box textAlign={"end"} >

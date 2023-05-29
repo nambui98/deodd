@@ -1,4 +1,4 @@
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Container, Stack, useTheme } from "@mui/material";
 import { ButtonSecondRemex } from "components/ui/button";
 import MyImage from "components/ui/image";
 import { UserInfo } from "components/ui/userInfo";
@@ -12,6 +12,7 @@ type Props = {}
 
 function Header({ }: Props) {
   const { turnOffAudio, isTurnOffAudio } = useSiteContext();
+  const theme = useTheme();
 
 
   return <Container sx={{ containerType: "inline-size" }}>
@@ -40,14 +41,19 @@ function Header({ }: Props) {
             isTurnOffAudio ? <MyImage src={VolumeTurnOffImage} alt="volume-off-icon" width={24} height={24} /> : <MyImage src={VolumnImage} alt="volume-on-icon" width={24} height={24} />
           }
         </ButtonSecondRemex>
-        <Box display={{ xs: 'none', md: 'flex', alignItems: 'center' }}>
+        <Box sx={{
+          alignItems: 'center',
+          display: 'flex',
+          [theme.breakpoints.down('sm').replace("@media", "@container")]: {
+            display: 'none'
+          }
+        }}>
           <TBNBPopup />
         </Box>
       </Stack>
       <Box position={'absolute'} left={'50%'} top={'50%'} sx={{ transform: 'translate(-50%, -50%)' }} >
         <Link href={"/"}>
           <Box position={'relative'} width={{ md: 105.19, xs: 65.5 }} height={{ md: 64, xs: 40 }} >
-
             <Image fill style={{ objectFit: "contain" }} alt="" src={`/assets/logos/logo.svg`} />
           </Box>
         </Link>

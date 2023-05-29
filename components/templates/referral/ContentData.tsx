@@ -26,6 +26,7 @@ import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -43,8 +44,23 @@ function createData(avatar: number | undefined, name: string, expire: string, pr
 }
 function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
-
     const { walletAddress, bnbBalance } = useWalletContext();
+    const { data: dataClaimed, refetch: getClaimedReward } = useQuery({
+        queryKey: ["getClaimedReward"],
+        enabled: true,
+        queryFn: () => DeoddService.getClaimedReward(),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+    console.log(dataClaimed);
+
+
+
     const {
         setIsSuccess,
         setTitleSuccess,
@@ -82,7 +98,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
         [dataExpired]
     );
     let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
-
 
     const handleClaim = async () => {
         try {
@@ -162,7 +177,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             >
                                 <Typography variant="body2" color="secondary.main">
                                     {Format.formatMoneyFromBigNumberEther(
-                                        dataAvailable?.claimedReward ?? 0
+                                        dataClaimed?.data ?? 0
                                     )}
                                 </Typography>
                                 <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
