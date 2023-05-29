@@ -63,6 +63,8 @@ function Bnb2Icon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
+import Growth1Icon from "public/assets/icons/growth1.svg";
+import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
 export {
   EmojiIcon,
   Archive2Icon,
@@ -116,5 +118,7 @@ export {
   ProfileCircleIcon,
   ArchiveIcon,
   CloseSquareIcon2,
-  InfoCircleIcon
+  InfoCircleIcon,
+  Growth1Icon,
+  GoldCup1Icon,
 };
