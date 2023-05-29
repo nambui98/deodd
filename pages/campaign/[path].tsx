@@ -1,6 +1,6 @@
 import { StatusTransfer } from '@/templates/assets/ItemHistory'
 import RightContent from '@/templates/campaign/CampaignDetail/RightContent'
-import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
 import { useWalletContext } from 'contexts/WalletContext'
@@ -15,6 +15,7 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 import { CAMPAIGNS, Campaign } from 'pages/campaign'
 import { GetStaticProps, NextPageContext } from 'next'
 import { createDiffieHellmanGroup } from 'crypto'
+import HowItWorkModal from '@/templates/referral/HowItWorkModal'
 
 export async function getStaticPaths() {
     const paths = CAMPAIGNS.map((campaign) => ({
@@ -30,6 +31,7 @@ export async function getStaticProps({ params }: { params: { path: string } }) {
 }
 function DetailCampaign({ campaign }: { campaign: Campaign }) {
     const [open, setOpen] = useState(false);
+    const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, handleConnectWallet, walletIsConnected } = useWalletContext();
@@ -102,7 +104,14 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
 
 
             <Container>
-                <Stack direction="row" mt={3} columnGap={4}>
+                <Stack sx={{
+                    [theme.breakpoints.up('xs').replace("@media", "@container")]: {
+                        flexDirection: "column"
+                    },
+                    [theme.breakpoints.up('md').replace("@media", "@container")]: {
+                        flexDirection: 'row'
+                    },
+                }} mt={3} gap={4}>
                     <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
                         <Stack direction={'row'} alignItems={'center'} gap={1} >
                             <MyImage src={LeaderboardImage} width={32} height={32} alt="" />
@@ -185,7 +194,14 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                             }
                         </TableContainer>
                     </Box>
-                    <RightContent image={campaign.imageDetail} />
+                    <Box>
+                        <RightContent image={campaign.imageDetail} />
+                        {
+                            campaign.href === 'referral-campaign' &&
+                            <HowItWorkModal />
+                        }
+
+                    </Box>
                 </Stack >
 
 

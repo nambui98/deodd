@@ -1,5 +1,5 @@
 import ShareLink from '@/templates/referral/ShareLink';
-import { Box, Typography } from '@mui/material'
+import { Box, Divider, Typography } from '@mui/material'
 import { ButtonLoading } from 'components/ui/button';
 import { useWalletContext } from 'contexts/WalletContext';
 import useReferral from 'hooks/useReferral';
@@ -34,11 +34,11 @@ function RightContent({ image }: { image: string }) {
                             loading={false}>
                             <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
                         </ButtonLoading>
-
                     </Box>
-
                     :
-                    <ShareLink link={link ? link : ''} />
+                    <Box mt={5}>
+                        <ShareLink link={link ? link : ''} />
+                    </Box>
             }
 
         </Box>

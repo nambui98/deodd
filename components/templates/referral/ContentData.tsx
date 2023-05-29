@@ -1,6 +1,7 @@
 import {
     Box,
     Container,
+    Divider,
     Paper,
     Stack,
     Table,
@@ -297,7 +298,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "none",
                             },
                         })}>
-                        <ShareLink link={link} />
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
+
                     </Box>
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"}>
@@ -394,7 +399,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "block",
                             },
                         })}>
-                        <ShareLink link={link} />
+
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
                     </Box>
                 </Box>
             </Stack>
