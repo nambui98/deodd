@@ -6,12 +6,12 @@ import { ButtonSecondRemex } from "../button";
 import { BnbIcon } from "utils/Icons";
 
 const LinkButton = (props: any) => (
-  < ButtonSecondRemex sx={{
+  <ButtonSecondRemex sx={{
     backgroundColor: props.bgColor,
     color: "text.primary",
     border: "none",
     textTransform: "none",
-    px: 1.5,
+    px: 5,
     py: 1,
     ":hover": {
       backgroundColor: props.bgColor,
@@ -75,13 +75,6 @@ export default function TBNBPopup() {
           <Typography variant="h2" fontWeight={700} lineHeight={"2rem"}>How to get BNB testnet</Typography>
           <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>There are 2 ways you can retrieve tBNB to join Testnet:</Typography>
           <Stack direction={"row"} gap={3}>
-            <a href="https://faucet.quicknode.com/binance-smart-chain/bnb-testnet" target="_blank" rel="noreferrer">
-              <LinkButton bgColor={"#1A92E8"}>
-                <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
-                  Via Twitter
-                </Typography>
-              </LinkButton>
-            </a>
             <a href="https://discord.com/invite/bnbchain" target="_blank" rel="noreferrer">
               <LinkButton bgColor="#647ACE">
                 <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
@@ -89,6 +82,17 @@ export default function TBNBPopup() {
                 </Typography>
               </LinkButton>
             </a>
+            <Stack alignItems={'center'}>
+              <a href="https://faucet.quicknode.com/binance-smart-chain/bnb-testnet" target="_blank" rel="noreferrer">
+                <LinkButton bgColor={"#1A92E8"}>
+                  <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
+                    Via Twitter
+                  </Typography>
+                </LinkButton>
+              </a>
+              <Typography variant="caption" color="dark.60" mt={1}>(ETH deposit required)</Typography>
+
+            </Stack>
 
           </Stack>
           <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>For detail guideline,{" "}
