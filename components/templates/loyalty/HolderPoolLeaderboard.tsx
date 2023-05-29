@@ -83,10 +83,18 @@ function HolderPoolLeaderboard({ }: Props) {
   return (
 
     <Box width={1}>
-      <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-      <Box mt={2}>
+      <Stack direction={"row"} mb={2} gap={2} justifyContent={"space-between"} sx={theme => ({
+        [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+          flexDirection: "column",
+        },
+        [theme.breakpoints.up("md").replace("@media", "@container")]: {
+          flexDirection: "row",
+        },
+        flexDirection: { xs: "column", md: "row" } // fallback
+      })}>
+        <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
         <SelectBox />
-      </Box>
+      </Stack>
       <TableContainer sx={{ backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
         <Table stickyHeader aria-label="simple table">
           <TableHead>

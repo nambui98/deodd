@@ -88,6 +88,7 @@ export function MyTabs2({ value, setValue, listTabs }: Props) {
 }
 
 const style2 = {
+    minHeight: 0,
     ' .MuiTab-root ': {
         minHeight: 0,
         px: 2,
@@ -110,8 +111,10 @@ const style2 = {
             },
             border: "1px solid #FEF156",
         },
+        transition: "300ms border",
+        border: "1px solid transparent",
     },
     '.MuiTabs-indicator': {
-        height: 0,
+        display: "none",
     },
 }

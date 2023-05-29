@@ -11,11 +11,12 @@ function SelectBox({ }: Props) {
             placeholder='Select-'
             onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
             displayEmpty
+            label="Current Season"
             sx={styleInput}
             inputProps={{ 'aria-label': 'Without label' }}
         >
             <MenuItem disabled value={""}>
-                <Typography color={"secondary.100"}>Select-</Typography>
+                <Typography color={"secondary.100"}>Current Season</Typography>
             </MenuItem>
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
@@ -35,7 +36,7 @@ const styleInput = {
     },
     '.MuiSelect-select': {
         color: "secondary.main"
-    }
+    },
 
 }
 export default SelectBox
