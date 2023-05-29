@@ -254,7 +254,9 @@ export const darkTheme = createTheme({
 					scrollbarColor: "#FEF156 #2A2D3E",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
 						backgroundColor: "#2A2D3E",
-						width: '4px'
+						width: '4px',
+						height: '4px',
+
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,
