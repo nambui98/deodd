@@ -1,9 +1,9 @@
 import { Avatar, Box, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import SelectBox from 'components/common/SelectBox';
-import MyTabs, { TypeTab } from 'components/common/Tabs';
+import MyTabs, { TypeTab, MyTabs2 } from 'components/common/Tabs';
 import { ButtonTertiary } from 'components/ui/button';
 import React, { useState } from 'react'
-import { ClockIcon, CopyIcon, CupIcon, NotiIcon } from 'utils/Icons';
+import { Clock2Icon, CopyIcon, CupIcon, NotiIcon } from 'utils/Icons';
 import { AvatarImage, BronzeImage, CoinEmptyImage, DiamondImage, GoldImage, ReferralImage } from 'utils/Images'
 import MyImage from 'components/ui/image';
 
@@ -71,18 +71,18 @@ function JackpotPoolLeaderboard({ }: Props) {
     {
       id: 1,
       title: 'Leaderboard',
-      icon: <Box mr={1}><CupIcon /></Box>
+      icon: <Box mr={1} lineHeight={0}><CupIcon width={20} /></Box>
     },
     {
       id: 2,
       title: 'History',
-      icon: <Box mr={1}><ClockIcon /></Box>
+      icon: <Box mr={1} lineHeight={0}><Clock2Icon width={20} /></Box>
     },
 
   ]
   return (
-    <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
-      <MyTabs listTabs={listTabs} value={valueTab} setValue={setValueTab} />
+    <Box width={1}>
+      <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
       <Box mt={2}>
         <SelectBox />
       </Box>
@@ -95,7 +95,8 @@ function JackpotPoolLeaderboard({ }: Props) {
               <TableCell sx={{ textTransform: "uppercase" }} align="right">Tosspoints</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody sx={{ bgcolor: 'background.paper' }}>
+
+          <TableBody sx={{ bgcolor: 'background.paper', borderRadius: 1 }}>
             {rows.length > 0 && rows.map((row, index) => (
               <TableRow
                 key={row.name}

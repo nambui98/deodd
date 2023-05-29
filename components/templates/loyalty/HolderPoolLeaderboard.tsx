@@ -1,9 +1,9 @@
 import { Avatar, Box, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import SelectBox from 'components/common/SelectBox';
-import MyTabs, { TypeTab } from 'components/common/Tabs';
+import MyTabs, { TypeTab, MyTabs2 } from 'components/common/Tabs';
 import { ButtonTertiary } from 'components/ui/button';
 import React, { useState } from 'react'
-import { ClockIcon, CopyIcon, CupIcon, NotiIcon } from 'utils/Icons';
+import { Clock2Icon, CopyIcon, CupIcon, NotiIcon } from 'utils/Icons';
 import { AvatarImage, BronzeImage, CoinEmptyImage, DiamondImage, GoldImage, ReferralImage } from 'utils/Images'
 import MyImage from 'components/ui/image';
 
@@ -71,19 +71,19 @@ function HolderPoolLeaderboard({ }: Props) {
     {
       id: 1,
       title: 'Leaderboard',
-      icon: <Box mr={1}><CupIcon /></Box>
+      icon: <Box mr={1} lineHeight={0}><CupIcon width={20} /></Box>
     },
     {
       id: 2,
       title: 'History',
-      icon: <Box mr={1}><ClockIcon /></Box>
+      icon: <Box mr={1} lineHeight={0}><Clock2Icon width={20} /></Box>
     },
 
   ]
   return (
 
     <Box width={1}>
-      <MyTabs listTabs={listTabs} value={valueTab} setValue={setValueTab} />
+      <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
       <Box mt={2}>
         <SelectBox />
       </Box>
@@ -97,7 +97,10 @@ function HolderPoolLeaderboard({ }: Props) {
               <TableCell sx={{ textTransform: "uppercase" }} align="right">
                 <img width={24} src={BronzeImage} alt="" />
               </TableCell>
-              <TableCell sx={{ textTransform: "uppercase" }} align="right"><img width={24} src={GoldImage} alt="" /></TableCell>
+              <TableCell sx={{ textTransform: "uppercase" }} align="right">
+                {/* <MyImage width={24} height={24} src={GoldImage} alt="Gold Image" /> */}
+                <img width={24} src={GoldImage} alt="" />
+              </TableCell>
               <TableCell sx={{ textTransform: "uppercase" }} align="right"><img width={24} src={DiamondImage} alt="" /></TableCell>
             </TableRow>
           </TableHead>

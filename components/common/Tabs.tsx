@@ -71,3 +71,47 @@ const style = {
 
 }
 export default MyTabs;
+
+export function MyTabs2({ value, setValue, listTabs }: Props) {
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+    return (
+        <Tabs sx={style2} value={value} onChange={handleChange} aria-label="basic tabs example">
+            {
+                listTabs.map((tab, i) =>
+                    <TabCustomize key={tab.id} value={tab.id} label={<Stack direction={'row'} alignItems={'center'}> {tab.icon} {tab.value ? tab.title + " " + tab.value : tab.title} {tab.isNoti && <Dot />}</Stack>} />
+                )
+            }
+        </Tabs >
+    )
+}
+
+const style2 = {
+    ' .MuiTab-root ': {
+        minHeight: 0,
+        px: 2,
+        py: 1,
+        backgroundColor: "primary.200",
+        borderRadius: "0.5rem",
+        mr: 1,
+        fontSize: '0.875rem',
+        lineHeight: "1.25rem",
+        fontWeight: 500,
+        color: 'text.disabled',
+        'svg': {
+            color: "#96A5C0",
+        },
+        '&.Mui-selected': {
+            backgroundColor: "primary.100",
+            color: 'text.primary',
+            'svg': {
+                color: "#FEF156",
+            },
+            border: "1px solid #FEF156",
+        },
+    },
+    '.MuiTabs-indicator': {
+        height: 0,
+    },
+}

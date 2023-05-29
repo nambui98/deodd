@@ -3,12 +3,14 @@ import { BnbIcon, Growth1Icon, NotiIcon } from 'utils/Icons';
 import { LoyaltyImage, Loyalty2Image } from 'utils/Images';
 import { Colors } from "constants/index";
 import HolderPoolLeaderboard from './HolderPoolLeaderboard';
+import { useWalletContext } from 'contexts/WalletContext';
 
 type Props = {}
 
 function HolderPool({ }: Props) {
-  return (
+  const { walletIsConnected } = useWalletContext();
 
+  return (
     <Box width={1}>
       <Stack direction={"row"} gap={1}>
         <Growth1Icon width={32} />
@@ -40,11 +42,14 @@ function HolderPool({ }: Props) {
           <NotiIcon width={24} />
         </Box>
       </Stack>
-      <Divider sx={{
-        mt: { xs: 3, md: 5 },
-        mb: 3,
-      }} />
-      <HolderPoolLeaderboard />
+      {walletIsConnected ? (<>
+        <Divider sx={{
+          mt: { xs: 3, md: 5 },
+          mb: 3,
+          backgroundColor: "primary.100",
+        }} />
+        <HolderPoolLeaderboard />
+      </>) : null}
     </Box>
 
   );

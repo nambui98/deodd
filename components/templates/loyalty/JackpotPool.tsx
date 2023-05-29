@@ -3,12 +3,14 @@ import { BnbIcon, GoldCup1Icon, NotiIcon } from 'utils/Icons';
 import { LoyaltyImage } from 'utils/Images';
 import { Colors } from "constants/index";
 import JackpotPoolLeaderboard from './JackpotPoolLeaderboard';
+import { useWalletContext } from 'contexts/WalletContext';
 
 type Props = {}
 
 function JackpotPool({ }: Props) {
-  return (
+  const { walletIsConnected } = useWalletContext();
 
+  return (
     <Box width={1}>
       <Stack direction={"row"} gap={1}>
         <GoldCup1Icon width={32} />
@@ -37,11 +39,14 @@ function JackpotPool({ }: Props) {
           <NotiIcon width={24} />
         </Box>
       </Stack>
-      <Divider sx={{
-        mt: { xs: 3, md: 5 },
-        mb: 3,
-      }} />
-      <JackpotPoolLeaderboard />
+      {walletIsConnected ? (<>
+        <Divider sx={{
+          mt: { xs: 3, md: 5 },
+          mb: 3,
+          backgroundColor: "primary.100",
+        }} />
+        <JackpotPoolLeaderboard />
+      </>) : null}
     </Box>
 
   );
