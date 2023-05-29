@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import MyModal from './Modal';
 import { Colors } from 'constants/index';
 import MyImage from 'components/ui/image';
-import { BnbLogoImage, LogoImage } from 'utils/Images';
+import { BnbLogoImage, BzImage, DjImage, LogoImage, MwImage, YahooFImage } from 'utils/Images';
 import Link from 'next/link';
 
 type Props = {}
@@ -15,6 +15,7 @@ enum Modal_Type {
 function FaqHowtoplay({ }: Props) {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [modalType, setModalType] = useState<Modal_Type>(Modal_Type.FAQ);
+    const theme = useTheme();
 
     const handleShowPopup = (type: Modal_Type) => {
         setModalType(type);
@@ -29,27 +30,25 @@ function FaqHowtoplay({ }: Props) {
         <Container sx={{ mt: 'auto', pt: 3, }} >
             <Divider />
             <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 10.125, md: 2 }, mt: 2 }}  >
-                <Grid container rowSpacing={2}>
-                    <Grid item
-                        xs={12}
+                <Stack width={1} direction={'row'} alignItems={'center'} justifyContent={'space-between'} columnGap={2}
+                    rowGap={3}
+                    sx={{
+                        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                        },
+                    }}
+                >
+                    <Stack height={1} direction={'row'} alignItems={'center'} columnGap={6} rowGap={3} sx={{
+                        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                        },
 
-                        lg={1.5}
-                        xl={3}
-                        alignItems={'center'}>
+                    }}>
                         <Box component={Link} href="/">
                             <MyImage src={LogoImage} height={40} width={66.67} alt="logo" />
                         </Box>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        lg={7.5}
-                        xl={6}
-                        justifyContent={{ xs: 'flex-start', lg: 'center' }}
-                        alignItems={'center'}
-                        component={Stack}
-
-                    >
                         <Stack
                             divider={
                                 <Divider flexItem sx={{ mx: { xs: 1.5, xl: 2 }, display: { xs: 'none', lg: 'block' }, borderWidth: 1, bgcolor: 'white' }} />
@@ -66,7 +65,6 @@ function FaqHowtoplay({ }: Props) {
                             >
                                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item>
                                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item>
-
                             </Stack>
                             <Stack
                                 direction={'row'} justifyContent={{ xs: 'flex-start', lg: 'center' }}
@@ -75,7 +73,6 @@ function FaqHowtoplay({ }: Props) {
                                     <Divider flexItem sx={{ mx: { xs: 1.5, xl: 2 }, borderWidth: 1, bgcolor: 'white' }} />
                                 }
                             >
-
                                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.PRIVACY_POLICY)}>Privacy Policy</Item>
                                 <Item variant='body2'>
                                     <a href="https://docsend.com/view/nbwq8xa96nckf4zj" target='_blank' rel='noreferrer'>
@@ -83,33 +80,49 @@ function FaqHowtoplay({ }: Props) {
                                     </a>
                                 </Item>
                             </Stack>
-
-
                         </Stack>
-
-
-                    </Grid>
-                    <Grid item xs={12} lg={3}
-                        sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'flex-start', lg: 'flex-end' } }}
+                    </Stack>
+                    <Stack direction={'row'} columnGap={5} rowGap={3} justifyContent={'flex-end'} alignItems={'center'} height={1}
+                        sx={{
+                            [theme.breakpoints.down('md').replace("@media", "@container")]: {
+                                flexDirection: 'column-reverse',
+                                alignItems: 'flex-start'
+                            },
+                        }}
                     >
-                        <Box width={193} height={24} component={Link} href="https://oracle.binance.com/" target='_blank' rel='noreferrer'>
+                        <Box>
+                            <Typography variant='caption'>As seen on</Typography>
+                            <Stack mt={1} direction={'row'} alignItems={'center'} columnGap={3}>
+                                <Link href={'https://www.benzinga.com/pressreleases/23/05/ab32606858/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
+                                    target='_blank' rel="noreferrer">
+                                    <MyImage src={BzImage} height={40} width={40} alt="logo" />
+                                </Link>
+                                <Link href={'https://www.digitaljournal.com/pr/news/accesswire/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
+                                    target='_blank' rel="noreferrer">
+                                    <MyImage src={DjImage} height={40} width={48} alt="logo" />
+                                </Link>
+                                <Link href={'https://finance.yahoo.com/news/deodd-launches-testnet-revolutionizing-game-195000055.html'}
+                                    target='_blank' rel="noreferrer">
+                                    <MyImage src={YahooFImage} height={32} width={87} alt="logo" />
+                                </Link>
+                                <Link href={'https://www.marketwatch.com/press-release/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem-2023-05-26'}
+                                    target='_blank' rel="noreferrer">
+                                    <MyImage src={MwImage} height={32} width={59} alt="logo" />
+                                </Link>
+                            </Stack>
+
+                        </Box>
+                        <Box display={'block'} width={193} height={24} component={Link} href="https://oracle.binance.com/" target='_blank' rel='noreferrer'>
                             <MyImage src={BnbLogoImage} height={'100%'} width={'100%'} alt="logo" />
                         </Box>
-
-
-                    </Grid>
-
-
-
-                </Grid>
+                    </Stack>
+                </Stack>
                 <MyModal open={openModal} sx={{ width: "min(100vw - 1rem, 34rem)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModal}>
                     {
                         mapContent[modalType]
                     }
                 </MyModal>
-
             </Box >
-
         </Container >
     )
 }

@@ -59,8 +59,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     });
     console.log(dataClaimed);
 
-
-
     const {
         setIsSuccess,
         setTitleSuccess,
@@ -176,7 +174,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 alignItems={"center"}
                             >
                                 <Typography variant="body2" color="secondary.main">
-                                    {Format.formatMoneyFromBigNumberEther(
+                                    {Format.formatMoney(
                                         dataClaimed?.data ?? 0
                                     )}
                                 </Typography>
