@@ -25,7 +25,7 @@ const Layout = ({ children }: IProps) => {
     const [mobileOpenLeft, setMobileOpenLeft] = useState(false);
     const [mobileOpenRight, setMobileOpenRight] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
 
 
     const { isFetching, status, isInitialLoading, refetch: getCurrentIp, data: currentInfoIp } = useQuery({
@@ -42,14 +42,14 @@ const Layout = ({ children }: IProps) => {
         },
 
     });
-    useEffect(() => {
-        if (!isFetching) {
-            const timer = setTimeout(() => {
-                setIsLoading(false);
-            }, 4000);
-            return () => clearTimeout(timer);
-        }
-    }, [isFetching])
+    // useEffect(() => {
+    //     if (!isFetching) {
+    //         const timer = setTimeout(() => {
+    //             setIsLoading(false);
+    //         }, 1000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [isFetching])
 
     const handleDrawerToggleLeft = () => {
         setMobileOpenLeft(!mobileOpenLeft);
@@ -74,7 +74,7 @@ const Layout = ({ children }: IProps) => {
             Coming soon
         </Typography>
     )
-    if (isFetching || isLoading) {
+    if (isFetching) {
         return <Box>
             <Meta title={'Loading page'} description={AppConfig.description} />
             <Loading />
@@ -83,6 +83,7 @@ const Layout = ({ children }: IProps) => {
     if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.country] !== undefined) {
         return <Forbidden ip={currentInfoIp.ip} country={currentInfoIp.country} />
     }
+
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
