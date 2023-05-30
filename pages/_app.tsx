@@ -31,7 +31,6 @@ function MyApp(props: AppPropsCustom) {
                 <Layout>
                   <Component {...pageProps} />
                 </Layout>
-                <Loader />
                 <ModalClaimSuccess />
                 <ModalError />
                 <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />

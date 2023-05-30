@@ -42,7 +42,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
           <Typography variant="body2">2</Typography>
           <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
 
-            Request is sent to <Typography fontSize={'inherit'} sx={{ textDecoration: 'underline', textUnderlineOffset: 2 }} component={'a'} href="https://oracle.binance.com/docs/category/vrf/" target="_blank" > Binance Oracle VRF </Typography>(Verifiable Random Function)
+            Request is sent to <Typography fontSize={'inherit'} sx={{ textDecoration: 'underline', textDecorationColor: '#0496ff', textUnderlineOffset: 2 }} component={'a'} href="https://oracle.binance.com/docs/category/vrf/" target="_blank" > Binance Oracle VRF </Typography>(Verifiable Random Function)
           </Typography>
           <Typography variant="body2" textAlign={"right"} color={"secondary.main"}></Typography>
 
@@ -61,7 +61,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
           <Typography variant="body2">4</Typography>
           <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
             Generating completed! Your random number is
-            <Typography fontSize={'inherit'} component={'a'} href={`https://testnet.bscscan.com/tx/${gameResult?.fulfilled_txn?.replace("\\", '0')}`} target="_blank" color="secondary.main"> {Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)} </Typography>
+            <Typography fontSize={'inherit'} component={'a'} sx={{ textDecoration: 'underline', textDecorationColor: '#0496ff', textUnderlineOffset: 2 }} href={`https://testnet.bscscan.com/tx/${gameResult?.fulfilled_txn?.replace("\\", '0')}`} target="_blank" color="secondary.main"> {Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)} </Typography>
             VRF is sending result to DeODD Management System
           </Typography>
           <Typography variant="body2" textAlign={"right"} color={"secondary.main"}>-{Format.formatMoney(gameResult?.vrfRbFeeBNB ?? 0)}</Typography>
@@ -75,7 +75,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
             <br />
             You number is <Typography component={'span'} color="secondary.main" fontSize={'inherit'}> {isEven ? 'even' : 'odd'}</Typography>, which corresponds to <Typography component={'span'} color='secondary.main' fontSize={'inherit'}>{isEven ? 'Head' : 'Tail'}</Typography>
             <br />
-            It’s determined to match your selection
+            It’s determined {gameResult?.isWinner ? '' : 'NOT'} to match your selection
           </Typography>
           <Typography variant="body2" textAlign={"right"} color={"secondary.main"}></Typography>
         </>
