@@ -236,7 +236,7 @@ function Chat({ open }: { open: boolean }) {
                     })
                 }
                 {
-                    isLoadMoreWithoutAuth === true || walletAddress && <Box height={30}>
+                    isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
                         <CoinAnimation mx="auto" width={30} height={30} />
                     </Box>
                 }

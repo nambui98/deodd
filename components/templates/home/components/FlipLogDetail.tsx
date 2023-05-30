@@ -13,7 +13,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
       <Stack direction={'row'} columnGap={2} sx={{ cursor: 'pointer' }} onClick={() => setStatusGame(StatusGame.FLIP)}>
 
         <LeftIcon stroke="#fff" />
-        <Typography variant="body2" fontWeight={500}>Back to flipping</Typography>
+        <Typography variant="body2" fontWeight={500}>Back</Typography>
       </Stack>
       <Typography variant="h2" fontSize={"1.5rem"} fontWeight={700} color={"#fff"} alignSelf={"flex-start"} textTransform={"capitalize"}>flipping log detail</Typography>
       <Box
@@ -23,7 +23,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
       >
         <Typography variant="body2" >Step</Typography>
         <Typography variant="body2" >Activities Log</Typography>
-        <Typography variant="body2" textAlign={"right"}>Fee (BNB)</Typography>
+        <Typography variant="body2" textAlign={"right"}>BNB</Typography>
         {/* <Empty /> */}
         <>
           <Typography variant="body2">1</Typography>
@@ -84,7 +84,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
           <>
             <Typography variant="body2">6</Typography>
             <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
-              deODD Management System sends the reward directly to your wallet.
+              DeODD Management System sends the reward directly to your wallet.
             </Typography>
             <Typography variant="body2" textAlign={"right"} color={"secondary.main"}>+{Format.formatMoney(gameResult.amount * 2)}</Typography>
           </>
@@ -93,7 +93,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
         <>
           <Typography variant="body2">{gameResult?.isWinner ? 7 : 6}</Typography>
           <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
-            deODD Management System finalizes the result and sends to client.
+            DeODD Management System finalizes the result and sends to client.
           </Typography>
           <Typography variant="body2" textAlign={"right"} color={"secondary.main"}></Typography>
         </>
