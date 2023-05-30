@@ -62,6 +62,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
           <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
             Generating completed! Your random number is
             <Typography fontSize={'inherit'} component={'a'} sx={{ textDecoration: 'underline', textDecorationColor: 'secondary.main', textUnderlineOffset: 2 }} href={`https://testnet.bscscan.com/tx/${gameResult?.fulfilled_txn?.replace("\\", '0')}`} target="_blank" color="secondary.main"> {Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)} </Typography>
+            <br />
             VRF is sending result to DeODD Management System
           </Typography>
           <Typography variant="body2" textAlign={"right"} color={"secondary.main"}>-{Format.formatMoney(gameResult?.vrfRbFeeBNB ?? 0)}</Typography>
