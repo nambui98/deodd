@@ -46,7 +46,7 @@ const Layout = ({ children }: IProps) => {
         if (!isFetching) {
             const timer = setTimeout(() => {
                 setIsLoading(false);
-            }, 4000);
+            }, 1000);
             return () => clearTimeout(timer);
         }
     }, [isFetching])
@@ -83,6 +83,7 @@ const Layout = ({ children }: IProps) => {
     if (currentInfoIp && IPS_NOT_SUPORT[currentInfoIp.country] !== undefined) {
         return <Forbidden ip={currentInfoIp.ip} country={currentInfoIp.country} />
     }
+
 
     return (
         <Box sx={{ display: "flex", position: "relative" }}>
