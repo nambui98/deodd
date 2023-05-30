@@ -86,7 +86,7 @@ export default function TBNBPopup() {
               <a href="https://faucet.quicknode.com/binance-smart-chain/bnb-testnet" target="_blank" rel="noreferrer">
                 <LinkButton bgColor={"#1A92E8"}>
                   <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"}>
-                    Via Twitter
+                    QuickNode
                   </Typography>
                 </LinkButton>
               </a>
