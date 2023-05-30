@@ -32,7 +32,11 @@ export type GameResultType = {
 	jackpotWin?: number,
 	tossPoints?: number,
 	winningStreakAmount?: string,
-	winningStreakLength?: number
+	winningStreakLength?: number,
+	serviceFeePercent: number,
+	vrfRbFeeBNB: number,
+	fulfilled_txn?: string,
+	vrfRn?: string
 } | undefined;
 
 interface GameContextType {
@@ -89,6 +93,10 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		typeId: undefined,
 		winningStreakAmount: undefined,
 		winningStreakLength: undefined,
+		serviceFeePercent: 0,
+		fulfilled_txn: undefined,
+		vrfRbFeeBNB: 0,
+		vrfRn: undefined
 	});
 	const [isFinish, setIsFinish] = useState<boolean>(false);
 	const [openModalPendingTransaction, setOpenModalPendingTransaction] = useState<boolean>(false);
@@ -109,6 +117,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		onSuccess(data, variables, context) {
 			const flipData = data?.data?.data?.flip;
 			const userData = data?.data?.data?.userProfile;
+			debugger
 			setGameResult({
 				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
 				coinSide: flipData?.flip_choice,
@@ -119,6 +128,11 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 				typeId: flipData?.type_id,
 				tossPoints: flipData?.toss_point ?? 0,
 				winningStreakLength: userData?.currentStreakLength ?? 0,
+				serviceFeePercent: data?.data?.data?.serviceFeePercent,
+				vrfRbFeeBNB: data?.data?.data?.vrfRnFeeBNB,
+				fulfilled_txn: flipData?.fulfilled_txn,
+				vrfRn: data?.data?.data?.vrfRn
+
 			})
 			setStatusGame(StatusGame.FLIP_RESULT);
 			setRefresh(!refresh);
