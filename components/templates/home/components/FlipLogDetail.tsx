@@ -70,7 +70,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
         <>
           <Typography variant="body2">5</Typography>
           <Typography variant="body2" color={"secondary.100"} lineHeight={'20px'}>
-            The result is sent successfully to deODD Management System. Processing your number...
+            The result is sent successfully to DeODD Management System. Processing your number...
             <br />
             According to the mechanism:
             <br />
