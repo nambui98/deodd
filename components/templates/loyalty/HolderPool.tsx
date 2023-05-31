@@ -4,6 +4,7 @@ import { LoyaltyImage, Loyalty2Image } from 'utils/Images';
 import { Colors } from "constants/index";
 import HolderPoolLeaderboard from './HolderPoolLeaderboard';
 import { useWalletContext } from 'contexts/WalletContext';
+import { ButtonMain } from 'components/ui/button';
 
 type Props = {}
 
@@ -26,13 +27,34 @@ function HolderPool({ }: Props) {
         gap: 1,
         justifyContent: "center",
         alignItems: "center",
+        textAlign: "center",
       }}>
+        {/* <Typography variant="body2" lineHeight={"1.375rem"} textTransform={"uppercase"} color={"text.disabled"}>Your total reward is
+          <Box component={"span"} color={"text.secondary"}> 1,5 BNB</Box>
+          <br />claim NOW
+        </Typography>
+        <ButtonMain active={true} title="claim reward" sx={{
+          fontSize: "0.75rem",
+          fontWeight: 700,
+          minHeight: 0,
+          px: 2,
+          py: 0.5,
+          mb: 3,
+          lineHeight: "1.375rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+          borderWidth: 2,
+          ":hover": {
+            borderWidth: 2,
+          }
+        }} /> */}
         <Typography variant="body2">Period <Box component={"span"} color={"text.secondary"}>#2</Box> Started at 12/12/2022</Typography>
         <Typography variant="body2" color={"text.disabled"}>Total NFT Holder Reward</Typography>
-        <Stack mt={1} direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"}>
+        <Stack direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"} mb={1.25}>
           <Typography variant='h3' fontSize={"48px"}>0,534</Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
+        {/* <Typography variant='body2' color={"text.disabled"}>Only NFT holders <br /> are able to get the reward </Typography> */}
         <Stack direction={"row"} alignItems={"center"} gap={0.25}>
           <Typography variant="body2" color={"text.disabled"}>Your current reward in this period is <Box component={"span"} color={"text.primary"}>1,5</Box></Typography>
           <BnbIcon width={16} color={Colors.primaryDark} />

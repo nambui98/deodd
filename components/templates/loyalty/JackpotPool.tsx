@@ -26,15 +26,18 @@ function JackpotPool({ }: Props) {
         gap: 1,
         justifyContent: "center",
         alignItems: "center",
+        textAlign: "center",
       }}>
         <Typography mt={3.5} variant="body2">Season <Box component={"span"} color={"text.secondary"}>#2</Box> Started at 12/12/2022</Typography>
         <Typography variant="body2" color={"text.disabled"}>Jackpot Reward</Typography>
-        <Stack direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"}>
+        <Stack direction={'row'} columnGap={1} alignItems={'center'} justifyContent={"center"} mb={1.25}>
           <Typography variant='h3' fontSize={"3rem"} lineHeight={"3.75rem"}>0,534</Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         <Typography variant="body2" color={"text.disabled"}>Tosspoint to win</Typography>
-        <Typography variant="body2" color={"text.secondary"}>120/15.000</Typography>
+        <Typography fontSize={"1.75rem"} lineHeight={"2,2rem"} fontWeight={500} color={"text.primary"}>120/
+          <Box component={"span"} color={"text.secondary"} fontSize={"2.375rem"} >15.000</Box>
+        </Typography>
         <Box position="absolute" right={"1rem"} bottom={"1rem"} lineHeight={0} sx={{ cursor: "pointer" }}>
           <NotiIcon width={24} />
         </Box>
