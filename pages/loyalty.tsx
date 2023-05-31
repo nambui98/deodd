@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 import LoyaltyLayout from "@/templates/loyalty/LoyaltyLayout";
 // import { Container } from "../styles/common";
 
@@ -9,11 +9,10 @@ const LoyaltyPage: React.FC = () => {
     //     </Typography>
     // );
 
-    return (<Box mb={10}>
-        <Container>
+    return (
+        <Container sx={{ mb: 10 }}>
             <LoyaltyLayout />
         </Container>
-    </Box>
     );
 }
 

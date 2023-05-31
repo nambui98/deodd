@@ -65,6 +65,15 @@ function JackpotPoolLeaderboard({ }: Props) {
     createData('Win/Lose Streak Campaign',
       'Arlene McCoy (3535***3534)',
       '1000'),
+    createData('Win/Lose Streak Campaign',
+      'Arlene McCoy (3535***3534)',
+      '1000'),
+    createData('Win/Lose Streak Campaign',
+      'Arlene McCoy (3535***3534)',
+      '1000'),
+    createData('Win/Lose Streak Campaign',
+      'Arlene McCoy (3535***3534)',
+      '1000'),
   ];
 
   const listTabs: TypeTab[] = [
@@ -80,6 +89,12 @@ function JackpotPoolLeaderboard({ }: Props) {
     },
 
   ]
+  const selectOptions = [
+    {
+      value: "current-season",
+      text: "Current Season",
+    },
+  ]
   return (
     <Box width={1}>
       <Stack direction={"row"} mb={2} gap={2} justifyContent={"space-between"} sx={theme => ({
@@ -92,65 +107,73 @@ function JackpotPoolLeaderboard({ }: Props) {
         flexDirection: { xs: "column", md: "row" } // fallback
       })}>
         <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-        <SelectBox />
+        <SelectBox selectOptions={selectOptions} />
       </Stack>
-      <TableContainer sx={{ backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
+
+      <TableContainer sx={{ maxHeight: '500px', boxShadow: "none", borderRadius: "0.5rem", backgroundColor: "transparent" }}>
         <Table stickyHeader aria-label="simple table">
           <TableHead>
             <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-              <TableCell sx={{ textTransform: "uppercase" }}>Rank</TableCell>
-              <TableCell sx={{ textTransform: "uppercase" }} align="left">Users</TableCell>
-              <TableCell sx={{ textTransform: "uppercase" }} align="right">Tosspoints</TableCell>
+              <TableCell sx={{ p: 0 }}>Rank</TableCell>
+              <TableCell align="left">User</TableCell>
+              <TableCell sx={{ p: 0 }} align="right">TossPoints</TableCell>
             </TableRow>
           </TableHead>
-
-          <TableBody sx={{ bgcolor: 'background.paper', borderRadius: 1 }}>
+          <TableBody sx={{
+            "tr:first-child th": {
+              borderTopLeftRadius: "0.5rem",
+            },
+            "tr:last-child th": {
+              borderBottomLeftRadius: "0.5rem",
+            },
+            "tr:first-child td:last-child": {
+              borderTopRightRadius: "0.5rem"
+            },
+            "tr:last-child td:last-child": {
+              borderBottomRightRadius: "0.5rem",
+            },
+            'td, th': { border: 0, py: 1, backgroundColor: "background.paper" },
+          }}>
             {rows.length > 0 && rows.map((row, index) => (
               <TableRow
                 key={row.name}
-                sx={{
-                  'td, th': { border: 0, py: 1 }
-                }}
               >
                 <TableCell component="th" scope="row">
-                  <Typography variant='caption'>{index}</Typography>
+                  <Typography variant='caption' color={"text.disabled"}>{index}</Typography>
                 </TableCell>
                 <TableCell align="left">
                   <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                     {/* <img src={AvatarImage} width={24} alt="" /> */}
-                    <MyImage width={24} src={AvatarImage} alt="Avatar Image" />
+                    <MyImage width={24} height={24} src={AvatarImage} alt="Avatar Image" />
                     <Typography variant='caption'>{row.userName}</Typography>
                   </Stack>
                 </TableCell>
-                <TableCell align="right"><Typography variant='caption' color="secondary.200"> {row.quantityFriends}</Typography></TableCell>
+                <TableCell align="right"><Typography variant='caption' color="text.disabled"> {row.quantityFriends}</Typography></TableCell>
               </TableRow>
             ))}
-            <TableRow
-              sx={{
-                position: 'sticky',
-                bottom: 0,
-                right: 0,
-                left: 0,
-                'td, th': { border: 0, py: 1 },
-                bgcolor: 'secondary.main',
-                color: 'background.paper'
-              }}
-            >
-              <TableCell component="th" scope="row">
-                <Typography variant='caption' color="background.paper">3</Typography>
-              </TableCell>
-              <TableCell align="left">
-                <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                  {/* <img src={AvatarImage} width={24} alt="" /> */}
-                  <MyImage width={24} height={24} src={AvatarImage} alt="Avatar Image" />
-                  <Typography variant='caption' color="background.paper">{"nambui"}</Typography>
-                </Stack>
-              </TableCell>
-              <TableCell align="right"><Typography variant='caption' color="background.paper"> 100</Typography></TableCell>
-            </TableRow>
-
           </TableBody>
-
+          <TableRow
+            sx={{
+              position: 'sticky',
+              bottom: 0,
+              width: "90%",
+              'td, th': { border: 0, py: 1 },
+              bgcolor: 'secondary.main',
+              color: 'background.paper',
+            }}
+          >
+            <TableCell component="th" scope="row" width={"12%"}>
+              <Typography variant='caption' color="background.paper">3</Typography>
+            </TableCell>
+            <TableCell align="left">
+              <Stack direction={'row'} columnGap={1} alignItems={'center'}>
+                {/* <img src={AvatarImage} width={24} alt="" /> */}
+                <MyImage width={24} height={24} src={AvatarImage} alt="Avatar Image" />
+                <Typography variant='caption' color="background.paper">{"nambui"}</Typography>
+              </Stack>
+            </TableCell>
+            <TableCell align="right"><Typography variant='caption' color="background.paper"> 100</Typography></TableCell>
+          </TableRow>
         </Table>
         {rows.length <= 0 &&
           <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
@@ -161,7 +184,7 @@ function JackpotPoolLeaderboard({ }: Props) {
           </Box>}
 
       </TableContainer>
-    </Box>
+    </Box >
   )
 }
 
