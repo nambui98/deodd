@@ -1,17 +1,13 @@
 import { Box, Stack } from '@mui/material'
-import React from 'react'
+import CoinAnimation from 'components/common/CoinAnimation'
+import useReferral from 'hooks/useReferral'
 import ContentData from './ContentData'
 import ContentNoData from './ContentNoData'
-import useReferral from 'hooks/useReferral'
-import { useWalletContext } from 'contexts/WalletContext'
-import Loader from 'components/common/Loader'
-import CoinAnimation from 'components/common/CoinAnimation'
 
 type Props = {}
 
 function Content({ }: Props) {
     const { ckReferral, link, dataAvailable, dataExpired, reload, dataReferralSuccess } = useReferral({ isNotGet: false });
-
     return (
         <Box>
             {

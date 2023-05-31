@@ -17,7 +17,15 @@ import '../styles/globals.scss';
 import 'react-indiana-drag-scroll/dist/style.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Create a client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient(
+  // {
+  //   defaultOptions: {
+  //     queries: {
+  //       suspense: true,
+  //     },
+  //   },
+  // }
+)
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
   return (

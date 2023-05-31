@@ -4,6 +4,7 @@ import { useColorModeContext } from "../../../contexts/ColorModeContext";
 // import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import { LoadingButton, LoadingButtonProps } from '@mui/lab';
 import { Colors } from "constants/index";
+import CoinAnimation from "components/common/CoinAnimation";
 
 interface IProps extends ButtonProps {
   title: any
@@ -56,6 +57,7 @@ export const ButtonLoading: React.FC<LoadingButtonProps> = (props) => {
       }, ...props.sx
     }
     }
+    // loadingIndicator={<CoinAnimation width={50} height={50} />}
 
     variant="outlined"
   >

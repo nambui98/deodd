@@ -6,7 +6,8 @@ import TBNBPopup from "components/ui/TBNBPopup";
 import React from "react";
 import { ConnectWallet } from "../components/common/ConnectWallet";
 import { useWalletContext } from "../contexts/WalletContext";
-
+import { Suspense, lazy } from "react";
+// const FlipHistoriesRecent = lazy(() => import("@/templates/home/components/FlipHistoriesRecent"));
 // eslint-disable-next-line react/display-name
 const HomePage: React.FC = React.memo(() => {
   const { walletIsConnected } = useWalletContext();
@@ -25,7 +26,10 @@ const HomePage: React.FC = React.memo(() => {
       }}>
         <TBNBPopup />
       </Box>
+      {/* <Suspense fallback={<CoinAnimation width={50} height={50} />}> */}
       <FlipHistoriesRecent />
+      {/* </Suspense> */}
+
       <Stack
         justifyContent='space-between'
       >
