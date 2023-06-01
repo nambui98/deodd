@@ -6,9 +6,6 @@ import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignM
 import { bscTestnet } from "wagmi/chains";
 import { deoddContract } from "../libs/contract";
 
-interface Map {
-	[key: string]: any;
-}
 interface walletContextType {
 	walletAddress: any,
 	walletIsConnected: boolean,
@@ -21,7 +18,8 @@ interface walletContextType {
 	contractDeodd: Contract | undefined,
 	handleConnectWallet: () => any,
 	setRefresh: (refresh: boolean) => void,
-	refresh: boolean
+	refresh: boolean,
+	isConnectingWallet: boolean
 }
 
 interface IProps {
@@ -41,6 +39,7 @@ const WalletContext = createContext<walletContextType>({
 	handleConnectWallet: () => { },
 	refresh: false,
 	setRefresh: () => { },
+	isConnectingWallet: false
 })
 
 export const useWalletContext = () => useContext(WalletContext);
@@ -301,7 +300,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			handleConnectWallet,
 			contractDeodd,
 			refresh,
-			setRefresh
+			setRefresh,
+			isConnectingWallet
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -313,6 +313,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		userInfo,
 		contractDeodd,
 		refresh,
+		isConnectingWallet
 	])
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

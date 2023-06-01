@@ -21,6 +21,7 @@ import Loader from './Loader'
 import { useAccount } from 'wagmi'
 import { connected } from 'process'
 import { useInView } from 'react-intersection-observer'
+import CoinAnimation from './CoinAnimation'
 type MessageType = {
     userInfo: {
         userName: string | undefined,
@@ -229,14 +230,15 @@ function Chat({ open }: { open: boolean }) {
                 onScroll={handleScroll}
                 p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
                 <Box ref={refBottomChat} />
-
                 {
                     messages.map((message) => {
                         return <ChatItem key={message.id} data={message} handleClick={handleClick} id={message.id} isMy={message.from === walletAddress} />
                     })
                 }
                 {
-                    isLoadMoreWithoutAuth === true || walletAddress && <Loader isLoadingProps isInComponent size={30} />
+                    isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
+                        <CoinAnimation mx="auto" width={30} height={30} />
+                    </Box>
                 }
                 <Box ref={refTopChat} />
             </Box>
