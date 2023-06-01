@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Divider } from '@mui/material';
-import { BnbIcon, Growth1Icon, NotiIcon } from 'utils/Icons';
+import { BnbIcon, Growth1Icon } from 'utils/Icons';
 import { LoyaltyImage, Loyalty2Image } from 'utils/Images';
 import { Colors } from "constants/index";
 import HolderPoolLeaderboard from './HolderPoolLeaderboard';
@@ -20,7 +20,7 @@ function HolderPool({ }: Props) {
         </Typography>
       </Stack>
 
-      <Stack position={"relative"} height={"413px"} bgcolor={"secondary.300"} borderRadius={1.5} overflow={'hidden'} mt={3} sx={{
+      <Stack height={"413px"} bgcolor={"secondary.300"} borderRadius={1.5} overflow={'hidden'} mt={3} sx={{
         backgroundImage: `url(${Loyalty2Image})`,
         backgroundSize: "100% auto",
         backgroundRepeat: "no-repeat",
@@ -60,9 +60,7 @@ function HolderPool({ }: Props) {
           <BnbIcon width={16} color={Colors.primaryDark} />
         </Stack>
         <Typography variant="body2">Claimable in: 24:39:12</Typography>
-        <Box position="absolute" right={"1rem"} bottom={"1rem"} lineHeight={0} sx={{ cursor: "pointer" }}>
-          <NotiIcon width={24} />
-        </Box>
+
       </Stack>
       {walletIsConnected ? (<>
         <Divider sx={{

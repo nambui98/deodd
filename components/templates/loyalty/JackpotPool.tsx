@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, Divider } from '@mui/material';
-import { BnbIcon, GoldCup1Icon, NotiIcon } from 'utils/Icons';
+import { BnbIcon, GoldCup1Icon } from 'utils/Icons';
 import { LoyaltyImage } from 'utils/Images';
 import { Colors } from "constants/index";
 import JackpotPoolLeaderboard from './JackpotPoolLeaderboard';
@@ -19,7 +19,7 @@ function JackpotPool({ }: Props) {
         </Typography>
       </Stack>
 
-      <Stack position="relative" height={"413px"} bgcolor={"secondary.300"} borderRadius={1.5} mt={3} sx={{
+      <Stack height={"413px"} bgcolor={"secondary.300"} borderRadius={1.5} mt={3} sx={{
         backgroundImage: `url(${LoyaltyImage})`,
         backgroundSize: "100% auto",
         backgroundRepeat: "no-repeat",
@@ -38,9 +38,6 @@ function JackpotPool({ }: Props) {
         <Typography fontSize={"1.75rem"} lineHeight={"2,2rem"} fontWeight={500} color={"text.primary"}>120/
           <Box component={"span"} color={"text.secondary"} fontSize={"2.375rem"} >15.000</Box>
         </Typography>
-        <Box position="absolute" right={"1rem"} bottom={"1rem"} lineHeight={0} sx={{ cursor: "pointer" }}>
-          <NotiIcon width={24} />
-        </Box>
       </Stack>
       {walletIsConnected ? (<>
         <Divider sx={{
