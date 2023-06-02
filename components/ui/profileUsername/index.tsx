@@ -79,19 +79,27 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
         <Stack component={"form"} onSubmit={handleSubmit(handleSetProfile)} gap={3} alignItems={"center"} sx={{
           bgcolor: "primary.200",
           borderRadius: "0.5rem",
-        }}>
+        }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && isDirty) {
+              e.preventDefault();
+              handleSubmit(handleSetProfile)();
+            }
+          }}
+        >
           <Typography variant="h3" fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>Your profile</Typography>
           <MyImage src={avatars[watch("avatar")] ?? avatars[userInfo.avatar]} width={120} height={120} alt="profile-avatar" />
-          <Stack direction={"row"} spacing={2} >
+          <Stack direction={"row"} spacing={2}>
             {avatars.map((avatarSrc, index) => (
               <MyImage
                 key={index}
+                tabIndex={0} // Set this so user can press enter to save form when choosing avatar
                 onClick={() => setValue("avatar", index, { shouldDirty: true })}
                 src={avatarSrc}
                 width={40}
                 height={40}
                 alt="profile-avatar"
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", outline: "none" }}
               />
             ))}
           </Stack>
