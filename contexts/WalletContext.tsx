@@ -268,10 +268,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
+			setUserInfo({ username: user?.userName ?? "", avatar: user?.avatarId ?? 0 });
 			LocalStorage.setUserInfo({
 				wallet: walletAddress,
-				username: user.userName,
+				username: user.userName ?? "",
 				avatarId: user.avatarId ?? 0,
 			});
 		}
