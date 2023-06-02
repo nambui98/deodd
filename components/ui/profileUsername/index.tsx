@@ -93,7 +93,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
             {avatars.map((avatarSrc, index) => (
               <MyImage
                 key={index}
-                tabIndex={0} // Set this so user can press enter to save form when choosing avatar
+                tabIndex={-1} // Set this so user can press enter to save form when choosing avatar
                 onClick={() => setValue("avatar", index, { shouldDirty: true })}
                 src={avatarSrc}
                 width={40}
