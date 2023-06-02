@@ -133,13 +133,7 @@ export function UserInfo() {
         {/* Menu Container */}
         <Box
           sx={theme => ({
-            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
-              minWidth: expanded ? 1 : 0,
-            },
-            [theme.breakpoints.up("md").replace("@media", "@container")]: {
-              minWidth: 0,
-            },
-            minWidth: { xs: expanded ? 1 : 0, md: 0 }, // fallback
+            minWidth: { xs: expanded ? 1 : 0, md: 0 },
             position: "absolute",
             right: 0,
             transition: "300ms min-width",
@@ -224,8 +218,7 @@ export function UserInfo() {
                 [theme.breakpoints.up("md").replace("@media", "@container")]: {
                   width: 1,
                 },
-                width: { xs: expanded ? 1 : 0, md: 1 },
-                overflow: "hidden",
+                width: { xs: expanded ? 1 : 0, md: 1 }, // fallback
               })}>
                 <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
                   {
