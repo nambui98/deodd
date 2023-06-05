@@ -7,11 +7,16 @@ import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { DonutDisplay } from "./DonutDisplay";
 import { CompareText } from "./CompareText";
-import { useDashboardContext } from "contexts/DashboardContext";
 
-export function FlipResultSection() {
-  const { error, flipDashboardStat } = useDashboardContext();
+type FlipPropsType = {
+  error: {
+    statData: boolean;
+    errorMessage: string;
+  };
+  flipDashboardStat: any;
+};
 
+export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
   return (
     <>
       <DashboardCard

@@ -1,6 +1,5 @@
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
-import { useDashboardContext } from "contexts/DashboardContext";
 
 function RowItem({
   times,
@@ -47,9 +46,10 @@ type FlipPerUserType = {
   userFlipStat: any;
 };
 
-export function FlipPerUserTable() {
-  const { error, userFlipStat } = useDashboardContext();
-
+export function FlipPerUserTable({
+  userFlipStat,
+  error,
+}: FlipPerUserType) {
   return (
     <Box
       sx={{
