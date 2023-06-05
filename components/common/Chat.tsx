@@ -333,7 +333,7 @@ function Chat({ open }: { open: boolean }) {
                             isReport={message.is_hidden}
                             handleClick={(e) => handleClick(e, message)}
                             id={message.id}
-                            isMy={message.from.toLowerCase() === walletAddress.toLowerCase()}
+                            isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
                             walletAddress={walletAddress}
                         />
                     })
@@ -817,7 +817,7 @@ const ChatItem = ({ isMy, walletAddress, handleUndoReport, isReport, id, data, h
                         data.repliedUserInfo &&
                         <>
 
-                            <Typography sx={walletAddress.toLowerCase() === data.to.toLowerCase() ? {
+                            <Typography sx={walletAddress?.toLowerCase() === data.to.toLowerCase() ? {
                                 bgcolor: 'secondary.main',
                                 color: 'primary.200'
                             } : {}} component="span" fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">
