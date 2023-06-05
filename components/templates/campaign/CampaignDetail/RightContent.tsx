@@ -15,7 +15,7 @@ import { CopyIcon, FacebookIcon } from 'utils/Icons';
 function RightContent({ image, campaign }: { image: string, campaign: Campaign }) {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { link, getLinkUser } = useReferral({ isNotGet: !(campaign.href === "referral-campaign") });
-    const [linkEnded, setLinkEnded] = useState<string | undefined>(link);
+    const [linkEnded, setLinkEnded] = useState<string>(link ?? '');
     const router = useRouter();
     useEffect(() => {
         if (walletAddress && campaign.href === "referral-campaign") {
