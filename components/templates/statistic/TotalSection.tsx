@@ -7,23 +7,11 @@ import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { FlipPerUserTable } from "./FlipPerUserTable";
 import { CompareText } from "./CompareText";
+import { useDashboardContext } from "contexts/DashboardContext";
 
-type TotalPropsType = {
-  error: {
-    flipData: boolean;
-    errorMessage: string;
-  };
-  userFlipStat: any;
-  totalUser: number;
-  flipDashboardStat: any;
-};
+export function TotalSection() {
+  const { flipDashboardStat, error } = useDashboardContext();
 
-export function TotalSection({
-  flipDashboardStat,
-  error,
-  userFlipStat,
-  totalUser,
-}: TotalPropsType) {
   return (
     <>
       <DashboardCard
@@ -77,10 +65,7 @@ export function TotalSection({
         >
           flip of user
         </Typography>
-        <FlipPerUserTable
-          userFlipStat={userFlipStat}
-          error={error}
-        />
+        <FlipPerUserTable />
       </DashboardCard>
 
       <DashboardCard

@@ -41,7 +41,6 @@ export function useDashboardStat() {
     },
     flipDashboardStat: {},
     userFlipStat: {},
-    totalUser: 0,
   });
 
   useEffect(() => {
@@ -129,7 +128,6 @@ export function useDashboardStat() {
             setStatistic((prev) => ({
               ...prev,
               userFlipStat: sortedFlip,
-              totalUser: flipData.totalUser,
               error: {
                 ...prev.error,
                 flipData: true,

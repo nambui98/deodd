@@ -3,16 +3,11 @@ import { bgWinStreakImage, bgLossStreakImage } from "utils/Images";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { Convert } from "utils/convert";
+import { useDashboardContext } from "contexts/DashboardContext";
 
-type StreakPropsType = {
-  error: {
-    streakData: boolean;
-    errorMessage: string;
-  };
-  streak: any;
-};
+export function StreakSection() {
+  const { error, streak } = useDashboardContext();
 
-export function StreakSection({ error, streak }: StreakPropsType) {
   return (
     <>
       <DashboardCard
