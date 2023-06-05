@@ -10,7 +10,7 @@ import { CompareText } from "./CompareText";
 
 type FlipPropsType = {
   error: {
-    haveFlipped: boolean;
+    statData: boolean;
     errorMessage: string;
   };
   flipDashboardStat: any;
@@ -180,7 +180,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <TitleTextAbsolute text="flip total" />
 
         <Image src={coin0} width={80} height={80} alt="coin-img" />
-        {error.haveFlipped ? (
+        {error.statData ? (
           <>
             <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.8125rem"}>
               {flipDashboardStat.numberFlipToday < 10

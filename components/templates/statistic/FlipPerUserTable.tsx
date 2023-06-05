@@ -40,7 +40,7 @@ function RowItem({
 
 type FlipPerUserType = {
   error: {
-    haveFlipped: boolean;
+    flipData: boolean;
     errorMessage: string;
   };
   userFlipStat: any;
@@ -77,7 +77,7 @@ export function FlipPerUserTable({
         </Typography>
       </Box>
 
-      {error.haveFlipped ? (<Box
+      {error.flipData ? (<Box
         width={1}
         display={"grid"}
         gridTemplateColumns={"auto 1fr auto auto"}

@@ -10,7 +10,7 @@ import { CompareText } from "./CompareText";
 
 type TotalPropsType = {
   error: {
-    haveFlipped: boolean;
+    flipData: boolean;
     errorMessage: string;
   };
   userFlipStat: any;
@@ -41,7 +41,7 @@ export function TotalSection({
         position={"relative"}
       >
         <TitleTextAbsolute text="fee total" />
-        {error.haveFlipped ? (
+        {error.flipData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
@@ -98,7 +98,7 @@ export function TotalSection({
         position={"relative"}
       >
         <TitleTextAbsolute text="BNB total" />
-        {error.haveFlipped ? (
+        {error.flipData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {+(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
@@ -136,7 +136,7 @@ export function TotalSection({
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
           <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-            {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
+            {error.flipData ? flipDashboardStat.flipWinPercentage : "0"}
             <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
               %
             </Typography>
@@ -162,7 +162,7 @@ export function TotalSection({
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <MobileIcon fill={Colors.primary} width={"2.5rem"} />
           <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-            {error.haveFlipped ? "49" : "0"}
+            {error.flipData ? "49" : "0"}
             <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
               %
             </Typography>

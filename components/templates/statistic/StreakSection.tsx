@@ -6,7 +6,7 @@ import { Convert } from "utils/convert";
 
 type StreakPropsType = {
   error: {
-    haveFlipped: boolean;
+    streakData: boolean;
     errorMessage: string;
   };
   streak: any;
@@ -40,7 +40,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          {error.haveFlipped ? (
+          {error.streakData ? (
             <>
               <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
                 {streak.winStreak < 10 && streak.winStreak >= 1
@@ -76,7 +76,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         height="13.5rem"
       >
         <TitleTextAbsolute text="highest loss streak" />
-        {error.haveFlipped ? (
+        {error.streakData ? (
           <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
             {streak.lossStreak < 10 && streak.lossStreak >= 1
               ? `0${streak.lossStreak}`

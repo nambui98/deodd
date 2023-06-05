@@ -28,7 +28,9 @@ export function useDashboardStat() {
   const { setIsLoading } = useSiteContext();
   const [statistic, setStatistic] = useState({
     error: {
-      haveFlipped: false,
+      streakData: false,
+      statData: false,
+      flipData: false,
       errorMessage: "",
     },
     streak: {
@@ -45,74 +47,111 @@ export function useDashboardStat() {
   useEffect(() => {
     async function getData() {
       try {
-        const [streakResult, statResult, flipResult] = await Promise.all([
+        const [streakResult, statResult, flipResult] = await Promise.allSettled([
           getTopStreakToday(),
           getFlipDashboardStat(),
           getFlipPerUser(),
         ]);
+        console.log(streakResult, statResult);
         // Streak data
-        const streakData = streakResult.data.data;
-        if (streakData != null) {
+        if (streakResult.status === "fulfilled") {
+          const streakData = streakResult.value.data.data;
+          if (streakData != null) {
+            setStatistic((prev) => ({
+              ...prev,
+              streak: {
+                winStreak: streakData.highestWinStreak.maxStreakLength,
+                lossStreak: streakData.highestLossStreak.maxStreakLength,
+                username: streakData.highestWinStreak.username,
+                winWallet: streakData.highestWinStreak.wallet,
+              },
+              error: {
+                ...prev.error,
+                streakData: true,
+              },
+            }));
+          } else {
+            setStatistic((prev) => ({
+              ...prev,
+              error: {
+                ...prev.error,
+                streakData: false,
+                errorMessage: streakResult.value.data.meta.error_message,
+              },
+            }));
+          }
+        } else if (streakResult.status === "rejected") {
           setStatistic((prev) => ({
             ...prev,
-            streak: {
-              winStreak: streakData.highestWinStreak.maxStreakLength,
-              lossStreak: streakData.highestLossStreak.maxStreakLength,
-              username: streakData.highestWinStreak.username,
-              winWallet: streakData.highestWinStreak.wallet,
-            },
             error: {
               ...prev.error,
-              haveFlipped: true,
-            },
-          }));
-        } else {
-          setStatistic((prev) => ({
-            ...prev,
-            error: {
-              haveFlipped: false,
-              errorMessage: streakResult.data.meta.error_message,
+              streakData: false,
+              errorMessage: "No data",
             },
           }));
         }
         // Stat data
-        const statData = statResult.data.data;
-        if (statData != null) {
-          setStatistic((prev) => ({
-            ...prev,
-            flipDashboardStat: statData,
-            error: { ...prev.error, haveFlipped: true },
-          }));
-        } else {
+        if (statResult.status === "fulfilled") {
+          const statData = statResult.value.data.data;
+          if (statData != null) {
+            setStatistic((prev) => ({
+              ...prev,
+              flipDashboardStat: statData,
+              error: { ...prev.error, statData: true },
+            }));
+          } else {
+            setStatistic((prev) => ({
+              ...prev,
+              error: {
+                ...prev.error,
+                statData: false,
+                errorMessage: statResult.value.data.meta.error_message,
+              },
+            }));
+          }
+        } else if (streakResult.status === "rejected") {
           setStatistic((prev) => ({
             ...prev,
             error: {
-              haveFlipped: false,
-              errorMessage: statResult.data.meta.error_message,
+              ...prev.error,
+              statData: false,
+              errorMessage: "No data",
             },
           }));
         }
         // Flip data
-        const flipData = flipResult.data.data;
-        if (flipData != null) {
-          const sortedFlip = (
-            Object.entries(flipData.flipStat) as any
-          ).toSorted(sortFunction);
+        if (flipResult.status === "fulfilled") {
+          const flipData = flipResult.value.data.data;
+          if (flipData != null) {
+            const sortedFlip = (
+              Object.entries(flipData.flipStat) as any
+            ).toSorted(sortFunction);
+            setStatistic((prev) => ({
+              ...prev,
+              userFlipStat: sortedFlip,
+              totalUser: flipData.totalUser,
+              error: {
+                ...prev.error,
+                flipData: true,
+              },
+            }));
+          } else {
+            setStatistic((prev) => ({
+              ...prev,
+              error: {
+                ...prev.error,
+                flipData: false,
+                errorMessage: flipResult.value.data.meta.error_message,
+              },
+            }));
+          }
+        } else if (streakResult.status === "rejected") {
           setStatistic((prev) => ({
             ...prev,
-            userFlipStat: sortedFlip,
-            totalUser: flipData.totalUser,
             error: {
               ...prev.error,
-              haveFlipped: true,
-            },
-          }));
-        } else {
-          setStatistic((prev) => ({
-            ...prev,
-            error: {
-              haveFlipped: false,
-              errorMessage: flipResult.data.meta.error_message,
+              flipData: false,
+              errorMessage: "No data",
             },
           }));
         }

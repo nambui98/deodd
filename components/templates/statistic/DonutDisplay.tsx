@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 type DonutDisplayType = {
   error: {
-    haveFlipped: boolean;
+    statData: boolean;
     errorMessage: string;
   };
   flipDashboardStat: any;
@@ -35,7 +35,7 @@ export function DonutDisplay({
       >
         <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"} lineHeight={1.265}>
           {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
-          {!error.haveFlipped
+          {!error.statData
             ? "0"
             : flipDashboardStat.numberFlipToday < 10
               ? "0" + flipDashboardStat.numberFlipToday
