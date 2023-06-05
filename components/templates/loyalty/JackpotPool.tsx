@@ -12,7 +12,7 @@ function JackpotPool({ }: Props) {
 
   return (
     <Box width={1}>
-      <Stack direction={"row"} gap={1}>
+      <Stack direction={"row"} gap={1} sx={{ mx: { xs: 2, md: 0 } }}>
         <GoldCup1Icon width={32} />
         <Typography variant='h2' fontWeight={700} lineHeight={"2rem"}>
           Jackpot pool
@@ -27,6 +27,7 @@ function JackpotPool({ }: Props) {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
+        mx: { xs: 2, md: 0 },
       }}>
         <Typography mt={3.5} variant="body2">Season <Box component={"span"} color={"text.secondary"}>#2</Box> Started at 12/12/2022</Typography>
         <Typography variant="body2" color={"text.disabled"}>Jackpot Reward</Typography>
@@ -39,15 +40,17 @@ function JackpotPool({ }: Props) {
           <Box component={"span"} color={"text.secondary"} fontSize={"2.375rem"} >15.000</Box>
         </Typography>
       </Stack>
-      {walletIsConnected ? (<>
-        <Divider sx={{
-          mt: { xs: 3, md: 5 },
-          mb: 3,
-          backgroundColor: "primary.100",
-        }} />
-        <JackpotPoolLeaderboard />
-      </>) : null}
-    </Box>
+      {
+        walletIsConnected ? (<>
+          <Divider sx={{
+            mt: { xs: 3, md: 5 },
+            mb: 3,
+            backgroundColor: "primary.100",
+          }} />
+          <JackpotPoolLeaderboard />
+        </>) : null
+      }
+    </Box >
 
   );
 }

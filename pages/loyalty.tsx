@@ -10,7 +10,7 @@ const LoyaltyPage: React.FC = () => {
     // );
 
     return (
-        <Container sx={{ mb: 10 }}>
+        <Container sx={{ mb: 10, p: { xs: 0, md: 3 } }}>
             <LoyaltyLayout />
         </Container>
     );

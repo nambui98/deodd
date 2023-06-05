@@ -13,7 +13,7 @@ function HolderPool({ }: Props) {
 
   return (
     <Box width={1}>
-      <Stack direction={"row"} gap={1}>
+      <Stack direction={"row"} gap={1} sx={{ mx: { xs: 2, md: 0 } }}>
         <Growth1Icon width={32} />
         <Typography variant='h2' fontWeight={700} lineHeight={"2rem"}>
           NFT Holder pool
@@ -28,6 +28,7 @@ function HolderPool({ }: Props) {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
+        mx: { xs: 2, md: 0 },
       }}>
         {/* <Typography variant="body2" lineHeight={"1.375rem"} textTransform={"uppercase"} color={"text.disabled"}>Your total reward is
           <Box component={"span"} color={"text.secondary"}> 1,5 BNB</Box>
@@ -55,22 +56,26 @@ function HolderPool({ }: Props) {
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         {/* <Typography variant='body2' color={"text.disabled"}>Only NFT holders <br /> are able to get the reward </Typography> */}
-        <Stack direction={"row"} alignItems={"center"} gap={0.25}>
-          <Typography variant="body2" color={"text.disabled"}>Your current reward in this period is <Box component={"span"} color={"text.primary"}>1,5</Box></Typography>
-          <BnbIcon width={16} color={Colors.primaryDark} />
-        </Stack>
+        <Typography variant="body2" color={"text.disabled"} >Your current reward in this period is
+          <Box component={"span"} color={"text.primary"}>
+            {" "}1,5{" "}
+            <Box component={"span"} lineHeight={0} fontSize={0}><BnbIcon width={16} color={Colors.primaryDark} /></Box>
+          </Box></Typography>
+
         <Typography variant="body2">Claimable in: 24:39:12</Typography>
 
       </Stack>
-      {walletIsConnected ? (<>
-        <Divider sx={{
-          mt: { xs: 3, md: 5 },
-          mb: 3,
-          backgroundColor: "primary.100",
-        }} />
-        <HolderPoolLeaderboard />
-      </>) : null}
-    </Box>
+      {
+        walletIsConnected ? (<>
+          <Divider sx={{
+            mt: { xs: 3, md: 5 },
+            mb: 3,
+            backgroundColor: "primary.100",
+          }} />
+          <HolderPoolLeaderboard />
+        </>) : null
+      }
+    </Box >
 
   );
 }
