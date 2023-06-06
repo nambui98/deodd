@@ -7,9 +7,9 @@ import {
 import { useWalletContext } from "contexts/WalletContext";
 
 function useLoyaltyJackpot() {
-  const [season, setSeason] = useState(1);
+  const [season, setSeason] = useState(4);
   const [leaderboard, setLeaderboard] = useState({
-    currentSeason: 1,
+    currentSeason: 4,
     leaderboardList: [
       {
         rank: 1,
@@ -21,20 +21,6 @@ function useLoyaltyJackpot() {
     ],
   });
   const { walletAddress } = useWalletContext();
-
-  // Get number of seasons for select list
-  useEffect(() => {
-    async function getData() {
-      const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-      const data = promiseResult.data.data;
-      setLeaderboard((prev) => ({
-        ...prev,
-        currentSeason: data.currentSeason,
-      }));
-      setSeason(data.currentSeason);
-    }
-    getData();
-  }, [walletAddress]);
 
   useEffect(() => {
     async function getData() {
@@ -52,6 +38,20 @@ function useLoyaltyJackpot() {
     }
     getData();
   }, [season, walletAddress]);
+
+  // Get number of seasons for select list
+  useEffect(() => {
+    async function getData() {
+      const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
+      const data = promiseResult.data.data;
+      setLeaderboard((prev) => ({
+        ...prev,
+        currentSeason: data.currentSeason,
+      }));
+      setSeason(data.currentSeason);
+    }
+    getData();
+  }, [walletAddress]);
 
   return { setSeason, leaderboard };
 }

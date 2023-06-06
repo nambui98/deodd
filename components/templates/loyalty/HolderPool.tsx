@@ -2,7 +2,7 @@ import { Box, Stack, Typography, Divider } from "@mui/material";
 import { BnbIcon, Growth1Icon } from "utils/Icons";
 import { LoyaltyImage, Loyalty2Image } from "utils/Images";
 import { Colors } from "constants/index";
-import HolderPoolLeaderboard from "./HolderPoolLeaderboard";
+import HolderPoolBoard from "./HolderPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
 
@@ -101,7 +101,7 @@ function HolderPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
-          <HolderPoolLeaderboard />
+          <HolderPoolBoard />
         </>
       ) : null}
     </Box>

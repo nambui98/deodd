@@ -11,10 +11,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import SelectBox from "components/common/SelectBox";
-import { TypeTab, MyTabs2 } from "components/common/Tabs";
-import React, { useState } from "react";
-import { Clock2Icon, CupIcon } from "utils/Icons";
 import {
   AvatarImage,
   BronzeImage,
@@ -25,90 +21,53 @@ import {
 } from "utils/Images";
 import MyImage from "components/ui/image";
 import Image from "next/image";
-import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
-import { Convert } from "utils/convert";
 
-type Props = {};
-
-function JackpotPoolLeaderboard({ }: Props) {
-  const [valueTab, setValueTab] = useState(1);
-  const { leaderboard, setSeason } = useLoyaltyJackpot();
-
-  const listTabs: TypeTab[] = [
-    {
-      id: 1,
-      title: "Leaderboard",
-      icon: (
-        <Box mr={1} lineHeight={0}>
-          <CupIcon width={20} />
-        </Box>
-      ),
-    },
-    {
-      id: 2,
-      title: "History",
-      icon: (
-        <Box mr={1} lineHeight={0}>
-          <Clock2Icon width={20} />
-        </Box>
-      ),
-    },
-  ];
-
-  const selectOptions = [];
-
-  for (let i = leaderboard.currentSeason; i >= 1; i--) {
-    if (i === leaderboard.currentSeason) {
-      selectOptions.push({
-        value: i,
-        text: "Current Season",
-      });
-    } else {
-      selectOptions.push({
-        value: i,
-        text: `Season ${i}`,
-      });
-    }
-  }
-
+function HolderLeaderboard() {
   return (
-    <Box width={1}>
-      <Stack
-        direction={"row"}
-        mb={2}
-        gap={2}
-        justifyContent={"space-between"}
-        sx={(theme) => ({
-          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
-            flexDirection: "column",
-          },
-          "@container (min-width: 1000px)": {
-            flexDirection: "row",
-          }, // larger then "md" screen a little because the layout is short of width
-          flexDirection: { xs: "column", md: "row" }, // fallback
-          mx: { xs: 2, md: 0 },
-        })}
-      >
-        <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-        <SelectBox selectOptions={selectOptions} setValue={setSeason} />
-      </Stack>
-
+    <>
       {/* Using separate tables to achieve the look similar to the design */}
       {/* Table Head */}
       <Table>
         <colgroup>
-          <col width={"11%"} />
+          <col width={"12%"} />
           <col />
-          <col />
+          <col width={"10%"} />
+          <col width={"10%"} />
+          <col width={"10%"} />
         </colgroup>
         <TableHead>
           <TableRow sx={{ "td, th": { border: 0, py: 1 } }}>
             <TableCell sx={{ px: 0, pl: { xs: 2, md: 0 } }}>Rank</TableCell>
-            <TableCell sx={{ px: 0, pl: 0.5 }} align="left">
+            <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
               User
             </TableCell>
-            <TableCell sx={{ px: 0, pr: { xs: 2, md: 0 } }} align="right">
-              TossPoints
+            <TableCell
+              align="center"
+              sx={{ px: 0, lineHeight: 0, pr: { xs: 2.5, md: 1.5 } }}
+            >
+              <Image
+                width={24}
+                height={24}
+                src={DiamondImage}
+                alt="Diamond Image"
+              />
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{ px: 0, lineHeight: 0, pr: { xs: 2.5, md: 1.5 } }}
+            >
+              <Image width={24} height={24} src={GoldImage} alt="Gold Image" />
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{ px: 0, lineHeight: 0, pr: { xs: 2.5, md: 1.5 } }}
+            >
+              <Image
+                width={24}
+                height={24}
+                src={BronzeImage}
+                alt="Bronze Image"
+              />
             </TableCell>
           </TableRow>
         </TableHead>
@@ -121,11 +80,11 @@ function JackpotPoolLeaderboard({ }: Props) {
             maxHeight: { xs: 218, md: 384 },
             height: 384,
             boxShadow: "none",
-            backgroundColor: "background.paper",
             borderRadius: { xs: 0, md: 2 },
+            backgroundColor: "background.paper",
           }}
         >
-          {leaderboard.leaderboardList.length <= 0 && (
+          {rows2.length <= 0 && (
             <Stack
               sx={{ inset: 0 }}
               position={"absolute"}
@@ -150,11 +109,13 @@ function JackpotPoolLeaderboard({ }: Props) {
               </Typography>
             </Stack>
           )}
-          <Table stickyHeader aria-label="simple table">
+          <Table aria-label="simple table">
             <colgroup>
-              <col width={"11%"} />
+              <col width={"12%"} />
               <col />
-              <col />
+              <col width={"10%"} />
+              <col width={"10%"} />
+              <col width={"10%"} />
             </colgroup>
             <TableBody
               sx={{
@@ -172,19 +133,15 @@ function JackpotPoolLeaderboard({ }: Props) {
                 },
               }}
             >
-              {leaderboard.leaderboardList.length > 0 &&
-                leaderboard.leaderboardList.map((row) => (
-                  <TableRow key={row.rank}>
+              {rows2.length > 0 &&
+                rows2.map((row, index) => (
+                  <TableRow key={row.userName}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
-                      <Typography
-                        variant="caption"
-                        color={"text.disabled"}
-                        lineHeight={"1.25rem"}
-                      >
-                        {row.rank}
+                      <Typography variant="caption" color={"text.disabled"}>
+                        {index}
                       </Typography>
                     </TableCell>
-                    <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
+                    <TableCell align="center" sx={{ px: 0, pl: 0.5 }}>
                       <Stack
                         direction={"row"}
                         columnGap={1}
@@ -196,26 +153,36 @@ function JackpotPoolLeaderboard({ }: Props) {
                           src={AvatarImage}
                           alt="Avatar Image"
                         />
-                        <Typography
-                          variant="caption"
-                          fontWeight={400}
-                          lineHeight={"1.25rem"}
-                        >
-                          {row.userName} (
-                          {Convert.convertWalletAddress(row.wallet, 5, 4)})
+                        <Typography variant="caption" fontWeight={400}>
+                          {row.userName}
                         </Typography>
                       </Stack>
                     </TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
                     >
-                      <Typography
-                        variant="caption"
-                        color="text.disabled"
-                        lineHeight={"1.25rem"}
-                      >
-                        {row.tossPoint}
+                      <Typography variant="caption" color="text.disabled">
+                        {" "}
+                        {row.diamond}
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
+                    >
+                      <Typography variant="caption" color="text.disabled">
+                        {" "}
+                        {row.gold}
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
+                    >
+                      <Typography variant="caption" color="text.disabled">
+                        {" "}
+                        {row.bronze}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -224,7 +191,7 @@ function JackpotPoolLeaderboard({ }: Props) {
           </Table>
         </TableContainer>
       </Box>
-      {/* Table Footer - this is separated from the above table */}
+      {/* Table Footer */}
       <Table
         sx={{
           width: "calc(100% - 1rem)",
@@ -234,9 +201,11 @@ function JackpotPoolLeaderboard({ }: Props) {
         }}
       >
         <colgroup>
-          <col width={"11%"} />
+          <col width={"12%"} />
           <col />
-          <col />
+          <col width={"10%"} />
+          <col width={"10%"} />
+          <col width={"10%"} />
         </colgroup>
         <TableFooter>
           <TableRow
@@ -260,14 +229,20 @@ function JackpotPoolLeaderboard({ }: Props) {
                 </Typography>
               </Stack>
             </TableCell>
-            <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
-              <Typography variant="caption">100</Typography>
+            <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
+              <Typography variant="caption">10</Typography>
+            </TableCell>
+            <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
+              <Typography variant="caption">3</Typography>
+            </TableCell>
+            <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
+              <Typography variant="caption">1000</Typography>
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
-    </Box>
+    </>
   );
 }
 
-export default JackpotPoolLeaderboard;
+export default HolderLeaderboard;

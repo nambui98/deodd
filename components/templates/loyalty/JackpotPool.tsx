@@ -2,7 +2,7 @@ import { Box, Stack, Typography, Divider } from "@mui/material";
 import { BnbIcon, GoldCup1Icon } from "utils/Icons";
 import { LoyaltyImage } from "utils/Images";
 import { Colors } from "constants/index";
-import JackpotPoolLeaderboard from "./JackpotPoolLeaderboard";
+import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 
 type Props = {};
@@ -85,7 +85,7 @@ function JackpotPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
-          <JackpotPoolLeaderboard />
+          <JackpotPoolBoard />
         </>
       ) : null}
     </Box>
