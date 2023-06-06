@@ -30,9 +30,9 @@ import { Convert } from "utils/convert";
 
 type Props = {};
 
-function JackpotPoolLeaderboard({}: Props) {
+function JackpotPoolLeaderboard({ }: Props) {
   const [valueTab, setValueTab] = useState(1);
-  const { leaderboard } = useLoyaltyJackpot();
+  const { leaderboard, setSeason } = useLoyaltyJackpot();
 
   const listTabs: TypeTab[] = [
     {
@@ -54,12 +54,23 @@ function JackpotPoolLeaderboard({}: Props) {
       ),
     },
   ];
-  const selectOptions = [
-    {
-      value: "current-season",
-      text: "Current Season",
-    },
-  ];
+
+  const selectOptions = [];
+
+  for (let i = leaderboard.currentSeason; i >= 1; i--) {
+    if (i === leaderboard.currentSeason) {
+      selectOptions.push({
+        value: i,
+        text: "Current Season",
+      });
+    } else {
+      selectOptions.push({
+        value: i,
+        text: `Season ${i}`,
+      });
+    }
+  }
+
   return (
     <Box width={1}>
       <Stack
@@ -79,7 +90,7 @@ function JackpotPoolLeaderboard({}: Props) {
         })}
       >
         <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-        <SelectBox selectOptions={selectOptions} />
+        <SelectBox selectOptions={selectOptions} setValue={setSeason} />
       </Stack>
 
       {/* Using separate tables to achieve the look similar to the design */}

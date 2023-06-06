@@ -4,15 +4,17 @@ import React, { useState } from 'react'
 import { Colors } from 'constants/index';
 
 type Props = {
-    selectOptions: { [index: string]: string }[];
+    selectOptions: { [index: string]: string | number }[];
+    setValue: Function;
 }
 
-function SelectBox({ selectOptions }: Props) {
-    const [valueSelect, setValueSelect] = useState<string>(selectOptions[0].value);
+function SelectBox({ selectOptions, setValue }: Props) {
+    const [valueSelect, setValueSelect] = useState<string>(`${selectOptions[0].value}`);
+    console.log(valueSelect);
     return (
         <Select
             value={valueSelect}
-            onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
+            onChange={(event: SelectChangeEvent) => { setValue(event.target.value); setValueSelect(event.target.value) }}
             displayEmpty
             label="Season"
             sx={styleInput}
