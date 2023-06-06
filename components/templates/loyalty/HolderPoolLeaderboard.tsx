@@ -129,7 +129,7 @@ function HolderPoolLeaderboard({ }: Props) {
 
       {/* Table Body - wrapped inside another div to keep the border-radius when scrollbar appears */}
       <Box sx={{ borderRadius: { xs: 0, md: 2 }, overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: { xs: 218, md: 384 }, height: "500px", boxShadow: "none", borderRadius: { xs: 0, md: 2 }, backgroundColor: "background.paper" }}>
+        <TableContainer sx={{ maxHeight: { xs: 218, md: 384 }, height: 384, boxShadow: "none", borderRadius: { xs: 0, md: 2 }, backgroundColor: "background.paper" }}>
           {rows2.length <= 0 &&
             <Stack sx={{ inset: 0 }} position={"absolute"} gap={5} justifyContent={"center"} alignItems={"center"} textAlign={'center'}>
               <MyImage width={144} height={144} src={CoinEmptyImage} alt="Empty Coin Image" />

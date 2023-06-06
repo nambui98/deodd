@@ -6,65 +6,14 @@ import { Clock2Icon, CupIcon } from 'utils/Icons';
 import { AvatarImage, BronzeImage, CoinEmptyImage, DiamondImage, GoldImage, ReferralImage } from 'utils/Images'
 import MyImage from 'components/ui/image';
 import Image from 'next/image';
+import useLoyaltyJackpot from 'hooks/loyalty/useLoyaltyJackpot';
+import { Convert } from "utils/convert";
 
 type Props = {}
-function createData(
-  name: string,
-  userName: string,
-  quantityFriends: string | undefined,
-) {
-  return { name, userName, quantityFriends };
-}
 
 function JackpotPoolLeaderboard({ }: Props) {
-  const [valueTab, setValueTab] = useState(1)
-  let rows = [
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-    createData('Win/Lose Streak Campaign',
-      'Arlene McCoy (3535***3534)',
-      '1000'),
-  ];
+  const [valueTab, setValueTab] = useState(1);
+  const { leaderboard } = useLoyaltyJackpot();
 
   const listTabs: TypeTab[] = [
     {
@@ -120,8 +69,8 @@ function JackpotPoolLeaderboard({ }: Props) {
 
       {/* Table Body - wrapped inside another div to keep the border-radius when scrollbar appears */}
       <Box sx={{ borderRadius: { xs: 0, md: 2 }, overflow: "hidden" }}>
-        <TableContainer sx={{ maxHeight: { xs: 218, md: 384 }, boxShadow: "none", backgroundColor: "background.paper", borderRadius: { xs: 0, md: 2 } }} >
-          {rows.length <= 0 &&
+        <TableContainer sx={{ maxHeight: { xs: 218, md: 384 }, height: 384, boxShadow: "none", backgroundColor: "background.paper", borderRadius: { xs: 0, md: 2 } }} >
+          {leaderboard.leaderboardList.length <= 0 &&
             <Stack sx={{ inset: 0 }} position={"absolute"} gap={5} justifyContent={"center"} alignItems={"center"} textAlign={'center'}>
               <MyImage width={144} height={144} src={CoinEmptyImage} alt="Empty Coin Image" />
               <Typography fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600} color={"secondary.100"}>There is no one here</Typography>
@@ -146,18 +95,18 @@ function JackpotPoolLeaderboard({ }: Props) {
                 }
               },
             }}>
-              {rows.length > 0 && rows.map((row, index) => (
-                <TableRow key={row.name}>
+              {leaderboard.leaderboardList.length > 0 && leaderboard.leaderboardList.map((row) => (
+                <TableRow key={row.rank}>
                   <TableCell component="th" scope="row" sx={{ px: 0 }}>
-                    <Typography variant='caption' color={"text.disabled"} lineHeight={"1.25rem"}>{index}</Typography>
+                    <Typography variant='caption' color={"text.disabled"} lineHeight={"1.25rem"}>{row.rank}</Typography>
                   </TableCell>
                   <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
                     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                       <Image width={24} height={24} src={AvatarImage} alt="Avatar Image" />
-                      <Typography variant='caption' fontWeight={400} lineHeight={"1.25rem"}>{row.userName}</Typography>
+                      <Typography variant='caption' fontWeight={400} lineHeight={"1.25rem"}>{row.userName} ({Convert.convertWalletAddress(row.wallet, 5, 4)})</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}><Typography variant='caption' color="text.disabled" lineHeight={"1.25rem"}> {row.quantityFriends}</Typography></TableCell>
+                  <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}><Typography variant='caption' color="text.disabled" lineHeight={"1.25rem"}>{row.tossPoint}</Typography></TableCell>
                 </TableRow>
               ))}
             </TableBody>

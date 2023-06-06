@@ -14,7 +14,7 @@ function SelectBox({ selectOptions }: Props) {
             value={valueSelect}
             onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
             displayEmpty
-            label="Current Season"
+            label="Season"
             sx={styleInput}
             inputProps={{ 'aria-label': 'Without label' }}
         >
@@ -27,9 +27,6 @@ function SelectBox({ selectOptions }: Props) {
                     }}>{property.text}</MenuItem>
                 )
             })}
-            {/* <MenuItem value={"current-season"}>Current Season</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem> */}
         </Select>
     )
 }
