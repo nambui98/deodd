@@ -41,6 +41,10 @@ export const BzImage = "/assets/images/bz.png";
 export const DjImage = "/assets/images/dj.png";
 export const YahooFImage = "/assets/images/yahoof.png";
 export const MwImage = "/assets/images/mw.png";
+export const WinLoseStreakImage = "/assets/images/winlosestreak.png";
+export const WinLoseStreakBannerImage = "/assets/images/winlosestreak-banner.png";
+export const VolumeImage = "/assets/images/volume.png";
+export const VolumeBannerImage = "/assets/images/volume-banner.png";
 
 
 export const MapIcon: { [key: string]: string } = {
