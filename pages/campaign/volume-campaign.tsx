@@ -76,7 +76,7 @@ function VolumeCampaign({ campaign }: { campaign: Campaign }) {
                                     {
                                         rows?.length > 0 && rows?.map((row: any, index: number) => (
                                             <TableRow
-                                                key={row.name + index}
+                                                key={row.user_name + index}
                                                 sx={{
                                                     'td, th': { border: 0, py: 1 }
                                                 }}
