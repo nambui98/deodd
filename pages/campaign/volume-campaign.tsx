@@ -13,6 +13,7 @@ import { Convert } from 'utils/convert'
 import MyModal from '../../components/common/Modal'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
+import { Format } from 'utils/format'
 
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
@@ -93,7 +94,7 @@ function VolumeCampaign({ campaign }: { campaign: Campaign }) {
                                                         <Typography variant='caption'>{(row.user_name ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.total_volume_bet}</Typography></TableCell>
+                                                <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {Format.formatMoney(row.total_volume_bet ?? 0)}</Typography></TableCell>
                                             </TableRow>
                                         ))}
                                     {
@@ -121,7 +122,7 @@ function VolumeCampaign({ campaign }: { campaign: Campaign }) {
                                                     <Typography variant='caption' color="background.paper">{(mymine?.user_name ?? '') + '(' + Convert.convertWalletAddress(mymine?.wallet, 4, 4) + ")"}</Typography>
                                                 </Stack>
                                             </TableCell>
-                                            <TableCell align="right" ><Typography variant='caption' color="background.paper"> {mymine?.total_volume_bet ?? '--'}</Typography></TableCell>
+                                            <TableCell align="right" ><Typography variant='caption' color="background.paper"> {Format.formatMoney(mymine?.total_volume_bet ?? 0) ?? '--'}</Typography></TableCell>
                                         </TableRow>
 
 
