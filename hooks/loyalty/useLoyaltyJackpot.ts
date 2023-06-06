@@ -20,7 +20,31 @@ function useLoyaltyJackpot() {
       },
     ],
   });
+  const [seasonInfo, setSeasonInfo] = useState({
+    currentSeason: 0,
+    currentReward: 0,
+    connectWalletTossPoint: 0,
+    tossPointRequire: 0,
+    startTime: "",
+  });
   const { walletAddress } = useWalletContext();
+
+  useEffect(() => {
+    async function getData() {
+      const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
+      if (promiseResult.status === 200) {
+        const data = promiseResult.data.data;
+        setSeasonInfo({
+          currentSeason: data.currentSeason,
+          currentReward: Math.round(data.currentReward * 1000) / 1000,
+          connectWalletTossPoint: data.connectWalletTossPoint,
+          tossPointRequire: data.tossPointRequire,
+          startTime: data.startTime,
+        });
+      }
+    }
+    getData();
+  }, [walletAddress]);
 
   useEffect(() => {
     async function getData() {
@@ -53,7 +77,7 @@ function useLoyaltyJackpot() {
     getData();
   }, [walletAddress]);
 
-  return { setSeason, leaderboard };
+  return { setSeason, leaderboard, seasonInfo };
 }
 
 export default useLoyaltyJackpot;

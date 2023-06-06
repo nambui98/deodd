@@ -4,11 +4,13 @@ import { LoyaltyImage } from "utils/Images";
 import { Colors } from "constants/index";
 import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
+import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
 
 type Props = {};
 
 function JackpotPool({}: Props) {
   const { walletIsConnected } = useWalletContext();
+  const { seasonInfo } = useLoyaltyJackpot();
 
   return (
     <Box width={1}>
@@ -38,9 +40,9 @@ function JackpotPool({}: Props) {
         <Typography mt={3.5} variant="body2">
           Season{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #2
+            #{seasonInfo.currentSeason}
           </Box>{" "}
-          Started at 12/12/2022
+          Started at {new Date(seasonInfo.startTime).toLocaleDateString()}
         </Typography>
         <Typography variant="body2" color={"text.disabled"}>
           Jackpot Reward
@@ -53,7 +55,7 @@ function JackpotPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            0,534
+            {seasonInfo.currentReward}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
@@ -66,13 +68,13 @@ function JackpotPool({}: Props) {
           fontWeight={500}
           color={"text.primary"}
         >
-          120/
+          {seasonInfo.connectWalletTossPoint}/
           <Box
             component={"span"}
             color={"text.secondary"}
             fontSize={"2.375rem"}
           >
-            15.000
+            {seasonInfo.tossPointRequire}
           </Box>
         </Typography>
       </Stack>
