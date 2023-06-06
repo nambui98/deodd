@@ -16,6 +16,7 @@ deploy_staging:
   only:
     - staging
   script:
+    - npm i vercel
     - DEPLOYMENT_URL=$(./node_modules/.bin/vercel --name deodd-staging --confirm -t $VERCEL_TOKEN)
     # promote to the vercel's production
     - ./node_modules/.bin/vercel --prod -t $VERCEL_TOKEN
