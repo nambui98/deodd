@@ -69,7 +69,7 @@ function VolumeCampaign({ campaign }: { campaign: Campaign }) {
                                     <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
                                         <TableCell >Rank</TableCell>
                                         <TableCell align="left">Users</TableCell>
-                                        <TableCell align="right">Amount</TableCell>
+                                        <TableCell align="right">Amount (BNB)</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody sx={{ bgcolor: 'background.paper' }}>
