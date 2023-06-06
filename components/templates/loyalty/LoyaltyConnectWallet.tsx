@@ -5,11 +5,21 @@ import { useWalletContext } from "contexts/WalletContext";
 const LoyaltyConnectWallet = () => {
   const { handleConnectWallet, walletIsConnected } = useWalletContext();
 
-  return (
-    !walletIsConnected
-      ? (<Stack direction={"row"} mt={3.25} alignItems={"center"} justifyContent={"center"} width={1} gap={1}>
-        <Box width={1} height={"1px"} bgcolor={"primary.100"}></Box>
-        <ButtonMain active={true} title="Connect wallet" onClick={handleConnectWallet} sx={{
+  return !walletIsConnected ? (
+    <Stack
+      direction={"row"}
+      mt={3.25}
+      alignItems={"center"}
+      justifyContent={"center"}
+      width={1}
+      gap={1}
+    >
+      <Box width={1} height={"1px"} bgcolor={"primary.100"}></Box>
+      <ButtonMain
+        active={true}
+        title="Connect wallet"
+        onClick={handleConnectWallet}
+        sx={{
           py: 0.5,
           minWidth: "17rem",
           fontSize: "0.75rem",
@@ -20,12 +30,12 @@ const LoyaltyConnectWallet = () => {
           borderWidth: 2,
           ":hover": {
             borderWidth: 2,
-          }
-        }} />
-        <Box width={1} height={"1px"} bgcolor={"primary.100"}></Box>
-      </Stack>)
-      : null
-  );
-}
+          },
+        }}
+      />
+      <Box width={1} height={"1px"} bgcolor={"primary.100"}></Box>
+    </Stack>
+  ) : null;
+};
 
 export default LoyaltyConnectWallet;
