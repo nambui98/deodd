@@ -54,7 +54,7 @@ function JackpotPoolBoard({}: Props) {
     <Box width={1}>
       <Stack
         direction={"row"}
-        mb={2}
+        mb={valueTab === 1 ? 2 : valueTab === 2 ? 3 : 2}
         gap={2}
         justifyContent={"space-between"}
         sx={(theme) => ({
