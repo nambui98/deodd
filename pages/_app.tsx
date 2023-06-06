@@ -17,16 +17,20 @@ import '../styles/globals.scss';
 import 'react-indiana-drag-scroll/dist/style.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Create a client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient(
+  // {
+  //   defaultOptions: {
+  //     queries: {
+  //       suspense: true,
+  //     },
+  //   },
+  // }
+)
 function MyApp(props: AppPropsCustom) {
   const { pageProps, Component } = props;
-  // const [mounted, setMounted] = useState(false);
-  // useEffect(() => setMounted(true), []);
   return (
     <QueryClientProvider client={queryClient}>
-
       <WagmiConfig client={wagmiClient}>
-
         <SiteProvider>
           <ColorModeProvider {...props}>
             <WalletProvider>
@@ -35,18 +39,14 @@ function MyApp(props: AppPropsCustom) {
                 <Layout>
                   <Component {...pageProps} />
                 </Layout>
-                <Loader />
                 <ModalClaimSuccess />
                 <ModalError />
                 <NextProgress delay={300} color={Colors.secondaryDark} height={8} disableSameRoute options={{ showSpinner: true, }} />
-
               </GameProvider>
             </WalletProvider>
           </ColorModeProvider>
-
         </SiteProvider>
       </WagmiConfig>
-
     </QueryClientProvider>
   )
 }

@@ -70,7 +70,14 @@ const getLeaderboardTestail = async (walletAddress: string | number) => {
         method: 'GET',
     })
 }
+const getClaimedReward = async () => {
+    return vhIdRequest({
+        url: baseURL + `/users/ref/claimed`,
+        method: 'GET',
+    })
+}
 export const ReferralApis = {
+    getClaimedReward,
     getLeaderboardTestail,
     findGenerateReferralLinkByWallet,
     checkUserReferral,

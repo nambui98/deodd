@@ -2,12 +2,28 @@ import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
 import { GA_TRACKING_ID } from '../utils/gtag';
 export default function Document() {
+
 	return (
 		<Html lang="en">
 			<Head>
 				<link rel="icon" href="/favicon.ico" />
 				<meta name="color-scheme" content="light only"></meta>
-
+				<script
+					async
+					src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+				/>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', '${GA_TRACKING_ID}', {
+							page_path: window.location.pathname,
+						});
+				`,
+					}}
+				/>
 				{/* <meta
 					name="google-site-verification"
 					content="HYiuC-O79F8rJ09CK5wwhKFlBQjNnMA9QAgaJsejIzs"

@@ -1,43 +1,34 @@
 import { StatusTransfer } from '@/templates/assets/ItemHistory'
 import RightContent from '@/templates/campaign/CampaignDetail/RightContent'
-import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import HowItWorkModal from '@/templates/referral/HowItWorkModal'
+import { Box, Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import MyImage from 'components/ui/image'
 import { useWalletContext } from 'contexts/WalletContext'
 import { DeoddService } from 'libs/apis'
-import React, { useEffect, useState } from 'react'
+import { CAMPAIGNS, Campaign } from 'pages/campaign'
+import React, { useState } from 'react'
 import { getPathAvatar } from 'utils/checkAvatar'
 import { Convert } from 'utils/convert'
 import MyModal from '../../components/common/Modal'
-import { ButtonLoading } from '../../components/ui/button'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
-import { CAMPAIGNS, Campaign } from 'pages/campaign'
-import { GetStaticProps, NextPageContext } from 'next'
-import { createDiffieHellmanGroup } from 'crypto'
 
-export async function getStaticPaths() {
-    const paths = CAMPAIGNS.map((campaign) => ({
-        params: { path: campaign.href },
-    }));
-
-    return { paths, fallback: true };
-}
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
-    const campaign = CAMPAIGNS.find(c => c.href === params.path);
+    const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
     return { props: { campaign } };
 }
-function DetailCampaign({ campaign }: { campaign: Campaign }) {
-    const [open, setOpen] = useState(false);
+function VolumeCampaign({ campaign }: { campaign: Campaign }) {
+
+    const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
-    const { walletAddress, handleConnectWallet, walletIsConnected } = useWalletContext();
-    const { data: referral, refetch: getLeaderboardReferral } = useQuery({
-        queryKey: ["getLeaderboardReferral"],
-        enabled: campaign.href === 'referral-campaign',
+    const { walletAddress, walletIsConnected } = useWalletContext();
+    const { data: volumes } = useQuery({
+        queryKey: ["getVolumes"],
         refetchInterval: 2000,
-        queryFn: () => DeoddService.getLeaderboardReferral(walletAddress),
+        queryFn: () => DeoddService.getTotalVolume(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
                 return data.data.data;
@@ -46,63 +37,24 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
             }
         },
     });
-    const { data: testails, refetch: getLeaderboardTestail } = useQuery({
-        queryKey: ["getLeaderboardTestail"],
-        enabled: campaign.href === 'testnet-campaign',
-        refetchInterval: 2000,
-        queryFn: () => DeoddService.getLeaderboardTestail(walletAddress),
-        select: (data: any) => {
-            if (data.status === 200) {
-                return data.data.data;
-            } else {
-                return undefined
-            }
-        },
-    });
-    useEffect(() => {
-
-        if (campaign.href === 'referral-campaign') {
-            debugger
-            getLeaderboardReferral();
-        } else {
-            getLeaderboardTestail();
-        }
-    }, [campaign.href, getLeaderboardReferral, getLeaderboardTestail, walletAddress])
-
     const MapRank: { [key: string]: string } = {
         1: Rank1Image,
         2: Rank2Image,
         3: Rank3Image,
     }
-    let rows;
-    let mymine;
-    if (campaign.href === 'testnet-campaign') {
-
-        rows = testails?.testAilPointUserDtos;
-        mymine = testails?.connectWallet;
-    } else {
-        rows = referral?.referralPointUsers?.length > 50 ? referral?.referralPointUsers.slice(0, 50) : referral?.referralPointUsers || []
-        mymine = referral?.connectWallet;
-    }
+    let rows = volumes?.volumeBetUsers;
+    let mymine = volumes?.connectWallet;
     return (
         <Box mt={5}>
-            {/* <Box bgcolor={"background.paper"} p={"35px 0px"}>
-                <Container>
-
-                    <Typography variant='caption' color={"secondary.100"}>
-                        Campaign
-                    </Typography>
-                    <Typography variant='h2' textTransform={'uppercase'}>
-                        Referral
-                    </Typography>
-                </Container>
-            </Box> */}
-
-
-
-
             <Container>
-                <Stack direction="row" mt={3} columnGap={4}>
+                <Stack sx={{
+                    [theme.breakpoints.up('xs').replace("@media", "@container")]: {
+                        flexDirection: "column"
+                    },
+                    [theme.breakpoints.up('md').replace("@media", "@container")]: {
+                        flexDirection: 'row'
+                    },
+                }} mt={3} gap={4}>
                     <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
                         <Stack direction={'row'} alignItems={'center'} gap={1} >
                             <MyImage src={LeaderboardImage} width={32} height={32} alt="" />
@@ -116,7 +68,7 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                                     <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
                                         <TableCell >Rank</TableCell>
                                         <TableCell align="left">Users</TableCell>
-                                        <TableCell align="right"> {campaign.href === "testnet-campaign" ? 'Testail Point' : 'Friends invited'}</TableCell>
+                                        <TableCell align="right">Amount</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody sx={{ bgcolor: 'background.paper' }}>
@@ -138,10 +90,10 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                                                 <TableCell align="left">
                                                     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                                                         <MyImage width={24} height={24} src={getPathAvatar(row.avatar_id)} alt="" />
-                                                        <Typography variant='caption'>{((row.user_name || row.user_name_father) ?? '') + '(' + Convert.convertWalletAddress((row.wallet || row.user_wallet_father), 4, 4) + ")"}</Typography>
+                                                        <Typography variant='caption'>{(row.user_name ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.number_child || row.testail_point}</Typography></TableCell>
+                                                <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.total_volume_bet}</Typography></TableCell>
                                             </TableRow>
                                         ))}
                                     {
@@ -166,10 +118,10 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                                             <TableCell align="left">
                                                 <Stack direction={'row'} columnGap={1} alignItems={'center'}>
                                                     <MyImage src={getPathAvatar(mymine?.avatar_id)} width={24} height={24} alt="" />
-                                                    <Typography variant='caption' color="background.paper">{((mymine?.user_name || mymine?.user_name_father) ?? '') + '(' + Convert.convertWalletAddress((mymine?.user_wallet_father || mymine?.wallet), 4, 4) + ")"}</Typography>
+                                                    <Typography variant='caption' color="background.paper">{(mymine?.user_name ?? '') + '(' + Convert.convertWalletAddress(mymine?.wallet, 4, 4) + ")"}</Typography>
                                                 </Stack>
                                             </TableCell>
-                                            <TableCell align="right" ><Typography variant='caption' color="background.paper"> {(mymine?.number_child || mymine?.testail_point) ?? '--'}</Typography></TableCell>
+                                            <TableCell align="right" ><Typography variant='caption' color="background.paper"> {mymine?.total_volume_bet ?? '--'}</Typography></TableCell>
                                         </TableRow>
 
 
@@ -185,10 +137,14 @@ function DetailCampaign({ campaign }: { campaign: Campaign }) {
                             }
                         </TableContainer>
                     </Box>
-                    <RightContent image={campaign.imageDetail} />
+                    <Box>
+                        <RightContent image={campaign.imageDetail} campaign={campaign} />
+                        {
+                            campaign.href === 'referral-campaign' &&
+                            <HowItWorkModal />
+                        }
+                    </Box>
                 </Stack >
-
-
             </Container >
             <MyModal open={openModal} title='Balance History' setOpen={setOpenModal} >
                 <Item isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.COMPLETED} value='+10 BNB' />
@@ -226,4 +182,4 @@ const Item: React.FC<TypeItem> = ({ title, isDeposit, status, value, date }) => 
 }
 
 
-export default DetailCampaign;
+export default VolumeCampaign;

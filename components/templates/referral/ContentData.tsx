@@ -11,22 +11,22 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import { TypeTab } from "components/common/Tabs";
 import { ButtonFourth, ButtonLoading } from "components/ui/button";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
+import { format } from "date-fns";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { useMemo, useState } from "react";
 import { BnbIcon } from "utils/Icons";
-import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
+import { BnbImage, CoinEmptyImage } from "utils/Images";
+import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
-import { checkAvatar } from "utils/checkAvatar";
-import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -44,8 +44,21 @@ function createData(avatar: number | undefined, name: string, expire: string, pr
 }
 function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
-
     const { walletAddress, bnbBalance } = useWalletContext();
+    const { data: dataClaimed, refetch: getClaimedReward } = useQuery({
+        queryKey: ["getClaimedReward"],
+        enabled: true,
+        queryFn: () => DeoddService.getClaimedReward(),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+    console.log(dataClaimed);
+
     const {
         setIsSuccess,
         setTitleSuccess,
@@ -83,7 +96,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
         [dataExpired]
     );
     let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
-
 
     const handleClaim = async () => {
         try {
@@ -162,8 +174,8 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 alignItems={"center"}
                             >
                                 <Typography variant="body2" color="secondary.main">
-                                    {Format.formatMoneyFromBigNumberEther(
-                                        dataAvailable?.claimedReward ?? 0
+                                    {Format.formatMoney(
+                                        dataClaimed?.data ?? 0
                                     )}
                                 </Typography>
                                 <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
@@ -297,7 +309,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "none",
                             },
                         })}>
-                        <ShareLink link={link} />
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
+
                     </Box>
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"}>
@@ -394,7 +410,11 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 display: "block",
                             },
                         })}>
-                        <ShareLink link={link} />
+
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
                     </Box>
                 </Box>
             </Stack>
