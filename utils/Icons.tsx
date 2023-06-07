@@ -54,6 +54,10 @@ import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 import EmojiIcon from "public/assets/icons/emoji-happy.svg";
 import Marketplace1Icon from "public/assets/icons/marketplace1.svg";
 import ShareIcon from "public/assets/icons/share.svg";
+import FilterIcon from "public/assets/icons/filter.svg";
+import TickCircleIcon from "public/assets/icons/tick-circle.svg";
+import TickCircleOutlineIcon from "public/assets/icons/tick-circle-outline.svg";
+import BagTickIcon from "public/assets/icons/bag-tick.svg";
 function Bnb2Icon(props: SvgIconProps) {
   return (
     <SvgIcon {...props}>
@@ -65,7 +69,12 @@ function Bnb2Icon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
+
 export {
+  BagTickIcon,
+  TickCircleOutlineIcon,
+  TickCircleIcon,
+  FilterIcon,
   EmojiIcon,
   Archive2Icon,
   ArrowLeft2Icon,

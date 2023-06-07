@@ -781,7 +781,7 @@ const ChatItem = ({ isMy, walletAddress, handleUndoReport, isReport, id, data, h
 
     if (isReport) {
         return <Box bgcolor={'background.paper'} position={'relative'} boxShadow={"0px 2px 4px rgba(0, 0, 0, 0.15)"} border={'1px solid'} borderColor={'secondary.300'} textAlign={'center'} borderRadius={2} px={2} pt={2} pb={1} mb={1}>
-            <Typography variant='body2' color="secondary.100" fontWeight={400}>This message has been reported and hidden</Typography>
+            <Typography variant='body2' color="secondary.100" fontWeight={400} whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }}>This message has been reported and hidden</Typography>
             <Button variant="text" sx={{ border: 'none', '&:hover': { border: 'none', backgroundColor: 'secondary.300' } }} onClick={() => handleUndoReport(id!)} color={'secondary'}>Undo</Button>
         </Box>
     }
