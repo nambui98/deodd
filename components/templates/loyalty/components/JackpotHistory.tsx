@@ -10,6 +10,27 @@ type PropsType = {
   history: LoyaltyJackpotHistoryType;
 };
 
+function formatNumber(number: number) {
+  return new Intl.NumberFormat("en-us").format(
+    Math.round(number * 1000) / 1000
+  );
+}
+
+function formatDate(dateString: string) {
+  const dateObject = new Date(dateString);
+  const date = dateObject.toLocaleDateString("vi", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const hour = dateObject.toLocaleTimeString(undefined, {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${hour} - ${date}`;
+}
+
 function JackpotHistory({ history }: PropsType) {
   return (
     <Stack
@@ -28,7 +49,7 @@ function JackpotHistory({ history }: PropsType) {
                 Your TossPoint
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {history.userTossPoint ?? 0}
+                {formatNumber(history.userTossPoint) ?? 0}
               </Typography>
             </Stack>
             <Stack direction={"row"} gap={1}>
@@ -53,7 +74,7 @@ function JackpotHistory({ history }: PropsType) {
                 </Typography>
                 <Stack direction={"row"} gap={1} color={"text.secondary"}>
                   <Typography variant="h2" lineHeight={"2rem"}>
-                    {Math.round(history.jackpot * 1000) / 1000}
+                    {formatNumber(history.jackpot)}
                   </Typography>
                   <BnbIcon width={24} />
                 </Stack>
@@ -66,7 +87,7 @@ function JackpotHistory({ history }: PropsType) {
                 TossPoint Required
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {history.tossPointRequire}
+                {formatNumber(history.tossPointRequire)}
               </Typography>
             </Stack>
             <Stack gap={0.5}>
@@ -79,14 +100,7 @@ function JackpotHistory({ history }: PropsType) {
                 Start
               </Typography>
               <Typography variant="body2" lineHeight={"1.25rem"}>
-                {new Intl.DateTimeFormat(undefined, {
-                  hour12: false,
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }).format(new Date(history.startTime))}
+                {formatDate(history.startTime)}
               </Typography>
               <Typography
                 fontSize={"0.75rem"}
@@ -97,14 +111,7 @@ function JackpotHistory({ history }: PropsType) {
                 End
               </Typography>
               <Typography variant="body2" lineHeight={"1.25rem"}>
-                {new Intl.DateTimeFormat(undefined, {
-                  hour12: false,
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }).format(new Date(history.endTime))}
+                {formatDate(history.endTime)}
               </Typography>
             </Stack>
           </Stack>
