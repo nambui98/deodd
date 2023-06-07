@@ -56,17 +56,22 @@ function JackpotPopup() {
           >
             Arlene McCoy (3535***3534)
           </Typography>
-          <Typography
-            fontSize={"1rem"}
-            fontWeight={600}
-            lineHeight={"1.375rem"}
-            color={"text.secondary"}
-          >
-            1,108 <BnbIcon width={20} />
-          </Typography>
+          <Stack direction={"row"} alignItems={"center"} gap={1} color={"text.secondary"}>
+            <Typography
+              fontSize={"1rem"}
+              fontWeight={600}
+              lineHeight={"1.375rem"}
+              sx={{
+                verticalAlign: "bottom"
+              }}
+            >
+              1,108
+            </Typography>
+            <BnbIcon width={20} />
+          </Stack>
         </Stack>
       </Stack>
-    </Box>
+    </Box >
   );
 }
 
