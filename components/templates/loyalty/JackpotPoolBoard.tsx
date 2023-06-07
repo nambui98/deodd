@@ -3,15 +3,21 @@ import SelectBox from "components/common/SelectBox";
 import { TypeTab, MyTabs2 } from "components/common/Tabs";
 import React, { useState } from "react";
 import { Clock2Icon, CupIcon } from "utils/Icons";
-import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
 import JackpotLeaderboard from "./components/JackpotLeaderboard";
 import JackpotHistory from "./components/JackpotHistory";
+import {
+  LoyaltyJackpotLeaderboardType,
+  LoyaltyJackpotHistoryType,
+} from "libs/types";
 
-type Props = {};
+type Props = {
+  leaderboard: LoyaltyJackpotLeaderboardType;
+  setSeason: (value: string | number) => void;
+  history: LoyaltyJackpotHistoryType;
+};
 
-function JackpotPoolBoard({ }: Props) {
+function JackpotPoolBoard({ leaderboard, setSeason, history }: Props) {
   const [valueTab, setValueTab] = useState(1);
-  const { leaderboard, setSeason, history } = useLoyaltyJackpot();
 
   const listTabs: TypeTab[] = [
     {

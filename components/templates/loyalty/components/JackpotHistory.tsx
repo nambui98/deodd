@@ -3,18 +3,10 @@ import { Convert } from "utils/convert";
 import Image from "next/image";
 import { BnbIcon } from "utils/Icons";
 import { CoinEmptyImage } from "utils/Images";
+import { LoyaltyJackpotHistoryType } from "libs/types";
 
 type PropsType = {
-  history: {
-    endTime: string;
-    jackpot: number;
-    startTime: string;
-    tossPointRequire: number;
-    userTossPoint: number;
-    winnerAvatarId: number;
-    winnerUserName: string;
-    winnerWallet: string;
-  };
+  history: LoyaltyJackpotHistoryType;
 };
 
 function JackpotHistory({ history }: PropsType) {

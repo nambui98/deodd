@@ -15,18 +15,10 @@ import MyImage from "components/ui/image";
 import Image from "next/image";
 import { Convert } from "utils/convert";
 import { AvatarImage, CoinEmptyImage } from "utils/Images";
+import { LoyaltyJackpotLeaderboardType } from "libs/types";
 
 type PropsType = {
-  leaderboard: {
-    currentSeason: number;
-    leaderboardList: {
-      rank: number;
-      wallet: string;
-      userName: string;
-      avatarId: number;
-      tossPoint: number;
-    }[];
-  };
+  leaderboard: LoyaltyJackpotLeaderboardType;
 };
 
 function JackpotLeaderboard({ leaderboard }: PropsType) {

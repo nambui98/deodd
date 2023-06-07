@@ -10,7 +10,7 @@ type Props = {};
 
 function JackpotPool({}: Props) {
   const { walletIsConnected } = useWalletContext();
-  const { seasonInfo } = useLoyaltyJackpot();
+  const { leaderboard, setSeason, history, seasonInfo } = useLoyaltyJackpot();
 
   return (
     <Box width={1}>
@@ -87,7 +87,11 @@ function JackpotPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
-          <JackpotPoolBoard />
+          <JackpotPoolBoard
+            leaderboard={leaderboard}
+            setSeason={setSeason}
+            history={history}
+          />
         </>
       ) : null}
     </Box>
