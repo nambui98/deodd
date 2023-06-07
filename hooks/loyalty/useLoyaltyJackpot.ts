@@ -19,6 +19,13 @@ function useLoyaltyJackpot() {
         tossPoint: 0,
       },
     ],
+    connectWallet: {
+      rank: 1,
+      wallet: "",
+      userName: "",
+      avatarId: 0,
+      tossPoint: 0,
+    }
   });
   const [seasonInfo, setSeasonInfo] = useState({
     currentSeason: 0,
@@ -65,11 +72,12 @@ function useLoyaltyJackpot() {
           walletAddress
         );
         if (seasonPromise.status === 200 && seasonPromise.data != null) {
-          const leaderboardData = seasonPromise.data.data.dashboard.dashboard;
+          const promiseData = seasonPromise.data.data;
           setLeaderboard((prev) => {
             return {
               ...prev,
-              leaderboardList: leaderboardData,
+              leaderboardList: promiseData.dashboard.dashboard,
+              connectWallet: promiseData.connectWallet,
             };
           });
         } else {
@@ -84,11 +92,12 @@ function useLoyaltyJackpot() {
           leaderboardPromise.status === 200 &&
           leaderboardPromise.data != null
         ) {
-          const leaderboardData = leaderboardPromise.data.data.dashboard;
+          const promiseData = leaderboardPromise.data.data;
           setLeaderboard((prev) => {
             return {
               ...prev,
-              leaderboardList: leaderboardData,
+              leaderboardList: promiseData.dashboard,
+              connectWallet: promiseData.connectWallet
             };
           });
         } else {

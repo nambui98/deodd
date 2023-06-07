@@ -113,4 +113,11 @@ export type LoyaltyJackpotLeaderboardType = {
         avatarId: number;
         tossPoint: number;
     }[];
+    connectWallet: {
+        rank: number;
+        wallet: string;
+        userName: string;
+        avatarId: number;
+        tossPoint: number;
+    }
 }

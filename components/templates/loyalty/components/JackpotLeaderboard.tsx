@@ -14,7 +14,7 @@ import {
 import MyImage from "components/ui/image";
 import Image from "next/image";
 import { Convert } from "utils/convert";
-import { AvatarImage, CoinEmptyImage } from "utils/Images";
+import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotLeaderboardType } from "libs/types";
 import { getPathAvatar } from "utils/checkAvatar";
 
@@ -111,7 +111,11 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
                       <Typography
                         variant="caption"
-                        color={"text.disabled"}
+                        color={
+                          row.wallet === leaderboard.connectWallet.wallet
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
                         lineHeight={"1.25rem"}
                       >
                         {row.rank}
@@ -133,9 +137,19 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                           variant="caption"
                           fontWeight={400}
                           lineHeight={"1.25rem"}
+                          color={
+                            row.wallet === leaderboard.connectWallet.wallet
+                              ? "text.secondary"
+                              : "text.primary"
+                          }
                         >
-                          {row.userName} (
-                          {Convert.convertWalletAddress(row.wallet, 5, 4)})
+                          {row.wallet === leaderboard.connectWallet.wallet
+                            ? "You"
+                            : `${row.userName} (${Convert.convertWalletAddress(
+                                row.wallet,
+                                5,
+                                4
+                              )})`}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -145,7 +159,11 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                     >
                       <Typography
                         variant="caption"
-                        color="text.disabled"
+                        color={
+                          row.wallet === leaderboard.connectWallet.wallet
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
                         lineHeight={"1.25rem"}
                       >
                         {row.tossPoint}
@@ -178,15 +196,17 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
             }}
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
-              <Typography variant="caption">3</Typography>
+              <Typography variant="caption">
+                {leaderboard.connectWallet?.rank ?? "--"}
+              </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
               <Stack direction={"row"} columnGap={1} alignItems={"center"}>
                 <Image
                   width={24}
                   height={24}
-                  src={AvatarImage}
-                  alt="Avatar Image"
+                  src={getPathAvatar(leaderboard.connectWallet?.avatarId)}
+                  alt="User Avatar"
                 />
                 <Typography variant="caption" fontWeight={400}>
                   You
@@ -194,7 +214,11 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
               </Stack>
             </TableCell>
             <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
-              <Typography variant="caption">100</Typography>
+              <Typography variant="caption">
+                {leaderboard.leaderboardList.length > 0
+                  ? leaderboard.connectWallet?.tossPoint ?? 0
+                  : "--"}
+              </Typography>
             </TableCell>
           </TableRow>
         </TableFooter>
