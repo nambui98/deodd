@@ -11,7 +11,7 @@ type Props = {};
 
 function JackpotPoolBoard({ }: Props) {
   const [valueTab, setValueTab] = useState(1);
-  const { leaderboard, setSeason } = useLoyaltyJackpot();
+  const { leaderboard, setSeason, history } = useLoyaltyJackpot();
 
   const listTabs: TypeTab[] = [
     {
@@ -75,7 +75,7 @@ function JackpotPoolBoard({ }: Props) {
       {valueTab === 1 ? (
         <JackpotLeaderboard leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
-        <JackpotHistory />
+        <JackpotHistory history={history} />
       ) : (
         ""
       )}

@@ -9,7 +9,7 @@ import { useWalletContext } from "contexts/WalletContext";
 function useLoyaltyJackpot() {
   const [season, setSeason] = useState<string | number>("current");
   const [leaderboard, setLeaderboard] = useState({
-    currentSeason: 4,
+    currentSeason: 1,
     leaderboardList: [
       {
         rank: 1,
@@ -26,6 +26,16 @@ function useLoyaltyJackpot() {
     connectWalletTossPoint: 0,
     tossPointRequire: 0,
     startTime: "",
+  });
+  const [history, setHistory] = useState({
+    endTime: "",
+    jackpot: 0,
+    startTime: "",
+    tossPointRequire: 0,
+    userTossPoint: 0,
+    winnerAvatarId: 0,
+    winnerUserName: "null",
+    winnerWallet: "null",
   });
   const { walletAddress } = useWalletContext();
 
@@ -102,7 +112,36 @@ function useLoyaltyJackpot() {
     getData();
   }, [walletAddress]);
 
-  return { setSeason, leaderboard, seasonInfo };
+  useEffect(() => {
+    async function getData() {
+      if (season === "current") {
+        const currentSeasonPromise = await getLoyaltyJackpotBoardCurrent(
+          walletAddress
+        );
+        const currentSeason = currentSeasonPromise.data.data.currentSeason;
+        const promiseResult = await getLoyaltyHistoryJackpot(
+          walletAddress,
+          currentSeason
+        );
+        if (promiseResult.status === 200) {
+          const promiseData = promiseResult.data.data;
+          setHistory(promiseData);
+        }
+      } else {
+        const promiseResult = await getLoyaltyHistoryJackpot(
+          walletAddress,
+          season
+        );
+        if (promiseResult.status === 200) {
+          const promiseData = promiseResult.data.data;
+          setHistory(promiseData);
+        }
+      }
+    }
+    getData();
+  });
+
+  return { setSeason, leaderboard, seasonInfo, history };
 }
 
 export default useLoyaltyJackpot;
