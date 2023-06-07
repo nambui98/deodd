@@ -7,7 +7,7 @@ import {
 import { useWalletContext } from "contexts/WalletContext";
 
 function useLoyaltyJackpot() {
-  const [season, setSeason] = useState(4);
+  const [season, setSeason] = useState<string | number>("current");
   const [leaderboard, setLeaderboard] = useState({
     currentSeason: 4,
     leaderboardList: [
@@ -29,6 +29,7 @@ function useLoyaltyJackpot() {
   });
   const { walletAddress } = useWalletContext();
 
+  // Get data for jackpot banner section
   useEffect(() => {
     async function getData() {
       const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
@@ -46,19 +47,44 @@ function useLoyaltyJackpot() {
     getData();
   }, [walletAddress]);
 
+  // Get leaderboard data
   useEffect(() => {
     async function getData() {
-      const promiseResult = await getLoyaltyJackpotBoardHistory(
-        walletAddress,
-        season
-      );
-      const dashboardData = promiseResult.data.data.dashboard;
-      setLeaderboard((prev) => {
-        return {
-          ...prev,
-          leaderboardList: dashboardData,
-        };
-      });
+      if (season === "current") {
+        const seasonPromise = await getLoyaltyJackpotBoardCurrent(
+          walletAddress
+        );
+        if (seasonPromise.status === 200 && seasonPromise.data != null) {
+          const leaderboardData = seasonPromise.data.data.dashboard.dashboard;
+          setLeaderboard((prev) => {
+            return {
+              ...prev,
+              leaderboardList: leaderboardData,
+            };
+          });
+        } else {
+          throw new Error("Can't connect to the API");
+        }
+      } else {
+        const leaderboardPromise = await getLoyaltyJackpotBoardHistory(
+          walletAddress,
+          season
+        );
+        if (
+          leaderboardPromise.status === 200 &&
+          leaderboardPromise.data != null
+        ) {
+          const leaderboardData = leaderboardPromise.data.data.dashboard;
+          setLeaderboard((prev) => {
+            return {
+              ...prev,
+              leaderboardList: leaderboardData,
+            };
+          });
+        } else {
+          throw new Error("Can't connect to the API");
+        }
+      }
     }
     getData();
   }, [season, walletAddress]);
@@ -72,7 +98,6 @@ function useLoyaltyJackpot() {
         ...prev,
         currentSeason: data.currentSeason,
       }));
-      setSeason(data.currentSeason);
     }
     getData();
   }, [walletAddress]);

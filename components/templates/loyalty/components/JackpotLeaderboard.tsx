@@ -62,6 +62,7 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
             boxShadow: "none",
             backgroundColor: "background.paper",
             borderRadius: { xs: 0, md: 2 },
+            position: "relative",
           }}
         >
           {leaderboard.leaderboardList.length <= 0 && (

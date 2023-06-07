@@ -9,8 +9,7 @@ type Props = {
 }
 
 function SelectBox({ selectOptions, setValue }: Props) {
-    const [valueSelect, setValueSelect] = useState<string>(`${selectOptions[0].value}`);
-    console.log(valueSelect);
+    const [valueSelect, setValueSelect] = useState<string>(`${selectOptions[0].value}` ?? "current");
     return (
         <Select
             value={valueSelect}

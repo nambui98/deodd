@@ -9,7 +9,7 @@ import JackpotHistory from "./components/JackpotHistory";
 
 type Props = {};
 
-function JackpotPoolBoard({}: Props) {
+function JackpotPoolBoard({ }: Props) {
   const [valueTab, setValueTab] = useState(1);
   const { leaderboard, setSeason } = useLoyaltyJackpot();
 
@@ -39,7 +39,7 @@ function JackpotPoolBoard({}: Props) {
   for (let i = leaderboard.currentSeason; i >= 1; i--) {
     if (i === leaderboard.currentSeason) {
       selectOptions.push({
-        value: i,
+        value: "current",
         text: "Current Season",
       });
     } else {
