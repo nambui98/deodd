@@ -139,7 +139,7 @@ function useLoyaltyJackpot() {
       }
     }
     getData();
-  });
+  }, [season, walletAddress]);
 
   return { setSeason, leaderboard, seasonInfo, history };
 }
