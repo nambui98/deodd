@@ -112,7 +112,7 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet.wallet
+                          row.wallet === leaderboard.connectWallet?.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -138,12 +138,12 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                           fontWeight={400}
                           lineHeight={"1.25rem"}
                           color={
-                            row.wallet === leaderboard.connectWallet.wallet
+                            row.wallet === leaderboard.connectWallet?.wallet
                               ? "text.secondary"
                               : "text.primary"
                           }
                         >
-                          {row.wallet === leaderboard.connectWallet.wallet
+                          {row.wallet === leaderboard.connectWallet?.wallet
                             ? "You"
                             : `${row.userName} (${Convert.convertWalletAddress(
                                 row.wallet,
@@ -160,7 +160,7 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet.wallet
+                          row.wallet === leaderboard.connectWallet?.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
