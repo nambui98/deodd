@@ -16,6 +16,7 @@ import Image from "next/image";
 import { Convert } from "utils/convert";
 import { AvatarImage, CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotLeaderboardType } from "libs/types";
+import { getPathAvatar } from "utils/checkAvatar";
 
 type PropsType = {
   leaderboard: LoyaltyJackpotLeaderboardType;
@@ -125,7 +126,7 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                         <Image
                           width={24}
                           height={24}
-                          src={AvatarImage}
+                          src={getPathAvatar(row.avatarId)}
                           alt="Avatar Image"
                         />
                         <Typography

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { BnbIcon } from "utils/Icons";
 import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotHistoryType } from "libs/types";
+import { getPathAvatar } from "utils/checkAvatar";
 
 type PropsType = {
   history: LoyaltyJackpotHistoryType;
@@ -13,13 +14,13 @@ function JackpotHistory({ history }: PropsType) {
   return (
     <Stack
       direction={"row"}
-      justifyContent={history != null ? "space-between" : "center"}
+      justifyContent={history.endTime != null ? "space-between" : "center"}
       bgcolor={"background.paper"}
       p={2}
       borderRadius={3}
-      height={history != null ? 215 : 384}
+      height={history.endTime != null ? 215 : 384}
     >
-      {history && (
+      {history.endTime && (
         <>
           <Stack justifyContent={"space-between"}>
             <Stack gap={1}>
@@ -27,29 +28,36 @@ function JackpotHistory({ history }: PropsType) {
                 Your TossPoint
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                9.500
+                {history.userTossPoint ?? 0}
               </Typography>
             </Stack>
-            <Stack gap={0.5}>
-              <Typography
-                fontSize={"0.75rem"}
-                lineHeight={"1rem"}
-                fontWeight={400}
-                color={"text.secondary"}
-              >
-                Winner
-              </Typography>
-              <Typography variant="body2" lineHeight={"1.25rem"}>
-                {history.winnerUserName} (
-                {Convert.convertWalletAddress(history.winnerWallet, 5, 4)})
-              </Typography>
-              <Typography
-                variant="h2"
-                lineHeight={"2rem"}
-                color={"text.secondary"}
-              >
-                {history.userTossPoint} <BnbIcon width={24} />
-              </Typography>
+            <Stack direction={"row"} gap={1}>
+              <Image
+                src={getPathAvatar(history.winnerAvatarId)}
+                width={24}
+                height={24}
+                alt="Winner Avatar"
+              />
+              <Stack gap={0.5}>
+                <Typography
+                  fontSize={"0.75rem"}
+                  lineHeight={"1rem"}
+                  fontWeight={400}
+                  color={"text.secondary"}
+                >
+                  Winner
+                </Typography>
+                <Typography variant="body2" lineHeight={"1.25rem"}>
+                  {history.winnerUserName} (
+                  {Convert.convertWalletAddress(history.winnerWallet, 5, 4)})
+                </Typography>
+                <Stack direction={"row"} gap={1} color={"text.secondary"}>
+                  <Typography variant="h2" lineHeight={"2rem"}>
+                    {Math.round(history.jackpot * 1000) / 1000}
+                  </Typography>
+                  <BnbIcon width={24} />
+                </Stack>
+              </Stack>
             </Stack>
           </Stack>
           <Stack justifyContent={"space-between"}>
@@ -102,7 +110,7 @@ function JackpotHistory({ history }: PropsType) {
           </Stack>
         </>
       )}
-      {!history && (
+      {!history.endTime && (
         <>
           <Stack
             sx={{ inset: 0 }}

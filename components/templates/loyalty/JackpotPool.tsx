@@ -68,7 +68,7 @@ function JackpotPool({}: Props) {
           fontWeight={500}
           color={"text.primary"}
         >
-          {seasonInfo.connectWalletTossPoint}/
+          {seasonInfo.connectWalletTossPoint ?? 0}/
           <Box
             component={"span"}
             color={"text.secondary"}
