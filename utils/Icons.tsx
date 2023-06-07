@@ -52,6 +52,8 @@ import { SvgIcon, SvgIconProps } from "@mui/material";
 import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 import EmojiIcon from "public/assets/icons/emoji-happy.svg";
+import Marketplace1Icon from "public/assets/icons/marketplace1.svg";
+import ShareIcon from "public/assets/icons/share.svg";
 function Bnb2Icon(props: SvgIconProps) {
   return (
     <SvgIcon {...props}>
@@ -116,5 +118,7 @@ export {
   ProfileCircleIcon,
   ArchiveIcon,
   CloseSquareIcon2,
-  InfoCircleIcon
+  InfoCircleIcon,
+  Marketplace1Icon,
+  ShareIcon,
 };
