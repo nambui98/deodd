@@ -1,6 +1,6 @@
 import { Box, Button, Snackbar, Stack, Typography, styled } from '@mui/material'
 import MyImage from 'components/ui/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CloseSquareIcon2 } from 'utils/Icons'
 import { AvatarImage } from 'utils/Images'
 import { MessageType } from './Chat'
@@ -11,18 +11,19 @@ import { stringify } from 'querystring'
 import { getPathAvatar } from 'utils/checkAvatar'
 
 type Props = {
+    blockStateProp: enumBlockState,
     messageSelected: MessageType,
     setIsStartBlock: Function,
     onBlockUser: Function,
     onUnBlockUser: Function
 }
-enum enumBlockState {
+export enum enumBlockState {
     Block,
     BlockSuccess,
     BlockList
 }
-function BlockState({ messageSelected, setIsStartBlock, onBlockUser, onUnBlockUser }: Props) {
-    const [blockState, setBlockState] = useState<enumBlockState | undefined>(enumBlockState.Block);
+function BlockState({ messageSelected, blockStateProp, setIsStartBlock, onBlockUser, onUnBlockUser }: Props) {
+    const [blockState, setBlockState] = useState<enumBlockState | undefined>(blockStateProp);
     const [listUserBlock, setListUserBlock] = useState<{
         blockedUserInfo: {
             avatarId: number | undefined,
@@ -33,6 +34,7 @@ function BlockState({ messageSelected, setIsStartBlock, onBlockUser, onUnBlockUs
         id: string,
         is_deleted: boolean,
     }[]>([])
+
     const { refetch: getBlockList } = useQuery({
         queryKey: ["getBlockList"],
         enabled: false,
@@ -52,6 +54,12 @@ function BlockState({ messageSelected, setIsStartBlock, onBlockUser, onUnBlockUs
             }
         },
     });
+
+    useEffect(() => {
+        if (blockStateProp === enumBlockState.BlockList) {
+            getBlockList();
+        }
+    }, [blockStateProp, getBlockList])
     const handleClose = () => {
         setBlockState(undefined);
         setIsStartBlock(false)

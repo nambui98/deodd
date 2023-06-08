@@ -58,6 +58,7 @@ import FilterIcon from "public/assets/icons/filter.svg";
 import TickCircleIcon from "public/assets/icons/tick-circle.svg";
 import TickCircleOutlineIcon from "public/assets/icons/tick-circle-outline.svg";
 import BagTickIcon from "public/assets/icons/bag-tick.svg";
+import MoreIcon from "public/assets/icons/more-square2.svg";
 function Bnb2Icon(props: SvgIconProps) {
   return (
     <SvgIcon {...props}>
@@ -71,6 +72,7 @@ function Bnb2Icon(props: SvgIconProps) {
 }
 
 export {
+  MoreIcon,
   BagTickIcon,
   TickCircleOutlineIcon,
   TickCircleIcon,
