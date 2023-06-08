@@ -1,6 +1,5 @@
 import {
   Box,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -17,7 +16,6 @@ import {
   CoinEmptyImage,
   DiamondImage,
   GoldImage,
-  ReferralImage,
 } from "utils/Images";
 import MyImage from "components/ui/image";
 import Image from "next/image";

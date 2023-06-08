@@ -3,6 +3,8 @@ import SelectBox from "components/common/SelectBox";
 import { TypeTab, MyTabs2 } from "components/common/Tabs";
 import React, { useState } from "react";
 import { Clock2Icon, CupIcon } from "utils/Icons";
+import HolderHistory from "./components/HolderHistory";
+import HolderLeaderboard from "./components/HolderLeaderboard";
 
 type Props = {};
 
@@ -57,6 +59,15 @@ function HolderPoolBoard({}: Props) {
         <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
         <SelectBox selectOptions={selectOptions} />
       </Stack>
+
+      {valueTab === 1 ? (
+        // <HolderLeaderboard />
+        "a"
+      ) : valueTab === 2 ? (
+        <HolderHistory />
+      ) : (
+        ""
+      )}
     </Box>
   );
 }
