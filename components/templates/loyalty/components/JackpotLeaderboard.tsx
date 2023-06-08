@@ -145,11 +145,13 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                         >
                           {row.wallet === leaderboard.connectWallet?.wallet
                             ? "You"
-                            : `${row.userName} (${Convert.convertWalletAddress(
+                            : `${row.userName ?? ""} ${
+                                row.userName ? "(" : ""
+                              }${Convert.convertWalletAddress(
                                 row.wallet,
                                 5,
                                 4
-                              )})`}
+                              )}${row.userName ? ")" : ""}`}
                         </Typography>
                       </Stack>
                     </TableCell>
