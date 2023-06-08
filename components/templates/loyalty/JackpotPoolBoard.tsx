@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material";
 import SelectBox from "components/common/SelectBox";
 import { TypeTab, MyTabs2 } from "components/common/Tabs";
 import React, { useState } from "react";
-import { Clock2Icon, CupIcon } from "utils/Icons";
+import { Clock2Icon, ClockIcon, CupIcon } from "utils/Icons";
 import JackpotLeaderboard from "./components/JackpotLeaderboard";
 import JackpotHistory from "./components/JackpotHistory";
 import {
@@ -36,7 +36,11 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
       title: "History",
       icon: (
         <Box mr={1} lineHeight={0}>
-          <Clock2Icon width={20} />
+          {valueTab === 2 ? (
+            <ClockIcon width={20} />
+          ) : (
+            <Clock2Icon width={20} />
+          )}
         </Box>
       ),
     },
