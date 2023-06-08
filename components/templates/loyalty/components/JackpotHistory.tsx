@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 import { Convert } from "utils/convert";
 import Image from "next/image";
+import MyImage from "components/ui/image";
 import { BnbIcon } from "utils/Icons";
 import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotHistoryType } from "libs/types";
@@ -39,7 +40,10 @@ function JackpotHistory({ history }: PropsType) {
       bgcolor={"background.paper"}
       p={2}
       borderRadius={3}
-      height={history.endTime != null ? 215 : 384}
+      sx={{
+        mx: { xs: 2, md: 0 },
+        height: { xs: 215, md: history.endTime != null ? 215 : 384 },
+      }}
     >
       {history.endTime && (
         <>
@@ -126,9 +130,11 @@ function JackpotHistory({ history }: PropsType) {
             alignItems={"center"}
             textAlign={"center"}
           >
-            <Image
-              width={144}
-              height={144}
+            <MyImage
+              sx={{
+                width: { xs: 80, md: 144 },
+                height: { xs: 80, md: 144 },
+              }}
               src={CoinEmptyImage}
               alt="Empty Coin Image"
             />

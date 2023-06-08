@@ -68,8 +68,10 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
               textAlign={"center"}
             >
               <MyImage
-                width={144}
-                height={144}
+                sx={{
+                  width: { xs: 80, md: 144 },
+                  height: { xs: 80, md: 144 },
+                }}
                 src={CoinEmptyImage}
                 alt="Empty Coin Image"
               />

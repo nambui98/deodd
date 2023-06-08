@@ -12,6 +12,8 @@ import {
 import { BnbIcon } from "utils/Icons";
 import Image from "next/image";
 import { DiamondImage } from "utils/Images";
+import MyImage from "components/ui/image";
+import { CoinEmptyImage } from "utils/Images";
 
 function HolderHistory() {
   return (
@@ -155,6 +157,30 @@ function HolderHistory() {
           </TableBody>
         </Table>
       </TableContainer>
+      {/* <Stack
+            sx={{ inset: 0 }}
+            gap={5}
+            justifyContent={"center"}
+            alignItems={"center"}
+            textAlign={"center"}
+          >
+            <MyImage
+              sx={{
+                width: { xs: 80, md: 144 },
+                height: { xs: 80, md: 144 },
+              }}
+              src={CoinEmptyImage}
+              alt="Empty Coin Image"
+            />
+            <Typography
+              fontSize={"1rem"}
+              lineHeight={"1.375rem"}
+              fontWeight={600}
+              color={"secondary.100"}
+            >
+              This season&apos;s information hasn&apos;t been updated yet
+            </Typography>
+          </Stack> */}
     </Box>
   );
 }
