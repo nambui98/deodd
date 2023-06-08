@@ -5,6 +5,7 @@ import { Colors } from "constants/index";
 import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
+import { Format } from "utils/format";
 
 type Props = {};
 
@@ -43,7 +44,11 @@ function JackpotPool({}: Props) {
           <Box component={"span"} color={"text.secondary"}>
             #{seasonInfo.currentSeason}
           </Box>{" "}
-          Started at {new Date(seasonInfo.startTime).toLocaleDateString()}
+          {/* Started at {new Date(seasonInfo.startTime).toLocaleDateString()} */}
+          Started at{" "}
+          {seasonInfo.startTime
+            ? Format.formatDateTime(seasonInfo.startTime)
+            : ""}
         </Typography>
         <Typography variant="body2" color={"text.disabled"}>
           Jackpot Reward

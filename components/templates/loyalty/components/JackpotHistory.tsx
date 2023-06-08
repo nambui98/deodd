@@ -9,6 +9,7 @@ import {
   LoyaltyLoadingType,
 } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
+import { Format } from "utils/format";
 
 type PropsType = {
   history: LoyaltyJackpotHistoryType;
@@ -22,17 +23,8 @@ function formatNumber(number: number) {
 }
 
 function formatDate(dateString: string) {
-  const dateObject = new Date(dateString);
-  const date = dateObject.toLocaleDateString("vi", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-  const hour = dateObject.toLocaleTimeString(undefined, {
-    hour12: false,
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const date = Format.formatDateTime(dateString);
+  const hour = Format.formatDateTime(dateString, "kk:mm");
   return `${hour} - ${date}`;
 }
 
