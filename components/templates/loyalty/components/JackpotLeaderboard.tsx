@@ -10,19 +10,24 @@ import {
   TableFooter,
   TableRow,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import MyImage from "components/ui/image";
 import Image from "next/image";
 import { Convert } from "utils/convert";
 import { CoinEmptyImage } from "utils/Images";
-import { LoyaltyJackpotLeaderboardType } from "libs/types";
+import {
+  LoyaltyJackpotLeaderboardType,
+  LoyaltyLoadingType,
+} from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 
 type PropsType = {
   leaderboard: LoyaltyJackpotLeaderboardType;
+  loading: LoyaltyLoadingType;
 };
 
-function JackpotLeaderboard({ leaderboard }: PropsType) {
+function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
   return (
     <>
       {/* Using separate tables to achieve the look similar to the design */}
@@ -58,7 +63,12 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
             position: "relative",
           }}
         >
-          {leaderboard.leaderboardList.length <= 0 && (
+          {loading.leaderboard && (
+            <Stack height={1} justifyContent={"center"} alignItems={"center"}>
+              <CircularProgress size={40} color="secondary" />
+            </Stack>
+          )}
+          {!loading.leaderboard && leaderboard.leaderboardList.length <= 0 && (
             <Stack
               sx={{ inset: 0 }}
               position={"absolute"}
@@ -107,7 +117,8 @@ function JackpotLeaderboard({ leaderboard }: PropsType) {
                 },
               }}
             >
-              {leaderboard.leaderboardList.length > 0 &&
+              {!loading.leaderboard &&
+                leaderboard.leaderboardList.length > 0 &&
                 leaderboard.leaderboardList.map((row) => (
                   <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>

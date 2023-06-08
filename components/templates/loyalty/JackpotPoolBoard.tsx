@@ -8,15 +8,17 @@ import JackpotHistory from "./components/JackpotHistory";
 import {
   LoyaltyJackpotLeaderboardType,
   LoyaltyJackpotHistoryType,
-} from "libs/types";
+  LoyaltyLoadingType,
+} from "libs/types/loyaltyTypes";
 
 type Props = {
   leaderboard: LoyaltyJackpotLeaderboardType;
   setSeason: (value: string | number) => void;
   history: LoyaltyJackpotHistoryType;
+  loading: LoyaltyLoadingType;
 };
 
-function JackpotPoolBoard({ leaderboard, setSeason, history }: Props) {
+function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [
@@ -79,9 +81,9 @@ function JackpotPoolBoard({ leaderboard, setSeason, history }: Props) {
       </Stack>
 
       {valueTab === 1 ? (
-        <JackpotLeaderboard leaderboard={leaderboard} />
+        <JackpotLeaderboard loading={loading} leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
-        <JackpotHistory history={history} />
+        <JackpotHistory loading={loading} history={history} />
       ) : (
         ""
       )}

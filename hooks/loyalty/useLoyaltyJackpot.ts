@@ -7,6 +7,10 @@ import {
 import { useWalletContext } from "contexts/WalletContext";
 
 function useLoyaltyJackpot() {
+  const [loading, setLoading] = useState({
+    leaderboard: true,
+    history: true,
+  });
   const [season, setSeason] = useState<string | number>("current");
   const [leaderboard, setLeaderboard] = useState({
     currentSeason: 1,
@@ -46,7 +50,7 @@ function useLoyaltyJackpot() {
   });
   const { walletAddress } = useWalletContext();
 
-  // Get data for jackpot banner section
+  // Get data for jackpot banner section, and get number of seasons for select list at page load
   useEffect(() => {
     async function getData() {
       const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
@@ -59,51 +63,86 @@ function useLoyaltyJackpot() {
           tossPointRequire: data.tossPointRequire,
           startTime: data.startTime,
         });
+        setLeaderboard((prev) => ({
+          ...prev,
+          currentSeason: data.currentSeason,
+        }));
+      } else {
+        throw new Error("No data");
       }
     }
     getData();
   }, [walletAddress]);
 
-  // Get leaderboard data
+  // Get data for leaderboard and history tab when user select season
   useEffect(() => {
     const controller = new AbortController();
     async function getData() {
       try {
         if (season === "current") {
-          const seasonPromise = await getLoyaltyJackpotBoardCurrent(
+          // If user want to see current season data, use this API
+          const seasonResult = await getLoyaltyJackpotBoardCurrent(
             walletAddress,
             controller.signal
           );
-          if (seasonPromise.status === 200 && seasonPromise.data != null) {
-            const promiseData = seasonPromise.data.data;
+          if (seasonResult.status === 200 && seasonResult.data != null) {
+            const leaderboardData = seasonResult.data.data;
             setLeaderboard((prev) => {
               return {
                 ...prev,
-                leaderboardList: promiseData.dashboard.dashboard,
-                connectWallet: promiseData.connectWallet,
+                leaderboardList: leaderboardData.dashboard.dashboard,
+                connectWallet: leaderboardData.connectWallet,
               };
             });
+            setLoading((prev) => ({ ...prev, leaderboard: false }));
+            // Fetch for history data after knowing current season value
+            const historyResult = await getLoyaltyHistoryJackpot(
+              walletAddress,
+              leaderboardData.currentSeason,
+              controller.signal
+            );
+            if (historyResult.status === 200 && historyResult.data != null) {
+              const historyData = historyResult.data.data;
+              setHistory(historyData);
+              setLoading((prev) => ({ ...prev, history: false }));
+            } else {
+              throw new Error("Can't connect to the API");
+            }
           } else {
             throw new Error("Can't connect to the API");
           }
         } else {
-          const leaderboardPromise = await getLoyaltyJackpotBoardHistory(
+          // If the user want to see data of season other than current, use this API
+          const leaderboardResult = await getLoyaltyJackpotBoardHistory(
             walletAddress,
             season,
             controller.signal
           );
           if (
-            leaderboardPromise.status === 200 &&
-            leaderboardPromise.data != null
+            leaderboardResult.status === 200 &&
+            leaderboardResult.data != null
           ) {
-            const promiseData = leaderboardPromise.data.data;
+            const leaderboardData = leaderboardResult.data.data;
             setLeaderboard((prev) => {
               return {
                 ...prev,
-                leaderboardList: promiseData.dashboard,
-                connectWallet: promiseData.connectWallet,
+                leaderboardList: leaderboardData.dashboard,
+                connectWallet: leaderboardData.connectWallet,
               };
             });
+            setLoading((prev) => ({ ...prev, leaderboard: false }));
+          } else {
+            throw new Error("Can't connect to the API");
+          }
+          const historyResult = await getLoyaltyHistoryJackpot(
+            walletAddress,
+            season,
+            controller.signal
+          );
+          if (historyResult.status === 200 && historyResult.data != null) {
+            const historyData = historyResult.data.data;
+            setHistory(historyData);
+            setLoading((prev) => ({ ...prev, history: false }));
           } else {
             throw new Error("Can't connect to the API");
           }
@@ -112,69 +151,15 @@ function useLoyaltyJackpot() {
         console.log("Cancelled Input");
       }
     }
-    getData();
 
+    setLoading({ leaderboard: true, history: true });
+    getData();
     return () => {
       controller.abort("User's just sent another input!");
     };
   }, [season, walletAddress]);
 
-  // Get number of seasons for select list
-  useEffect(() => {
-    async function getData() {
-      const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-      const data = promiseResult.data.data;
-      setLeaderboard((prev) => ({
-        ...prev,
-        currentSeason: data.currentSeason,
-      }));
-    }
-    getData();
-  }, [walletAddress]);
-
-  // Get data for history tab
-  useEffect(() => {
-    const controller = new AbortController();
-    async function getData() {
-      try {
-        if (season === "current") {
-          const currentSeasonPromise = await getLoyaltyJackpotBoardCurrent(
-            walletAddress,
-            controller.signal
-          );
-          const currentSeason = currentSeasonPromise.data.data.currentSeason;
-          const promiseResult = await getLoyaltyHistoryJackpot(
-            walletAddress,
-            currentSeason,
-            controller.signal
-          );
-          if (promiseResult.status === 200) {
-            const promiseData = promiseResult.data.data;
-            setHistory(promiseData);
-          }
-        } else {
-          const promiseResult = await getLoyaltyHistoryJackpot(
-            walletAddress,
-            season,
-            controller.signal
-          );
-          if (promiseResult.status === 200) {
-            const promiseData = promiseResult.data.data;
-            setHistory(promiseData);
-          }
-        }
-      } catch (err) {
-        console.log("Cancelled Input");
-      }
-    }
-    getData();
-
-    return () => {
-      controller.abort("User's just sent another input!");
-    };
-  }, [season, walletAddress]);
-
-  return { setSeason, leaderboard, seasonInfo, history };
+  return { setSeason, leaderboard, seasonInfo, history, loading };
 }
 
 export default useLoyaltyJackpot;
