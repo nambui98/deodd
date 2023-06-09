@@ -53,3 +53,5 @@ export type LoyaltyHolderLeaderboardType = {
     totalBronzeNFT: number;
   };
 };
+
+export type LoyaltyHolderHistoryType = {};

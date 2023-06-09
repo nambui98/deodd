@@ -9,6 +9,7 @@ import {
   TableFooter,
   TableRow,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import {
   AvatarImage,
@@ -19,15 +20,19 @@ import {
 } from "utils/Images";
 import MyImage from "components/ui/image";
 import Image from "next/image";
-import { LoyaltyHolderLeaderboardType } from "libs/types/loyaltyTypes";
+import {
+  LoyaltyHolderLeaderboardType,
+  LoyaltyLoadingType,
+} from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 
 type PropsType = {
   leaderboard: LoyaltyHolderLeaderboardType;
+  loading: LoyaltyLoadingType;
 };
 
-function HolderLeaderboard({ leaderboard }: PropsType) {
+function HolderLeaderboard({ leaderboard, loading }: PropsType) {
   return (
     <>
       {/* Using separate tables to achieve the look similar to the design */}
@@ -89,7 +94,12 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             backgroundColor: "background.paper",
           }}
         >
-          {leaderboard.leaderboardList.length <= 0 && (
+          {loading.leaderboard && (
+            <Stack height={1} justifyContent={"center"} alignItems={"center"}>
+              <CircularProgress size={40} color="secondary" />
+            </Stack>
+          )}
+          {!loading.leaderboard && leaderboard.leaderboardList.length <= 0 && (
             <Stack
               sx={{ inset: 0 }}
               position={"absolute"}
@@ -140,7 +150,8 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                 },
               }}
             >
-              {leaderboard.leaderboardList.length > 0 &&
+              {!loading.leaderboard &&
+                leaderboard.leaderboardList.length > 0 &&
                 leaderboard.leaderboardList.map((row) => (
                   <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>

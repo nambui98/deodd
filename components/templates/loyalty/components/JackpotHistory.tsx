@@ -38,7 +38,7 @@ function JackpotHistory({ history, loading }: PropsType) {
       borderRadius={3}
       sx={{
         mx: { xs: 2, md: 0 },
-        height: { xs: 215, md: history.endTime != null ? 215 : 384 },
+        height: { xs: 218, md: history.endTime != null ? 218 : 384 },
       }}
     >
       {loading.history && (

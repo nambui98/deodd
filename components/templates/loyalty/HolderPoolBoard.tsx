@@ -5,14 +5,18 @@ import React, { useState } from "react";
 import { Clock2Icon, ClockIcon, CupIcon } from "utils/Icons";
 import HolderHistory from "./components/HolderHistory";
 import HolderLeaderboard from "./components/HolderLeaderboard";
-import { LoyaltyHolderLeaderboardType } from "libs/types/loyaltyTypes";
+import {
+  LoyaltyHolderLeaderboardType,
+  LoyaltyLoadingType,
+} from "libs/types/loyaltyTypes";
 
-type Props = {
+type PropsType = {
   leaderboard: LoyaltyHolderLeaderboardType;
   setPeriod: (value: number) => void;
+  loading: LoyaltyLoadingType;
 };
 
-function HolderPoolBoard({ leaderboard, setPeriod }: Props) {
+function HolderPoolBoard({ leaderboard, setPeriod, loading }: PropsType) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [
@@ -79,9 +83,9 @@ function HolderPoolBoard({ leaderboard, setPeriod }: Props) {
       </Stack>
 
       {valueTab === 1 ? (
-        <HolderLeaderboard leaderboard={leaderboard} />
+        <HolderLeaderboard leaderboard={leaderboard} loading={loading} />
       ) : valueTab === 2 ? (
-        <HolderHistory />
+        <HolderHistory history={history} loading={loading} />
       ) : (
         ""
       )}

@@ -72,19 +72,34 @@ function useLoyaltyHolder() {
     const controller = new AbortController();
     async function getData() {
       try {
-        const seasonResult = await GetLoyaltyNFTBoardBySeason(
+        const leaderboardResult = await GetLoyaltyNFTBoardBySeason(
           walletAddress,
           period,
           controller.signal
         );
-        if (seasonResult.status === 200 && seasonResult.data != null) {
-          const seasonData = seasonResult.data.data;
+        if (
+          leaderboardResult.status === 200 &&
+          leaderboardResult.data != null
+        ) {
+          const leaderboardData = leaderboardResult.data.data;
           setLeaderboard((prev) => ({
             ...prev,
-            leaderboardList: seasonData.dashboard,
-            connectWallet: seasonData.connectWallet,
+            leaderboardList: leaderboardData.dashboard,
+            connectWallet: leaderboardData.connectWallet,
           }));
           setLoading((prev) => ({ ...prev, leaderboard: false }));
+        } else {
+          throw new Error("Can't connect to the API");
+        }
+        const historyResult = await GetNFTItemProfitBySeason(
+          walletAddress,
+          period,
+          controller.signal
+        );
+        if (historyResult.status === 200 && historyResult.data != null) {
+          const historyData = historyResult.data.data;
+          // setHistory()
+          setLoading((prev) => ({ ...prev, history: false }));
         } else {
           throw new Error("Can't connect to the API");
         }

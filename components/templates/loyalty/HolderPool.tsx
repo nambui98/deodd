@@ -11,9 +11,9 @@ import { Format } from "utils/format";
 
 type Props = {};
 
-function HolderPool({}: Props) {
+function HolderPool({ }: Props) {
   const { walletIsConnected } = useWalletContext();
-  const { leaderboard, setPeriod, periodInfo } = useLoyaltyHolder();
+  const { leaderboard, setPeriod, periodInfo, loading } = useLoyaltyHolder();
   const timeLeft = useHolderTimer();
 
   return (
@@ -130,7 +130,7 @@ function HolderPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
-          <HolderPoolBoard leaderboard={leaderboard} setPeriod={setPeriod} />
+          <HolderPoolBoard leaderboard={leaderboard} setPeriod={setPeriod} loading={loading} />
         </>
       ) : null}
     </Box>
