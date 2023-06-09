@@ -55,7 +55,7 @@ function HolderPoolBoard({ leaderboard, setPeriod, loading }: PropsType) {
     } else {
       selectOptions.push({
         value: i,
-        text: `Period ${i}`,
+        text: `Period #${i < 10 ? "0" : ""}${i}`,
       });
     }
   }

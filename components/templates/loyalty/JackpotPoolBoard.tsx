@@ -57,7 +57,7 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
     } else {
       selectOptions.push({
         value: i,
-        text: `Season ${i}`,
+        text: `Season #${i < 10 ? "0" : ""}${i}`,
       });
     }
   }
