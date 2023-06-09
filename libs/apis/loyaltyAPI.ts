@@ -76,3 +76,13 @@ export const getNFTItemProfitBySeason = async (
     signal: signal,
   });
 };
+
+export const claimNFTReward = async (address: string) => {
+  return await vhIdRequest({
+    url: baseURL + `/users/nft/claim`,
+    method: 'post',
+    data: JSON.stringify({
+      destination: address,
+    })
+  })
+}

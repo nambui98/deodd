@@ -41,7 +41,9 @@ function useLoyaltyHolder() {
     startTime: "",
     endTime: "",
     currentPrize: 0,
-    userReward: "",
+    currentReward: 0,
+    totalReward: 0,
+    isActive: false,
   });
   const [history, setHistory] = useState([
     {
@@ -62,7 +64,9 @@ function useLoyaltyHolder() {
           startTime: promiseData.start_time,
           endTime: promiseData.end_time,
           currentPrize: promiseData.current_prize,
-          userReward: promiseData.user_reward,
+          currentReward: promiseData.current_reward,
+          totalReward: promiseData.total_reward,
+          isActive: promiseData.is_active,
         });
         setLeaderboard((prev) => ({
           ...prev,

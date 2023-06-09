@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import useLoyaltyHolder from "./useLoyaltyHolder";
-import { GetLoyaltyNFTCurrent } from "libs/apis/loyaltyAPI";
+import { getLoyaltyNFTCurrent } from "libs/apis/loyaltyAPI";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useWalletContext } from "contexts/WalletContext";
 
@@ -36,7 +36,7 @@ function useHolderTimer() {
   // Get end date from the database. Call only once.
   useEffect(() => {
     async function getEndDate() {
-      const promiseResult = await GetLoyaltyNFTCurrent(walletAddress);
+      const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
       if (promiseResult.status === 200 && promiseResult.data != null) {
         const promiseData = promiseResult.data.data;
         setTime((prev) => ({

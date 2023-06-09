@@ -8,14 +8,42 @@ import { ButtonMain } from "components/ui/button";
 import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
 import useHolderTimer from "hooks/loyalty/useHolderTimer";
 import { Format } from "utils/format";
+import { useSiteContext } from "contexts/SiteContext";
+import { claimNFTReward } from "libs/apis/loyaltyAPI";
 
 type Props = {};
 
 function HolderPool({}: Props) {
-  const { walletIsConnected } = useWalletContext();
+  const { walletAddress, walletIsConnected } = useWalletContext();
   const { leaderboard, setPeriod, periodInfo, loading, history } =
     useLoyaltyHolder();
   const timeLeft = useHolderTimer();
+  const {
+    setIsSuccess,
+    setTitleSuccess,
+    setIsLoading,
+    setIsError,
+    setTitleError,
+  } = useSiteContext();
+
+  const handleClaim = async () => {
+    try {
+      setIsLoading(true);
+      const res = await claimNFTReward(walletAddress);
+      setIsLoading(false);
+      if (res.data.data && res.status === 200) {
+        setTitleSuccess("Claimed successfully");
+        setIsSuccess(true);
+      } else {
+        setIsError(true);
+        setTitleError(res.data.meta.error_message);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setTitleError("Something went wrong! Please try again later");
+    }
+  };
 
   return (
     <Box width={1}>
@@ -43,7 +71,7 @@ function HolderPool({}: Props) {
           mx: { xs: 2, md: 0 },
         }}
       >
-        {periodInfo.userReward ? (
+        {periodInfo.currentPeriod > 1 && periodInfo.totalReward > 0 ? (
           <>
             <Typography
               variant="body2"
@@ -54,7 +82,7 @@ function HolderPool({}: Props) {
               Your total reward is
               <Box component={"span"} color={"text.secondary"}>
                 {" "}
-                1,5 BNB
+                {periodInfo.totalReward.toFixed(3)} BNB
               </Box>
               <br />
               claim NOW
@@ -77,6 +105,7 @@ function HolderPool({}: Props) {
                   borderWidth: 2,
                 },
               }}
+              onClick={handleClaim}
             />
           </>
         ) : (
@@ -104,23 +133,29 @@ function HolderPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"48px"}>
-            {periodInfo.currentPrize}
+            {periodInfo.currentPrize.toFixed(3)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
-        {/* <Typography variant='body2' color={"text.disabled"}>Only NFT holders <br /> are able to get the reward </Typography> */}
-        <Typography variant="body2" color={"text.disabled"}>
-          Your current reward in this period is
-          <Box component={"span"} color={"text.primary"}>
-            {" "}
-            {periodInfo.userReward ?? 0}{" "}
-            <Box component={"span"} lineHeight={0} fontSize={0}>
-              <BnbIcon width={16} color={Colors.primaryDark} />
-            </Box>
-          </Box>
-        </Typography>
-
-        <Typography variant="body2">Claimable in: {timeLeft}</Typography>
+        {periodInfo.currentReward > 0 ? (
+          <>
+            <Typography variant="body2" color={"text.disabled"}>
+              Your current reward in this period is
+              <Box component={"span"} color={"text.primary"}>
+                {" "}
+                {periodInfo.currentReward ?? 0}{" "}
+                <Box component={"span"}>
+                  <BnbIcon width={16} color={Colors.primaryDark} />
+                </Box>
+              </Box>
+            </Typography>
+            <Typography variant="body2">Claimable in: {timeLeft}</Typography>
+          </>
+        ) : (
+          <Typography variant="body2" color={"text.disabled"}>
+            Only NFT holders <br /> are able to get the reward{" "}
+          </Typography>
+        )}
       </Stack>
       {walletIsConnected ? (
         <>
