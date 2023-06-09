@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { BnbIcon } from "utils/Icons";
 import Image from "next/image";
-import { DiamondImage } from "utils/Images";
 import MyImage from "components/ui/image";
 import { CoinEmptyImage } from "utils/Images";
 import {
@@ -47,7 +46,7 @@ function HolderHistory({ history, loading }: PropsType) {
           <CircularProgress size={40} color="secondary" />
         </Stack>
       )}
-      {!loading.history && history[0]?.tokenId && (
+      {!loading.history && history.length > 0 && (
         <TableContainer
           sx={{
             height: 384,
@@ -145,7 +144,7 @@ function HolderHistory({ history, loading }: PropsType) {
           </Table>
         </TableContainer>
       )}
-      {!history[0]?.tokenId && (
+      {history.length <= 0 && (
         <Stack
           sx={{ inset: 0 }}
           gap={5}
