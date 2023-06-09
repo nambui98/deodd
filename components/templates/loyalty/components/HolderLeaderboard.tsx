@@ -26,6 +26,7 @@ import {
 } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
+import { useWalletContext } from "contexts/WalletContext";
 
 type PropsType = {
   leaderboard: LoyaltyHolderLeaderboardType;
@@ -33,6 +34,8 @@ type PropsType = {
 };
 
 function HolderLeaderboard({ leaderboard, loading }: PropsType) {
+  const { userInfo } = useWalletContext();
+
   return (
     <>
       {/* Using separate tables to achieve the look similar to the design */}
@@ -285,7 +288,7 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                 <Image
                   width={24}
                   height={24}
-                  src={getPathAvatar(leaderboard.connectWallet.avatarId)}
+                  src={getPathAvatar(userInfo.avatar)}
                   alt="Avatar Image"
                 />
                 <Typography variant="caption" fontWeight={400}>

@@ -1,10 +1,9 @@
 import { useState, useEffect, useInsertionEffect } from "react";
-import {} from "libs/apis/loyaltyAPI";
 import { useWalletContext } from "contexts/WalletContext";
 import {
-  GetLoyaltyNFTCurrent,
-  GetLoyaltyNFTBoardBySeason,
-  GetNFTItemProfitBySeason,
+  getLoyaltyNFTCurrent,
+  getLoyaltyNFTBoardBySeason,
+  getNFTItemProfitBySeason,
 } from "libs/apis/loyaltyAPI";
 
 function useLoyaltyHolder() {
@@ -44,12 +43,18 @@ function useLoyaltyHolder() {
     currentPrize: 0,
     userReward: "",
   });
-  const [history, setHistory] = useState({});
+  const [history, setHistory] = useState([
+    {
+      tokenId: "",
+      typeId: "",
+      profit: 0,
+    },
+  ]);
 
   // Get data for holder banner section, and get number of periods for select list at page load
   useEffect(() => {
     async function getData() {
-      const promiseResult = await GetLoyaltyNFTCurrent(walletAddress);
+      const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
       if (promiseResult.status === 200 && promiseResult.data != null) {
         const promiseData = promiseResult.data.data;
         setPeriodInfo({
@@ -72,7 +77,7 @@ function useLoyaltyHolder() {
     const controller = new AbortController();
     async function getData() {
       try {
-        const leaderboardResult = await GetLoyaltyNFTBoardBySeason(
+        const leaderboardResult = await getLoyaltyNFTBoardBySeason(
           walletAddress,
           period,
           controller.signal
@@ -91,14 +96,22 @@ function useLoyaltyHolder() {
         } else {
           throw new Error("Can't connect to the API");
         }
-        const historyResult = await GetNFTItemProfitBySeason(
+        const historyResult = await getNFTItemProfitBySeason(
           walletAddress,
           period,
           controller.signal
         );
         if (historyResult.status === 200 && historyResult.data != null) {
           const historyData = historyResult.data.data;
-          // setHistory()
+          setHistory(
+            historyData.nftItemProfits.map(
+              (obj: { token_id: string; type_id: string; profit: number }) => ({
+                tokenId: obj.token_id,
+                typeId: obj.type_id,
+                profit: obj.profit,
+              })
+            )
+          );
           setLoading((prev) => ({ ...prev, history: false }));
         } else {
           throw new Error("Can't connect to the API");
@@ -117,7 +130,7 @@ function useLoyaltyHolder() {
     return () => controller.abort();
   }, [period, walletAddress, leaderboard.currentPeriod]);
 
-  return { leaderboard, setPeriod, periodInfo, loading };
+  return { leaderboard, setPeriod, periodInfo, loading, history };
 }
 
 export default useLoyaltyHolder;

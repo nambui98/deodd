@@ -8,15 +8,22 @@ import HolderLeaderboard from "./components/HolderLeaderboard";
 import {
   LoyaltyHolderLeaderboardType,
   LoyaltyLoadingType,
+  LoyaltyHolderHistoryType,
 } from "libs/types/loyaltyTypes";
 
 type PropsType = {
   leaderboard: LoyaltyHolderLeaderboardType;
   setPeriod: (value: number) => void;
   loading: LoyaltyLoadingType;
+  history: LoyaltyHolderHistoryType;
 };
 
-function HolderPoolBoard({ leaderboard, setPeriod, loading }: PropsType) {
+function HolderPoolBoard({
+  leaderboard,
+  setPeriod,
+  loading,
+  history,
+}: PropsType) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [

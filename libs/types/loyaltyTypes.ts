@@ -54,4 +54,8 @@ export type LoyaltyHolderLeaderboardType = {
   };
 };
 
-export type LoyaltyHolderHistoryType = {};
+export type LoyaltyHolderHistoryType = {
+  tokenId: string;
+  typeId: string;
+  profit: number;
+}[];

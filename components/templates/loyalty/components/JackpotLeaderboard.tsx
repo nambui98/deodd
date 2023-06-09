@@ -21,6 +21,7 @@ import {
   LoyaltyLoadingType,
 } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
+import { useWalletContext } from "contexts/WalletContext";
 
 type PropsType = {
   leaderboard: LoyaltyJackpotLeaderboardType;
@@ -28,6 +29,8 @@ type PropsType = {
 };
 
 function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
+  const { userInfo } = useWalletContext();
+
   return (
     <>
       {/* Using separate tables to achieve the look similar to the design */}
@@ -220,7 +223,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                 <Image
                   width={24}
                   height={24}
-                  src={getPathAvatar(leaderboard.connectWallet?.avatarId)}
+                  src={getPathAvatar(userInfo.avatar)}
                   alt="User Avatar"
                 />
                 <Typography variant="caption" fontWeight={400}>

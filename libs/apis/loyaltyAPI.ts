@@ -42,7 +42,7 @@ export const getLoyaltyHistoryJackpot = async (
   });
 };
 
-export const GetLoyaltyNFTCurrent = async (
+export const getLoyaltyNFTCurrent = async (
   wallet: string,
   signal?: AbortSignal
 ) => {
@@ -53,7 +53,7 @@ export const GetLoyaltyNFTCurrent = async (
   });
 };
 
-export const GetLoyaltyNFTBoardBySeason = async (
+export const getLoyaltyNFTBoardBySeason = async (
   wallet: string,
   season: number,
   signal: AbortSignal
@@ -65,7 +65,7 @@ export const GetLoyaltyNFTBoardBySeason = async (
   });
 };
 
-export const GetNFTItemProfitBySeason = async (
+export const getNFTItemProfitBySeason = async (
   wallet: string,
   season: number,
   signal: AbortSignal

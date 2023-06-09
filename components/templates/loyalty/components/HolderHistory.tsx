@@ -19,6 +19,7 @@ import {
   LoyaltyLoadingType,
   LoyaltyHolderHistoryType,
 } from "libs/types/loyaltyTypes";
+import { getPathAvatarNFT } from "utils/checkAvatar";
 
 type PropsType = {
   history: LoyaltyHolderHistoryType;
@@ -46,7 +47,7 @@ function HolderHistory({ history, loading }: PropsType) {
           <CircularProgress size={40} color="secondary" />
         </Stack>
       )}
-      {!loading.history && (
+      {!loading.history && history[0]?.tokenId && (
         <TableContainer
           sx={{
             height: 384,
@@ -84,8 +85,7 @@ function HolderHistory({ history, loading }: PropsType) {
                 }}
               >
                 <TableCell>NFT ID</TableCell>
-                <TableCell align="right">Period Claimable</TableCell>
-                <TableCell align="right">Total claimable</TableCell>
+                <TableCell align="right">Period Profit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody
@@ -95,122 +95,84 @@ function HolderHistory({ history, loading }: PropsType) {
                 },
               }}
             >
-              <TableRow
-                sx={{
-                  "td:first-child": {
-                    pl: 2,
-                  },
-                  td: {
-                    pr: 2,
-                  },
-                }}
-              >
-                <TableCell>
-                  <Stack direction={"row"} gap={1} alignItems={"flex-start"}>
-                    <Image
-                      src={DiamondImage}
-                      width={32}
-                      height={32}
-                      alt="NFT Item"
-                    />
-                    <Stack gap={0.5}>
+              {history.map((row) => (
+                <TableRow
+                  key={row.tokenId}
+                  sx={{
+                    "td:first-child": {
+                      pl: 2,
+                    },
+                    td: {
+                      pr: 2,
+                    },
+                  }}
+                >
+                  <TableCell>
+                    <Stack direction={"row"} gap={1} alignItems={"flex-start"}>
+                      <Image
+                        src={getPathAvatarNFT(row.typeId)}
+                        width={32}
+                        height={32}
+                        alt="NFT Item"
+                      />
                       <Typography variant="body2" lineHeight="1.25rem">
-                        #23469734985347
+                        #{row.tokenId}
                       </Typography>
-                      <Stack direction={"row"} alignItems={"center"} gap={1}>
-                        <Typography
-                          fontSize={"0.75rem"}
-                          fontWeight={400}
-                          lineHeight={"1rem"}
-                          color={"text.secondary"}
-                        >
-                          Owner
-                        </Typography>
-                        <Box
-                          bgcolor={"text.primary"}
-                          width={4}
-                          height={4}
-                          borderRadius={"50%"}
-                        ></Box>
-                        <Typography
-                          fontSize={"0.75rem"}
-                          fontWeight={400}
-                          lineHeight={"1rem"}
-                          color={"text.secondary"}
-                        >
-                          Claimed
-                        </Typography>
-                      </Stack>
                     </Stack>
-                  </Stack>
-                </TableCell>
-                <TableCell align="right">
-                  <Stack
-                    color={"text.secondary"}
-                    direction={"row"}
-                    gap={0.5}
-                    height={1}
-                    justifyContent={"flex-end"}
-                  >
-                    <Typography
-                      color={"text.primary"}
-                      fontSize={"0.75rem"}
-                      lineHeight={"1rem"}
-                      fontWeight={400}
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <Stack
+                      color={"text.secondary"}
+                      direction={"row"}
+                      gap={0.5}
+                      justifyContent={"flex-end"}
                     >
-                      1000
-                    </Typography>
-                    <BnbIcon width={16} />
-                  </Stack>
-                </TableCell>
-                <TableCell align="right">
-                  <Stack
-                    color={"text.secondary"}
-                    direction={"row"}
-                    gap={0.5}
-                    height={1}
-                    justifyContent={"flex-end"}
-                  >
-                    <Typography
-                      color={"text.primary"}
-                      fontSize={"0.75rem"}
-                      lineHeight={"1rem"}
-                      fontWeight={400}
-                    >
-                      1000
-                    </Typography>
-                    <BnbIcon width={16} />
-                  </Stack>
-                </TableCell>
-              </TableRow>
+                      <Typography
+                        color={"text.primary"}
+                        fontSize={"0.75rem"}
+                        lineHeight={"1rem"}
+                        fontWeight={400}
+                      >
+                        {row.profit}
+                      </Typography>
+                      <BnbIcon width={16} />
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       )}
-      {/* <Stack
-            sx={{ inset: 0 }}
-            gap={5}
-            justifyContent={"center"}
-            alignItems={"center"}
-            textAlign={"center"}
+      {!history[0]?.tokenId && (
+        <Stack
+          sx={{ inset: 0 }}
+          gap={5}
+          height={1}
+          width={1}
+          justifyContent={"center"}
+          alignItems={"center"}
+          textAlign={"center"}
+        >
+          <MyImage
+            sx={{
+              width: { xs: 80, md: 144 },
+              height: { xs: 80, md: 144 },
+            }}
+            src={CoinEmptyImage}
+            alt="Empty Coin Image"
+          />
+          <Typography
+            fontSize={"1rem"}
+            lineHeight={"1.375rem"}
+            fontWeight={600}
+            color={"secondary.100"}
           >
-            <MyImage
-              sx={{
-                width: { xs: 80, md: 144 },
-                height: { xs: 80, md: 144 },
-              }}
-              src={CoinEmptyImage}
-              alt="Empty Coin Image"
-            />
-            <Typography
-              fontSize={"1rem"}
-              lineHeight={"1.375rem"}
-              fontWeight={600}
-              color={"secondary.100"}
-            >
-              This season&apos;s information hasn&apos;t been updated yet
-            </Typography>
-          </Stack> */}
+            This season&apos;s information hasn&apos;t been updated yet
+          </Typography>
+        </Stack>
+      )}
     </Box>
   );
 }
