@@ -120,7 +120,7 @@ function HolderHistory({ history, loading }: PropsType) {
                     </Stack>
                   </TableCell>
 
-                  <TableCell align="right">
+                  <TableCell align="right" sx={{ display: "block" }}>
                     <Stack
                       color={"text.secondary"}
                       direction={"row"}
@@ -133,7 +133,7 @@ function HolderHistory({ history, loading }: PropsType) {
                         lineHeight={"1rem"}
                         fontWeight={400}
                       >
-                        {row.profit}
+                        {row.profit.toFixed(12)}
                       </Typography>
                       <BnbIcon width={16} />
                     </Stack>
