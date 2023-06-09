@@ -189,10 +189,23 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             } else {
+                debugger
                 getMessagesWithoutAuth();
             }
         }
     }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
+    useEffect(() => {
+        if (walletAddress) {
+            setMessages([])
+            setLastCreatedAt(null)
+            getMessages()
+        } else {
+            setMessages([])
+            setIsLoadMoreWithoutAuth(false)
+            getMessagesWithoutAuth();
+        }
+    }, [walletAddress, getMessages, getMessagesWithoutAuth])
+
 
     //
     const handleReplyUser = () => {
