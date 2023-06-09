@@ -20,7 +20,7 @@ type Props = {
 }
 
 function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props) {
-    const { walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { walletIsConnected, isConnectingWallet, handleConnectWallet } = useWalletContext();
     const { setIsSuccess, setTitleSuccess } = useSiteContext();
     const handleCopy = () => {
         navigator?.clipboard.writeText(link);
@@ -49,7 +49,7 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                                 width: 'auto',
                                 textTransform: 'none',
                             }}
-                            loading={false}>
+                            loading={isConnectingWallet}>
                             <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
                         </ButtonLoading>
 

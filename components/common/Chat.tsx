@@ -14,10 +14,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
+import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
-import BlockState from './BlockState'
+import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
 
 export type MessageType = {
@@ -54,6 +54,7 @@ function Chat({ open }: { open: boolean }) {
     const [replyUser, setReplyUser] = useState<{ wallet: string, username: string, repliedTo: string } | undefined>();
     const [messageSelected, setMessageSelected] = useState<MessageType | undefined>()
     const [isStartBlock, setIsStartBlock] = useState<boolean>(false);
+    const [blockState, setBlockState] = useState<enumBlockState>(enumBlockState.BlockList);
     const { refetch: getMessages, } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
@@ -188,10 +189,23 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             } else {
+                debugger
                 getMessagesWithoutAuth();
             }
         }
     }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
+    useEffect(() => {
+        if (walletAddress) {
+            setMessages([])
+            setLastCreatedAt(null)
+            getMessages()
+        } else {
+            setMessages([])
+            setIsLoadMoreWithoutAuth(false)
+            getMessagesWithoutAuth();
+        }
+    }, [walletAddress, getMessages, getMessagesWithoutAuth])
+
 
     //
     const handleReplyUser = () => {
@@ -237,8 +251,8 @@ function Chat({ open }: { open: boolean }) {
     }
     //handle block
     const handleBlock = () => {
-
         setIsStartBlock(true);
+        setBlockState(enumBlockState.Block)
         setAnchorOptionMore(null)
     }
 
@@ -334,7 +348,6 @@ function Chat({ open }: { open: boolean }) {
                             handleClick={(e) => handleClick(e, message)}
                             id={message.id}
                             isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
-                            walletAddress={walletAddress}
                         />
                     })
                 }
@@ -399,6 +412,11 @@ function Chat({ open }: { open: boolean }) {
             <PopoverItem
                 handleReport={handleReport}
                 handleBlock={handleBlock}
+                handleViewBlockList={() => {
+                    setBlockState(enumBlockState.BlockList)
+                    setIsStartBlock(true);
+                    setAnchorOptionMore(null)
+                }}
                 messageSelected={messageSelected!}
                 id={id}
                 anchorEl={anchorElOptionMore}
@@ -407,6 +425,7 @@ function Chat({ open }: { open: boolean }) {
             {
                 isStartBlock &&
                 <BlockState
+                    blockStateProp={blockState}
                     onBlockUser={() => blockUser.mutateAsync()}
                     onUnBlockUser={(wallet: string) => unBlockUser.mutateAsync(wallet)}
                     messageSelected={messageSelected!}
@@ -582,7 +601,7 @@ const SendMessage = ({ disabled, replyUser, setReplyUser, walletAddress, sendMes
     </Box>
 
 }
-const PopoverItem = ({ id, anchorEl, setReplyUser, handleReport, handleBlock, handleClose, messageSelected }: {
+const PopoverItem = ({ id, anchorEl, handleViewBlockList, setReplyUser, handleReport, handleBlock, handleClose, messageSelected }: {
     id?: string,
     anchorEl: HTMLButtonElement | null,
     messageSelected: MessageType,
@@ -590,12 +609,14 @@ const PopoverItem = ({ id, anchorEl, setReplyUser, handleReport, handleBlock, ha
     handleClose: VoidFunction,
     handleReport: (reportType: string) => void
     handleBlock: Function,
+    handleViewBlockList: Function
 }) => {
     const [isShowReport, setIsShowReport] = useState<boolean>(false);
     const [typeReport, setTypeReport] = useState<string | undefined>();
     const reportRef = useRef<HTMLDivElement>(null);
     const initRef = useRef<HTMLDivElement>(null);
     const nodeRef = isShowReport ? reportRef : initRef;
+    const { walletAddress } = useWalletContext();
 
     useEffect(() => {
         if (anchorEl === null) {
@@ -627,6 +648,24 @@ const PopoverItem = ({ id, anchorEl, setReplyUser, handleReport, handleBlock, ha
             title: 'Block user',
             onClick: () => {
                 handleBlock();
+            }
+        },
+        {
+            icon: <MoreIcon width={20} height={20} />,
+            title: 'View block list',
+            onClick: () => {
+
+                handleViewBlockList()
+            }
+        },
+
+    ]
+    const dataMy = [
+        {
+            icon: <MoreIcon width={20} height={20} />,
+            title: 'View block list',
+            onClick: () => {
+                handleViewBlockList()
             }
         },
     ]
@@ -710,7 +749,7 @@ const PopoverItem = ({ id, anchorEl, setReplyUser, handleReport, handleBlock, ha
                             }
                         }}>
                             {
-                                data.map((item, index) =>
+                                (messageSelected?.from?.toUpperCase() === walletAddress?.toUpperCase() ? dataMy : data).map((item, index) =>
                                     <ListItem key={index} disablePadding>
                                         <ListItemButton onClick={item.onClick}>
                                             <ListItemIcon sx={{ minWidth: "36px", }}>
@@ -777,13 +816,14 @@ const PopoverItem = ({ id, anchorEl, setReplyUser, handleReport, handleBlock, ha
 
 }
 
-const ChatItem = ({ isMy, walletAddress, handleUndoReport, isReport, id, data, handleClick }: { isReport?: boolean, walletAddress: string, handleUndoReport: (id: string) => void, data: MessageType, isMy?: boolean, id: string | undefined, handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void }) => {
+const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: { isReport?: boolean, handleUndoReport: (id: string) => void, data: MessageType, isMy?: boolean, id: string | undefined, handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void }) => {
+    const { walletIsConnected, walletAddress } = useWalletContext()
 
     if (isReport) {
         return <Box bgcolor={'background.paper'} position={'relative'} boxShadow={"0px 2px 4px rgba(0, 0, 0, 0.15)"} border={'1px solid'} borderColor={'secondary.300'} textAlign={'center'} borderRadius={2} px={2} pt={2} pb={1} mb={1}>
-            <Typography variant='body2' color="secondary.100" fontWeight={400}>This message has been reported and hidden</Typography>
+            <Typography variant='body2' color="secondary.100" fontWeight={400} whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }}>This message has been <br /> reported and hidden</Typography>
             <Button variant="text" sx={{ border: 'none', '&:hover': { border: 'none', backgroundColor: 'secondary.300' } }} onClick={() => handleUndoReport(id!)} color={'secondary'}>Undo</Button>
-        </Box>
+        </Box >
     }
     return <Box bgcolor={'primary.300'} position={'relative'} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} px={2} py={1} mb={1} sx={{
         cursor: 'pointer',
@@ -830,7 +870,7 @@ const ChatItem = ({ isMy, walletAddress, handleUndoReport, isReport, id, data, h
             </Stack>
         </Stack>
         {
-            !isMy
+            walletIsConnected
             && <Box position="absolute" className="more" sx={{ top: 0, right: 0 }}>
                 <IconButton aria-describedby={id} onClick={handleClick} aria-label="delete">
                     <MoreSquareIcon />

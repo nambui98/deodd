@@ -96,8 +96,8 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                        <MyImage width={24} height={24} src={getPathAvatar(row.avatar_id)} alt="" />
-                                                        <Typography variant='caption'>{(row.user_name ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
+                                                        <MyImage width={24} height={24} src={getPathAvatar(row.avatarId)} alt="" />
+                                                        <Typography variant='caption'>{(row.username ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
                                                     </Stack>
                                                 </TableCell>
                                                 <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.maxWinStreakLength}</Typography></TableCell>
@@ -120,8 +120,8 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
                                                     </TableCell>
                                                     <TableCell align="left">
                                                         <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                            <MyImage width={24} height={24} src={getPathAvatar(row.avatar_id)} alt="" />
-                                                            <Typography variant='caption'>{(row.user_name ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
+                                                            <MyImage width={24} height={24} src={getPathAvatar(row.avatarId)} alt="" />
+                                                            <Typography variant='caption'>{(row.username ?? '') + '(' + Convert.convertWalletAddress(row.wallet, 4, 4) + ")"}</Typography>
                                                         </Stack>
                                                     </TableCell>
                                                     <TableCell align="right" ><Typography variant='caption' color="secondary.200"> {row.maxLoseStreakLength}</Typography></TableCell>
@@ -152,8 +152,8 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
                                                         </TableCell>
                                                         <TableCell align="left">
                                                             <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                                <MyImage src={getPathAvatar(mymine?.avatar_id)} width={24} height={24} alt="" />
-                                                                <Typography variant='caption' color="background.paper">{(mymine?.user_name ?? '') + '(' + Convert.convertWalletAddress(mymine?.wallet ?? '', 4, 4) + ")"}</Typography>
+                                                                <MyImage src={getPathAvatar(mymine?.avatarId)} width={24} height={24} alt="" />
+                                                                <Typography variant='caption' color="background.paper">{(mymine?.username ?? '') + '(' + Convert.convertWalletAddress(mymine?.wallet ?? '', 4, 4) + ")"}</Typography>
                                                             </Stack>
                                                         </TableCell>
 
@@ -171,8 +171,8 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
                                                         </TableCell>
                                                         <TableCell align="left">
                                                             <Stack direction={'row'} columnGap={1} alignItems={'center'}>
-                                                                <MyImage src={getPathAvatar(mymine?.avatar_id)} width={24} height={24} alt="" />
-                                                                <Typography variant='caption' color="background.paper">{(mymine?.user_name || '') + '(' + Convert.convertWalletAddress(mymine?.wallet ?? '', 4, 4) + ")"}</Typography>
+                                                                <MyImage src={getPathAvatar(mymine?.avatarId)} width={24} height={24} alt="" />
+                                                                <Typography variant='caption' color="background.paper">{(mymine?.username || '') + '(' + Convert.convertWalletAddress(mymine?.wallet ?? '', 4, 4) + ")"}</Typography>
                                                             </Stack>
                                                         </TableCell>
 

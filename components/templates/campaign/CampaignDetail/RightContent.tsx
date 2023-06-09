@@ -13,7 +13,7 @@ import { CopyIcon, FacebookIcon } from 'utils/Icons';
 
 
 function RightContent({ image, campaign }: { image: string, campaign: Campaign }) {
-    const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { walletAddress, walletIsConnected, isConnectingWallet, handleConnectWallet } = useWalletContext();
     const { link, getLinkUser } = useReferral({ isNotGet: !(campaign.href === "referral-campaign") });
     const [linkEnded, setLinkEnded] = useState<string>(link ?? '');
     const router = useRouter();
@@ -61,7 +61,7 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
                                 width: 'auto',
                                 textTransform: 'none',
                             }}
-                            loading={false}>
+                            loading={isConnectingWallet}>
                             <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
                         </ButtonLoading>
                     </Box>
