@@ -6,10 +6,10 @@ import HolderPoolBoard from "./HolderPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
 import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
-import useHolderTimer from "hooks/loyalty/useHolderTimer";
 import { Format } from "utils/format";
 import { useSiteContext } from "contexts/SiteContext";
 import { claimNFTReward } from "libs/apis/loyaltyAPI";
+import NFTHolderTimer from "./components/NFTHolderTimer";
 
 type Props = {};
 
@@ -17,7 +17,6 @@ function HolderPool({}: Props) {
   const { walletAddress, walletIsConnected } = useWalletContext();
   const { leaderboard, setPeriod, periodInfo, loading, history } =
     useLoyaltyHolder();
-  const timeLeft = useHolderTimer();
   const {
     setIsSuccess,
     setTitleSuccess,
@@ -137,7 +136,7 @@ function HolderPool({}: Props) {
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
-        {periodInfo.currentReward > 0 ? (
+        {periodInfo.currentReward <= 0 ? (
           <>
             <Typography variant="body2" color={"text.disabled"}>
               Your current reward in this period is
@@ -149,7 +148,7 @@ function HolderPool({}: Props) {
                 </Box>
               </Box>
             </Typography>
-            <Typography variant="body2">Claimable in: {timeLeft}</Typography>
+            <NFTHolderTimer />
           </>
         ) : (
           <Typography variant="body2" color={"text.disabled"}>

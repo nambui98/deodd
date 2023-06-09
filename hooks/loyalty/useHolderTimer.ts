@@ -64,7 +64,7 @@ function useHolderTimer() {
       }
     }, 500);
 
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval) };
   });
 
   return formatTime(time.timeLeft);
