@@ -55,6 +55,8 @@ function Chat({ open }: { open: boolean }) {
     const [messageSelected, setMessageSelected] = useState<MessageType | undefined>()
     const [isStartBlock, setIsStartBlock] = useState<boolean>(false);
     const [blockState, setBlockState] = useState<enumBlockState>(enumBlockState.BlockList);
+
+    const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
     const { refetch: getMessages, } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
@@ -115,16 +117,20 @@ function Chat({ open }: { open: boolean }) {
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)
-                if (dataMessage.message === DOWNSTREAM_MESSAGE) {
-                    if (dataMessage.data.data.data.command === MessageCommand.NEW_MESSAGE) {
-                        setMessages((prev) => [dataMessage.data.data.data.data, ...prev])
+                if (dataMessage !== null) {
+                    if (dataMessage[DOWNSTREAM_MESSAGE]) {
+                        if (dataMessage[DOWNSTREAM_MESSAGE].data.command === MessageCommand.NEW_MESSAGE) {
+                            setIsHasNewMessage(!isScrollBottom);
+                            setMessages((prev) => [dataMessage[DOWNSTREAM_MESSAGE].data.data, ...prev])
+                        }
+                    }
+                    if (dataMessage[MessageCommand.USERS_TYPING]) {
+                        const filterTyping = (dataMessage[MessageCommand.USERS_TYPING]?.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
+                        setUsersTyping(filterTyping);
                     }
                 }
-                if (dataMessage?.message === MessageCommand.USERS_TYPING) {
-                    const filterTyping = (dataMessage.data.data.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
-                    setUsersTyping(filterTyping);
-                }
             },
+            // reconnectInterval: 5000,
             shouldReconnect: () => true
         },
     );
@@ -133,19 +139,32 @@ function Chat({ open }: { open: boolean }) {
         if (walletIsConnected) {
             const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
             sendJsonMessage(message);
+            const ping = setInterval(() => {
+
+                const message: any = [0, {}];
+                sendJsonMessage(message);
+            }, 50000);
+            return () => clearInterval(ping);
         }
     }, [walletIsConnected, sendJsonMessage])
 
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-        const result = {
-            message: parseInt(parseJson[0][0]),
-            data: parseJson[0][1]
+        console.log("🚀 ~ file: Chat.tsx:146 ~ getDataFromBlob ~ parseJson:", parseJson)
+        if (parseInt(parseJson[0][0]) !== 1) {
+            let result: { [key: number]: any } = {};
+            for (let index = 0; index < parseJson.length; index++) {
+                const element: any = parseJson[index];
+                result[parseInt(element[0])] = element[1]!.data;
+            }
+            return result;
         }
-        return result;
+        return null;
     }
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: MessageType) => {
+
         setAnchorOptionMore(event.currentTarget);
         setMessageSelected(user);
     };
@@ -174,11 +193,13 @@ function Chat({ open }: { open: boolean }) {
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
+    console.log(connectionStatus);
 
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -80;
         if (bottom) {
             setIsScrollBottom(true);
+            setIsHasNewMessage(false);
         } else {
             setIsScrollBottom(false);
         }
@@ -406,6 +427,11 @@ function Chat({ open }: { open: boolean }) {
                         }}
                     >
                         <ArrowDown2Icon />
+                        {
+                            isHasNewMessage &&
+
+                            <Box width={12} height={12} bgcolor="#FF5870" borderRadius={'100%'} position={'absolute'} top={0} right={0} />
+                        }
                     </Button>
                 }
             </Box>

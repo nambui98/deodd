@@ -14,7 +14,6 @@ const sendMessage = async ({ from, to, repliedTo, content }: { from: string, to:
     })
 }
 const getMessagesWithAuth = async ({ limit, lastCreatedAt }: { limit: number, lastCreatedAt: null | string }) => {
-    debugger
     return await vhIdRequest({
         url: baseURLChat + `/messages`,
         method: 'POST',
