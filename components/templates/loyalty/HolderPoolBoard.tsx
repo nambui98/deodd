@@ -5,10 +5,14 @@ import React, { useState } from "react";
 import { Clock2Icon, ClockIcon, CupIcon } from "utils/Icons";
 import HolderHistory from "./components/HolderHistory";
 import HolderLeaderboard from "./components/HolderLeaderboard";
+import { LoyaltyHolderLeaderboardType } from "libs/types/loyaltyTypes";
 
-type Props = {};
+type Props = {
+  leaderboard: LoyaltyHolderLeaderboardType;
+  setPeriod: (value: number) => void;
+};
 
-function HolderPoolBoard({}: Props) {
+function HolderPoolBoard({ leaderboard, setPeriod }: Props) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [
@@ -35,12 +39,22 @@ function HolderPoolBoard({}: Props) {
       ),
     },
   ];
-  const selectOptions = [
-    {
-      value: "current-period",
-      text: "Current Period",
-    },
-  ];
+
+  const selectOptions = [];
+
+  for (let i = leaderboard.currentPeriod; i >= 1; i--) {
+    if (i === leaderboard.currentPeriod) {
+      selectOptions.push({
+        value: 0,
+        text: "Current Period",
+      });
+    } else {
+      selectOptions.push({
+        value: i,
+        text: `Period ${i}`,
+      });
+    }
+  }
 
   return (
     <Box width={1}>
@@ -61,12 +75,11 @@ function HolderPoolBoard({}: Props) {
         })}
       >
         <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-        <SelectBox selectOptions={selectOptions} />
+        <SelectBox selectOptions={selectOptions} setValue={setPeriod} />
       </Stack>
 
       {valueTab === 1 ? (
-        // <HolderLeaderboard />
-        "a"
+        <HolderLeaderboard leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
         <HolderHistory />
       ) : (

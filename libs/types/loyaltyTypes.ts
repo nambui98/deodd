@@ -31,3 +31,25 @@ export type LoyaltyLoadingType = {
   leaderboard: boolean;
   history: boolean;
 };
+
+export type LoyaltyHolderLeaderboardType = {
+  currentPeriod: number;
+  leaderboardList: {
+    rank: number;
+    owner: string;
+    userName: string;
+    avatarId: number;
+    totalDiamondNFT: number;
+    totalGoldNFT: number;
+    totalBronzeNFT: number;
+  }[];
+  connectWallet: {
+    rank: number;
+    owner: string;
+    userName: string;
+    avatarId: number;
+    totalDiamondNFT: number;
+    totalGoldNFT: number;
+    totalBronzeNFT: number;
+  };
+};

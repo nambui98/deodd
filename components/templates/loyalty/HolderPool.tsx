@@ -1,15 +1,20 @@
 import { Box, Stack, Typography, Divider } from "@mui/material";
 import { BnbIcon, Growth1Icon } from "utils/Icons";
-import { LoyaltyImage, Loyalty2Image } from "utils/Images";
+import { LoyaltyImage, Loyalty2Image, LeaderboardImage } from "utils/Images";
 import { Colors } from "constants/index";
 import HolderPoolBoard from "./HolderPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
+import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
+import useHolderTimer from "hooks/loyalty/useHolderTimer";
+import { Format } from "utils/format";
 
 type Props = {};
 
 function HolderPool({}: Props) {
   const { walletIsConnected } = useWalletContext();
+  const { leaderboard, setPeriod, periodInfo } = useLoyaltyHolder();
+  const timeLeft = useHolderTimer();
 
   return (
     <Box width={1}>
@@ -37,31 +42,55 @@ function HolderPool({}: Props) {
           mx: { xs: 2, md: 0 },
         }}
       >
-        {/* <Typography variant="body2" lineHeight={"1.375rem"} textTransform={"uppercase"} color={"text.disabled"}>Your total reward is
-          <Box component={"span"} color={"text.secondary"}> 1,5 BNB</Box>
-          <br />claim NOW
-        </Typography>
-        <ButtonMain active={true} title="claim reward" sx={{
-          fontSize: "0.75rem",
-          fontWeight: 700,
-          minHeight: 0,
-          px: 2,
-          py: 0.5,
-          mb: 3,
-          lineHeight: "1.375rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.04em",
-          borderWidth: 2,
-          ":hover": {
-            borderWidth: 2,
-          }
-        }} /> */}
+        {periodInfo.userReward ? (
+          <>
+            <Typography
+              variant="body2"
+              lineHeight={"1.375rem"}
+              textTransform={"uppercase"}
+              color={"text.disabled"}
+            >
+              Your total reward is
+              <Box component={"span"} color={"text.secondary"}>
+                {" "}
+                1,5 BNB
+              </Box>
+              <br />
+              claim NOW
+            </Typography>
+            <ButtonMain
+              active={true}
+              title="claim reward"
+              sx={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                minHeight: 0,
+                px: 2,
+                py: 0.5,
+                mb: 3,
+                lineHeight: "1.375rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+                borderWidth: 2,
+                ":hover": {
+                  borderWidth: 2,
+                },
+              }}
+            />
+          </>
+        ) : (
+          ""
+        )}
+
         <Typography variant="body2">
           Period{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #2
+            #{periodInfo.currentPeriod}
           </Box>{" "}
-          Started at 12/12/2022
+          Started at{" "}
+          {periodInfo.startTime
+            ? Format.formatDateTime(periodInfo.startTime)
+            : ""}
         </Typography>
         <Typography variant="body2" color={"text.disabled"}>
           Total NFT Holder Reward
@@ -74,7 +103,7 @@ function HolderPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"48px"}>
-            0,534
+            {periodInfo.currentPrize}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
@@ -83,14 +112,14 @@ function HolderPool({}: Props) {
           Your current reward in this period is
           <Box component={"span"} color={"text.primary"}>
             {" "}
-            1,5{" "}
+            {periodInfo.userReward ?? 0}{" "}
             <Box component={"span"} lineHeight={0} fontSize={0}>
               <BnbIcon width={16} color={Colors.primaryDark} />
             </Box>
           </Box>
         </Typography>
 
-        <Typography variant="body2">Claimable in: 24:39:12</Typography>
+        <Typography variant="body2">Claimable in: {timeLeft}</Typography>
       </Stack>
       {walletIsConnected ? (
         <>
@@ -101,7 +130,7 @@ function HolderPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
-          <HolderPoolBoard />
+          <HolderPoolBoard leaderboard={leaderboard} setPeriod={setPeriod} />
         </>
       ) : null}
     </Box>

@@ -19,8 +19,15 @@ import {
 } from "utils/Images";
 import MyImage from "components/ui/image";
 import Image from "next/image";
+import { LoyaltyHolderLeaderboardType } from "libs/types/loyaltyTypes";
+import { getPathAvatar } from "utils/checkAvatar";
+import { Convert } from "utils/convert";
 
-function HolderLeaderboard() {
+type PropsType = {
+  leaderboard: LoyaltyHolderLeaderboardType;
+};
+
+function HolderLeaderboard({ leaderboard }: PropsType) {
   return (
     <>
       {/* Using separate tables to achieve the look similar to the design */}
@@ -82,7 +89,7 @@ function HolderLeaderboard() {
             backgroundColor: "background.paper",
           }}
         >
-          {rows2.length <= 0 && (
+          {leaderboard.leaderboardList.length <= 0 && (
             <Stack
               sx={{ inset: 0 }}
               position={"absolute"}
@@ -133,12 +140,19 @@ function HolderLeaderboard() {
                 },
               }}
             >
-              {rows2.length > 0 &&
-                rows2.map((row, index) => (
-                  <TableRow key={row.userName}>
+              {leaderboard.leaderboardList.length > 0 &&
+                leaderboard.leaderboardList.map((row) => (
+                  <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
-                      <Typography variant="caption" color={"text.disabled"}>
-                        {index}
+                      <Typography
+                        variant="caption"
+                        color={
+                          row.owner === leaderboard.connectWallet.owner
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
+                      >
+                        {row.rank}
                       </Typography>
                     </TableCell>
                     <TableCell align="center" sx={{ px: 0, pl: 0.5 }}>
@@ -150,11 +164,27 @@ function HolderLeaderboard() {
                         <Image
                           width={24}
                           height={24}
-                          src={AvatarImage}
+                          src={getPathAvatar(row.avatarId)}
                           alt="Avatar Image"
                         />
-                        <Typography variant="caption" fontWeight={400}>
-                          {row.userName}
+                        <Typography
+                          variant="caption"
+                          fontWeight={400}
+                          color={
+                            row.owner === leaderboard.connectWallet.owner
+                              ? "text.secondary"
+                              : "text.primary"
+                          }
+                        >
+                          {row.owner === leaderboard.connectWallet.owner
+                            ? "You"
+                            : `${row.userName ?? ""} ${
+                                row.userName ? "(" : ""
+                              }${Convert.convertWalletAddress(
+                                row.owner,
+                                5,
+                                4
+                              )}${row.userName ? ")" : ""}`}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -162,27 +192,48 @@ function HolderLeaderboard() {
                       align="center"
                       sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
                     >
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography
+                        variant="caption"
+                        color={
+                          row.owner === leaderboard.connectWallet.owner
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
+                      >
                         {" "}
-                        {row.diamond}
+                        {row.totalDiamondNFT}
                       </Typography>
                     </TableCell>
                     <TableCell
                       align="center"
                       sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
                     >
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography
+                        variant="caption"
+                        color={
+                          row.owner === leaderboard.connectWallet.owner
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
+                      >
                         {" "}
-                        {row.gold}
+                        {row.totalGoldNFT}
                       </Typography>
                     </TableCell>
                     <TableCell
                       align="center"
                       sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}
                     >
-                      <Typography variant="caption" color="text.disabled">
+                      <Typography
+                        variant="caption"
+                        color={
+                          row.owner === leaderboard.connectWallet.owner
+                            ? "text.secondary"
+                            : "text.disabled"
+                        }
+                      >
                         {" "}
-                        {row.bronze}
+                        {row.totalBronzeNFT}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -214,14 +265,16 @@ function HolderLeaderboard() {
             }}
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
-              <Typography variant="caption">3</Typography>
+              <Typography variant="caption">
+                {leaderboard.connectWallet.rank ?? "--"}
+              </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
               <Stack direction={"row"} columnGap={1} alignItems={"center"}>
                 <Image
                   width={24}
                   height={24}
-                  src={AvatarImage}
+                  src={getPathAvatar(leaderboard.connectWallet.avatarId)}
                   alt="Avatar Image"
                 />
                 <Typography variant="caption" fontWeight={400}>
@@ -230,13 +283,25 @@ function HolderLeaderboard() {
               </Stack>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
-              <Typography variant="caption">10</Typography>
+              <Typography variant="caption">
+                {leaderboard.leaderboardList.length > 0
+                  ? leaderboard.connectWallet.totalDiamondNFT ?? 0
+                  : "--"}
+              </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
-              <Typography variant="caption">3</Typography>
+              <Typography variant="caption">
+                {leaderboard.leaderboardList.length > 0
+                  ? leaderboard.connectWallet.totalGoldNFT ?? 0
+                  : "--"}
+              </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
-              <Typography variant="caption">1000</Typography>
+              <Typography variant="caption">
+                {leaderboard.leaderboardList.length > 0
+                  ? leaderboard.connectWallet.totalBronzeNFT ?? 0
+                  : "--"}
+              </Typography>
             </TableCell>
           </TableRow>
         </TableFooter>
