@@ -78,8 +78,8 @@ function useLoyaltyHolder() {
   }, [walletAddress]);
 
   useEffect(() => {
-    const controller = new AbortController();
     if (walletIsConnected) {
+      const controller = new AbortController();
       const getData = async () => {
         try {
           const leaderboardResult = await getLoyaltyNFTBoardBySeason(
@@ -135,9 +135,8 @@ function useLoyaltyHolder() {
         history: true,
       });
       getData();
+      return () => controller.abort();
     }
-
-    return () => controller.abort();
   }, [period, walletAddress, leaderboard.currentPeriod, walletIsConnected]);
 
   return { leaderboard, setPeriod, periodInfo, loading, history };

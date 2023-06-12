@@ -76,8 +76,8 @@ function useLoyaltyJackpot() {
 
   // Get data for leaderboard and history tab when user select season
   useEffect(() => {
-    const controller = new AbortController();
     if (walletIsConnected) {
+      const controller = new AbortController();
       const getData = async () => {
         try {
           if (season === "current") {
@@ -155,10 +155,10 @@ function useLoyaltyJackpot() {
 
       setLoading({ leaderboard: true, history: true });
       getData();
+      return () => {
+        controller.abort("User's just sent another input!");
+      };
     }
-    return () => {
-      controller.abort("User's just sent another input!");
-    };
   }, [season, walletAddress, walletIsConnected]);
 
   return { setSeason, leaderboard, seasonInfo, history, loading };
