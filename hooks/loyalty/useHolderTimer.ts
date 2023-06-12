@@ -27,44 +27,60 @@ function formatTime(time: number) {
 }
 
 function useHolderTimer() {
-  const { walletAddress } = useWalletContext();
+  const { walletAddress, walletIsConnected } = useWalletContext();
+  const [reset, setReset] = useState(false);
   const [time, setTime] = useState({
     endDate: "",
     timeLeft: 0,
   });
 
-  // Get end date from the database. Call only once.
+  // Get end date from the database. Call onload and when timer reaches 0.
   useEffect(() => {
-    async function getEndDate() {
-      const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
-      if (promiseResult.status === 200 && promiseResult.data != null) {
-        const promiseData = promiseResult.data.data;
-        setTime((prev) => ({
-          ...prev,
-          endDate: promiseData.end_time,
-        }));
+    if (walletIsConnected) {
+      const getEndDate = async () => {
+        const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
+        if (promiseResult.status === 200 && promiseResult.data != null) {
+          const promiseData = promiseResult.data.data;
+          setTime((prev) => ({
+            ...prev,
+            endDate: promiseData.end_time,
+          }));
+        }
       }
+      if (!time.endDate) {
+        getEndDate();
+      }
+
     }
-    if (!time.endDate) {
-      getEndDate();
-    }
-  }, [walletAddress, time.endDate]);
+  }, [walletAddress, time.endDate, walletIsConnected, reset]);
 
   // Set time left based on the end date fetched from the database
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (time.endDate) {
-        const secondLeft = parseInt(
-          formatDistanceToNowStrict(new Date(time.endDate), { unit: "second" })
-        );
-        setTime((prev) => ({
-          ...prev,
-          timeLeft: secondLeft,
-        }));
-      }
-    }, 500);
+    if (walletIsConnected) {
+      const interval = setInterval(() => {
+        if (time.endDate) {
+          const secondLeft = parseInt(
+            formatDistanceToNowStrict(new Date(time.endDate), { unit: "second" })
+          );
+          if (secondLeft === 0 || secondLeft > time.timeLeft) {
+            // Change season when timer reaches 0.
+            setTime((prev) => ({
+              ...prev,
+              timeLeft: 0,
+            }));
+            // Change state to fetch new season data.
+            setReset(prev => !prev);
+          } else {
+            setTime((prev) => ({
+              ...prev,
+              timeLeft: secondLeft,
+            }));
+          }
+        }
+      }, 500);
 
-    return () => { clearInterval(interval) };
+      return () => { clearInterval(interval) };
+    }
   });
 
   return formatTime(time.timeLeft);
