@@ -144,7 +144,7 @@ function HolderHistory({ history, loading }: PropsType) {
           </Table>
         </TableContainer>
       )}
-      {history.length <= 0 && (
+      {!loading.history && history.length <= 0 && (
         <Stack
           sx={{ inset: 0 }}
           gap={5}

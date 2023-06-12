@@ -138,7 +138,7 @@ function HolderPool({}: Props) {
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         {walletIsConnected &&
-          (periodInfo.currentReward <= 0 ? (
+          (periodInfo.currentReward > 0 ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is
