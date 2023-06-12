@@ -9,7 +9,7 @@ import { Format } from "utils/format";
 
 type Props = {};
 
-function JackpotPool({}: Props) {
+function JackpotPool({ }: Props) {
   const { walletIsConnected } = useWalletContext();
   const { leaderboard, setSeason, history, seasonInfo, loading } =
     useLoyaltyJackpot();
@@ -61,7 +61,7 @@ function JackpotPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            {seasonInfo.currentReward}
+            {Format.formatMoney(seasonInfo.currentReward, 3)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
