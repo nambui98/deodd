@@ -29,7 +29,7 @@ type PropsType = {
 };
 
 function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
-  const { userInfo } = useWalletContext();
+  const { userInfo, walletAddress } = useWalletContext();
 
   return (
     <>
@@ -159,15 +159,11 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                               : "text.primary"
                           }
                         >
-                          {row.wallet === leaderboard.connectWallet?.wallet
-                            ? "You"
-                            : `${row.userName ?? ""} ${
-                                row.userName ? "(" : ""
-                              }${Convert.convertWalletAddress(
-                                row.wallet,
-                                5,
-                                4
-                              )}${row.userName ? ")" : ""}`}
+                          {`${row.userName} (${Convert.convertWalletAddress(
+                            row.wallet,
+                            5,
+                            4
+                          )})`}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -227,7 +223,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                   alt="User Avatar"
                 />
                 <Typography variant="caption" fontWeight={400}>
-                  You
+                  {userInfo.username} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
                 </Typography>
               </Stack>
             </TableCell>
