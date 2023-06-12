@@ -133,7 +133,7 @@ function HolderHistory({ history, loading }: PropsType) {
                         lineHeight={"1rem"}
                         fontWeight={400}
                       >
-                        {new Intl.NumberFormat("en", { maximumSignificantDigits: 12 }).format(row.profit)}
+                        {new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(row.profit)}
                       </Typography>
                       <BnbIcon width={16} />
                     </Stack>
