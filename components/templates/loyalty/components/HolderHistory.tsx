@@ -133,7 +133,7 @@ function HolderHistory({ history, loading }: PropsType) {
                         lineHeight={"1rem"}
                         fontWeight={400}
                       >
-                        {row.profit.toFixed(12)}
+                        {new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(row.profit)}
                       </Typography>
                       <BnbIcon width={16} />
                     </Stack>
@@ -144,7 +144,7 @@ function HolderHistory({ history, loading }: PropsType) {
           </Table>
         </TableContainer>
       )}
-      {history.length <= 0 && (
+      {!loading.history && history.length <= 0 && (
         <Stack
           sx={{ inset: 0 }}
           gap={5}
