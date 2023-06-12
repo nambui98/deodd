@@ -17,6 +17,7 @@ import LeftSidebar from "./LeftSidebar";
 import Loading from "./Loading";
 import { Meta } from "./Meta";
 import RightSidebar from "./RightSidebar";
+import JackpotPopup from "@/templates/loyalty/components/JackpotPopup";
 
 const Layout = ({ children }: IProps) => {
     const [rightOpen, setRightOpen] = useState(true);
@@ -102,6 +103,7 @@ const Layout = ({ children }: IProps) => {
                 </main>
                 <FaqHowtoplay />
             </Main>
+            {/* <JackpotPopup /> */}
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
             <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <MyBottomNavigation

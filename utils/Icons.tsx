@@ -10,6 +10,7 @@ import NotiIcon from "public/assets/icons/noti.svg";
 import LogoHeadIcon from "public/assets/icons/head.svg";
 import CupIcon from "public/assets/icons/cup.svg";
 import ClockIcon from "public/assets/icons/clock.svg";
+import Clock2Icon from "public/assets/icons/clock2.svg";
 import CloseIcon from "public/assets/icons/close-circle2.svg";
 import FacebookIcon from "public/assets/icons/facebook.svg";
 import MobileIcon from "public/assets/icons/mobile.svg";
@@ -70,6 +71,8 @@ function Bnb2Icon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
+import Growth1Icon from "public/assets/icons/growth1.svg";
+import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
 
 export {
   MoreIcon,
@@ -120,6 +123,7 @@ export {
   LogoHeadIcon,
   CupIcon,
   ClockIcon,
+  Clock2Icon,
   CloseIcon,
   FacebookIcon,
   LeftIcon,
@@ -132,4 +136,6 @@ export {
   InfoCircleIcon,
   Marketplace1Icon,
   ShareIcon,
+  Growth1Icon,
+  GoldCup1Icon,
 };
