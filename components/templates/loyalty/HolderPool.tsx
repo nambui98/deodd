@@ -33,6 +33,7 @@ function HolderPool({ }: Props) {
       if (res.data.data && res.status === 200) {
         setTitleSuccess("Claimed successfully");
         setIsSuccess(true);
+        setReset(prev => !prev);
       } else {
         setIsError(true);
         setTitleError(res.data.meta.error_message);
