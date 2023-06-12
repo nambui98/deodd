@@ -1,4 +1,4 @@
-import { useState, useEffect, useInsertionEffect } from "react";
+import { useState, useEffect } from "react";
 import { useWalletContext } from "contexts/WalletContext";
 import {
   getLoyaltyNFTCurrent,
@@ -7,7 +7,7 @@ import {
 } from "libs/apis/loyaltyAPI";
 
 function useLoyaltyHolder() {
-  const { walletAddress } = useWalletContext();
+  const { walletAddress, walletIsConnected } = useWalletContext();
   const [loading, setLoading] = useState({
     leaderboard: true,
     history: true,
@@ -55,7 +55,7 @@ function useLoyaltyHolder() {
 
   // Get data for holder banner section, and get number of periods for select list at page load
   useEffect(() => {
-    async function getData() {
+    const getData = async () => {
       const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
       if (promiseResult.status === 200 && promiseResult.data != null) {
         const promiseData = promiseResult.data.data;
@@ -73,66 +73,72 @@ function useLoyaltyHolder() {
           currentPeriod: promiseData.num_period,
         }));
       }
-    }
+    };
     getData();
   }, [walletAddress]);
 
   useEffect(() => {
     const controller = new AbortController();
-    async function getData() {
-      try {
-        const leaderboardResult = await getLoyaltyNFTBoardBySeason(
-          walletAddress,
-          period,
-          controller.signal
-        );
-        if (
-          leaderboardResult.status === 200 &&
-          leaderboardResult.data != null
-        ) {
-          const leaderboardData = leaderboardResult.data.data;
-          setLeaderboard((prev) => ({
-            ...prev,
-            leaderboardList: leaderboardData.dashboard,
-            connectWallet: leaderboardData.connectWallet,
-          }));
-          setLoading((prev) => ({ ...prev, leaderboard: false }));
-        } else {
-          throw new Error("Can't connect to the API");
-        }
-        const historyResult = await getNFTItemProfitBySeason(
-          walletAddress,
-          period,
-          controller.signal
-        );
-        if (historyResult.status === 200 && historyResult.data != null) {
-          const historyData = historyResult.data.data;
-          setHistory(
-            historyData.nftItemProfits.map(
-              (obj: { token_id: string; type_id: string; profit: number }) => ({
-                tokenId: obj.token_id,
-                typeId: obj.type_id,
-                profit: obj.profit,
-              })
-            )
+    if (walletIsConnected) {
+      const getData = async () => {
+        try {
+          const leaderboardResult = await getLoyaltyNFTBoardBySeason(
+            walletAddress,
+            period,
+            controller.signal
           );
-          setLoading((prev) => ({ ...prev, history: false }));
-        } else {
-          throw new Error("Can't connect to the API");
+          if (
+            leaderboardResult.status === 200 &&
+            leaderboardResult.data != null
+          ) {
+            const leaderboardData = leaderboardResult.data.data;
+            setLeaderboard((prev) => ({
+              ...prev,
+              leaderboardList: leaderboardData.dashboard,
+              connectWallet: leaderboardData.connectWallet,
+            }));
+            setLoading((prev) => ({ ...prev, leaderboard: false }));
+          } else {
+            throw new Error("Can't connect to the API");
+          }
+          const historyResult = await getNFTItemProfitBySeason(
+            walletAddress,
+            period,
+            controller.signal
+          );
+          if (historyResult.status === 200 && historyResult.data != null) {
+            const historyData = historyResult.data.data;
+            setHistory(
+              historyData.nftItemProfits.map(
+                (obj: {
+                  token_id: string;
+                  type_id: string;
+                  profit: number;
+                }) => ({
+                  tokenId: obj.token_id,
+                  typeId: obj.type_id,
+                  profit: obj.profit,
+                })
+              )
+            );
+            setLoading((prev) => ({ ...prev, history: false }));
+          } else {
+            throw new Error("Can't connect to the API");
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
-      }
+      };
+
+      setLoading({
+        leaderboard: true,
+        history: true,
+      });
+      getData();
     }
 
-    setLoading({
-      leaderboard: true,
-      history: true,
-    });
-    getData();
-
     return () => controller.abort();
-  }, [period, walletAddress, leaderboard.currentPeriod]);
+  }, [period, walletAddress, leaderboard.currentPeriod, walletIsConnected]);
 
   return { leaderboard, setPeriod, periodInfo, loading, history };
 }
