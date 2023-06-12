@@ -41,6 +41,13 @@ export const BzImage = "/assets/images/bz.png";
 export const DjImage = "/assets/images/dj.png";
 export const YahooFImage = "/assets/images/yahoof.png";
 export const MwImage = "/assets/images/mw.png";
+export const WinLoseStreakImage = "/assets/images/winlosestreak.png";
+export const WinLoseStreakBannerImage = "/assets/images/winlosestreak-banner.png";
+export const VolumeImage = "/assets/images/volume.png";
+export const VolumeBannerImage = "/assets/images/volume-banner.png";
+export const Bronze2Image = "/assets/images/bronze2.png";
+export const Gold2Image = "/assets/images/gold2.png";
+export const Diamond2Image = "/assets/images/diamond2.png";
 
 
 export const MapIcon: { [key: string]: string } = {
@@ -62,3 +69,5 @@ export const MapIconNFTString: { [key in EnumNFT]: string } = {
 
 export const HowRef2EarnWorkImage = "/assets/images/how-ref2earn-work.png"
 export const GoldenHourSidebarImage = "/assets/images/golden-hour-sidebar.svg"
+
+export const BgShopCollection = "assets/images/bgshopcollection.png";

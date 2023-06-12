@@ -3,7 +3,6 @@ import { ClickAwayListener } from '@mui/base'
 import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Popper, Stack, Typography } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
-import { Input } from 'components/ui/input'
 import { DOWNSTREAM_MESSAGE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
@@ -11,28 +10,34 @@ import EmojiPicker from 'emoji-picker-react'
 import { LocalStorage } from 'libs/LocalStorage'
 import { DeoddService } from 'libs/apis'
 import { MessageCommand } from 'libs/types'
-import { ChangeEvent, KeyboardEventHandler, useCallback, useDeferredValue, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useInView } from 'react-intersection-observer'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
+import { ArrowDown2Icon, ArrowLeft2Icon, ChatBoxIcon, CloseSquareIcon, EmojiIcon, MoreIcon, MoreSquareIcon, SendIcon, UndoIcon, WarningIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
-import Loader from './Loader'
-import { useAccount } from 'wagmi'
-import { connected } from 'process'
-import { useInView } from 'react-intersection-observer'
+import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
-type MessageType = {
+
+export type MessageType = {
     userInfo: {
         userName: string | undefined,
         avatarId: number | undefined,
     },
+    repliedUserInfo: {
+        avatarId: number | undefined,
+        userName: string | undefined,
+    } | undefined,
     content: string,
     created_at: string,
     from: string,
+    to: string,
     id: string,
     is_hidden: boolean,
-    updated_at: string
+    updated_at: string,
+    replied_content: string,
+    replied_to: string
 }
 type UserTyping = {
     walletAddress: string | undefined,
@@ -46,17 +51,29 @@ function Chat({ open }: { open: boolean }) {
     const [isScrollBottom, setIsScrollBottom] = useState<boolean>(true);
     const { setIsError, setTitleError } = useSiteContext();
     const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
-    const { refetch: getMessages } = useQuery({
+    const [replyUser, setReplyUser] = useState<{ wallet: string, username: string, repliedTo: string } | undefined>();
+    const [messageSelected, setMessageSelected] = useState<MessageType | undefined>()
+    const [isStartBlock, setIsStartBlock] = useState<boolean>(false);
+    const [blockState, setBlockState] = useState<enumBlockState>(enumBlockState.BlockList);
+
+    const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
+    const { refetch: getMessages, } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
         queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
         onSuccess(data) {
             if (data && data.data) {
+                debugger
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
                 if (lastCreatedAt !== data.data[data.data.length - 1].created_at) {
-                    setMessages((prev) => ([...prev, ...data.data]))
+                    if (lastCreatedAt === null) {
+                        debugger
+                        setMessages(data.data);
+                    } else {
+                        setMessages((prev) => ([...prev, ...data.data]))
+                    }
                     setLastCreatedAt(data.data[data.data.length - 1].created_at);
                 }
             }
@@ -100,20 +117,20 @@ function Chat({ open }: { open: boolean }) {
         {
             onMessage: async (event) => {
                 const dataMessage = await getDataFromBlob(event.data)
-                if (dataMessage.message === DOWNSTREAM_MESSAGE) {
-                    if (dataMessage.data.data.data.command === MessageCommand.NEW_MESSAGE) {
-                        setMessages((prev) => [dataMessage.data.data.data.data, ...prev])
-                        // setTimeout(() => {
-                        //     handleScrollToBottom();
-                        // }, 100);
+                if (dataMessage !== null) {
+                    if (dataMessage[DOWNSTREAM_MESSAGE]) {
+                        if (dataMessage[DOWNSTREAM_MESSAGE].data.command === MessageCommand.NEW_MESSAGE) {
+                            setIsHasNewMessage(!isScrollBottom);
+                            setMessages((prev) => [dataMessage[DOWNSTREAM_MESSAGE].data.data, ...prev])
+                        }
                     }
-
-                }
-                if (dataMessage?.message === MessageCommand.USERS_TYPING) {
-                    const filterTyping = (dataMessage.data.data.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
-                    setUsersTyping(filterTyping);
+                    if (dataMessage[MessageCommand.USERS_TYPING]) {
+                        const filterTyping = (dataMessage[MessageCommand.USERS_TYPING]?.usersTyping as UserTyping[]).filter(user => user.walletAddress?.toUpperCase() !== walletAddress.toUpperCase());
+                        setUsersTyping(filterTyping);
+                    }
                 }
             },
+            // reconnectInterval: 5000,
             shouldReconnect: () => true
         },
     );
@@ -122,20 +139,34 @@ function Chat({ open }: { open: boolean }) {
         if (walletIsConnected) {
             const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
             sendJsonMessage(message);
+            const ping = setInterval(() => {
+
+                const message: any = [0, {}];
+                sendJsonMessage(message);
+            }, 50000);
+            return () => clearInterval(ping);
         }
     }, [walletIsConnected, sendJsonMessage])
 
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-        const result = {
-            message: parseInt(parseJson[0][0]),
-            data: parseJson[0][1]
+        console.log("🚀 ~ file: Chat.tsx:146 ~ getDataFromBlob ~ parseJson:", parseJson)
+        if (parseInt(parseJson[0][0]) !== 1) {
+            let result: { [key: number]: any } = {};
+            for (let index = 0; index < parseJson.length; index++) {
+                const element: any = parseJson[index];
+                result[parseInt(element[0])] = element[1]!.data;
+            }
+            return result;
         }
-        return result;
+        return null;
     }
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: MessageType) => {
+
         setAnchorOptionMore(event.currentTarget);
+        setMessageSelected(user);
     };
 
     const handleClose = () => {
@@ -162,11 +193,13 @@ function Chat({ open }: { open: boolean }) {
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
+    console.log(connectionStatus);
 
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -80;
         if (bottom) {
             setIsScrollBottom(true);
+            setIsHasNewMessage(false);
         } else {
             setIsScrollBottom(false);
         }
@@ -177,10 +210,72 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             } else {
+                debugger
                 getMessagesWithoutAuth();
             }
         }
     }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
+    useEffect(() => {
+        if (walletAddress) {
+            setMessages([])
+            setLastCreatedAt(null)
+            getMessages()
+        } else {
+            setMessages([])
+            setIsLoadMoreWithoutAuth(false)
+            getMessagesWithoutAuth();
+        }
+    }, [walletAddress, getMessages, getMessagesWithoutAuth])
+
+
+    //
+    const handleReplyUser = () => {
+        setReplyUser({ wallet: messageSelected?.from || '', repliedTo: messageSelected?.id || '', username: messageSelected?.userInfo.userName || '' });
+    }
+    // hanlde reporting 
+    const report = useMutation({
+        mutationFn: (typeReport: string) => {
+            return DeoddService.reportMessage({ messageId: messageSelected!.id, type: typeReport })
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess(data, variables, context) {
+            setLastCreatedAt(null);
+            setTimeout(() => {
+                getMessages();
+            }, 10);
+        },
+    });
+    const undoReport = useMutation({
+        mutationFn: (id: string) => {
+            return DeoddService.undoReportMessage({ messageId: id })
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess(data, variables, context) {
+            setLastCreatedAt(null);
+            setTimeout(() => {
+                getMessages();
+            }, 10);
+        },
+    });
+
+    const handleReport = (typeReport: string) => {
+        report.mutate(typeReport);
+    }
+    const handleUndoReport = (id: string) => {
+        undoReport.mutate(id);
+    }
+    //handle block
+    const handleBlock = () => {
+        setIsStartBlock(true);
+        setBlockState(enumBlockState.Block)
+        setAnchorOptionMore(null)
+    }
 
     //typing
     const sendMessageTyping = () => {
@@ -213,7 +308,41 @@ function Chat({ open }: { open: boolean }) {
         ];
         sendJsonMessage(message);
     }
+
     let textTyping = usersTyping.length === 1 ? usersTyping[0].userName + ' is typing' : usersTyping.length === 2 ? `${usersTyping[0].userName} and ${usersTyping[1].userName} are typing` : usersTyping.length > 2 ? 'some users are typing' : ''
+    //handle block
+    const blockUser = useMutation({
+        mutationFn: () => {
+            return DeoddService.blockUser({ wallet: messageSelected!.from })
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess(data, variables, context) {
+            setLastCreatedAt(null);
+            setTimeout(() => {
+                getMessages();
+            }, 10);
+        },
+    });
+    const unBlockUser = useMutation({
+        mutationFn: (wallet: string) => {
+            return DeoddService.unBlockUser({ wallet })
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess(data, variables, context) {
+            setLastCreatedAt(null);
+            setTimeout(() => {
+                getMessages();
+            }, 10);
+        },
+    });
+    console.log(walletAddress);
+
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -232,7 +361,15 @@ function Chat({ open }: { open: boolean }) {
                 <Box ref={refBottomChat} />
                 {
                     messages.map((message) => {
-                        return <ChatItem key={message.id} data={message} handleClick={handleClick} id={message.id} isMy={message.from === walletAddress} />
+                        return <ChatItem
+                            handleUndoReport={handleUndoReport}
+                            key={message.id}
+                            data={message}
+                            isReport={message.is_hidden}
+                            handleClick={(e) => handleClick(e, message)}
+                            id={message.id}
+                            isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
+                        />
                     })
                 }
                 {
@@ -250,7 +387,7 @@ function Chat({ open }: { open: boolean }) {
                                 <Box height={10}>
                                     <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping || ''}</Typography>
                                 </Box>
-                                <SendMessage sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                                <SendMessage setReplyUser={setReplyUser} replyUser={replyUser} sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
                             </Stack>
                             : <ButtonLoading
                                 onClick={handleConnectWallet}
@@ -290,24 +427,72 @@ function Chat({ open }: { open: boolean }) {
                         }}
                     >
                         <ArrowDown2Icon />
+                        {
+                            isHasNewMessage &&
+
+                            <Box width={12} height={12} bgcolor="#FF5870" borderRadius={'100%'} position={'absolute'} top={0} right={0} />
+                        }
                     </Button>
                 }
             </Box>
-            <PopoverItem id={id} anchorEl={anchorElOptionMore} handleClose={handleClose} />
+            <PopoverItem
+                handleReport={handleReport}
+                handleBlock={handleBlock}
+                handleViewBlockList={() => {
+                    setBlockState(enumBlockState.BlockList)
+                    setIsStartBlock(true);
+                    setAnchorOptionMore(null)
+                }}
+                messageSelected={messageSelected!}
+                id={id}
+                anchorEl={anchorElOptionMore}
+                handleClose={handleClose}
+                setReplyUser={handleReplyUser} />
+            {
+                isStartBlock &&
+                <BlockState
+                    blockStateProp={blockState}
+                    onBlockUser={() => blockUser.mutateAsync()}
+                    onUnBlockUser={(wallet: string) => unBlockUser.mutateAsync(wallet)}
+                    messageSelected={messageSelected!}
+                    setIsStartBlock={setIsStartBlock} />
+            }
         </Box>
     )
 }
 
 export default Chat
 
-const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCancelTyping }: { disabled: boolean, sendMessageCancelTyping: VoidFunction, sendMessageTyping: VoidFunction, walletAddress: string }) => {
+const SendMessage = ({ disabled, replyUser, setReplyUser, walletAddress, sendMessageTyping, sendMessageCancelTyping }: { disabled: boolean, setReplyUser: Function, replyUser: { wallet: string, username: string, repliedTo: string } | undefined, sendMessageCancelTyping: VoidFunction, sendMessageTyping: VoidFunction, walletAddress: string }) => {
     const { setIsError, setTitleError } = useSiteContext();
-    const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue: setContent, reset, watch, formState: { errors } } = useForm();
     const refInput = useRef(null);
     const [anchorElEmoji, setAnchorElEmoji] = useState<null | HTMLElement>(null);
     const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [isShowReply, setIsShowReply] = useState<boolean>(true);
     const open = Boolean(anchorElEmoji);
     const id = open ? 'pop-up-emoji' : undefined;
+    useEffect(() => {
+        if (replyUser) {
+            setContent('content',
+                '@' + (replyUser?.username || Convert.convertWalletAddress(replyUser.wallet, 4, 5)) + " "
+            );
+            (refInput?.current as any).focus();
+        }
+    }, [replyUser, setContent])
+
+    let reply = replyUser ? '@' + (replyUser?.username || Convert.convertWalletAddress(replyUser.wallet, 4, 5)) + " " : '';
+    //remove reply when user remove
+    useEffect(() => {
+        if (replyUser) {
+            if (watch('content').length < reply.length) {
+                setContent('content', '');
+                setReplyUser(undefined);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [replyUser, setContent, setReplyUser, watch('content')])
+
     //is ended typing
     const onSubmit = (data: any) => {
         sendMessage.mutate(data.content);
@@ -316,7 +501,7 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
     }
     const sendMessage = useMutation({
         mutationFn: (content: string) => {
-            return DeoddService.sendMessage({ from: walletAddress, content: content })
+            return DeoddService.sendMessage({ from: walletAddress, to: replyUser?.wallet, repliedTo: replyUser?.repliedTo, content: replyUser ? content.replace(reply, '') : content })
         },
         onError(error: any, variables, context) {
             setIsError(true)
@@ -324,6 +509,7 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
         },
         onSuccess(data, variables, context) {
             reset();
+            setReplyUser(undefined);
         },
     });
 
@@ -338,7 +524,7 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
         const cursor = (refInput?.current as any).selectionStart;
         const content = watch('content');
         const text = content.slice(0, cursor) + emojiObject.emoji + content.slice(cursor);
-        setValue('content', text);
+        setContent('content', text);
     }
     useEffect(() => {
         function onTimeout() {
@@ -364,133 +550,180 @@ const SendMessage = ({ disabled, walletAddress, sendMessageTyping, sendMessageCa
     }, [isTyping, sendMessageTyping])
 
     return <Box component={'form'} sx={{ width: 1, position: 'relative' }} onSubmit={handleSubmit(onSubmit)}>
-        <InputBase
-            inputRef={refInput}
-            inputProps={{
-                maxLength: 200,
-                // onChange: handleOnChange
-            }}
-            {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
-            onBlur={() => {
-                setIsTyping(false)
-                sendMessageCancelTyping();
-            }}
-            onKeyDown={(e) => handleOnKeydown(e)}
-            sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
-            placeholder='Type your messsages'
-            multiline
-            maxRows={3}
-            endAdornment={
-
-                <InputAdornment position="end" sx={{ pr: 2 }}>
-                    <ClickAwayListener onClickAway={() => setAnchorElEmoji(null)}>
-                        <Box>
-                            <Popper
-                                id={id}
-                                open={open}
-                                anchorEl={anchorElEmoji}
-                                placement='top-end'
-                                sx={{
-                                    zIndex: (theme) => theme.zIndex.drawer + 1
-                                }}
-                            >
-                                <EmojiPicker onEmojiClick={handleEmoji} />
-                            </Popper>
-                            <IconButton
-                                aria-label="Toggle emoji"
-                                aria-describedby={id}
-                                onClick={(event: React.MouseEvent<HTMLElement>) => {
-                                    setAnchorElEmoji(anchorElEmoji ? null : event.currentTarget);
-                                }}
-                                edge="end"
-                                sx={{ mr: -1, }}
-                            >
-                                <EmojiIcon />
-                            </IconButton>
-                        </Box>
-                    </ClickAwayListener>
-
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        type='submit'
-                        disabled={disabled}
-                        edge="end"
-                        sx={{ px: 0, mr: -4 }}
-                    >
-                        <Stack width={60} alignItems={'center'}>
-                            <SendIcon />
-                            <Typography fontSize={10} mt={.5} fontWeight={400} color="dark.60">
-                                {watch('content')?.length ?? 0}/200
-                            </Typography>
-
-                        </Stack>
-                    </IconButton>
-                </InputAdornment>
+        <Box position={'relative'}>
+            {
+                replyUser && isShowReply &&
+                <Box position={'absolute'} top={6} left={8} zIndex={1}><Typography color="secondary.main" fontSize={14}>@{replyUser?.username || Convert.convertWalletAddress(replyUser.wallet, 4, 5)} </Typography></Box>
             }
-        />
+            <InputBase
+                inputRef={refInput}
+                inputProps={{
+                    maxLength: 200,
+                }}
+                {...register("content", { required: true, maxLength: 200, validate: (value) => !!value.trim() })}
+                onBlur={() => {
+                    setIsTyping(false)
+                    sendMessageCancelTyping();
+                }}
+                onKeyDown={(e) => handleOnKeydown(e)}
+                onScrollCapture={(e: any) => {
+                    const isTop = e.target?.scrollTop === 0;
+                    setIsShowReply(isTop)
+                }}
+                sx={{ width: '100%', fontSize: 14, px: 1, color: 'white', fontWeight: 400 }}
+                placeholder='Type your messsages'
+                multiline
+                maxRows={3}
+                endAdornment={
+
+                    <InputAdornment position="end" sx={{ pr: 2 }}>
+                        <ClickAwayListener onClickAway={() => setAnchorElEmoji(null)}>
+                            <Box>
+                                <Popper
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorElEmoji}
+                                    placement='top-end'
+                                    sx={{
+                                        zIndex: (theme) => theme.zIndex.drawer + 1
+                                    }}
+                                >
+                                    <EmojiPicker onEmojiClick={handleEmoji} />
+                                </Popper>
+                                <IconButton
+                                    aria-label="Toggle emoji"
+                                    aria-describedby={id}
+                                    onClick={(event: React.MouseEvent<HTMLElement>) => {
+                                        setAnchorElEmoji(anchorElEmoji ? null : event.currentTarget);
+                                    }}
+                                    edge="end"
+                                    sx={{ mr: -1, }}
+                                >
+                                    <EmojiIcon />
+                                </IconButton>
+                            </Box>
+                        </ClickAwayListener>
+
+                        <IconButton
+                            aria-label="toggle password visibility"
+                            type='submit'
+                            disabled={disabled}
+                            edge="end"
+                            sx={{ px: 0, mr: -4 }}
+                        >
+                            <Stack width={60} alignItems={'center'}>
+                                <SendIcon />
+                                <Typography fontSize={10} mt={.5} fontWeight={400} color="dark.60">
+                                    {watch('content')?.length ?? 0}/200
+                                </Typography>
+
+                            </Stack>
+                        </IconButton>
+                    </InputAdornment>
+                }
+            />
+
+        </Box>
     </Box>
 
 }
-const PopoverItem = ({ id, anchorEl, handleClose }: {
+const PopoverItem = ({ id, anchorEl, handleViewBlockList, setReplyUser, handleReport, handleBlock, handleClose, messageSelected }: {
     id?: string,
     anchorEl: HTMLButtonElement | null,
-    handleClose: VoidFunction
+    messageSelected: MessageType,
+    setReplyUser: Function,
+    handleClose: VoidFunction,
+    handleReport: (reportType: string) => void
+    handleBlock: Function,
+    handleViewBlockList: Function
 }) => {
     const [isShowReport, setIsShowReport] = useState<boolean>(false);
+    const [typeReport, setTypeReport] = useState<string | undefined>();
     const reportRef = useRef<HTMLDivElement>(null);
     const initRef = useRef<HTMLDivElement>(null);
     const nodeRef = isShowReport ? reportRef : initRef;
+    const { walletAddress } = useWalletContext();
+
+    useEffect(() => {
+        if (anchorEl === null) {
+            setTimeout(() => {
+                setIsShowReport(false)
+                setTypeReport(undefined);
+            }, 200);
+        }
+    }, [anchorEl])
+
     const data = [
         {
             icon: <UndoIcon />,
             title: 'Reply',
             onClick: () => {
-
-                // setActiveStep(1);
-                setIsShowReport((prev) => !prev);
+                setReplyUser();
+                handleClose();
             }
         },
         {
             icon: <WarningIcon />,
             title: 'Report message',
-            onClick: () => { }
+            onClick: () => {
+                setIsShowReport((prev) => !prev);
+            }
         },
         {
             icon: <CloseSquareIcon />,
             title: 'Block user',
+            onClick: () => {
+                handleBlock();
+            }
+        },
+        {
+            icon: <MoreIcon width={20} height={20} />,
+            title: 'View block list',
+            onClick: () => {
 
-            onClick: () => { }
+                handleViewBlockList()
+            }
+        },
+
+    ]
+    const dataMy = [
+        {
+            icon: <MoreIcon width={20} height={20} />,
+            title: 'View block list',
+            onClick: () => {
+                handleViewBlockList()
+            }
         },
     ]
     const dataReport = [
         {
             title: 'Spam',
-
+            type: 'SPAM',
             onClick: () => { }
         },
         {
             title: 'Violence',
-
+            type: 'VIOLENCE',
             onClick: () => { }
         }, {
             title: 'Pornography',
-
+            type: 'PORNOGRAPHY',
             onClick: () => { }
         }, {
             title: 'Child abuse',
-
+            type: 'CHILD_ABUSE',
             onClick: () => { }
         }, {
             title: 'Political distortion',
-
+            type: 'POLITICAL_DISTORTION',
             onClick: () => { }
         }, {
             title: 'Copyright',
-
+            type: 'COPYRIGHT',
             onClick: () => { }
         }, {
             title: 'Others',
-
+            type: 'OTHERS',
             onClick: () => { }
         },
     ]
@@ -542,7 +775,7 @@ const PopoverItem = ({ id, anchorEl, handleClose }: {
                             }
                         }}>
                             {
-                                data.map((item, index) =>
+                                (messageSelected?.from?.toUpperCase() === walletAddress?.toUpperCase() ? dataMy : data).map((item, index) =>
                                     <ListItem key={index} disablePadding>
                                         <ListItemButton onClick={item.onClick}>
                                             <ListItemIcon sx={{ minWidth: "36px", }}>
@@ -555,9 +788,10 @@ const PopoverItem = ({ id, anchorEl, handleClose }: {
                                     </ListItem>
                                 )
                             }
-                        </List> :
-                        <List sx={{
+                        </List>
+                        : <List sx={{
                             py: 1,
+                            mx: 2,
                             '.MuiListItemButton-root': {
                                 py: 1,
                                 px: 2,
@@ -577,40 +811,45 @@ const PopoverItem = ({ id, anchorEl, handleClose }: {
                             </ListItem>
                             <Divider />
                             <ListItem disablePadding>
-                                <ListItemButton onClick={() => setIsShowReport(false)}>
+                                <ListItemButton>
                                     <ListItemText primary={<Typography color='secondary.100' fontWeight={400} variant='body2'>Report as...</Typography>} />
                                 </ListItemButton>
                             </ListItem>
                             {
                                 dataReport.map((item, index) =>
-                                    <ListItem key={index} disablePadding>
-                                        <ListItemButton onClick={item.onClick}>
+                                    <ListItem key={index} disablePadding sx={typeReport === item.type ? { bgcolor: 'secondary.main', color: 'primary.200' } : {}}>
+                                        <ListItemButton onClick={() => setTypeReport(item.type)}>
                                             <ListItemText primary={item.title} />
                                         </ListItemButton>
                                     </ListItem>
-
                                 )
                             }
-
+                            <ButtonLoading onClick={() => {
+                                handleClose();
+                                handleReport(typeReport!)
+                            }} disabled={!typeReport} sx={{ py: 1, mb: 1, fontSize: 12, bgcolor: 'primary.300', fontWeight: 400, textTransform: 'none', borderRadius: 2 }}>
+                                Send Report
+                            </ButtonLoading>
                         </List>
                 }
-
-
             </Box>
         </div>
         {/* </CSSTransition>
         </SwitchTransition> */}
 
+
     </Popover >
 
 }
 
-const ChatItem = ({ isMy, isReport, id, data, handleClick }: { isReport?: boolean, data: MessageType, isMy?: boolean, id: string | undefined, handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void }) => {
+const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: { isReport?: boolean, handleUndoReport: (id: string) => void, data: MessageType, isMy?: boolean, id: string | undefined, handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void }) => {
+    const { walletIsConnected, walletAddress } = useWalletContext()
+
     if (isReport) {
         return <Box bgcolor={'background.paper'} position={'relative'} boxShadow={"0px 2px 4px rgba(0, 0, 0, 0.15)"} border={'1px solid'} borderColor={'secondary.300'} textAlign={'center'} borderRadius={2} px={2} pt={2} pb={1} mb={1}>
-            <Typography variant='body2' color="secondary.100" fontWeight={400}>Message reported and hidden</Typography>
-            <Button variant="text" sx={{ border: 'none', '&:hover': { border: 'none', backgroundColor: 'secondary.300' } }} color={'secondary'}>Undo</Button>
-        </Box>
+            <Typography variant='body2' color="secondary.100" fontWeight={400} whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }}>This message has been <br /> reported and hidden</Typography>
+            <Button variant="text" sx={{ border: 'none', '&:hover': { border: 'none', backgroundColor: 'secondary.300' } }} onClick={() => handleUndoReport(id!)} color={'secondary'}>Undo</Button>
+        </Box >
     }
     return <Box bgcolor={'primary.300'} position={'relative'} border={'1px solid'} borderColor={'secondary.300'} borderRadius={2} px={2} py={1} mb={1} sx={{
         cursor: 'pointer',
@@ -631,14 +870,39 @@ const ChatItem = ({ isMy, isReport, id, data, handleClick }: { isReport?: boolea
             <Avatar sx={{ width: 24, height: 24 }} alt={data.userInfo.userName} src={Utils.getPathAvatar(data.userInfo.avatarId ?? 0)} />
             <Typography variant='body2' fontWeight={500} >{data.userInfo.userName ?? Convert.convertWalletAddress(data.from, 4, 5)}</Typography>
         </Stack>
-        <Stack direction={'row'} alignItems={'baseLine'} gap={1} mt={.5}>
-            <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{Format.formatDateTime(data.updated_at, 'HH:mm')}</Typography>
-            <Typography whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100"> {data.content}</Typography>
+        <Stack direction={'row'} alignItems={'baseline'} gap={1} mt={.5}>
+            <Typography variant='body2' fontWeight={400} color={'secondary.700'} lineHeight={'14px'} fontSize={10}>{Format.formatDateTime(data.updated_at, 'HH:mm')}</Typography>
+            <Stack>
+                {
+                    data.replied_content && <Stack sx={{ borderLeft: 1, borderColor: 'secondary.main' }} mb={.5}>
+                        <Typography ml={.5} whiteSpace={'pre-line'} lineHeight={'14px'} sx={{ wordBreak: 'break-all' }} flexGrow={1} variant='caption' fontWeight={400} color="dark.60"> {data.replied_content}</Typography>
+                    </Stack>
+                }
+                <Typography whiteSpace={'pre-line'} sx={{ wordBreak: 'break-all' }} flexGrow={1} variant='body2' fontWeight={500} color="secondary.100">
+                    {
+                        data.repliedUserInfo &&
+                        <>
+
+                            <Typography sx={walletAddress?.toLowerCase() === data.to.toLowerCase() ? {
+                                bgcolor: 'secondary.main',
+                                color: 'primary.200'
+                            } : {}} component="span" fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">
+                                @{data.repliedUserInfo?.userName || Convert.convertWalletAddress(data.to, 4, 5)}&nbsp;
+                            </Typography>
+                            &nbsp;
+                        </>
+                    }
+                    {data.content}</Typography>
+            </Stack>
         </Stack>
-        {/* <Box position="absolute" className="more" sx={{ top: 0, right: 0 }}>
-            <IconButton aria-describedby={id} onClick={handleClick} aria-label="delete">
-                <MoreSquareIcon />
-            </IconButton>
-        </Box> */}
-    </Box>
+        {
+            walletIsConnected
+            && <Box position="absolute" className="more" sx={{ top: 0, right: 0 }}>
+                <IconButton aria-describedby={id} onClick={handleClick} aria-label="delete">
+                    <MoreSquareIcon />
+                </IconButton>
+            </Box>
+        }
+
+    </Box >
 }

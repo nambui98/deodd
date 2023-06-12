@@ -1,25 +1,33 @@
-import { MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { MenuItem, Select, SelectChangeEvent, Typography, InputLabel } from '@mui/material'
+import { elements } from 'chart.js';
 import React, { useState } from 'react'
+import { Colors } from 'constants/index';
 
-type Props = {}
+type Props = {
+    selectOptions: { [index: string]: string | number }[];
+    setValue: Function;
+}
 
-function SelectBox({ }: Props) {
-    const [valueSelect, setValueSelect] = useState<string>()
+function SelectBox({ selectOptions, setValue }: Props) {
+    const [valueSelect, setValueSelect] = useState<string>(`${selectOptions[0].value}` ?? "current");
     return (
         <Select
             value={valueSelect}
-            placeholder='Select-'
-            onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
+            onChange={(event: SelectChangeEvent) => { setValue(event.target.value); setValueSelect(event.target.value) }}
             displayEmpty
+            label="Season"
             sx={styleInput}
             inputProps={{ 'aria-label': 'Without label' }}
         >
-            <MenuItem disabled value={""}>
-                <Typography color={"secondary.100"}>Select-</Typography>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {selectOptions.map((property, index) => {
+                return (
+                    <MenuItem key={index} value={property.value} sx={{
+                        fontSize: "0.875rem",
+                        fontWeight: 500,
+                        lineHeight: "1.25rem",
+                    }}>{property.text}</MenuItem>
+                )
+            })}
         </Select>
     )
 }
@@ -27,15 +35,23 @@ const styleInput = {
     backgroundColor: "background.paper", border: '0px solid', borderColor: 'background.paper', '.MuiOutlinedInput-notchedOutline': {
         border: 'none'
     },
-    // width: "100%",
-    fontSize: 16,
-    'div': {
-        py: "8px",
-        fontSize: 16,
+    ' .MuiSelect-select': {
+        py: 1,
+        px: 2,
     },
-    '.MuiSelect-select': {
-        color: "secondary.main"
-    }
-
+    '.MuiMenuItem-root': {
+        fontSize: "0.875rem",
+        fontWeight: 500,
+        lineHeight: "1.25rem",
+    },
+    '.MuiSvgIcon-root ': {
+        fill: Colors.secondary,
+    },
+    maxWidth: "10rem",
+    minWidth: "10rem",
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    lineHeight: "1.25rem",
+    borderRadius: 2,
 }
 export default SelectBox

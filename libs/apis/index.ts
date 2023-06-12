@@ -61,6 +61,18 @@ const getUserTestail = async () => {
         method: 'get',
     })
 }
+const getWinLoseStreak = async (wallet: string) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/streak?wallet=${wallet}`,
+        method: 'get',
+    })
+}
+const getTotalVolume = async (wallet: string) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/volume?wallet=${wallet}`,
+        method: 'get',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -74,4 +86,6 @@ export const DeoddService = {
     claimTokenSpending,
     getResultByFlipId,
     getCurrentIp,
+    getWinLoseStreak,
+    getTotalVolume
 }

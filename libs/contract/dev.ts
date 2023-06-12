@@ -1,3 +1,3 @@
 export const CONTRACT_DEV = {
-  deodd: '0x60EFfC213567FC2d6B33EdB6e98D4CF7c20F1Cd4',
+  deodd: '0x97e643ee50f0660CFC11a75c0a5eaFd5019FE288',
 }
