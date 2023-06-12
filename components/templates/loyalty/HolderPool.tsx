@@ -70,46 +70,47 @@ function HolderPool({}: Props) {
           mx: { xs: 2, md: 0 },
         }}
       >
-        {periodInfo.currentPeriod > 1 && periodInfo.totalReward > 0 ? (
-          <>
-            <Typography
-              variant="body2"
-              lineHeight={"1.375rem"}
-              textTransform={"uppercase"}
-              color={"text.disabled"}
-            >
-              Your total reward is
-              <Box component={"span"} color={"text.secondary"}>
-                {" "}
-                {periodInfo.totalReward.toFixed(3)} BNB
-              </Box>
-              <br />
-              claim NOW
-            </Typography>
-            <ButtonMain
-              active={true}
-              title="claim reward"
-              sx={{
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                minHeight: 0,
-                px: 2,
-                py: 0.5,
-                mb: 3,
-                lineHeight: "1.375rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
-                borderWidth: 2,
-                ":hover": {
+        {walletIsConnected &&
+          (periodInfo.currentPeriod > 1 && periodInfo.totalReward > 0 ? (
+            <>
+              <Typography
+                variant="body2"
+                lineHeight={"1.375rem"}
+                textTransform={"uppercase"}
+                color={"text.disabled"}
+              >
+                Your total reward is
+                <Box component={"span"} color={"text.secondary"}>
+                  {" "}
+                  {periodInfo.totalReward.toFixed(3)} BNB
+                </Box>
+                <br />
+                claim NOW
+              </Typography>
+              <ButtonMain
+                active={true}
+                title="claim reward"
+                sx={{
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  minHeight: 0,
+                  px: 2,
+                  py: 0.5,
+                  mb: 3,
+                  lineHeight: "1.375rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
                   borderWidth: 2,
-                },
-              }}
-              onClick={handleClaim}
-            />
-          </>
-        ) : (
-          ""
-        )}
+                  ":hover": {
+                    borderWidth: 2,
+                  },
+                }}
+                onClick={handleClaim}
+              />
+            </>
+          ) : (
+            ""
+          ))}
 
         <Typography variant="body2">
           Period{" "}
@@ -136,25 +137,26 @@ function HolderPool({}: Props) {
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
-        {periodInfo.currentReward <= 0 ? (
-          <>
-            <Typography variant="body2" color={"text.disabled"}>
-              Your current reward in this period is
-              <Box component={"span"} color={"text.primary"}>
-                {" "}
-                {periodInfo.currentReward ?? 0}{" "}
-                <Box component={"span"}>
-                  <BnbIcon width={16} color={Colors.primaryDark} />
+        {walletIsConnected &&
+          (periodInfo.currentReward <= 0 ? (
+            <>
+              <Typography variant="body2" color={"text.disabled"}>
+                Your current reward in this period is
+                <Box component={"span"} color={"text.primary"}>
+                  {" "}
+                  {periodInfo.currentReward ?? 0}{" "}
+                  <Box component={"span"}>
+                    <BnbIcon width={16} color={Colors.primaryDark} />
+                  </Box>
                 </Box>
-              </Box>
+              </Typography>
+              <NFTHolderTimer />
+            </>
+          ) : (
+            <Typography variant="body2" color={"text.disabled"}>
+              Only NFT holders <br /> are able to get the reward{" "}
             </Typography>
-            <NFTHolderTimer />
-          </>
-        ) : (
-          <Typography variant="body2" color={"text.disabled"}>
-            Only NFT holders <br /> are able to get the reward{" "}
-          </Typography>
-        )}
+          ))}
       </Stack>
       {walletIsConnected ? (
         <>

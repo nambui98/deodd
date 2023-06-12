@@ -65,24 +65,28 @@ function JackpotPool({}: Props) {
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
-        <Typography variant="body2" color={"text.disabled"}>
-          Tosspoint to win
-        </Typography>
-        <Typography
-          fontSize={"1.75rem"}
-          lineHeight={"2,2rem"}
-          fontWeight={500}
-          color={"text.primary"}
-        >
-          {seasonInfo.connectWalletTossPoint ?? 0}/
-          <Box
-            component={"span"}
-            color={"text.secondary"}
-            fontSize={"2.375rem"}
-          >
-            {seasonInfo.tossPointRequire}
-          </Box>
-        </Typography>
+        {walletIsConnected && (
+          <>
+            <Typography variant="body2" color={"text.disabled"}>
+              Tosspoint to win
+            </Typography>
+            <Typography
+              fontSize={"1.75rem"}
+              lineHeight={"2,2rem"}
+              fontWeight={500}
+              color={"text.primary"}
+            >
+              {seasonInfo.connectWalletTossPoint ?? 0}/
+              <Box
+                component={"span"}
+                color={"text.secondary"}
+                fontSize={"2.375rem"}
+              >
+                {seasonInfo.tossPointRequire}
+              </Box>
+            </Typography>
+          </>
+        )}
       </Stack>
       {walletIsConnected ? (
         <>
