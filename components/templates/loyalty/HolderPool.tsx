@@ -13,9 +13,9 @@ import NFTHolderTimer from "./components/NFTHolderTimer";
 
 type Props = {};
 
-function HolderPool({}: Props) {
+function HolderPool({ }: Props) {
   const { walletAddress, walletIsConnected } = useWalletContext();
-  const { leaderboard, setPeriod, periodInfo, loading, history } =
+  const { leaderboard, setPeriod, periodInfo, loading, history, setReset } =
     useLoyaltyHolder();
   const {
     setIsSuccess,
@@ -150,7 +150,7 @@ function HolderPool({}: Props) {
                   </Box>
                 </Box>
               </Typography>
-              <NFTHolderTimer />
+              <NFTHolderTimer setReset={setReset} periodInfo={periodInfo} />
             </>
           ) : (
             <Typography variant="body2" color={"text.disabled"}>

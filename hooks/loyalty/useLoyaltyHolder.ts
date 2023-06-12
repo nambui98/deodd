@@ -45,6 +45,7 @@ function useLoyaltyHolder() {
     totalReward: 0,
     isActive: false,
   });
+  const [reset, setReset] = useState(false); // state to reset when reaching new period
   const [history, setHistory] = useState([
     {
       tokenId: "",
@@ -75,7 +76,7 @@ function useLoyaltyHolder() {
       }
     };
     getData();
-  }, [walletAddress]);
+  }, [walletAddress, reset]);
 
   useEffect(() => {
     if (walletIsConnected) {
@@ -139,7 +140,7 @@ function useLoyaltyHolder() {
     }
   }, [period, walletAddress, leaderboard.currentPeriod, walletIsConnected]);
 
-  return { leaderboard, setPeriod, periodInfo, loading, history };
+  return { leaderboard, setPeriod, periodInfo, loading, history, setReset };
 }
 
 export default useLoyaltyHolder;
