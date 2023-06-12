@@ -1,10 +1,25 @@
-import MyModal from "components/common/Modal";
+import { useState } from "react";
 import { Typography, Box, Stack } from "@mui/material";
 import Image from "next/image";
 import { BnbIcon, CloseSquareIcon2 } from "utils/Icons";
-import { toLineHeight } from "chart.js/dist/helpers/helpers.options";
+import { getPathAvatar } from "utils/checkAvatar";
+import { Convert } from "utils/convert";
 
-function JackpotPopup() {
+const dummyData = {
+  // Remove me later
+  season: 2,
+  jackpotReward: 1000,
+  username: "Whale",
+  wallet: "0xFb90d8319043C00A0398aD197944FFB52ef18Bdb",
+  avatarId: 1,
+};
+
+type PropsType = {
+  handleClose: () => void;
+}
+
+function JackpotPopup({ handleClose }: PropsType) {
+
   return (
     <Box
       p={1.5}
@@ -17,6 +32,7 @@ function JackpotPopup() {
       position={"fixed"}
       top={40}
       right={40}
+      width={320}
       zIndex={9999}
     >
       <Box
@@ -27,19 +43,29 @@ function JackpotPopup() {
           lineHeight: 0,
           color: "secondary.100",
           cursor: "pointer",
+          transition: "transform 300ms",
+          ":hover": {
+            transform: "scale(1.1)",
+          },
         }}
+        onClick={handleClose}
       >
         <CloseSquareIcon2 width={16} />
       </Box>
       <Typography fontSize={"0.75rem"} fontWeight={400} lineHeight={"1rem"}>
         Jackpot season{" "}
         <Box component={"span"} color={"text.secondary"}>
-          #12
+          #{dummyData.season}
         </Box>{" "}
         Ended!
       </Typography>
       <Stack direction={"row"} gap={1} mt={1}>
-        <Image src={""} width={24} height={24} alt="Avatar image" />
+        <Image
+          src={getPathAvatar(dummyData.avatarId)}
+          width={24}
+          height={24}
+          alt="Avatar image"
+        />
         <Stack gap={0.5}>
           <Typography
             fontSize={"0.75rem"}
@@ -54,24 +80,31 @@ function JackpotPopup() {
             lineHeight={"1.25rem"}
             fontWeight={400}
           >
-            Arlene McCoy (3535***3534)
+            {dummyData.username ?? ""} {dummyData.username ? "(" : ""}
+            {Convert.convertWalletAddress(dummyData.wallet, 5, 4)}
+            {dummyData.username ? ")" : ""}
           </Typography>
-          <Stack direction={"row"} alignItems={"center"} gap={1} color={"text.secondary"}>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            gap={1}
+            color={"text.secondary"}
+          >
             <Typography
               fontSize={"1rem"}
               fontWeight={600}
               lineHeight={"1.375rem"}
               sx={{
-                verticalAlign: "bottom"
+                verticalAlign: "bottom",
               }}
             >
-              1,108
+              {new Intl.NumberFormat("en").format(dummyData.jackpotReward)}
             </Typography>
             <BnbIcon width={20} />
           </Stack>
         </Stack>
       </Stack>
-    </Box >
+    </Box>
   );
 }
 
