@@ -1,74 +1,40 @@
-import { Box, Typography, Stack, Button, Grid, Divider } from "@mui/material";
-import Image from "next/image"
+import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import {
-  BronzeImage,
-  GoldImage,
-  DiamondImage,
   BgShopCollection,
   Bronze2Image,
-  Gold2Image,
   Diamond2Image,
+  Gold2Image
 } from "utils/Images";
-import { ShareIcon } from "utils/Icons";
-import MyImage from "components/ui/image";
+import ShareButton from "./components/ShareButton";
 
-const ShopShareButton = () => {
-  return (
-    <Button
-      disableElevation
-      variant="contained"
-      sx={{
-        position: "absolute",
-        top: "1rem",
-        right: "1rem",
-        px: 1.5,
-        color: "text.disabled",
-        border: "none",
-        svg: {
-          stroke: "none",
-          border: "none",
-        },
-        "&:hover": {
-          svg: {
-            stroke: "none",
-            border: "none",
-          },
-          border: "none",
-        },
-      }}
-    >
-      <ShareIcon width={20} />
-      <Typography
-        ml={1}
-        fontSize={"0.875rem"}
-        lineHeight={"1.25rem"}
-        fontWeight={400}
-      >
-        Share
-      </Typography>
-    </Button>
-  );
-};
 
-function ShopBanner() {
+function ShopBanner({ amount }: { amount: number }) {
   return (
-    <Stack>
+    <Stack mx={{ xs: -3, md: 0 }}>
       <Box
         sx={{
           backgroundImage: `url(${BgShopCollection})`,
           backgroundSize: "cover",
-          paddingInline: 12,
-          paddingBlockStart: 5,
-          paddingBlockEnd: 9.75,
-          boxShadow: "0px 2px 16px hsla(55, 99%, 67%, 0.5)",
+          px: { xs: 2, md: 12 },
+          pt: { xs: 2, md: 5 },
+          pb: { xs: 3, md: 9.75 },
+          boxShadow: { xs: 'none', md: "0px 2px 16px hsla(55, 99%, 67%, 0.5)" },
           position: "relative",
         }}
       >
-        <ShopShareButton />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+          }}
+        >
+          <ShareButton />
+        </Box>
         <Grid container >
-          <Grid item xs={7.2}>
+          <Grid item xs={12} md={7.2}>
             <Stack>
-              <Typography fontSize={"2.5rem"} fontWeight={700} mb={0.5}>
+              <Typography width={{ xs: 235, md: 1 }} fontSize={{ xs: 24, md: 40 }} fontWeight={700} mb={{ xs: 2, md: 0.5 }}>
                 DeODD NFT 1ST Collection
               </Typography>
               <Typography
@@ -88,7 +54,7 @@ function ShopBanner() {
                 lineHeight={"1.25rem"}
                 fontWeight={400}
                 color={"text.disabled"}
-                mb={3}
+                mb={{ xs: 2, md: 3 }}
               >
                 Deodd is a smart contract that allows users to play Double or Nothing
                 with their BSC tokens. Odds are 50/50 with a 3.25% fee that partly
@@ -98,33 +64,34 @@ function ShopBanner() {
               <Stack direction={"row"} gap={5}>
                 <Stack gap={0.5}>
                   <Typography
-                    fontSize={"0.875rem"}
+                    fontSize={{ xs: 12, md: "0.875rem" }}
                     fontWeight={400}
-                    lineHeight={"1.25rem"}
+                    lineHeight={{ xs: '16px', md: "1.25rem" }}
                     color={"text.disabled"}
                   >
                     Item amount
                   </Typography>
                   <Typography
-                    fontSize={"1.5rem"}
-                    lineHeight={"2rem"}
+                    fontSize={{ xs: 16, md: "1.5rem" }}
+                    lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
-                    888
+                    {amount}
                   </Typography>
                 </Stack>
                 <Stack gap={0.5}>
                   <Typography
-                    fontSize={"0.875rem"}
+                    fontSize={{ xs: 12, md: "0.875rem" }}
                     fontWeight={400}
-                    lineHeight={"1.25rem"}
+                    lineHeight={{ xs: '16px', md: "1.25rem" }}
                     color={"text.disabled"}
                   >
                     Created
                   </Typography>
                   <Typography
-                    fontSize={"1.5rem"}
-                    lineHeight={"2rem"}
+
+                    fontSize={{ xs: 16, md: "1.5rem" }}
+                    lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
                     Apr 2023
@@ -132,17 +99,18 @@ function ShopBanner() {
                 </Stack>
                 <Stack gap={0.5}>
                   <Typography
-                    fontSize={"0.875rem"}
+                    fontSize={{ xs: 12, md: "0.875rem" }}
                     fontWeight={400}
-                    lineHeight={"1.25rem"}
+                    lineHeight={{ xs: '16px', md: "1.25rem" }}
                     color={"text.disabled"}
                   >
                     Chain
                   </Typography>
                   <Typography
-                    fontSize={"1.5rem"}
-                    lineHeight={"2rem"}
                     fontWeight={700}
+                    fontSize={{ xs: 16, md: "1.5rem" }}
+                    lineHeight={{ xs: '22px', md: "2rem" }}
+
                   >
                     BSC
                   </Typography>
@@ -153,7 +121,7 @@ function ShopBanner() {
           </Grid>
         </Grid>
       </Box >
-      <Grid container direction={'row'} zIndex={1} alignItems={'flex-end'} spacing={4} px={12} mt={'-16vw'} >
+      <Grid display={{ xs: 'none', md: 'flex' }} container direction={'row'} zIndex={1} alignItems={'flex-end'} spacing={4} px={12} mt={'-16vw'} >
         <Grid item xs={2.4}>
           <img src={Bronze2Image} width={'100%'} />
         </Grid>
@@ -167,7 +135,7 @@ function ShopBanner() {
           <img src={Diamond2Image} width={'100%'} />
         </Grid>
       </Grid>
-      <Divider sx={{ my: 5 }} />
+      <Divider sx={{ my: { xs: 2, md: 5 }, display: { xs: 'none', md: 'block' } }} />
     </Stack >
   );
 }

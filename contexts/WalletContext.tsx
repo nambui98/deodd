@@ -4,7 +4,7 @@ import { DeoddService } from "libs/apis";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
-import { deoddContract } from "../libs/contract";
+import { deoddContract, deoddNFTContract, deoddShopContract } from "../libs/contract";
 
 interface walletContextType {
 	walletAddress: any,
@@ -100,6 +100,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractDeodd, setContractDeodd] = useState<
 		Contract | undefined
 	>();
+	const [contractDeoddShop, setContractDeoddShop] = useState<
+		Contract | undefined
+	>();
+	const [contractDeoddNFT, setContractDeoddNFT] = useState<
+		Contract | undefined
+	>();
 	useEffect(() => {
 		if (bscTestnet.id !== chain?.id) {
 			// switchNetworkCus()
@@ -114,7 +120,11 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			);
 			const signer = provider.getSigner();
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
+			const contractDeoddShop = new ethers.Contract(deoddShopContract.address, deoddShopContract.abi, signer)
+			const contractDeoddNFT = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
 			setContractDeodd(contractDeodd);
+			setContractDeoddShop(contractDeoddShop);
+			setContractDeoddNFT(contractDeoddNFT);
 		}
 	}, [chain]);
 

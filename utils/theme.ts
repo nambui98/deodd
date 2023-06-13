@@ -180,7 +180,8 @@ export const darkTheme = createTheme({
 		error: {
 			main: red.A400,
 			"100": '#FC753F',
-			"200": '#ff6f61'
+			"200": '#ff6f61',
+			'300': '#FF5870'
 		},
 		background: {
 			default: "#161821",

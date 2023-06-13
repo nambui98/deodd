@@ -55,13 +55,20 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     const handleClaim = useMutation({
         mutationFn: DeoddService.claimTokenSpending,
         onSuccess: (data) => {
-            if (data.data.meta.code === 200) {
+            if (data.data.data) {
+                setTitleSuccess('Claim successfully')
+                setIsSuccess(true);
                 refetchGetAssetsBalance();
             } else {
                 setIsError(true);
                 setTitleError(data.data.meta.error_message)
             }
         },
+        onError(err: any, variables, context) {
+            setIsError(true);
+            setTitleError(err.response?.data?.meta.error_message)
+        },
+
     });
     //get balance histories
     // const {data:balanceHistories} = useQuery({
