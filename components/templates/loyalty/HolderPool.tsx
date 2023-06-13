@@ -134,7 +134,7 @@ function HolderPool({ }: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"48px"}>
-            {Format.formatMoney(periodInfo.currentPrize, 3)}
+            {Format.formatMoney(periodInfo.currentPrize, 4)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
@@ -145,7 +145,7 @@ function HolderPool({ }: Props) {
                 Your current reward in this period is
                 <Box component={"span"} color={"text.primary"}>
                   {" "}
-                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward, 10) : 0}{" "}
+                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward, 7) : 0}{" "}
                   <Box component={"span"}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
