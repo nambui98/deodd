@@ -95,6 +95,7 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
             boxShadow: "none",
             borderRadius: { xs: 0, md: 2 },
             backgroundColor: "background.paper",
+            position: "relative",
           }}
         >
           {loading.leaderboard && (
