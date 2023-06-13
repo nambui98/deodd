@@ -191,7 +191,7 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                               : "text.primary"
                           }
                         >
-                          {`${row.userName} (${Convert.convertWalletAddress(
+                          {`${row.userName ?? ""} (${Convert.convertWalletAddress(
                             row.owner,
                             5,
                             4
@@ -289,7 +289,7 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                   alt="Avatar Image"
                 />
                 <Typography variant="caption" fontWeight={400}>
-                  {userInfo.username} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
+                  {userInfo.username ?? ""} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
                 </Typography>
               </Stack>
             </TableCell>
