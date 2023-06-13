@@ -11,7 +11,7 @@ function useLoyaltyJackpot() {
     leaderboard: true,
     history: true,
   });
-  const [season, setSeason] = useState<string | number>("current");
+  const [season, setSeason] = useState<number>(0);
   const [leaderboard, setLeaderboard] = useState({
     currentSeason: 1,
     leaderboardList: [
@@ -80,7 +80,7 @@ function useLoyaltyJackpot() {
       const controller = new AbortController();
       const getData = async () => {
         try {
-          if (season === "current") {
+          if (season === 0) {
             // If user want to see current season data, use this API
             const seasonResult = await getLoyaltyJackpotBoardCurrent(
               walletAddress,
