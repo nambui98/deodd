@@ -33,7 +33,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
       try {
         const resService = await DeoddService.saveInfoUser({
           wallet: walletAddress,
-          username: data.username,
+          username: data.username ? data.username : null,
           avatarId: data.avatar,
         });
         if (resService.data.meta.code === 1) {
