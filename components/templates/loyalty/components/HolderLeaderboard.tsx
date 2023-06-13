@@ -34,7 +34,7 @@ type PropsType = {
 };
 
 function HolderLeaderboard({ leaderboard, loading }: PropsType) {
-  const { userInfo } = useWalletContext();
+  const { userInfo, walletAddress } = useWalletContext();
 
   return (
     <>
@@ -190,15 +190,11 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                               : "text.primary"
                           }
                         >
-                          {row.owner === leaderboard.connectWallet.owner
-                            ? "You"
-                            : `${row.userName ?? ""} ${
-                                row.userName ? "(" : ""
-                              }${Convert.convertWalletAddress(
-                                row.owner,
-                                5,
-                                4
-                              )}${row.userName ? ")" : ""}`}
+                          {`${row.userName} (${Convert.convertWalletAddress(
+                            row.owner,
+                            5,
+                            4
+                          )})`}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -292,7 +288,7 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                   alt="Avatar Image"
                 />
                 <Typography variant="caption" fontWeight={400}>
-                  You
+                  {userInfo.username} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
                 </Typography>
               </Stack>
             </TableCell>

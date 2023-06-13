@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import useLoyaltyHolder from "./useLoyaltyHolder";
-import { getLoyaltyNFTCurrent } from "libs/apis/loyaltyAPI";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useWalletContext } from "contexts/WalletContext";
+import { LoyaltyPeriodInfoType } from "libs/types/loyaltyTypes";
 
 function formatTime(time: number) {
   const day = Math.floor(time / 86400);
@@ -26,48 +25,42 @@ function formatTime(time: number) {
   );
 }
 
-function useHolderTimer() {
-  const { walletAddress } = useWalletContext();
-  const [time, setTime] = useState({
-    endDate: "",
-    timeLeft: 0,
-  });
+type PropsType = {
+  setReset: Dispatch<SetStateAction<boolean>>;
+  periodInfo: LoyaltyPeriodInfoType;
+}
 
-  // Get end date from the database. Call only once.
-  useEffect(() => {
-    async function getEndDate() {
-      const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
-      if (promiseResult.status === 200 && promiseResult.data != null) {
-        const promiseData = promiseResult.data.data;
-        setTime((prev) => ({
-          ...prev,
-          endDate: promiseData.end_time,
-        }));
-      }
-    }
-    if (!time.endDate) {
-      getEndDate();
-    }
-  }, [walletAddress, time.endDate]);
+function useHolderTimer({ setReset, periodInfo }: PropsType) {
+  const { walletIsConnected } = useWalletContext();
+  const [timeLeft, setTimeLeft] = useState(0);
+  // const [time, setTime] = useState({
+  //   endDate: "",
+  //   timeLeft: 0,
+  // });
 
   // Set time left based on the end date fetched from the database
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (time.endDate) {
-        const secondLeft = parseInt(
-          formatDistanceToNowStrict(new Date(time.endDate), { unit: "second" })
-        );
-        setTime((prev) => ({
-          ...prev,
-          timeLeft: secondLeft,
-        }));
-      }
-    }, 500);
+    if (walletIsConnected) {
+      const interval = setInterval(() => {
+        if (periodInfo.endTime) {
+          const secondLeftString = formatDistanceToNowStrict(new Date(periodInfo.endTime), { unit: "second", addSuffix: true });
+          if (secondLeftString.includes("ago")) {
+            // Set timer to 0.
+            setTimeLeft(0);
+            // Change state to fetch new season data.
+            setReset(prev => !prev);
+          } else {
+            const secondLeft = parseInt(secondLeftString.replaceAll("in", ""));
+            setTimeLeft(secondLeft);
+          }
+        }
+      }, 500);
 
-    return () => { clearInterval(interval) };
-  });
+      return () => { clearInterval(interval) };
+    }
+  }, [periodInfo.endTime, walletIsConnected, setReset]);
 
-  return formatTime(time.timeLeft);
+  return formatTime(timeLeft);
 }
 
 export default useHolderTimer;

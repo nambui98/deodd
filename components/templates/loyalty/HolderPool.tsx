@@ -13,9 +13,9 @@ import NFTHolderTimer from "./components/NFTHolderTimer";
 
 type Props = {};
 
-function HolderPool({}: Props) {
+function HolderPool({ }: Props) {
   const { walletAddress, walletIsConnected } = useWalletContext();
-  const { leaderboard, setPeriod, periodInfo, loading, history } =
+  const { leaderboard, setPeriod, periodInfo, loading, history, setReset } =
     useLoyaltyHolder();
   const {
     setIsSuccess,
@@ -82,7 +82,7 @@ function HolderPool({}: Props) {
                 Your total reward is
                 <Box component={"span"} color={"text.secondary"}>
                   {" "}
-                  {periodInfo.totalReward.toFixed(3)} BNB
+                  {Format.formatMoney(periodInfo.totalReward, 3)} BNB
                 </Box>
                 <br />
                 claim NOW
@@ -133,7 +133,7 @@ function HolderPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"48px"}>
-            {periodInfo.currentPrize.toFixed(3)}
+            {Format.formatMoney(periodInfo.currentPrize, 3)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
@@ -144,13 +144,13 @@ function HolderPool({}: Props) {
                 Your current reward in this period is
                 <Box component={"span"} color={"text.primary"}>
                   {" "}
-                  {periodInfo.currentReward ?? 0}{" "}
+                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward) : 0}{" "}
                   <Box component={"span"}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
                 </Box>
               </Typography>
-              <NFTHolderTimer />
+              <NFTHolderTimer setReset={setReset} periodInfo={periodInfo} />
             </>
           ) : (
             <Typography variant="body2" color={"text.disabled"}>

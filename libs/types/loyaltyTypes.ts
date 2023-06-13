@@ -59,3 +59,13 @@ export type LoyaltyHolderHistoryType = {
   typeId: string;
   profit: number;
 }[];
+
+export type LoyaltyPeriodInfoType = {
+  currentPeriod: number;
+  startTime: string;
+  endTime: string;
+  currentPrize: number;
+  currentReward: number;
+  totalReward: number;
+  isActive: boolean;
+};
