@@ -18,6 +18,7 @@ function SelectBox({ selectOptions, setValue }: Props) {
             label="Season"
             sx={styleInput}
             inputProps={{ 'aria-label': 'Without label' }}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 280 } } }}
         >
             {selectOptions.map((property, index) => {
                 return (
