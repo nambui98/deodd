@@ -128,7 +128,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet?.wallet
+                          row.wallet === leaderboard.connectWallet.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -154,7 +154,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                           fontWeight={400}
                           lineHeight={"1.25rem"}
                           color={
-                            row.wallet === leaderboard.connectWallet?.wallet
+                            row.wallet === leaderboard.connectWallet.wallet
                               ? "text.secondary"
                               : "text.primary"
                           }
@@ -174,7 +174,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet?.wallet
+                          row.wallet === leaderboard.connectWallet.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -211,7 +211,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
               <Typography variant="caption">
-                {leaderboard.connectWallet?.rank ?? "--"}
+                {leaderboard.connectWallet.rank ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
@@ -230,7 +230,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
             <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
                 {leaderboard.leaderboardList.length > 0
-                  ? leaderboard.connectWallet?.tossPoint ?? 0
+                  ? leaderboard.connectWallet.tossPoint ?? 0
                   : "--"}
               </Typography>
             </TableCell>

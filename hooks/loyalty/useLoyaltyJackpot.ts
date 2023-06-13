@@ -92,7 +92,7 @@ function useLoyaltyJackpot() {
                 return {
                   ...prev,
                   leaderboardList: leaderboardData.dashboard.dashboard,
-                  connectWallet: leaderboardData.connectWallet,
+                  connectWallet: leaderboardData.dashboard.connectWallet,
                 };
               });
               setLoading((prev) => ({ ...prev, leaderboard: false }));
