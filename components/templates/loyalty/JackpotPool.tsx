@@ -61,7 +61,7 @@ function JackpotPool({ }: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            {Format.formatMoney(seasonInfo.currentReward, 3)}
+            {Format.formatMoney(seasonInfo.currentReward, 4)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
