@@ -86,10 +86,3 @@ export const claimNFTReward = async (address: string) => {
     })
   })
 }
-
-export const getJackpotBoom = async () => {
-  return await vhIdRequest({
-    url: baseURL + `/jackpot/boom`,
-    method: 'get',
-  })
-}
