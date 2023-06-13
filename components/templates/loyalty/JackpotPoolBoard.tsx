@@ -13,7 +13,7 @@ import {
 
 type Props = {
   leaderboard: LoyaltyJackpotLeaderboardType;
-  setSeason: (value: string | number) => void;
+  setSeason: (value: number) => void;
   history: LoyaltyJackpotHistoryType;
   loading: LoyaltyLoadingType;
 };
@@ -51,7 +51,7 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
   for (let i = leaderboard.currentSeason; i >= 1; i--) {
     if (i === leaderboard.currentSeason) {
       selectOptions.push({
-        value: "current",
+        value: 0,
         text: "Current Season",
       });
     } else {

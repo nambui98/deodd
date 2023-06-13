@@ -79,7 +79,7 @@ function JackpotHistory({ history, loading }: PropsType) {
                   Winner
                 </Typography>
                 <Typography variant="body2" lineHeight={"1.25rem"}>
-                  {history.winnerUserName} (
+                  {history.winnerUserName ?? ""} (
                   {Convert.convertWalletAddress(history.winnerWallet, 5, 4)})
                 </Typography>
                 <Stack direction={"row"} gap={1} color={"text.secondary"}>

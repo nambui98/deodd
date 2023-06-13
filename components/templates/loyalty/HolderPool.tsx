@@ -33,6 +33,7 @@ function HolderPool({ }: Props) {
       if (res.data.data && res.status === 200) {
         setTitleSuccess("Claimed successfully");
         setIsSuccess(true);
+        setReset(prev => !prev);
       } else {
         setIsError(true);
         setTitleError(res.data.meta.error_message);
@@ -138,7 +139,7 @@ function HolderPool({ }: Props) {
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         {walletIsConnected &&
-          (periodInfo.currentReward > 0 ? (
+          (periodInfo.currentReward > 0 || periodInfo.totalReward > 0 ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is
