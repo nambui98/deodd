@@ -83,7 +83,7 @@ function HolderPool({ }: Props) {
                 Your total reward is
                 <Box component={"span"} color={"text.secondary"}>
                   {" "}
-                  {Format.formatMoney(periodInfo.totalReward, 3)} BNB
+                  {Format.formatMoney(periodInfo.totalReward, 7)} BNB
                 </Box>
                 <br />
                 claim NOW
@@ -145,7 +145,7 @@ function HolderPool({ }: Props) {
                 Your current reward in this period is
                 <Box component={"span"} color={"text.primary"}>
                   {" "}
-                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward) : 0}{" "}
+                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward, 10) : 0}{" "}
                   <Box component={"span"}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
