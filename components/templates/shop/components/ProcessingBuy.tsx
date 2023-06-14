@@ -38,7 +38,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
         mode: 'recklesslyUnprepared',
         abi: dusdContract.abi,
         functionName: 'approve',
-        args: [deoddShopContract.address, BigNumber.from(item?.price ?? 0)]
+        args: [deoddShopContract.address, ethers.utils.parseUnits(item?.price.toString() ?? 0)]
     })
     const handleBuyNFT = () => {
         setIsLoading(true);
@@ -78,7 +78,6 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     }
     return (<>
         <MyModal open={isShowBuy} sx={{ width: "min(100vw - 16px, 544px)", boxShadow: '0px 2px 16px rgba(254, 241, 86, 0.5)' }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={() => { setIsShowBuy(false) }}>
-
             <Typography textAlign={'center'} variant='h5' fontWeight={700}>Approve token</Typography>
             <Grid container spacing={2} pt={3}>
                 <Grid item xs={3} >
@@ -99,7 +98,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                             <Stack gap={1} alignItems={'flex-end'}>
                                 <Price
                                     token={<USDTIcon width={24} height={24} fill="#50ae94" />}
-                                    value={Format.formatMoneyFromBigNumberEther(BigNumber.from(item?.price.toString() ?? 0))} typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                                    value={Format.formatMoney(item?.price ?? 0)} typographyProps={{ variant: 'body1', fontWeight: 600 }}
                                 />
                             </Stack>
                         </Grid>
@@ -140,7 +139,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                             <Stack gap={1} alignItems={'flex-end'}>
                                 <Price
                                     token={<USDTIcon width={24} height={24} fill="#50ae94" />}
-                                    value={Format.formatMoneyFromBigNumberEther(BigNumber.from(item?.price.toString() ?? 0))} typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                                    value={Format.formatMoney(item?.price ?? 0)} typographyProps={{ variant: 'body1', fontWeight: 600 }}
                                 />
                             </Stack>
                         </Grid>

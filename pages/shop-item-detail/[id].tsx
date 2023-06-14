@@ -114,7 +114,7 @@ function ShopItemDetail() {
             <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
 
               <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
-                value={Format.formatMoneyFromBigNumberEther(BigNumber.from(item?.price.toString() ?? 0))}
+                value={Format.formatMoney(item?.price ?? 0)}
                 token={<USDTIcon width={24} height={24} fill="#50ae94" />} />
               {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
             </Stack>

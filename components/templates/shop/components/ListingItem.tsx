@@ -31,7 +31,7 @@ function ListingItem({ item }: Props) {
             </Box>
             <Box mt={1}>
                 <Price
-                    value={Format.formatMoneyFromBigNumberEther(BigNumber.from(item.price.toString()))} typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                    value={Format.formatMoney(item.price)} typographyProps={{ variant: 'body1', fontWeight: 600 }}
                     tokenSize={24}
                     token={<USDTIcon fill="#50ae94" width={24} height={24} />}
                 />
