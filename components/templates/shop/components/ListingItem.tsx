@@ -19,7 +19,7 @@ function ListingItem({ item }: Props) {
     const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
     return (
         <>
-            <Stack component={Link} prefetch href={"/shop-item-detail/" + item.token_id}>
+            <Stack component={Link} href={"/shop-item-detail/" + item.token_id}>
                 <img src={item.image_link} alt="" />
             </Stack>
             <Box mt={2}>
@@ -34,15 +34,8 @@ function ListingItem({ item }: Props) {
 
             </Box>
             <ButtonSecondRemex
-                onClick={() => {
-                    if (item?.status === "LISTING") {
-                        setIsShowBuy(true)
-                    } else {
-                        setTitleError('Sold out');
-                        setIsError(true);
-                    }
-                }}
-
+                LinkComponent={Link}
+                href={"/shop-item-detail/" + item.token_id}
                 sx={{
                     width: 1,
                     mt: 2,

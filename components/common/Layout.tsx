@@ -97,8 +97,8 @@ const Layout = ({ children }: IProps) => {
             />
             <LeftSidebar mobileOpen={mobileOpenLeft} handleDrawerToggle={handleDrawerToggleLeft} open={leftOpen} />
             <Main rightOpen={rightOpen} leftOpen={leftOpen}>
-                <DrawerHeader />
-                <main>
+                <DrawerHeader id="main-top" />
+                <main >
                     {children}
                 </main>
                 <FaqHowtoplay />

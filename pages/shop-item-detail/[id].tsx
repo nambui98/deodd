@@ -14,7 +14,7 @@ import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
@@ -65,6 +65,8 @@ function ShopItemDetail() {
     if (router.query.id) {
       getDetailShopItem();
       getSuggestion();
+      const test = document.getElementById('main-top')
+      test?.scrollIntoView({ behavior: "smooth" })
     }
   }, [getDetailShopItem, getSuggestion, router.query.id])
 
@@ -77,11 +79,13 @@ function ShopItemDetail() {
   const isMediumScreen = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   return (
     <Container sx={{ mt: 5 }}>
+
       <Meta title={'DeODD #' + item?.token_id} description='Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD.' />
+
       <Grid container spacing={{ xs: 2, md: 4 }}>
         <Grid item xs={12} md={4} order={1}>
           <Box p={3} width={1}>
-            <img width="100%" src={item?.image_link} alt="Image" />
+            <img width="100%" height={'auto'} src={item?.image_link} alt="Image" />
           </Box>
         </Grid>
         <Grid item xs={12} md={4} order={2}>

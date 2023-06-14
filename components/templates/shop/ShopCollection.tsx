@@ -180,14 +180,14 @@ function ShopCollection({ setAmount }: Props) {
                                     </Grid>
                                 ) : !isFetching ? <Grid item xs={12} textAlign={'center'}>
                                     <Typography pt={10} variant="body1" fontWeight={600}>No items found for this search</Typography>
-                                    <Typography variant="body1" mt={3} color="secondary.main" fontWeight={500} onClick={() => {
+                                    <Typography variant="body1" mt={3} color="secondary.main" fontWeight={500} sx={{ cursor: 'pointer' }} onClick={() => {
                                         setFilter({
-                                            limit: 20,
+                                            limit: 9,
                                             offset: 0,
                                             sortType: "TIME",
                                             sortOrder: "DESC",
-                                            minPrice: 0,
-                                            maxPrice: 10000000,
+                                            minPrice: null,
+                                            maxPrice: null,
                                             itemType: { ALL: true }
                                         })
                                         setItems([])
@@ -221,7 +221,16 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
     const [itemType, setItemType] = useState<any>(filter.itemType)
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
     const [isPending, startTransition] = useTransition();
-    console.log(itemType);
+
+    useEffect(() => {
+        setMinPrice(filter.minPrice)
+        setMaxPrice(filter.maxPrice)
+        setItemType(filter.itemType)
+        debugger
+    }, [filter])
+
+    console.log(filter.minPrice);
+    console.log(minPrice);
 
     return <>
         <Stack direction={'row'} alignItems={'center'} gap={{ xs: 1, md: 2 }}>
@@ -283,11 +292,11 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 }
             }
         }}>
-            <Input type='number' value={minPrice} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
+            <Input type='number' value={minPrice ?? ''} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
             <Typography>
                 -
             </Typography>
-            <Input type='number' value={maxPrice} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
+            <Input type='number' value={maxPrice ?? ''} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
             <MyImage src={BnbImage} width={20} height={20} alt="" />
         </Stack>
 
