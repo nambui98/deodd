@@ -3,6 +3,7 @@ import { ReferralApis } from "./referral"
 import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
 import { getCurrentIp } from "./ip"
+import { ShopApis } from "./shop"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
@@ -77,6 +78,7 @@ export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
+    ...ShopApis,
     getUserTestail,
     saveInfoUser,
     getRecentFlipping,

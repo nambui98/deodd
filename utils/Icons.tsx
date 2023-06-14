@@ -73,8 +73,12 @@ function Bnb2Icon(props: SvgIconProps) {
 }
 import Growth1Icon from "public/assets/icons/growth1.svg";
 import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
+import EyeIcon from "public/assets/icons/eye.svg";
+import USDTIcon from "public/assets/icons/usdt.svg";
 
 export {
+  USDTIcon,
+  EyeIcon,
   MoreIcon,
   BagTickIcon,
   TickCircleOutlineIcon,

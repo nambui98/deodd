@@ -63,13 +63,11 @@ function Chat({ open }: { open: boolean }) {
         queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
         onSuccess(data) {
             if (data && data.data) {
-                debugger
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
                 if (lastCreatedAt !== data.data[data.data.length - 1].created_at) {
                     if (lastCreatedAt === null) {
-                        debugger
                         setMessages(data.data);
                     } else {
                         setMessages((prev) => ([...prev, ...data.data]))
