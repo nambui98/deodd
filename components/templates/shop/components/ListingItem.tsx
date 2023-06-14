@@ -1,17 +1,13 @@
-import { Grid, Stack, Box, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import { useQueryClient } from '@tanstack/react-query'
 import Price from 'components/common/Price'
 import { ButtonSecondRemex } from 'components/ui/button'
-import MyImage from 'components/ui/image'
 import { Colors } from 'constants/index'
-import { BigNumber } from 'ethers'
-import Link from 'next/link'
-import React, { useState } from 'react'
-import { BagTickIcon, USDTIcon } from 'utils/Icons'
-import { BnbImage, Bronze2Image } from 'utils/Images'
-import { Format } from 'utils/format'
-import ProcessingBuy from './ProcessingBuy'
 import { useSiteContext } from 'contexts/SiteContext'
+import Link from 'next/link'
+import { useState } from 'react'
+import { BagTickIcon, USDTIcon } from 'utils/Icons'
+import ProcessingBuy from './ProcessingBuy'
 
 type Props = {
     item: ListingItemType
@@ -27,7 +23,7 @@ function ListingItem({ item }: Props) {
                 <img src={item.image_link} alt="" />
             </Stack>
             <Box mt={2}>
-                <Typography component={Link} href={"/shop-item-detail/" + item.token_id} variant='body1' fontWeight={600}>Deodd #{item.token_id}</Typography>
+                <Typography component={Link} href={"/shop-item-detail/" + item.token_id} variant='body1' fontWeight={600}>DeODD #{item.token_id}</Typography>
             </Box>
             <Box mt={1}>
                 <Price
