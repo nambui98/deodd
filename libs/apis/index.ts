@@ -3,6 +3,7 @@ import { ReferralApis } from "./referral"
 import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
 import { getCurrentIp } from "./ip"
+import { ShopApis } from "./shop"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
@@ -61,10 +62,23 @@ const getUserTestail = async () => {
         method: 'get',
     })
 }
+const getWinLoseStreak = async (wallet: string) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/streak?wallet=${wallet}`,
+        method: 'get',
+    })
+}
+const getTotalVolume = async (wallet: string) => {
+    return vhIdRequest({
+        url: baseURL + `/dashboard/volume?wallet=${wallet}`,
+        method: 'get',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
+    ...ShopApis,
     getUserTestail,
     saveInfoUser,
     getRecentFlipping,
@@ -74,4 +88,6 @@ export const DeoddService = {
     claimTokenSpending,
     getResultByFlipId,
     getCurrentIp,
+    getWinLoseStreak,
+    getTotalVolume
 }

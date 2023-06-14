@@ -21,7 +21,7 @@ export type TypeDataNFT = {
 } | undefined;
 
 export const useDeoddNFTContract = () => {
-    const { walletAddress } = useWalletContext();
+    const { walletAddress, contractDeoddNFT } = useWalletContext();
     const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
     const [nftSelected, setNftSelected] = useState<TypeNFT | undefined>();
     const [reload, setReload] = useState<boolean>(false);
@@ -34,88 +34,88 @@ export const useDeoddNFTContract = () => {
         // return data;
     };
     const getTokenTypeId = async (id: BigNumber) => {
-        // const res = await contractDeoddNft?.getTokenTypeId(id)
-        // return res;
+        const res = await contractDeoddNFT?.getTokenTypeId(id)
+        return res;
     };
     const getWalletTokens = async () => {
-        // const res = await contractDeoddNft?.getWalletTokens(walletAddress)
-        // const data = getInfoTokens(res);
-        // return data;
+        const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
+        const data = getInfoTokens(res);
+        return data;
     };
     const getInfoTokens = async (tokens: BigNumber[]) => {
-        // let res = await Promise.all(
-        //     (tokens ?? []).map(async (token) => {
-        //         const type: BigNumber = await getTokenTypeId(token);
-        //         token = BigNumber.from(token);
-        //         const nft: TypeNFT = {
-        //             id: token.toNumber(),
-        //             type: type.toNumber(),
-        //             amount: 1
-        //         }
-        //         return nft;
-        //     })
-        // )
-        //     .then((res) => {
-        //         const data = aggregateQuantity(res);
-        //         return data;
-        //     })
-        //     .catch((err) => {
-        //         return;
-        //     });
-        // return res;
+        let res = await Promise.all(
+            (tokens ?? []).map(async (token) => {
+                const type: BigNumber = await getTokenTypeId(token);
+                token = BigNumber.from(token);
+                const nft: TypeNFT = {
+                    id: token.toNumber(),
+                    type: type.toNumber(),
+                    amount: 1
+                }
+                return nft;
+            })
+        )
+            .then((res) => {
+                const data = aggregateQuantity(res);
+                return data;
+            })
+            .catch((err) => {
+                return;
+            });
+        return res;
     }
 
     const aggregateQuantity = (arr: TypeNFT[]) => {
-        // let total: number = arr.length;
-        // let dataBronze: {
-        //     type: EnumNFT,
-        //     list: TypeNFT[]
-        // } | undefined = {
-        //     type: EnumNFT.BRONZE,
-        //     list: []
-        // };
-        // let dataGold: {
-        //     type: EnumNFT,
-        //     list: TypeNFT[]
-        // } | undefined = {
-        //     type: EnumNFT.GOLD,
-        //     list: []
-        // };
-        // let dataDiamond: {
-        //     type: EnumNFT,
-        //     list: TypeNFT[]
-        // } | undefined = {
-        //     type: EnumNFT.DIAMOND,
-        //     list: []
-        // };
-        // for (let index = 0; index < arr.length; index++) {
-        //     const item = arr[index];
-        //     if (item.type === EnumNFT.BRONZE) {
-        //         dataBronze?.list.push(item);
-        //     } else if (item.type === EnumNFT.GOLD) {
-        //         dataGold?.list.push(item);
-        //     } else {
-        //         dataDiamond?.list.push(item);
-        //     }
+        let total: number = arr.length;
+        let dataBronze: {
+            type: EnumNFT,
+            list: TypeNFT[]
+        } | undefined = {
+            type: EnumNFT.BRONZE,
+            list: []
+        };
+        let dataGold: {
+            type: EnumNFT,
+            list: TypeNFT[]
+        } | undefined = {
+            type: EnumNFT.GOLD,
+            list: []
+        };
+        let dataDiamond: {
+            type: EnumNFT,
+            list: TypeNFT[]
+        } | undefined = {
+            type: EnumNFT.DIAMOND,
+            list: []
+        };
+        for (let index = 0; index < arr.length; index++) {
+            const item = arr[index];
+            if (item.type === EnumNFT.BRONZE) {
+                dataBronze?.list.push(item);
+            } else if (item.type === EnumNFT.GOLD) {
+                dataGold?.list.push(item);
+            } else {
+                dataDiamond?.list.push(item);
+            }
 
-        // }
-        // return {
-        //     total: total,
-        //     data: [
-        //         { ...dataBronze },
-        //         { ...dataGold },
-        //         { ...dataDiamond }
-        //     ]
-        // }
+        }
+        return {
+            total: total,
+            data: [
+                { ...dataBronze },
+                { ...dataGold },
+                { ...dataDiamond }
+            ]
+        }
     }
 
     useEffect(() => {
         if (walletAddress) {
-            // getWalletTokens().then(res => {
-            //     if (res && res.data.length > 0) {
-            //         setWalletTokens(res);
-            //     }
-            // });
+            getWalletTokens().then(res => {
+                if (res && res.data.length > 0) {
+                    setWalletTokens(res);
+                }
+            });
             getPriceToken().then(res => {
                 if (res.status === 200) {
                     setPriceToken(res.data.data[0].quote['BUSD'].price)

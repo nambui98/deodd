@@ -10,6 +10,7 @@ import NotiIcon from "public/assets/icons/noti.svg";
 import LogoHeadIcon from "public/assets/icons/head.svg";
 import CupIcon from "public/assets/icons/cup.svg";
 import ClockIcon from "public/assets/icons/clock.svg";
+import Clock2Icon from "public/assets/icons/clock2.svg";
 import CloseIcon from "public/assets/icons/close-circle2.svg";
 import FacebookIcon from "public/assets/icons/facebook.svg";
 import MobileIcon from "public/assets/icons/mobile.svg";
@@ -52,6 +53,13 @@ import { SvgIcon, SvgIconProps } from "@mui/material";
 import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
 import EmojiIcon from "public/assets/icons/emoji-happy.svg";
+import Marketplace1Icon from "public/assets/icons/marketplace1.svg";
+import ShareIcon from "public/assets/icons/share.svg";
+import FilterIcon from "public/assets/icons/filter.svg";
+import TickCircleIcon from "public/assets/icons/tick-circle.svg";
+import TickCircleOutlineIcon from "public/assets/icons/tick-circle-outline.svg";
+import BagTickIcon from "public/assets/icons/bag-tick.svg";
+import MoreIcon from "public/assets/icons/more-square2.svg";
 function Bnb2Icon(props: SvgIconProps) {
   return (
     <SvgIcon {...props}>
@@ -63,7 +71,19 @@ function Bnb2Icon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
+import Growth1Icon from "public/assets/icons/growth1.svg";
+import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
+import EyeIcon from "public/assets/icons/eye.svg";
+import USDTIcon from "public/assets/icons/usdt.svg";
+
 export {
+  USDTIcon,
+  EyeIcon,
+  MoreIcon,
+  BagTickIcon,
+  TickCircleOutlineIcon,
+  TickCircleIcon,
+  FilterIcon,
   EmojiIcon,
   Archive2Icon,
   ArrowLeft2Icon,
@@ -107,6 +127,7 @@ export {
   LogoHeadIcon,
   CupIcon,
   ClockIcon,
+  Clock2Icon,
   CloseIcon,
   FacebookIcon,
   LeftIcon,
@@ -116,5 +137,9 @@ export {
   ProfileCircleIcon,
   ArchiveIcon,
   CloseSquareIcon2,
-  InfoCircleIcon
+  InfoCircleIcon,
+  Marketplace1Icon,
+  ShareIcon,
+  Growth1Icon,
+  GoldCup1Icon,
 };

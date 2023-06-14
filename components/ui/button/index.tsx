@@ -45,18 +45,18 @@ export const ButtonSecondRemex2: React.FC<ButtonProps> = (props) => {
   }
   } > {props.children} </Button>
 }
-export const ButtonLoading: React.FC<LoadingButtonProps> = (props) => {
+export const ButtonLoading: React.FC<LoadingButtonProps> = ({ sx, ...props }) => {
   return <LoadingButton
-    {...props}
     sx={{
       width: '100%',
       borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main', '&:hover': {
         backgroundColor: "secondary.main",
         border: '1px solid',
         borderColor: "secondary.main"
-      }, ...props.sx
-    }
-    }
+      }, ...sx
+    }}
+
+    {...props}
     // loadingIndicator={<CoinAnimation width={50} height={50} />}
 
     variant="outlined"

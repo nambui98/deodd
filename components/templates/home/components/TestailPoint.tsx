@@ -109,57 +109,57 @@ export default function TestailPoint() {
       }
     },
   });
-  if (testailCoin) {
-    return (
-      <Box position={"absolute"} top={0} right={0}>
-        <Stack direction={"row"} gap={1}>
-          <Stack alignItems={"flex-end"}>
-            <Typography sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} fontSize={"0.75rem"} lineHeight={"1rem"} color={"secondary.100"}>Testail Point</Typography>
-            <Typography sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>{testailCoin}</Typography>
-          </Stack>
-          <MyImage sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} src={TestailCoinImage} alt="Testail coin image" width={40} height={40} />
+  // if (testailCoin) {
+  return (
+    <Box position={"absolute"} top={0} right={0}>
+      <Stack direction={"row"} gap={1}>
+        <Stack alignItems={"flex-end"}>
+          <Typography sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} fontSize={"0.75rem"} lineHeight={"1rem"} color={"secondary.100"}>Testail Point</Typography>
+          <Typography sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} fontSize={"1rem"} lineHeight={"1.375rem"} fontWeight={600}>{testailCoin}</Typography>
         </Stack>
+        <MyImage sx={{ cursor: "pointer" }} onClick={() => setOpen(true)} src={TestailCoinImage} alt="Testail coin image" width={40} height={40} />
+      </Stack>
 
-        <MyModal
-          open={open}
-          setOpen={setOpen}
-          haveIconClosed
-          iconProps={{ width: 24, color: Colors.secondary }}
-          sx={{
-            maxHeight: "calc(100vh - 10rem)",
-            overflow: "hidden",
-            width: "min(27.5rem, 100vw - 1.5rem)",
-          }}
-        >
-          <Typography fontSize={"1.5rem"} lineHeight={"2rem"} fontWeight={700} color="text.primary" textAlign={"center"} mb={3.2}>Testail Point</Typography>
+      <MyModal
+        open={open}
+        setOpen={setOpen}
+        haveIconClosed
+        iconProps={{ width: 24, color: Colors.secondary }}
+        sx={{
+          maxHeight: "calc(100vh - 10rem)",
+          overflow: "hidden",
+          width: "min(27.5rem, 100vw - 1.5rem)",
+        }}
+      >
+        <Typography fontSize={"1.5rem"} lineHeight={"2rem"} fontWeight={700} color="text.primary" textAlign={"center"} mb={3.2}>Testail Point</Typography>
 
-          <Box display={"grid"} gridTemplateColumns={"1.2fr 0.8fr 1fr 0.8fr auto"} gap={1}>
-            {/* Table Header */}
-            < TableText gridColumn={"2 / span 2"} mb={1}>Normal hour</TableText>
-            <TableText gridColumn={"auto / span 2"}>Golden hour</TableText>
-            <TableText mb={1}>Bet amount</TableText>
-            <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
-            <TableText textTransform={"uppercase"} color={"#26BC7F"}>win</TableText>
-            <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
-            <TableText textTransform={"uppercase"} color={"#26BC7F"}>win</TableText>
-            {/* Table Body */}
-            {testailPointData.map((item, index) => {
-              return (
-                <RowItem
-                  key={index}
-                  betAmount={item.betAmount}
-                  normalLose={item.normalLose}
-                  normalWin={item.normalWin}
-                  goldenHourLose={item.goldenHourLose}
-                  goldenHourWin={item.goldenHourWin}
-                  lastItem={index == testailPointData.length - 1 ? true : false}
-                />
-              );
-            })}
-          </Box>
-        </MyModal >
-      </Box >
-    );
-  }
-  return <Box></Box>;
+        <Box display={"grid"} gridTemplateColumns={"1.2fr 0.8fr 1fr 0.8fr auto"} gap={1}>
+          {/* Table Header */}
+          < TableText gridColumn={"2 / span 2"} mb={1}>Normal hour</TableText>
+          <TableText gridColumn={"auto / span 2"}>Golden hour</TableText>
+          <TableText mb={1}>Bet amount</TableText>
+          <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
+          <TableText textTransform={"uppercase"} color={"#26BC7F"}>win</TableText>
+          <TableText textTransform={"uppercase"} color={"secondary.400"}>lose</TableText>
+          <TableText textTransform={"uppercase"} color={"#26BC7F"}>win</TableText>
+          {/* Table Body */}
+          {testailPointData.map((item, index) => {
+            return (
+              <RowItem
+                key={index}
+                betAmount={item.betAmount}
+                normalLose={item.normalLose}
+                normalWin={item.normalWin}
+                goldenHourLose={item.goldenHourLose}
+                goldenHourWin={item.goldenHourWin}
+                lastItem={index == testailPointData.length - 1 ? true : false}
+              />
+            );
+          })}
+        </Box>
+      </MyModal >
+    </Box >
+  );
+  // }
+  // return <Box></Box>;
 }

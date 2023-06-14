@@ -11,6 +11,16 @@ deploy_preview:
     - ./node_modules/.bin/vercel build --token=$VERCEL_TOKEN
     - ./node_modules/.bin/vercel deploy --prebuilt  --token=$VERCEL_TOKEN
 
+deploy_staging:
+  stage: deploy
+  only:
+    - staging
+  script:
+    - npm i vercel
+    - DEPLOYMENT_URL=$(./node_modules/.bin/vercel --name deodd-staging --confirm -t $VERCEL_TOKEN)
+    # promote to the vercel's production
+    - ./node_modules/.bin/vercel --prod -t $VERCEL_TOKEN
+
 deploy_production:
   stage: deploy
   only:

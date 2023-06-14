@@ -6,27 +6,43 @@ import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 import useReferral from 'hooks/useReferral';
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share';
+import { useRouter } from 'next/router';
 import { Campaign } from 'pages/campaign';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CopyIcon, FacebookIcon } from 'utils/Icons';
 
 
 function RightContent({ image, campaign }: { image: string, campaign: Campaign }) {
-    const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { walletAddress, walletIsConnected, isConnectingWallet, handleConnectWallet } = useWalletContext();
     const { link, getLinkUser } = useReferral({ isNotGet: !(campaign.href === "referral-campaign") });
+    const [linkEnded, setLinkEnded] = useState<string>(link ?? '');
+    const router = useRouter();
     useEffect(() => {
         if (walletAddress && campaign.href === "referral-campaign") {
             getLinkUser();
         }
     }, [walletAddress, getLinkUser, campaign.href])
     const { setTitleSuccess, setIsSuccess } = useSiteContext();
+    useEffect(() => {
+
+        let linkEnded = "";
+        linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? (window as any)?.location.href : '';
+        setLinkEnded(linkEnded);
+    }, [campaign.href, link, setLinkEnded])
+
     const handleCopy = () => {
         navigator?.clipboard.writeText(link ?? '');
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-    let linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? window.location.href : '';
+    console.log(router);
 
+    // let linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? (window as any)?.location.href : '';
+
+    // let linkEnded = "";
+    // if(window){
+    // linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? (window as any)?.location.href : '';
+    // }
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
             <img src={image} width={"100%"} alt="" />
@@ -45,7 +61,7 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
                                 width: 'auto',
                                 textTransform: 'none',
                             }}
-                            loading={false}>
+                            loading={isConnectingWallet}>
                             <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
                         </ButtonLoading>
                     </Box>

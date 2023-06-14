@@ -132,18 +132,12 @@ export function UserInfo() {
       <ClickAwayListener onClickAway={() => { setExpanded(false) }}>
         {/* Menu Container */}
         <Box
-          sx={theme => ({
-            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
-              minWidth: expanded ? 1 : 0,
-            },
-            [theme.breakpoints.up("md").replace("@media", "@container")]: {
-              minWidth: 0,
-            },
+          sx={{
             minWidth: { xs: expanded ? 1 : 0, md: 0 }, // fallback
             position: "absolute",
             right: 0,
             transition: "300ms min-width",
-          })}>
+          }}>
           <ProfileUsername open={isProfileOpened} onClose={() => { setIsProfileOpened(false) }} />
           {/* Summary Container */}
           <Stack
@@ -224,7 +218,7 @@ export function UserInfo() {
                 [theme.breakpoints.up("md").replace("@media", "@container")]: {
                   width: 1,
                 },
-                width: { xs: expanded ? 1 : 0, md: 1 },
+                width: { xs: expanded ? 1 : 0, md: 1 }, // fallback
                 overflow: "hidden",
               })}>
                 <Typography fontSize={"0.875rem"} variant="h3" fontWeight={500} lineHeight={"1.25rem"}>
@@ -277,7 +271,7 @@ export function UserInfo() {
               borderRadius: "0 0 8px 8px",
               boxShadow: expanded ? "2px 0px 0 #3F4251, -2px 0px 0 #3F4251, 0px 2px 0 #3F4251" : "",
               gap: 1.5,
-              transition: "max-height 300ms, box-shadow 300ms, opacity 300ms",
+              transition: "max-height 300ms, box-shadow 300ms",
               opacity: expanded ? 1 : 0,
               overflow: "hidden",
               padding: "0 0.75rem",

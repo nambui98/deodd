@@ -1,3 +1,7 @@
 export const CONTRACT_PROD = {
     deodd: '0x9fcCA7C7184f4c72075c6DA2c312e2C4cD8ff235',
+
+    deoddShop: '0xaE349ab36C146D35B407f50968062e84FEB4B20f',
+    deoddNFT: '0x103f879fA9fbf4b3Ba6d5a3Eedd4D34B4316044d',
+    dusd: '0xda790963402679ada1e9333bc976de64abd12c6a'
 }

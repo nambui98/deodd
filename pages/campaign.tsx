@@ -4,7 +4,7 @@ import { Box, Container, Divider, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
-import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage } from '../utils/Images'
+import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage, VolumeBannerImage, VolumeImage, WinLoseStreakBannerImage, WinLoseStreakImage } from '../utils/Images'
 
 type Props = {}
 export type Campaign = {
@@ -16,11 +16,26 @@ export type Campaign = {
 }
 export const CAMPAIGNS: Campaign[] = [
     {
-        id: 1,
+        id: 4,
+        href: 'volume-campaign',
+        label: 'Volume of Bets',
+        image: VolumeImage,
+        imageDetail: VolumeBannerImage
+    },
+    {
+
+        id: 3,
         href: 'testnet-campaign',
         label: 'Testnet Campaign',
         image: CampaignImage4,
         imageDetail: CampaignImage4
+    },
+    {
+        id: 1,
+        href: 'winlose-streak-campaign',
+        label: 'Win/Lose Streak Campaign',
+        image: WinLoseStreakImage,
+        imageDetail: WinLoseStreakBannerImage
     },
     {
         id: 2,

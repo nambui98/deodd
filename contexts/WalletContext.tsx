@@ -4,7 +4,7 @@ import { DeoddService } from "libs/apis";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
-import { deoddContract } from "../libs/contract";
+import { deoddContract, deoddNFTContract, deoddShopContract } from "../libs/contract";
 
 interface walletContextType {
 	walletAddress: any,
@@ -16,6 +16,7 @@ interface walletContextType {
 	userInfo: { username: string, avatar: number },
 	setUserInfo: Function,
 	contractDeodd: Contract | undefined,
+	contractDeoddNFT: Contract | undefined,
 	handleConnectWallet: () => any,
 	setRefresh: (refresh: boolean) => void,
 	refresh: boolean,
@@ -36,6 +37,7 @@ const WalletContext = createContext<walletContextType>({
 	userInfo: { username: '', avatar: 0 },
 	setUserInfo: () => { },
 	contractDeodd: undefined,
+	contractDeoddNFT: undefined,
 	handleConnectWallet: () => { },
 	refresh: false,
 	setRefresh: () => { },
@@ -100,6 +102,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [contractDeodd, setContractDeodd] = useState<
 		Contract | undefined
 	>();
+	const [contractDeoddShop, setContractDeoddShop] = useState<
+		Contract | undefined
+	>();
+	const [contractDeoddNFT, setContractDeoddNFT] = useState<
+		Contract | undefined
+	>();
 	useEffect(() => {
 		if (bscTestnet.id !== chain?.id) {
 			// switchNetworkCus()
@@ -114,7 +122,11 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			);
 			const signer = provider.getSigner();
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
+			const contractDeoddShop = new ethers.Contract(deoddShopContract.address, deoddShopContract.abi, signer)
+			const contractDeoddNFT = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
 			setContractDeodd(contractDeodd);
+			setContractDeoddShop(contractDeoddShop);
+			setContractDeoddNFT(contractDeoddNFT);
 		}
 	}, [chain]);
 
@@ -267,10 +279,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
+			setUserInfo({ username: user?.userName ?? "", avatar: user?.avatarId ?? 0 });
 			LocalStorage.setUserInfo({
 				wallet: walletAddress,
-				username: user.userName,
+				username: user.userName ?? "",
 				avatarId: user.avatarId ?? 0,
 			});
 		}
@@ -299,6 +311,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
+			contractDeoddNFT,
 			refresh,
 			setRefresh,
 			isConnectingWallet
@@ -312,6 +325,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		bnbBalance,
 		userInfo,
 		contractDeodd,
+		contractDeoddNFT,
 		refresh,
 		isConnectingWallet
 	])
