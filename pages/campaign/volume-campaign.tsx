@@ -16,12 +16,16 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 import { Format } from 'utils/format'
 
 
-export async function getStaticProps({ params }: { params: { path: string } }) {
-    const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
-    return { props: { campaign } };
-}
-function VolumeCampaign({ campaign }: { campaign: Campaign }) {
-
+// export async function getStaticProps({ params }: { params: { path: string } }) {
+//     const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
+//     return { props: { campaign } };
+// }
+function VolumeCampaign({ campaign }: { campaign: Campaign | undefined }) {
+    return (
+        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+            Coming soon
+        </Typography>
+    )
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
