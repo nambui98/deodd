@@ -15,10 +15,12 @@ type Props = {
 
 export default function Shop({ }: Props) {
   const { walletIsConnected } = useWalletContext();
-  const [amount, setAmount] = useState<number>(0);
-  return (<Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-    Coming soon
-  </Typography>)
+  const [amount, setAmount] = useState<number>(0)
+  return (
+    <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+      Coming soon
+    </Typography>
+  )
   return (
     <Container sx={{ mt: 5 }}>
       <Meta title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />

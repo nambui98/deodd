@@ -21,7 +21,11 @@ export async function getStaticProps({ params }: { params: { path: string } }) {
     return { props: { campaign } };
 }
 function VolumeCampaign({ campaign }: { campaign: Campaign }) {
-
+    return (
+        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+            Coming soon
+        </Typography>
+    )
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
