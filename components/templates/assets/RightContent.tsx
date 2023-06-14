@@ -31,6 +31,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
     let price = useMemo(() => parseFloat(ethers.utils.formatEther(bnbBalance)) * (priceToken ?? 0), [priceToken, bnbBalance]);
 
 
+    console.log(walletTokens)
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
             <Stack direction={'row'} alignItems={"flex-end"} justifyContent={'space-between'}>
@@ -93,7 +94,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
                                     {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} /> : <ArrowDownIcon width={24} height={24} />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
-                                        <img width={30} src={Utils.getImageNFT(nft.type)} alt="" />
+                                        <img width={30} src={Utils.getImageNFTString(nft.type)} alt="" />
                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>
                                     </Stack>
                                     <Typography ml="auto" variant='h2' color={"secondary"}>
@@ -108,7 +109,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                                             nft.list.map((detailNFT, index) => {
 
                                                 return <ListItemButton key={detailNFT.id?.toString() + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
-                                                    <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
+                                                    <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFTString(nft.type)} alt="" />
                                                         <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
                                                     <Typography ml="auto" variant='h2' color={"secondary"}>
                                                         {detailNFT.amount}

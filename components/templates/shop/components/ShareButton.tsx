@@ -1,13 +1,13 @@
 import { Button, Typography } from "@mui/material";
 import { ShareIcon } from "utils/Icons";
 
-const ShareButton = () => {
+const ShareButton = ({ title, description }: { title: string, description: string }) => {
     return (
         <Button
             onClick={async () => {
                 const shareData = {
-                    title: "DeODD",
-                    text: "Buy DeODD NFT",
+                    title: title,
+                    text: description,
                     url: window.location.href,
                 };
                 await navigator.share(shareData);

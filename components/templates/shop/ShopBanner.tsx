@@ -29,7 +29,7 @@ function ShopBanner({ amount }: { amount: number }) {
             right: 16,
           }}
         >
-          <ShareButton />
+          <ShareButton title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
         </Box>
         <Grid container >
           <Grid item xs={12} md={7.2}>

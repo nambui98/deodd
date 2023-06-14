@@ -3,6 +3,7 @@ import ProcessingBuy from '@/templates/shop/components/ProcessingBuy';
 import ShareButton from '@/templates/shop/components/ShareButton';
 import { Box, Container, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
 import { Colors } from 'constants/index';
@@ -69,6 +70,7 @@ function ShopItemDetail() {
   const isMediumScreen = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   return (
     <Container sx={{ mt: 5 }}>
+      <Meta title={'DeODD #' + item?.token_id} description='Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD.' />
       <Grid container spacing={{ xs: 2, md: 4 }}>
         <Grid item xs={12} md={4} order={1}>
           <Box p={3} width={1}>
@@ -156,7 +158,7 @@ function ShopItemDetail() {
             <EyeIcon />
             <Typography ml={1} variant="body2" fontWeight={500}>{item?.view_amount}</Typography>
             <Box ml={2}>
-              <ShareButton />
+              <ShareButton title={'DeODD #' + item?.token_id} description='Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD.' />
             </Box>
           </Stack>
         </Grid>

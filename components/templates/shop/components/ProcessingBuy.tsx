@@ -38,7 +38,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
         mode: 'recklesslyUnprepared',
         abi: dusdContract.abi,
         functionName: 'approve',
-        args: [deoddShopContract.address, ethers.utils.parseUnits(item?.price.toString() ?? 0)]
+        args: [deoddShopContract.address, ethers.utils.parseUnits(item?.price.toString() ?? '0')]
     })
     const handleBuyNFT = () => {
         setIsLoading(true);

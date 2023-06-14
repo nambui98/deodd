@@ -16,6 +16,7 @@ interface walletContextType {
 	userInfo: { username: string, avatar: number },
 	setUserInfo: Function,
 	contractDeodd: Contract | undefined,
+	contractDeoddNFT: Contract | undefined,
 	handleConnectWallet: () => any,
 	setRefresh: (refresh: boolean) => void,
 	refresh: boolean,
@@ -36,6 +37,7 @@ const WalletContext = createContext<walletContextType>({
 	userInfo: { username: '', avatar: 0 },
 	setUserInfo: () => { },
 	contractDeodd: undefined,
+	contractDeoddNFT: undefined,
 	handleConnectWallet: () => { },
 	refresh: false,
 	setRefresh: () => { },
@@ -309,6 +311,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
+			contractDeoddNFT,
 			refresh,
 			setRefresh,
 			isConnectingWallet
@@ -322,6 +325,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		bnbBalance,
 		userInfo,
 		contractDeodd,
+		contractDeoddNFT,
 		refresh,
 		isConnectingWallet
 	])
