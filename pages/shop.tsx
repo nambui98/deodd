@@ -15,7 +15,7 @@ type Props = {
 
 export default function Shop({ }: Props) {
   const { walletIsConnected } = useWalletContext();
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(0)
 
   return (
     <Container sx={{ mt: 5 }}>
