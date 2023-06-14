@@ -65,7 +65,7 @@ function ListingItem({ item }: Props) {
             <ProcessingBuy
                 item={item}
                 refresh={() => {
-                    queryClient.invalidateQueries({ queryKey: ['getTestail'] });
+                    queryClient.invalidateQueries({ queryKey: ['getShopList'] });
                 }}
                 isShowBuy={isShowBuy}
                 setIsShowBuy={setIsShowBuy} />
