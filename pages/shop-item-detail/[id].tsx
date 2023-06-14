@@ -1,6 +1,7 @@
 import ListingItem, { ListingItemType } from '@/templates/shop/components/ListingItem';
 import ProcessingBuy from '@/templates/shop/components/ProcessingBuy';
 import ShareButton from '@/templates/shop/components/ShareButton';
+import { Utils } from '@/utils/index';
 import { Box, Container, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Meta } from 'components/common/Meta';
@@ -25,7 +26,7 @@ function ShopItemDetail() {
   const [itemsSuggestion, setItemsSuggestion] = useState<ListingItemType[] | undefined>()
   const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
 
-  const { refetch: getDetailShopItem } = useQuery({
+  const { refetch: getDetailShopItem, isFetching, isLoading } = useQuery({
     queryKey: ["getDetailShopItem"],
     enabled: false,
     queryFn: () => DeoddService.getShopDetailItem(router.query.id?.toString() ?? ''),
@@ -112,7 +113,7 @@ function ShopItemDetail() {
                   {item?.token_id}
                 </Typography>
                 <Typography variant='body2'>
-                  {item?.type ?? '---'}
+                  {Utils.getTypeNFT(item?.type) ?? '---'}
                 </Typography>
                 <Typography variant='body2'>
                   BSC
@@ -127,6 +128,7 @@ function ShopItemDetail() {
               {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
             </Stack>
             <ButtonLoading
+              loading={isFetching || isLoading}
               onClick={() => {
                 if (item?.status === "LISTING") {
                   setIsShowBuy(true)
@@ -149,10 +151,13 @@ function ShopItemDetail() {
               {
                 item?.status === "LISTING" ?
                   <Stack direction={'row'} alignItems={'center'} gap={1}>
-                    <BagTickIcon />
+                    {(!isFetching || isLoading) && (
+                      <BagTickIcon />
+                    )}
                     Buy now
                   </Stack>
-                  : 'Sold out'
+                  : <Typography>Sold out</Typography>
+
               }
 
 

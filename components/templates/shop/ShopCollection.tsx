@@ -171,15 +171,14 @@ function ShopCollection({ setAmount }: Props) {
                                 <ListingItem item={item} />
                             </Grid>)
                     }
-                    {/* {
-                        !isLoading && (
-                            items.length > 0 ?
+                    {
+                        isFetched && (
+                            total > 0 ?
                                 items.map((item, index) =>
                                     <Grid item key={item.token_id} xs={6} sm={4}>
                                         <ListingItem item={item} />
                                     </Grid>
-
-                                ) : <Grid item xs={12} textAlign={'center'}>
+                                ) : !isFetching ? <Grid item xs={12} textAlign={'center'}>
                                     <Typography pt={10} variant="body1" fontWeight={600}>No items found for this search</Typography>
                                     <Typography variant="body1" mt={3} color="secondary.main" fontWeight={500} onClick={() => {
                                         setFilter({
@@ -194,9 +193,9 @@ function ShopCollection({ setAmount }: Props) {
                                         setItems([])
                                         onFilter()
                                     }}>Back to all item</Typography>
-                                </Grid>
+                                </Grid> : null
                         )
-                    } */}
+                    }
                     <Grid item xs={12} display={isFetching ? 'flex' : 'none'} textAlign={'center'} justifyContent={'center'} alignItems={'center'}><CoinAnimation width={100} height={100} /></Grid>
                     <Box ref={bottomRef} />
 
@@ -220,6 +219,7 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
     const [minPrice, setMinPrice] = useState<number | null>(filter.minPrice)
     const [maxPrice, setMaxPrice] = useState<number | null>(filter.maxPrice)
     const [itemType, setItemType] = useState<any>(filter.itemType)
+    const [errorMessage, setErrorMessage] = useState<string | undefined>();
     const [isPending, startTransition] = useTransition();
     console.log(itemType);
 
@@ -242,8 +242,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                         return { ...prev };
                     })
                 }
-
-                debugger
             }}
             sx={{
                 '.MuiFormControlLabel-label': { fontSize: { xs: 14, md: 16 }, fontWeight: { xs: 400, md: 600 }, color: 'dark.60' },
@@ -257,7 +255,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 <FormControlLabel
                     name='ALL'
                     control={<Checkbox checked={itemType.ALL} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="All" />
-
                 <FormControlLabel name="DIAMOND" control={<Checkbox checked={itemType.DIAMOND ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Diamond" />
                 <FormControlLabel name="GOLD" control={<Checkbox checked={itemType.GOLD ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Gold" />
                 <FormControlLabel name="BRONZE" control={<Checkbox checked={itemType.BRONZE ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Bronze" />
@@ -286,24 +283,37 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 }
             }
         }}>
-            <Input type='number' value={minPrice || filter.minPrice} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
+            <Input type='number' value={minPrice} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
             <Typography>
                 -
             </Typography>
-            <Input type='number' value={maxPrice || filter.maxPrice} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
+            <Input type='number' value={maxPrice} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
             <MyImage src={BnbImage} width={20} height={20} alt="" />
         </Stack>
 
         <ButtonLoading sx={{ py: 1, mt: { xs: 2, md: 3 }, fontSize: 12, fontWeight: 400, textTransform: 'none' }}
             onClick={() => {
                 startTransition(() => {
-                    setFilter((prev: FilterType) => {
-                        return { ...prev, minPrice: minPrice, maxPrice: maxPrice, itemType: Object.fromEntries(Object.entries(itemType).filter(([key, value]) => value === true)) } as FilterType
-                    })
-                    onFilter();
+                    if (minPrice && maxPrice && minPrice > maxPrice) {
+                        setErrorMessage('Minimum must be less than maximum')
+                    } else {
+                        setErrorMessage(undefined);
+                        setFilter((prev: FilterType) => {
+                            return { ...prev, minPrice: !Number.isNaN(minPrice) ? minPrice : null, maxPrice: !Number.isNaN(maxPrice) ? maxPrice : null, itemType: Object.fromEntries(Object.entries(itemType).filter(([key, value]) => value === true)) } as FilterType
+                        })
+                        onFilter();
+
+                    }
                 })
             }}
         >Apply filter</ButtonLoading >
+        {
+            errorMessage &&
+            <Box mt={2}>
+                <Typography color="error.300" variant='caption' >{errorMessage}</Typography>
+            </Box>
+        }
+
     </>
 
 }
