@@ -21,11 +21,7 @@ export async function getStaticProps({ params }: { params: { path: string } }) {
     return { props: { campaign } };
 }
 function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
-    return (
-        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
-            Coming soon
-        </Typography>
-    )
+
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
@@ -52,6 +48,11 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
     let rowsWin = winloseStreak?.dashboardWinStreak;
     let rowsLose = winloseStreak?.dashboardLoseStreak;
     let mymine = winloseStreak?.connectWallet;
+    return (
+        <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
+            Coming soon
+        </Typography>
+    )
     return (
         <Box mt={5}>
             <Container>
