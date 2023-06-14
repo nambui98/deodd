@@ -17,4 +17,4 @@ const address = addresses[process.env.NEXT_PUBLIC_ENVIRONMENT ?? 'DEV'];
 export const deoddContract = { address: address.deodd, abi: deoddAbi.abi }
 export const deoddShopContract = { address: address.deoddShop, abi: deoddShopAbi.abi }
 export const deoddNFTContract = { address: address.deoddNFT, abi: deoddNFTAbi.abi }
-export const dusdContract = { address: address.dusd, abi: dusdAbi }
+export const dusdContract = { address: address.dusd, abi: dusdAbi.abi }

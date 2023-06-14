@@ -4,6 +4,14 @@ import { ShareIcon } from "utils/Icons";
 const ShareButton = () => {
     return (
         <Button
+            onClick={async () => {
+                const shareData = {
+                    title: "DeODD",
+                    text: "Buy DeODD NFT",
+                    url: window.location.href,
+                };
+                await navigator.share(shareData);
+            }}
             disableElevation
             variant="contained"
             sx={{

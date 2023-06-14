@@ -1,20 +1,26 @@
 import { Grid, Stack, Box, Typography } from '@mui/material'
+import { useQueryClient } from '@tanstack/react-query'
 import Price from 'components/common/Price'
 import { ButtonSecondRemex } from 'components/ui/button'
 import MyImage from 'components/ui/image'
 import { Colors } from 'constants/index'
 import { BigNumber } from 'ethers'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { BagTickIcon, USDTIcon } from 'utils/Icons'
 import { BnbImage, Bronze2Image } from 'utils/Images'
 import { Format } from 'utils/format'
+import ProcessingBuy from './ProcessingBuy'
+import { useSiteContext } from 'contexts/SiteContext'
 
 type Props = {
     item: ListingItemType
 }
 
 function ListingItem({ item }: Props) {
+    const queryClient = useQueryClient();
+    const { setIsError, setTitleError } = useSiteContext();
+    const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
     return (
         <>
             <Stack component={Link} prefetch href={"/shop-item-detail/" + item.token_id}>
@@ -31,21 +37,38 @@ function ListingItem({ item }: Props) {
                 />
 
             </Box>
-            <ButtonSecondRemex sx={{
-                width: 1,
-                mt: 2,
-                textTransform: 'none',
-                fontWeight: 400,
-                svg: { transition: '.3s all', fill: '#96A5C0', stroke: 'none' }, color: 'dark.60', '&:hover': {
-                    svg: { fill: Colors.bg80, stroke: 'none' }
-                }
-            }}>
+            <ButtonSecondRemex
+                onClick={() => {
+                    if (item?.status === "LISTING") {
+                        setIsShowBuy(true)
+                    } else {
+                        setTitleError('Sold out');
+                        setIsError(true);
+                    }
+                }}
+
+                sx={{
+                    width: 1,
+                    mt: 2,
+                    textTransform: 'none',
+                    fontWeight: 400,
+                    svg: { transition: '.3s all', fill: '#96A5C0', stroke: 'none' }, color: 'dark.60', '&:hover': {
+                        svg: { fill: Colors.bg80, stroke: 'none' }
+                    }
+                }}>
                 <Stack direction={'row'} alignItems={'center'} gap={1}>
                     <BagTickIcon />
                     Buy now
                 </Stack>
             </ButtonSecondRemex>
 
+            <ProcessingBuy
+                item={item}
+                refresh={() => {
+                    queryClient.invalidateQueries({ queryKey: ['getTestail'] });
+                }}
+                isShowBuy={isShowBuy}
+                setIsShowBuy={setIsShowBuy} />
         </>
     )
 }
