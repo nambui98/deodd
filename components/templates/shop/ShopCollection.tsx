@@ -37,7 +37,7 @@ function ShopCollection({ setAmount }: Props) {
     const [total, setTotal] = useState<number>(0)
     const [sortValue, setSortValue] = useState<TypeFilterSort | string>('')
     const [filter, setFilter] = useState<FilterType>({
-        limit: 20,
+        limit: 9,
         offset: 0,
         sortType: "TIME",
         sortOrder: "DESC",
@@ -197,7 +197,7 @@ function ShopCollection({ setAmount }: Props) {
                                 </Grid>
                         )
                     } */}
-                    {/* <Grid item xs={12} display={isLoading ? 'flex' : 'none'} textAlign={'center'} justifyContent={'center'} alignItems={'center'}><CoinAnimation width={100} height={100} /></Grid> */}
+                    <Grid item xs={12} display={isFetching ? 'flex' : 'none'} textAlign={'center'} justifyContent={'center'} alignItems={'center'}><CoinAnimation width={100} height={100} /></Grid>
                     <Box ref={bottomRef} />
 
                 </Grid>
