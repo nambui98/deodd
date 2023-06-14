@@ -17,8 +17,8 @@ const getShopList = async ({
     offset: number,
     sortType: string,
     sortOrder: string,
-    minPrice: number,
-    maxPrice: number,
+    minPrice: number | null,
+    maxPrice: number | null,
     itemType: any
 }) => {
     return vhIdRequest({

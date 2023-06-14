@@ -25,6 +25,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isApproved, setIsApproved] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    console.log(item?.token_id);
 
     const { writeAsync: buyNFT } = useContractWrite({
         address: deoddShopContract.address,
@@ -33,6 +34,8 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
         functionName: 'purchaseItemByToken',
         args: [BigNumber.from(item?.token_id ?? 0)]
     })
+    console.log(ethers.utils.parseUnits(item?.price.toString() ?? '0'));
+
     const { writeAsync: approve } = useContractWrite({
         address: dusdContract.address,
         mode: 'recklesslyUnprepared',
@@ -42,6 +45,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     })
     const handleBuyNFT = () => {
         setIsLoading(true);
+        debugger
         buyNFT?.()
             .then(resWrite => {
                 return resWrite.wait();

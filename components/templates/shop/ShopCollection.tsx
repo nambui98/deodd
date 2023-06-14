@@ -27,8 +27,8 @@ type FilterType = {
     offset: number,
     sortType: string,
     sortOrder: string,
-    minPrice: number,
-    maxPrice: number,
+    minPrice: number | null,
+    maxPrice: number | null,
     itemType: object
 
 }
@@ -41,8 +41,8 @@ function ShopCollection({ setAmount }: Props) {
         offset: 0,
         sortType: "TIME",
         sortOrder: "DESC",
-        minPrice: 0,
-        maxPrice: 10000000,
+        minPrice: null,
+        maxPrice: null,
         itemType: { ALL: true }
 
     })
@@ -217,8 +217,8 @@ type FormFilter = {
 
 }
 const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: FilterType, setFilter: Function }) => {
-    const [minPrice, setMinPrice] = useState<number>(filter.minPrice)
-    const [maxPrice, setMaxPrice] = useState<number>(filter.maxPrice)
+    const [minPrice, setMinPrice] = useState<number | null>(filter.minPrice)
+    const [maxPrice, setMaxPrice] = useState<number | null>(filter.maxPrice)
     const [itemType, setItemType] = useState<any>(filter.itemType)
     const [isPending, startTransition] = useTransition();
     console.log(itemType);

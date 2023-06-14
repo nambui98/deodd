@@ -7,6 +7,7 @@ import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
 import { Colors } from 'constants/index';
+import { useSiteContext } from 'contexts/SiteContext';
 import { BigNumber } from 'ethers';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
@@ -19,6 +20,7 @@ import { Format } from 'utils/format';
 
 function ShopItemDetail() {
   const router = useRouter();
+  const { setIsSuccess, setTitleSuccess } = useSiteContext();
   const [item, setItem] = useState<ListingItemType | undefined>()
   const [itemsSuggestion, setItemsSuggestion] = useState<ListingItemType[] | undefined>()
   const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
@@ -65,7 +67,11 @@ function ShopItemDetail() {
     }
   }, [getDetailShopItem, getSuggestion, router.query.id])
 
-
+  const handleCopy = () => {
+    navigator?.clipboard.writeText(deoddNFTContract.address);
+    setTitleSuccess("Copy to clipboard");
+    setIsSuccess(true);
+  }
 
   const isMediumScreen = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   return (
@@ -99,7 +105,7 @@ function ShopItemDetail() {
               </Stack>
               <Stack gap={1}>
 
-                <Typography color="secondary.main" variant='body2'>
+                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} onClick={handleCopy}>
                   {Convert.convertWalletAddress(deoddNFTContract.address, 4, 5)}
                 </Typography>
                 <Typography color="secondary.main" variant='body2'>
@@ -116,7 +122,7 @@ function ShopItemDetail() {
             <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
 
               <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
-                value={Format.formatMoney(item?.price ?? 0)}
+                value={item?.price ?? 0}
                 token={<USDTIcon width={24} height={24} fill="#50ae94" />} />
               {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
             </Stack>
