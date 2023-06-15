@@ -102,7 +102,10 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                             <Stack gap={1} alignItems={'flex-end'}>
                                 <Price
                                     token={<USDTIcon width={24} height={24} fill="#50ae94" />}
-                                    value={item?.price ?? 0} typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                                    value={item?.price ?? 0}
+                                    isShowOnlyPriceSales={true}
+                                    valueSale={item?.sale_price ?? 0}
+                                    typographyProps={{ variant: 'body1', fontWeight: 600 }}
                                 />
                             </Stack>
                         </Grid>
@@ -143,6 +146,8 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                             <Stack gap={1} alignItems={'flex-end'}>
                                 <Price
                                     token={<USDTIcon width={24} height={24} fill="#50ae94" />}
+                                    isShowOnlyPriceSales={true}
+                                    valueSale={item?.sale_price ?? 0}
                                     value={item?.price ?? 0} typographyProps={{ variant: 'body1', fontWeight: 600 }}
                                 />
                             </Stack>

@@ -1,17 +1,16 @@
 import { Input } from '@mui/base'
-import { Checkbox, Box, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Select, Stack, Typography, SelectChangeEvent } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import CoinAnimation from 'components/common/CoinAnimation'
 import { ButtonLoading } from 'components/ui/button'
+import MyImage from 'components/ui/image'
 import { Colors } from 'constants/index'
+import { DeoddService } from 'libs/apis'
+import { useEffect, useState, useTransition } from 'react'
+import { useInView } from 'react-intersection-observer'
 import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon } from 'utils/Icons'
 import { BnbImage } from 'utils/Images'
 import ListingItem, { ListingItemType } from './components/ListingItem'
-import { useEffect, useState, useTransition } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { DeoddService } from 'libs/apis'
-import { useInView } from 'react-intersection-observer'
-import CoinAnimation from 'components/common/CoinAnimation'
-import MyImage from 'components/ui/image'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 type Props = {
     setAmount: (value: number) => void
 }
@@ -55,7 +54,11 @@ function ShopCollection({ setAmount }: Props) {
         queryFn: () => DeoddService.getShopList(filter),
         onSuccess(data) {
             if (data && data.data) {
+                console.log(items);
+
                 setItems((prev) => [...prev, ...data.data.items]);
+                debugger
+
                 setTotal(data.data.total);
                 setAmount(data.data.total)
             }
@@ -85,7 +88,10 @@ function ShopCollection({ setAmount }: Props) {
         setTimeout(() => {
             getShopList();
         }, 100);
+
     }
+    console.log(items);
+
     return (
         <Grid pt={{ xs: 2, md: 0 }} container spacing={{ xs: 3, md: 4 }}>
             <Grid item xs={12} md={3} >
@@ -175,13 +181,6 @@ function ShopCollection({ setAmount }: Props) {
 
                 </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
-
-                    {
-                        items.map((item, index) =>
-                            <Grid item key={item.token_id} xs={6} sm={4}>
-                                <ListingItem item={item} />
-                            </Grid>)
-                    }
                     {
                         isFetched && (
                             total > 0 ?
@@ -237,7 +236,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
         setMinPrice(filter.minPrice)
         setMaxPrice(filter.maxPrice)
         setItemType(filter.itemType)
-        debugger
     }, [filter])
 
     console.log(filter.minPrice);

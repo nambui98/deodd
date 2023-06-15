@@ -27,9 +27,12 @@ function ListingItem({ item }: Props) {
             </Box>
             <Box mt={1}>
                 <Price
-                    value={item.price} typographyProps={{ variant: 'body1', fontWeight: 600 }}
-                    tokenSize={24}
+                    value={item.price}
+                    typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                    valueSale={item.sale_price}
+                    typographySaleProps={{ variant: 'caption', fontWeight: 500, color: 'dark.60' }}
                     token={<USDTIcon fill="#50ae94" width={24} height={24} />}
+                    tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
                 />
 
             </Box>
@@ -65,6 +68,7 @@ function ListingItem({ item }: Props) {
 export default ListingItem
 export type ListingItemType = {
     price: number,
+    sale_price: number,
     status: string,
     token_id: number,
     image_link: string,

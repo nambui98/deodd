@@ -51,6 +51,7 @@ function ShopItemDetail() {
     onSuccess(data) {
       if (data && data.data) {
         setItemsSuggestion(data.data)
+
       }
     },
     select: (data: any) => {
@@ -63,10 +64,12 @@ function ShopItemDetail() {
   });
   useEffect(() => {
     if (router.query.id) {
-      getDetailShopItem();
-      getSuggestion();
+
       const test = document.getElementById('main-top')
       test?.scrollIntoView({ behavior: "smooth" })
+
+      getDetailShopItem();
+      getSuggestion();
     }
   }, [getDetailShopItem, getSuggestion, router.query.id])
 
@@ -91,8 +94,8 @@ function ShopItemDetail() {
         <Grid item xs={12} md={4} order={2}>
           <Stack gap={{ xs: 2, md: 3 }}>
 
-            <Typography component={'span'} variant='body1' fontSize={{ xs: 14, md: 16 }} fontWeight={{ xs: 500, md: 600 }} color="secondary.main">deODD NFT 1ST Collection</Typography>
-            <Typography fontSize={{ xs: 24, md: 40 }} fontWeight={700} lineHeight={{ xs: '32px', md: '50.6px' }}>deODD #{item?.token_id}</Typography>
+            <Typography component={'span'} variant='body1' fontSize={{ xs: 14, md: 16 }} fontWeight={{ xs: 500, md: 600 }} color="secondary.main">DeODD NFT 1ST Collection</Typography>
+            <Typography fontSize={{ xs: 24, md: 40 }} fontWeight={700} lineHeight={{ xs: '32px', md: '50.6px' }}>DeODD #{item?.token_id}</Typography>
             <Stack direction={'row'} gap={3} >
               <Stack gap={1}>
                 <Typography variant='body2'>
@@ -128,44 +131,53 @@ function ShopItemDetail() {
 
               <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
                 value={item?.price ?? 0}
-                token={<USDTIcon width={24} height={24} fill="#50ae94" />} />
+                valueSale={item?.sale_price ?? 0}
+                typographySaleProps={{ variant: 'body1', fontWeight: 500, color: 'dark.60', ml: 1 }}
+                token={<USDTIcon fill="#50ae94" width={24} height={24} />}
+                tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
+
+              />
+
               {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
             </Stack>
-            <ButtonLoading
-              loading={isFetching || isLoading}
-              onClick={() => {
-                if (item?.status === "LISTING") {
-                  setIsShowBuy(true)
-                }
-              }}
-              sx={{
-                fontWeight: 400,
-                py: 2,
-                borderColor: 'secondary.main',
-                svg: { transition: '.3s all', fill: Colors.secondaryDark, stroke: 'none' },
-                color: 'secondary.main',
-                textTransform: 'none',
-                '&:hover': {
-                  borderWidth: 1,
-                  borderColor: 'secondary.main',
-                  bgcolor: 'secondary.main',
-                  svg: { fill: Colors.bg80, stroke: 'none' }
-                }
-              }}>
-              {
-                item?.status === "LISTING" ?
+
+            {
+              (!isFetching && !isLoading) && (item?.status === "LISTING" ?
+
+                <ButtonLoading
+                  loading={isFetching || isLoading}
+                  onClick={() => {
+                    if (item?.status === "LISTING") {
+                      setIsShowBuy(true)
+                    }
+                  }}
+                  sx={{
+                    fontWeight: 400,
+                    py: 2,
+                    borderColor: 'secondary.main',
+                    svg: { transition: '.3s all', fill: Colors.secondaryDark, stroke: 'none' },
+                    color: 'secondary.main',
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderWidth: 1,
+                      borderColor: 'secondary.main',
+                      bgcolor: 'secondary.main',
+                      svg: { fill: Colors.bg80, stroke: 'none' }
+                    }
+                  }}>
                   <Stack direction={'row'} alignItems={'center'} gap={1}>
                     {(!isFetching || isLoading) && (
                       <BagTickIcon />
                     )}
                     Buy now
                   </Stack>
-                  : <Typography>Sold out</Typography>
 
-              }
+                </ButtonLoading>
+                : <Typography color="error.300" fontWeight={600}>Sold out</Typography>
+              )
+            }
 
 
-            </ButtonLoading>
           </Stack>
         </Grid>
         <Grid item xs={12} order={{ xs: 0, md: 3 }} md={4}>
