@@ -308,10 +308,7 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 -
             </Typography>
             <Input type='number' value={maxPrice ?? ''} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
-            <Box width={20}>
-
-                <MyImage src={BnbImage} minWidth={20} width={20} height={20} alt="" />
-            </Box>
+            <MyImage src={BnbImage} minWidth={20} width={20} height={20} alt="" />
         </Stack>
 
         <ButtonLoading sx={{ py: 1, mt: { xs: 2, md: 3 }, fontSize: 12, fontWeight: 400, textTransform: 'none' }}
