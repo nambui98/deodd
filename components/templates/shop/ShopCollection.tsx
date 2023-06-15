@@ -91,6 +91,7 @@ function ShopCollection({ setAmount }: Props) {
             <Grid item xs={12} md={3} >
                 <Filter onFilter={onFilter} filter={filter} setFilter={setFilter} />
             </Grid>
+
             <Grid item xs={12} md={9} >
 
                 <Box position={'sticky'} bgcolor={'background.default'} zIndex={1} top={112}>
@@ -307,7 +308,10 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 -
             </Typography>
             <Input type='number' value={maxPrice ?? ''} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
-            <MyImage src={BnbImage} width={20} height={20} alt="" />
+            <Box width={20}>
+
+                <MyImage src={BnbImage} minWidth={20} width={20} height={20} alt="" />
+            </Box>
         </Stack>
 
         <ButtonLoading sx={{ py: 1, mt: { xs: 2, md: 3 }, fontSize: 12, fontWeight: 400, textTransform: 'none' }}

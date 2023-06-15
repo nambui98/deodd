@@ -113,7 +113,7 @@ function ShopItemDetail() {
                 <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} component={Link} target='_blank' href={`${UrlBlockExplorer}/address/` + deoddNFTContract.address} >
                   {Convert.convertWalletAddress(deoddNFTContract.address, 4, 5)}
                 </Typography>
-                <Typography color="secondary.main" variant='body2'>
+                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} component={Link} target='_blank' href={`${UrlBlockExplorer}/token/` + deoddNFTContract.address + '?a=' + item?.token_id}>
                   {item?.token_id}
                 </Typography>
                 <Typography variant='body2'>
