@@ -21,6 +21,9 @@ export default function Shop({ }: Props) {
   //     Coming soon
   //   </Typography>
   // )
+  if (walletIsConnected === undefined) {
+    return <CoinAnimation width={100} height={100}></CoinAnimation>
+  }
   return (
     <Container sx={{ mt: 5 }}>
       <Meta title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />

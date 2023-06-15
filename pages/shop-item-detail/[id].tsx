@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
-import { Colors } from 'constants/index';
+import { Colors, UrlBlockExplorer } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
 import { BigNumber } from 'ethers';
 import { DeoddService } from 'libs/apis';
@@ -110,7 +110,7 @@ function ShopItemDetail() {
               </Stack>
               <Stack gap={1}>
 
-                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} onClick={handleCopy}>
+                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} component={Link} target='_blank' href={`${UrlBlockExplorer}/address/` + deoddNFTContract.address} >
                   {Convert.convertWalletAddress(deoddNFTContract.address, 4, 5)}
                 </Typography>
                 <Typography color="secondary.main" variant='body2'>

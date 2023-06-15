@@ -92,79 +92,89 @@ function ShopCollection({ setAmount }: Props) {
                 <Filter onFilter={onFilter} filter={filter} setFilter={setFilter} />
             </Grid>
             <Grid item xs={12} md={9} >
+
+                <Box position={'sticky'} bgcolor={'background.default'} zIndex={1} top={112}>
+                    <Grid container pb={{ xs: 3, md: 4 }}>
+                        <Grid item xs={12} md={6} display={'flex'} >
+                            <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
+
+                            <Box position={'sticky'} top={212}>
+
+                                <FormControl sx={{
+                                    width: { xs: 1, md: 260 },
+                                    border: 'none',
+                                    '& .MuiOutlinedInput-root': {
+                                        // py: 1,
+
+                                        fontSize: 14,
+                                        bgcolor: 'secondary.800',
+                                        height: 36
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline ': {
+                                        border: 'none',
+                                    },
+                                    '& .MuiSelect-icon': {
+                                        top: 'auto'
+                                    }
+                                }}>
+                                    <Select
+                                        displayEmpty
+                                        variant='outlined'
+                                        value={sortValue as any}
+                                        // renderValue={(selected: number | string | undefined) => {
+                                        //     if (!selected || selected === '') {
+                                        //         return <span>Sort by</span>;
+                                        //     }
+                                        //     return selected;
+                                        // }}
+                                        IconComponent={(props) => <ArrowDownIcon width={20} height={20} fill={Colors.secondaryDark} {...props} />}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                        onChange={(e: SelectChangeEvent<TypeFilterSort | ''>) => {
+                                            let sortType: string = '';
+                                            let sortOrder: string = '';
+                                            if (e.target.value === TypeFilterSort.TIME_ASC) {
+                                                sortType = 'TIME';
+                                                sortOrder = 'ASC';
+                                            } else if (e.target.value === TypeFilterSort.VIEW_DESC) {
+                                                sortType = 'VIEW';
+                                                sortOrder = 'DESC';
+                                            } else if (e.target.value === TypeFilterSort.PRICE_ASC) {
+                                                sortType = 'PRICE';
+                                                sortOrder = 'ASC';
+                                            } else if (e.target.value === TypeFilterSort.PRICE_DESC) {
+                                                sortType = 'VIEW';
+                                                sortOrder = 'DESC';
+                                            } else if (e.target.value === TypeFilterSort.TIME_DESC) {
+                                                sortType = 'TIME';
+                                                sortOrder = 'DESC';
+                                            };
+                                            setFilter((prev) => ({ ...prev, sortType, sortOrder, offset: 0 }))
+                                            setSortValue(e.target.value)
+
+
+                                            onFilter();
+                                        }}
+                                    >
+
+                                        <MenuItem sx={{ fontSize: 14 }} disabled value={''}>Sort by</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_ASC}>Recently listed</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.VIEW_DESC}>Most viewed</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_ASC}>Price low to high</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_DESC}>Price high to low</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_DESC}>Oldest</MenuItem>
+                                    </Select>
+                                </FormControl>
+
+                            </Box>
+                        </Grid>
+
+                    </Grid>
+
+                </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
-                    <Grid item xs={12} md={6} display={'flex'} >
 
-                        <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
-                        <FormControl sx={{
-                            width: { xs: 1, md: 260 },
-                            border: 'none',
-                            '& .MuiOutlinedInput-root': {
-                                // py: 1,
-
-                                fontSize: 14,
-                                bgcolor: 'secondary.800',
-                                height: 36
-                            },
-                            '& .MuiOutlinedInput-notchedOutline ': {
-                                border: 'none',
-                            },
-                            '& .MuiSelect-icon': {
-                                top: 'auto'
-                            }
-                        }}>
-                            <Select
-                                displayEmpty
-                                variant='outlined'
-                                value={sortValue as any}
-                                // renderValue={(selected: number | string | undefined) => {
-                                //     if (!selected || selected === '') {
-                                //         return <span>Sort by</span>;
-                                //     }
-                                //     return selected;
-                                // }}
-                                IconComponent={(props) => <ArrowDownIcon width={20} height={20} fill={Colors.secondaryDark} {...props} />}
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                onChange={(e: SelectChangeEvent<TypeFilterSort | ''>) => {
-                                    let sortType: string = '';
-                                    let sortOrder: string = '';
-                                    if (e.target.value === TypeFilterSort.TIME_ASC) {
-                                        sortType = 'TIME';
-                                        sortOrder = 'ASC';
-                                    } else if (e.target.value === TypeFilterSort.VIEW_DESC) {
-                                        sortType = 'VIEW';
-                                        sortOrder = 'DESC';
-                                    } else if (e.target.value === TypeFilterSort.PRICE_ASC) {
-                                        sortType = 'PRICE';
-                                        sortOrder = 'ASC';
-                                    } else if (e.target.value === TypeFilterSort.PRICE_DESC) {
-                                        sortType = 'VIEW';
-                                        sortOrder = 'DESC';
-                                    } else if (e.target.value === TypeFilterSort.TIME_DESC) {
-                                        sortType = 'TIME';
-                                        sortOrder = 'DESC';
-                                    };
-                                    setFilter((prev) => ({ ...prev, sortType, sortOrder, offset: 0 }))
-                                    setSortValue(e.target.value)
-
-
-                                    onFilter();
-                                }}
-                            >
-
-                                <MenuItem sx={{ fontSize: 14 }} disabled value={''}>Sort by</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_ASC}>Recently listed</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.VIEW_DESC}>Most viewed</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_ASC}>Price low to high</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_DESC}>Price high to low</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_DESC}>Oldest</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                    </Grid>
                     {
                         items.map((item, index) =>
                             <Grid item key={item.token_id} xs={6} sm={4}>
@@ -232,7 +242,7 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
     console.log(filter.minPrice);
     console.log(minPrice);
 
-    return <>
+    return <Box position={'sticky'} top={{ md: 112, sm: 72 }}>
         <Stack direction={'row'} alignItems={'center'} gap={{ xs: 1, md: 2 }}>
             <Box width={{ xs: 20, md: 24 }} height={{ xs: 20, md: 24 }}>
                 <FilterIcon width={'100%'} height={'100%'} />
@@ -323,6 +333,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
             </Box>
         }
 
-    </>
+    </Box>
 
 }
