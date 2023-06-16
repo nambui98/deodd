@@ -127,20 +127,25 @@ function ShopItemDetail() {
                 </Typography>
               </Stack>
             </Stack>
-            <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
+            {
+              (!isFetching && !isLoading) && (item?.status === "LISTING" &&
+                <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
 
-              <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
-                value={item?.price ?? 0}
-                valueSale={item?.sale_price ?? 0}
-                typographySaleProps={{ variant: 'body1', fontWeight: 500, color: 'dark.60', ml: 1 }}
-                token={<USDTIcon fill="#50ae94" width={24} height={24} />}
-                tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
+                  <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
+                    value={item?.price ?? 0}
+                    valueSale={item?.sale_price ?? 0}
+                    typographySaleProps={{ variant: 'body1', fontWeight: 500, color: 'dark.60', ml: 1 }}
+                    token={<USDTIcon fill="#50ae94" width={24} height={24} />}
+                    tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
 
-              />
+                  />
 
-              {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
-            </Stack>
+                </Stack>
+              )
 
+
+
+            }
             {
               (!isFetching && !isLoading) && (item?.status === "LISTING" ?
 
