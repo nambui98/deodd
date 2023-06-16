@@ -29,6 +29,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     const { walletAddress, bnbBalance } = useWalletContext()
     const [allowance, setAllowance] = useState<number | string>(0);
     const [allowanceValue, setAllowanceValue] = useState<number | string>(0);
+    const [balanceUSDT, setBalanceUSDT] = useState<string | number>(0);
     const { writeAsync: buyNFT } = useContractWrite({
         address: deoddShopContract.address,
         mode: 'recklesslyUnprepared',
@@ -61,25 +62,41 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
             setAllowance(ethers.utils.formatEther(data));
         },
     })
+    useContractRead({
+        address: dusdContract.address,
+        abi: dusdContract.abi,
+        functionName: 'balanceOf',
+        args: [walletAddress],
+        // enabled: false,
+        onSuccess(data: BigNumber) {
+            setBalanceUSDT(ethers.utils.formatEther(data))
+        },
+    })
     console.log(allowanceValue);
 
     const handleBuyNFT = () => {
-        setIsLoading(true);
-        buyNFT?.()
-            .then(resWrite => {
-                return resWrite.wait();
-            })
-            .then((res) => {
-                setIsLoading(false);
-                setIsShowBuy(false);
-                setIsSuccess(true);
-                refresh();
-            })
-            .catch(error => {
-                setIsLoading(false);
-                setIsError(true);
-                setTitleError(error.reason || 'Checkout Failed. Please try again');
-            })
+        if (parseFloat(balanceUSDT.toString()) < (item?.sale_price ?? 0)) {
+            setIsError(true);
+            setTitleError('Error. Insufficient balance in the wallet');
+        } else {
+            setIsLoading(true);
+            buyNFT?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                    setIsLoading(false);
+                    setIsShowBuy(false);
+                    setIsSuccess(true);
+                    refresh();
+                })
+                .catch(error => {
+                    setIsLoading(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Checkout Failed. Please try again');
+                })
+
+        }
     }
     const handleApprove = () => {
         setIsLoading(true);
