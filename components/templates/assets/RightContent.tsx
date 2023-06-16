@@ -109,7 +109,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
 
                                                 return <ListItemButton key={detailNFT.id?.toString() + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
                                                     <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={detailNFT.image} alt="" />
-                                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>DeODD #{detailNFT.id}</Typography> </Stack>
+                                                        <Typography color={"text.primary"} ml={1} variant='body2' >DeODD #{detailNFT.id}</Typography> </Stack>
 
                                                 </ListItemButton>
 
