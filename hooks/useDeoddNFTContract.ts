@@ -40,13 +40,8 @@ export const useDeoddNFTContract = () => {
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
             (tokens ?? []).map(async (token: BigNumber) => {
-                console.log(Number(token));
-
-                debugger
                 const { data } = await DeoddService.getNFTDetailById(Number(token));
                 const detailNFT = data.data;
-                debugger
-                // token = BigNumber.from(token);
                 const nft: TypeNFT = {
                     id: Number(token),
                     type: detailNFT.type,

@@ -27,7 +27,6 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const { walletAddress } = useWalletContext()
     const [allowance, setAllowance] = useState<number | string>(0);
-    console.log(item?.token_id);
 
     const { writeAsync: buyNFT } = useContractWrite({
         address: deoddShopContract.address,
@@ -36,7 +35,6 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
         functionName: 'purchaseItemByToken',
         args: [BigNumber.from(item?.token_id ?? 0)]
     })
-    console.log(ethers.utils.parseUnits(item?.price.toString() ?? '0'));
 
     const { writeAsync: approve } = useContractWrite({
         address: dusdContract.address,
