@@ -46,6 +46,9 @@ function JackpotPopup() {
         throw new Error(jackpotWinnerResult.data.meta.error_message);
       }
     },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 100500,
     refetchInterval: 110000, // refetch every less then 2 minutes
   });
 
