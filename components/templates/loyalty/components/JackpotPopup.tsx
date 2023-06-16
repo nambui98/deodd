@@ -6,21 +6,16 @@ import { getPathAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { getJackpotBoom } from "libs/apis/loyaltyAPI";
 import { Format } from "utils/format";
+import { useQuery } from "@tanstack/react-query";
 
 function JackpotPopup() {
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState({
-    season: 1,
-    username: "",
-    avatarId: 0,
-    winner: "",
-    reward: 0,
-  });
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  // Close the popup after 6 seconds.
   useEffect(() => {
     if (open) {
       const timeOut = setTimeout(() => {
@@ -33,26 +28,28 @@ function JackpotPopup() {
     }
   }, [open]);
 
-  useEffect(() => {
-    // Call every 2 minutes
-    const interval = setInterval(() => {
-      const getData = async () => {
-        const promiseResult = await getJackpotBoom();
-        if (promiseResult.status === 200 && promiseResult.data.data != null) {
-          const promiseData = promiseResult.data.data;
-          setData(promiseData);
-          setOpen(true);
-        }
+  const { data: jackpotWinner } = useQuery({
+    queryKey: ["jackpotWinner"],
+    queryFn: async () => {
+      const jackpotWinnerResult = await getJackpotBoom();
+      if (
+        jackpotWinnerResult.status === 200 &&
+        jackpotWinnerResult.data.data != null
+      ) {
+        const jackpotWinnerData = jackpotWinnerResult.data.data;
+        setOpen(true);
+        return jackpotWinnerData;
+      } else if (
+        jackpotWinnerResult.status === 200 &&
+        jackpotWinnerResult.data.data === null
+      ) {
+        throw new Error(jackpotWinnerResult.data.meta.error_message);
       }
-      getData();
-    }, 110000);
+    },
+    refetchInterval: 110000, // refetch every less then 2 minutes
+  });
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [open]);
-
-  if (open) {
+  if (open && jackpotWinner) {
     return (
       <Box
         p={1.5}
@@ -88,13 +85,13 @@ function JackpotPopup() {
         <Typography fontSize={"0.75rem"} fontWeight={400} lineHeight={"1rem"}>
           Jackpot season{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #{data.season < 10 ? `0${data.season}` : data.season}
+            #{jackpotWinner.id < 10 ? `0${jackpotWinner.id}` : jackpotWinner.id}
           </Box>{" "}
           Ended!
         </Typography>
         <Stack direction={"row"} gap={1} mt={1}>
           <Image
-            src={getPathAvatar(data.avatarId)}
+            src={getPathAvatar(jackpotWinner.avatar_id)}
             width={24}
             height={24}
             alt="Avatar image"
@@ -113,7 +110,8 @@ function JackpotPopup() {
               lineHeight={"1.25rem"}
               fontWeight={400}
             >
-              {data.username ?? ""} ({Convert.convertWalletAddress(data.winner, 5, 4)})
+              {jackpotWinner.user_name ?? ""} (
+              {Convert.convertWalletAddress(jackpotWinner.winner, 5, 4)})
             </Typography>
             <Stack
               direction={"row"}
@@ -129,7 +127,7 @@ function JackpotPopup() {
                   verticalAlign: "bottom",
                 }}
               >
-                {Format.formatMoney(data.reward)}
+                {Format.formatMoney(jackpotWinner.reward)}
               </Typography>
               <BnbIcon width={20} />
             </Stack>
