@@ -128,8 +128,8 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                             <ListItemButton key={nft.id + index} sx={{
                                 pl: 4, pr: 0
                             }} selected={nft.id === nftSelected?.id} onClick={() => handleClickNFT(nft)}>
-                                <Stack direction={"row"} alignItems={"center"}><MyImage width={30} height={30} src={Utils.getImageNFTString(nftType)} alt="" />
-                                    <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{nft.id}</Typography> </Stack>
+                                <Stack direction={"row"} alignItems={"center"}><img width={30} height={30} src={nft.image_link} alt="" />
+                                    <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>DeODD #{nft.token_id}</Typography> </Stack>
                             </ListItemButton>
                         )
                     }
