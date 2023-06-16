@@ -207,7 +207,6 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             } else {
-                debugger
                 getMessagesWithoutAuth();
             }
         }

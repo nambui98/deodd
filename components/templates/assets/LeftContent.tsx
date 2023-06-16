@@ -76,7 +76,6 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
     //     enabled: walletAddress,
     //     queryFn: () => DeoddService.getBalanceHistories(walletAddress),
     //     select: (data: any) => {
-    //         debugger
     //         if (data.status === 200) {
     //             return data.data;
     //         } else {
@@ -120,7 +119,7 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
                 </Typography>
             </ListItemButton>
             <Collapse in={openNftType === nftType} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+                <List component="div" disablePadding sx={{ maxHeight: 200, overflowY: 'auto' }}>
                     {
                         list.map((nft: any, index: number) =>
                             <ListItemButton key={nft.id + index} sx={{

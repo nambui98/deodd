@@ -28,12 +28,10 @@ export const useDeoddNFTContract = () => {
     };
     const getTokenTypeId = async (id: BigNumber) => {
         const res = await contractDeoddNFT?.getTokenTypeId(id)
-        debugger
         return res;
     };
     const getWalletTokens = async () => {
         const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
-        debugger
         const data = getInfoTokens(res);
         return data;
     };

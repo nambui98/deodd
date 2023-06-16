@@ -55,7 +55,6 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     })
     const handleBuyNFT = () => {
         setIsLoading(true);
-        debugger
         buyNFT?.()
             .then(resWrite => {
                 return resWrite.wait();

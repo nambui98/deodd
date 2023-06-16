@@ -103,7 +103,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                                     </Typography>
                                 </ListItemButton>
                                 <Collapse in={openNftType === nft.type} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
+                                    <List component="div" disablePadding sx={{ maxHeight: 200, overflowY: 'auto' }}>
                                         {
                                             nft.list.map((detailNFT, index) => {
 

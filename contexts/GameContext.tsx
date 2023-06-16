@@ -117,7 +117,6 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		onSuccess(data, variables, context) {
 			const flipData = data?.data?.data?.flip;
 			const userData = data?.data?.data?.userProfile;
-			debugger
 			setGameResult({
 				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
 				coinSide: flipData?.flip_choice,
