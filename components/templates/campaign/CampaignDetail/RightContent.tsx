@@ -35,7 +35,6 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-    console.log(router);
 
     // let linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? (window as any)?.location.href : '';
 

@@ -27,7 +27,6 @@ function ContentAssets({ }: Props) {
         },
 
     ]
-    console.log(walletTokens);
 
     return (
         <Container>

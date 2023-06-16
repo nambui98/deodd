@@ -43,22 +43,15 @@ function ShopCollection({ setAmount }: Props) {
         minPrice: null,
         maxPrice: null,
         itemType: { ALL: true }
-
     })
     const { refetch: getShopList, isLoading, isFetched, isFetching } = useQuery({
         queryKey: ["getShopList"],
         enabled: true,
         refetchOnWindowFocus: false,
-        // suspense: true,
-        // retry: false,
         queryFn: () => DeoddService.getShopList(filter),
         onSuccess(data) {
             if (data && data.data) {
-                console.log(items);
-
                 setItems((prev) => [...prev, ...data.data.items]);
-                debugger
-
                 setTotal(data.data.total);
                 setAmount(data.data.total)
             }
@@ -88,10 +81,7 @@ function ShopCollection({ setAmount }: Props) {
         setTimeout(() => {
             getShopList();
         }, 100);
-
     }
-    console.log(items);
-
     return (
         <Grid pt={{ xs: 2, md: 0 }} container spacing={{ xs: 3, md: 4 }}>
             <Grid item xs={12} md={3} >
@@ -237,9 +227,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
         setMaxPrice(filter.maxPrice)
         setItemType(filter.itemType)
     }, [filter])
-
-    console.log(filter.minPrice);
-    console.log(minPrice);
 
     return <Box position={'sticky'} top={{ md: 112, sm: 72 }}>
         <Stack direction={'row'} alignItems={'center'} gap={{ xs: 1, md: 2 }}>

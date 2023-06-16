@@ -38,7 +38,7 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
             icon: <Flip2Icon fill="#96A5C0" />,
             iconActive: <Flip2Icon fill="#fff" />,
             href: '/',
-            onClick: () => { console.log('aaaaa', 123) }
+            onClick: () => { }
         }, {
             label: '',
             value: 'lottery',

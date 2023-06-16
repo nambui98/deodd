@@ -31,8 +31,6 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
     };
     let price = useMemo(() => parseFloat(ethers.utils.formatEther(bnbBalance)) * (priceToken ?? 0), [priceToken, bnbBalance]);
 
-
-    console.log(walletTokens)
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
             <Stack direction={'row'} alignItems={"flex-end"} justifyContent={'space-between'}>
@@ -111,7 +109,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
 
                                                 return <ListItemButton key={detailNFT.id?.toString() + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
                                                     <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={detailNFT.image} alt="" />
-                                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
+                                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>DeODD #{detailNFT.id}</Typography> </Stack>
                                                     <Typography ml="auto" variant='h2' color={"secondary"}>
                                                         {detailNFT.amount}
                                                     </Typography>

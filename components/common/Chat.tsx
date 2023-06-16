@@ -149,7 +149,6 @@ function Chat({ open }: { open: boolean }) {
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-        console.log("🚀 ~ file: Chat.tsx:146 ~ getDataFromBlob ~ parseJson:", parseJson)
         if (parseInt(parseJson[0][0]) !== 1) {
             let result: { [key: number]: any } = {};
             for (let index = 0; index < parseJson.length; index++) {
@@ -191,7 +190,7 @@ function Chat({ open }: { open: boolean }) {
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
-    console.log(connectionStatus);
+    console.log('status chat: ', connectionStatus);
 
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -80;
@@ -339,7 +338,6 @@ function Chat({ open }: { open: boolean }) {
             }, 10);
         },
     });
-    console.log(walletAddress);
 
     return (
         <Box position={'relative'} overflow={'hidden'} >

@@ -77,7 +77,6 @@ function BlockState({ messageSelected, blockStateProp, setIsStartBlock, onBlockU
     const hanleViewBlockList = () => {
         getBlockList();
     }
-    console.log(listUserBlock);
 
     return (
         <>

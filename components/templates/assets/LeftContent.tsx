@@ -106,6 +106,8 @@ function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }
         }
     };
     const showNFT = (nftType: EnumNFT, amount: number, list: any) => {
+
+        console.log(list)
         return <>
             <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nftType)}>
                 {openNftType === nftType ? <ArrowUpIcon fill="#96A5C0" width={24} height={24} /> : <ArrowDownIcon fill="#96A5C0" width={24} height={24} />}
