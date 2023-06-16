@@ -94,7 +94,7 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                                     {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} /> : <ArrowDownIcon width={24} height={24} />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
                                         <img width={30} src={MapIconNFTString[nft.type]} alt="" />
-                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{EnumNFTTitle[nft.type]}</Typography>
+                                        <Typography color={"text.primary"} ml={1} variant='body2' >{EnumNFTTitle[nft.type]}</Typography>
                                     </Stack>
                                     <Typography ml="auto" variant='h2' color={"secondary"}>
                                         {
