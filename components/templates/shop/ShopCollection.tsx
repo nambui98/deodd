@@ -141,7 +141,7 @@ function ShopCollection({ setAmount }: Props) {
                                                 sortType = 'PRICE';
                                                 sortOrder = 'ASC';
                                             } else if (e.target.value === TypeFilterSort.PRICE_DESC) {
-                                                sortType = 'VIEW';
+                                                sortType = 'PRICE';
                                                 sortOrder = 'DESC';
                                             } else if (e.target.value === TypeFilterSort.TIME_DESC) {
                                                 sortType = 'TIME';

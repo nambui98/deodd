@@ -1,4 +1,4 @@
-import { Stack, Typography, Grid, Box } from '@mui/material'
+import { Stack, TextField, Typography, Grid, Box, InputAdornment } from '@mui/material'
 import MyModal from 'components/common/Modal'
 import Price from 'components/common/Price'
 import { BigNumber, ethers } from 'ethers'
@@ -13,6 +13,7 @@ import { useSiteContext } from 'contexts/SiteContext'
 import { Colors } from 'constants/index'
 import Link from 'next/link'
 import { useWalletContext } from 'contexts/WalletContext'
+import FormatNumber from 'components/common/FormatNumber'
 
 type Props = {
     item?: ListingItemType;
@@ -27,7 +28,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const { walletAddress } = useWalletContext()
     const [allowance, setAllowance] = useState<number | string>(0);
-
+    const [allowanceValue, setAllowanceValue] = useState<number | string>(0);
     const { writeAsync: buyNFT } = useContractWrite({
         address: deoddShopContract.address,
         mode: 'recklesslyUnprepared',
@@ -43,6 +44,13 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
         functionName: 'approve',
         args: [deoddShopContract.address, ethers.utils.parseUnits(item?.price.toString() ?? '0')]
     })
+    const { writeAsync: inCreaseAllowance } = useContractWrite({
+        address: dusdContract.address,
+        mode: 'recklesslyUnprepared',
+        abi: dusdContract.abi,
+        functionName: 'increaseAllowance',
+        args: [deoddShopContract.address, ethers.utils.parseUnits(allowanceValue.toString() ?? '0')]
+    })
     const { refetch: getAllowance } = useContractRead({
         address: dusdContract.address,
         abi: dusdContract.abi,
@@ -53,6 +61,8 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
             setAllowance(ethers.utils.formatEther(data));
         },
     })
+    console.log(allowanceValue);
+
     const handleBuyNFT = () => {
         setIsLoading(true);
         buyNFT?.()
@@ -73,7 +83,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     }
     const handleApprove = () => {
         setIsLoading(true);
-        approve?.()
+        (parseFloat(allowance.toString()) <= 0 ? approve : inCreaseAllowance)?.()
             .then(resWrite => {
                 return resWrite.wait();
             })
@@ -116,26 +126,76 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                                 />
                             </Stack>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Typography variant='body2' fontWeight={400}>Current Allowance</Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Stack gap={1} alignItems={'flex-end'}>
-                                <Price
-                                    token={<USDTIcon width={24} height={24} fill="#50ae94" />}
-                                    value={allowance ?? 0}
-                                    isShowOnlyPriceSales={true}
-                                    typographyProps={{ variant: 'body1', fontSize: 16, fontWeight: 600 }}
-                                />
-                            </Stack>
-                        </Grid>
+                        {
+                            parseFloat(allowance.toString()) > 0 &&
+                            <>
+
+                                <Grid item xs={6}>
+                                    <Typography variant='body2' fontWeight={400}>Current Allowance</Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Stack gap={1} alignItems={'flex-end'}>
+                                        <Price
+                                            token={<USDTIcon width={24} height={24} fill="#50ae94" />}
+                                            value={allowance ?? 0}
+                                            isShowOnlyPriceSales={true}
+                                            typographyProps={{ variant: 'body1', fontSize: 16, fontWeight: 600 }}
+                                        />
+                                    </Stack>
+                                </Grid>
+                            </>
+                        }
+
+                        {
+                            allowance && parseFloat(allowance.toString()) > 0 && item?.sale_price && parseFloat(allowance.toString()) < item?.sale_price && <>
+                                <Grid item xs={6}  >
+                                    <Stack height={1} justifyContent={'center'}>
+                                        <Typography variant='body2' fontWeight={400}>Increase</Typography>
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={6} >
+                                    <TextField
+                                        onChange={(e) => setAllowanceValue(e.target.value)}
+                                        InputProps={{
+                                            endAdornment: <InputAdornment position="end"><USDTIcon width={24} height={24} fill="#50ae94" /></InputAdornment>,
+                                            inputComponent: FormatNumber as any,
+                                        }}
+                                        sx={{
+                                            bgcolor: 'background.paper',
+                                            border: 'none',
+                                            py: 0,
+                                            borderRadius: 2,
+
+                                            fontFamily: 'inherit',
+                                            fontSize: 16,
+                                            '.MuiOutlinedInput-notchedOutline ': {
+                                                border: 'none',
+                                            },
+                                            '.MuiInputBase-input': {
+                                                py: 1.5,
+                                                textAlign: 'right',
+                                                fontFamily: 'inherit',
+
+                                                fontSize: 16,
+                                            }
+                                        }} />
+                                </Grid>
+
+                            </>
+                        }
                     </Grid>
                 </Grid>
                 <Grid item xs={12} >
                     {
+
+
                         item?.sale_price && parseFloat(allowance.toString()) < item?.sale_price ?
                             <ButtonLoading onClick={handleApprove} loading={isLoading} sx={{ mt: 2, py: 2, textTransform: 'none' }}>
-                                Increase
+                                {
+                                    parseFloat(allowance.toString()) <= 0 ?
+                                        'Approve' : 'Increase'
+                                }
+
                             </ButtonLoading>
                             :
 
