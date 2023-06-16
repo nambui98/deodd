@@ -26,7 +26,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
     const { setIsError, setTitleError } = useSiteContext();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
-    const { walletAddress } = useWalletContext()
+    const { walletAddress, bnbBalance } = useWalletContext()
     const [allowance, setAllowance] = useState<number | string>(0);
     const [allowanceValue, setAllowanceValue] = useState<number | string>(0);
     const { writeAsync: buyNFT } = useContractWrite({
@@ -78,7 +78,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
             .catch(error => {
                 setIsLoading(false);
                 setIsError(true);
-                setTitleError(error.reason || 'Something went wrong. Please try again!');
+                setTitleError(error.reason || 'Checkout Failed. Please try again');
             })
     }
     const handleApprove = () => {
@@ -94,9 +94,10 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
             .catch(error => {
                 setIsLoading(false);
                 setIsError(true);
-                setTitleError(error.reason || 'Something went wrong. Please try again!');
+                setTitleError(error.reason || (parseFloat(allowance.toString()) <= 0 ? 'Approve' : 'Increase') + ' Failed. Please try again');
             })
     }
+
     return (<>
         <MyModal open={isShowBuy} sx={{ width: "min(100vw - 16px, 544px)", boxShadow: '0px 2px 16px rgba(254, 241, 86, 0.5)' }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={() => { setIsShowBuy(false) }}>
             <Typography textAlign={'center'} variant='h5' fontWeight={700}>Checkout</Typography>
@@ -131,7 +132,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                             <>
 
                                 <Grid item xs={6}>
-                                    <Typography variant='body2' fontWeight={400}>Current Allowance</Typography>
+                                    <Typography variant='body2' fontWeight={400}>Current Allowances</Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Stack gap={1} alignItems={'flex-end'}>
@@ -181,10 +182,18 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                                         }} />
                                 </Grid>
 
+
                             </>
                         }
                     </Grid>
                 </Grid>
+                {
+
+                    allowance && parseFloat(allowance.toString()) > 0 && item?.sale_price && parseFloat(allowance.toString()) < item?.sale_price && <Grid item xs={12}  >
+                        <Typography variant='body2' fontWeight={500} color="dark.60">You need to approve more token to complete this transaction</Typography>
+                    </Grid>
+                }
+
                 <Grid item xs={12} >
                     {
 
