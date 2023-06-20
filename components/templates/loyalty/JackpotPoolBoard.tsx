@@ -50,15 +50,9 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
 
   for (let i = leaderboard.currentSeason; i >= 1; i--) {
     if (i === leaderboard.currentSeason) {
-      selectOptions.push({
-        value: 0,
-        text: "Current Season",
-      });
+      selectOptions.push("Current Season");
     } else {
-      selectOptions.push({
-        value: i,
-        text: `Season #${i < 10 ? "0" : ""}${i}`,
-      });
+      selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
     }
   }
 
