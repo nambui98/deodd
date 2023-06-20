@@ -86,8 +86,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
+	console.log(process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === "MAINNET");
 
-	const { chain } = useNetwork();
+	const { chain, chains } = useNetwork();
+	console.log(chains)
 
 	const { disconnect } = useDisconnect()
 	const { switchNetworkAsync } = useSwitchNetwork()
@@ -109,12 +111,13 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		Contract | undefined
 	>();
 	useEffect(() => {
-		if (bscTestnet.id !== chain?.id) {
+		if (chains[0].id !== chain?.id) {
+			debugger
 			// switchNetworkCus()
-			switchNetworkAsync?.(bscTestnet.id);
+			switchNetworkAsync?.(chains[0].id);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chain])
+	}, [chain, chains])
 	useEffect(() => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(

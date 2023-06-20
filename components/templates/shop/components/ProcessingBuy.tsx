@@ -110,7 +110,6 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                     if (error.reason === "execution reverted: tokenId already exists") {
                         setTitleError('This item has been purchased by someone else. Please select another item.');
                     } else {
-
                         setTitleError(error.reason || 'Checkout Failed. Please try again');
                     }
                 })

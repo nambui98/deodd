@@ -90,21 +90,17 @@ function ShopCollection({ setAmount }: Props) {
 
             <Grid item xs={12} md={9} >
 
-                <Box position={'sticky'} bgcolor={'background.default'} zIndex={1} top={112}>
+                <Box position={{ xs: 'relative', md: 'sticky' }} bgcolor={'background.default'} zIndex={1} top={{ xs: 0, md: 112 }}>
                     <Grid container pb={{ xs: 3, md: 4 }}>
                         <Grid item xs={12} md={6} display={'flex'} >
                             <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
                         </Grid>
                         <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
-
                             <Box position={'sticky'} top={212}>
-
                                 <FormControl sx={{
                                     width: { xs: 1, md: 260 },
                                     border: 'none',
                                     '& .MuiOutlinedInput-root': {
-                                        // py: 1,
-
                                         fontSize: 14,
                                         bgcolor: 'secondary.800',
                                         height: 36
@@ -120,12 +116,6 @@ function ShopCollection({ setAmount }: Props) {
                                         displayEmpty
                                         variant='outlined'
                                         value={sortValue as any}
-                                        // renderValue={(selected: number | string | undefined) => {
-                                        //     if (!selected || selected === '') {
-                                        //         return <span>Sort by</span>;
-                                        //     }
-                                        //     return selected;
-                                        // }}
                                         IconComponent={(props) => <ArrowDownIcon width={20} height={20} fill={Colors.secondaryDark} {...props} />}
                                         inputProps={{ 'aria-label': 'Without label' }}
                                         onChange={(e: SelectChangeEvent<TypeFilterSort | ''>) => {
@@ -149,12 +139,9 @@ function ShopCollection({ setAmount }: Props) {
                                             };
                                             setFilter((prev) => ({ ...prev, sortType, sortOrder, offset: 0 }))
                                             setSortValue(e.target.value)
-
-
                                             onFilter();
                                         }}
                                     >
-
                                         <MenuItem sx={{ fontSize: 14 }} disabled value={''}>Sort by</MenuItem>
                                         <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_ASC}>Recently listed</MenuItem>
                                         <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.VIEW_DESC}>Most viewed</MenuItem>
@@ -163,12 +150,9 @@ function ShopCollection({ setAmount }: Props) {
                                         <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_DESC}>Oldest</MenuItem>
                                     </Select>
                                 </FormControl>
-
                             </Box>
                         </Grid>
-
                     </Grid>
-
                 </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
                     {
@@ -198,10 +182,7 @@ function ShopCollection({ setAmount }: Props) {
                     }
                     <Grid item xs={12} display={isFetching ? 'flex' : 'none'} textAlign={'center'} justifyContent={'center'} alignItems={'center'}><CoinAnimation width={100} height={100} /></Grid>
                     <Box ref={bottomRef} />
-
                 </Grid>
-
-
             </Grid>
         </Grid >
     )
@@ -228,7 +209,7 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
         setItemType(filter.itemType)
     }, [filter])
 
-    return <Box position={'sticky'} top={{ md: 112, sm: 72 }}>
+    return <Box position={{ xs: 'relative', md: 'sticky' }} top={{ md: 112, sm: 72 }}>
         <Stack direction={'row'} alignItems={'center'} gap={{ xs: 1, md: 2 }}>
             <Box width={{ xs: 20, md: 24 }} height={{ xs: 20, md: 24 }}>
                 <FilterIcon width={'100%'} height={'100%'} />
@@ -307,7 +288,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                             return { ...prev, minPrice: !Number.isNaN(minPrice) ? minPrice : null, maxPrice: !Number.isNaN(maxPrice) ? maxPrice : null, itemType: Object.fromEntries(Object.entries(itemType).filter(([key, value]) => value === true)) } as FilterType
                         })
                         onFilter();
-
                     }
                 })
             }}
@@ -318,7 +298,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 <Typography color="error.300" variant='caption' >{errorMessage}</Typography>
             </Box>
         }
-
     </Box>
 
 }

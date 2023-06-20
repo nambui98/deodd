@@ -10,10 +10,10 @@ interface Map {
 	[key: string]: any;
 }
 const addresses: Map = {
-	PRODUCTION: CONTRACT_PROD,
-	DEV: CONTRACT_DEV,
+	MAINNET: CONTRACT_PROD,
+	TESTNET: CONTRACT_DEV,
 }
-const address = addresses[process.env.NEXT_PUBLIC_ENVIRONMENT ?? 'DEV'];
+const address = addresses[process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN ?? 'TESTNET'];
 export const deoddContract = { address: address.deodd, abi: deoddAbi.abi }
 export const deoddShopContract = { address: address.deoddShop, abi: deoddShopAbi.abi }
 export const deoddNFTContract = { address: address.deoddNFT, abi: deoddNFTAbi.abi }
