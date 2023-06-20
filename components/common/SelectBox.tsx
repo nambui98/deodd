@@ -9,10 +9,12 @@ type Props = {
 
 function SelectBox({ selectOptions, setValue }: Props) {
     const [valueSelect, setValueSelect] = useState<number>(0);
+    const [open, setOpen] = useState(false); // Have to use controlled state so that the TextField close even when click on itself, not only on arrow button.
     return (
         <Autocomplete
             options={selectOptions}
-            renderInput={(params) => <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} />}
+            open={open}
+            renderInput={(params) => <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} onClick={() => { setOpen(!open) }} />}
             value={selectOptions[valueSelect]}
             disableClearable
             size='small'
@@ -23,6 +25,7 @@ function SelectBox({ selectOptions, setValue }: Props) {
                     lineHeight: "1.25rem",
                 },
             }}
+            onClose={() => { setOpen(false) }} // Close the select options when click outside
             onChange={(e) => {
                 if (e.target instanceof HTMLLIElement) {
                     if (e.target.dataset.optionIndex) {
@@ -32,9 +35,6 @@ function SelectBox({ selectOptions, setValue }: Props) {
                 }
             }}
             sx={styleInput}
-            classes={{
-
-            }}
         />
     )
 }
