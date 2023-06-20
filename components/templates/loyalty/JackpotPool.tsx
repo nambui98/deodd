@@ -6,13 +6,28 @@ import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
 import { Format } from "utils/format";
+// import { useQuery } from "@tanstack/react-query";
+// import { getLoyaltyJackpotBoardCurrent } from "libs/apis/loyaltyAPI";
 
 type Props = {};
 
-function JackpotPool({ }: Props) {
-  const { walletIsConnected } = useWalletContext();
+function JackpotPool({}: Props) {
+  const { walletIsConnected, walletAddress } = useWalletContext();
   const { leaderboard, setSeason, history, seasonInfo, loading } =
     useLoyaltyJackpot();
+  // const leaderboardQuery = useQuery({
+  //   queryKey: ["leaderboard"],
+  //   queryFn: async () => {
+  //     const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
+  //     if (promiseResult.status === 200) {
+  //       const data = promiseResult.data.data;
+  //       return data;
+  //     } else {
+  //       throw new Error("No data");
+  //     }
+  //   }
+  // });
+  // console.log(leaderboardQuery.data);
 
   return (
     <Box width={1}>
