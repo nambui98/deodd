@@ -64,10 +64,8 @@ function ShopItemDetail() {
   });
   useEffect(() => {
     if (router.query.id) {
-
       const test = document.getElementById('main-top')
       test?.scrollIntoView({ behavior: "smooth" })
-
       getDetailShopItem();
       getSuggestion();
     }
@@ -82,9 +80,7 @@ function ShopItemDetail() {
   const isMediumScreen = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   return (
     <Container sx={{ mt: 5 }}>
-
       <Meta title={'DeODD #' + item?.token_id} description='Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD.' />
-
       <Grid container spacing={{ xs: 2, md: 4 }}>
         <Grid item xs={12} md={4} order={1}>
           <Box p={3} width={1}>
@@ -130,30 +126,24 @@ function ShopItemDetail() {
             {
               (!isFetching && !isLoading) && (item?.status === "LISTING" &&
                 <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
-
                   <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
                     value={item?.price ?? 0}
                     valueSale={item?.sale_price ?? 0}
                     typographySaleProps={{ variant: 'body1', fontWeight: 500, color: 'dark.60', ml: 1 }}
                     token={<USDTIcon fill="#50ae94" width={24} height={24} />}
                     tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
-
                   />
-
                 </Stack>
               )
-
-
-
             }
             {
               (!isFetching && !isLoading) && (item?.status === "LISTING" ?
-
                 <ButtonLoading
                   loading={isFetching || isLoading}
                   onClick={() => {
                     if (item?.status === "LISTING") {
                       setIsShowBuy(true)
+                      // setItemSelected(item);
                     }
                   }}
                   sx={{
@@ -181,8 +171,6 @@ function ShopItemDetail() {
                 : <Typography color="error.300" fontWeight={600}>Sold out</Typography>
               )
             }
-
-
           </Stack>
         </Grid>
         <Grid item xs={12} order={{ xs: 0, md: 3 }} md={4}>
@@ -194,7 +182,6 @@ function ShopItemDetail() {
             </Box>
           </Stack>
         </Grid>
-
       </Grid>
       <Divider sx={{ borderColor: 'secondary.300', my: { xs: 3, md: 5 } }} />
       <Stack direction={'row'} mb={3} alignItems={'center'} justifyContent={'space-between'}>

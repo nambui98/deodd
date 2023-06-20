@@ -8,7 +8,7 @@ import { Colors } from 'constants/index'
 import { DeoddService } from 'libs/apis'
 import { useEffect, useState, useTransition } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon } from 'utils/Icons'
+import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon, USDTIcon } from 'utils/Icons'
 import { BnbImage } from 'utils/Images'
 import ListingItem, { ListingItemType } from './components/ListingItem'
 type Props = {
@@ -38,7 +38,7 @@ function ShopCollection({ setAmount }: Props) {
     const [filter, setFilter] = useState<FilterType>({
         limit: 9,
         offset: 0,
-        sortType: "TIME",
+        sortType: "VIEW",
         sortOrder: "DESC",
         minPrice: null,
         maxPrice: null,
@@ -293,7 +293,7 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 -
             </Typography>
             <Input type='number' value={maxPrice ?? ''} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
-            <MyImage src={BnbImage} minWidth={20} width={20} height={20} alt="" />
+            <USDTIcon fill="#50ae94" width={20} height={20} />
         </Stack>
 
         <ButtonLoading sx={{ py: 1, mt: { xs: 2, md: 3 }, fontSize: 12, fontWeight: 400, textTransform: 'none' }}
