@@ -100,8 +100,13 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                 })
                 .then((res) => {
                     setIsLoading(false);
-                    setIsShowBuy(false);
-                    setIsSuccess(true);
+                    if (res.status === 1) {
+                        setIsShowBuy(false);
+                        setIsSuccess(true);
+                    } else {
+                        setIsError(true);
+                        setTitleError('This item has been purchased by someone else. Please select another item.');
+                    }
                     refresh();
                 })
                 .catch(error => {
