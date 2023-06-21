@@ -1,4 +1,4 @@
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, TextField, Box } from '@mui/material'
 import React, { useState } from 'react'
 import { Colors } from 'constants/index';
 
@@ -14,7 +14,10 @@ function SelectBox({ selectOptions, setValue }: Props) {
         <Autocomplete
             options={selectOptions}
             open={open}
-            renderInput={(params) => <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} onClick={() => { setOpen(!open) }} />}
+            renderInput={(params) =>
+                <Box ref={params.InputProps.ref} onClick={() => { setOpen(!open) }}>
+                    <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} />
+                </Box>}
             value={selectOptions[valueSelect]}
             disableClearable
             size='small'
