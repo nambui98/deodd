@@ -11,6 +11,7 @@ interface Map {
 }
 const addresses: Map = {
 	MAINNET: CONTRACT_PROD,
+	PRE_MAINNET: CONTRACT_PROD,
 	TESTNET: CONTRACT_DEV,
 }
 const address = addresses[process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN ?? 'TESTNET'];
