@@ -22,7 +22,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
   const { walletAddress, userInfo, setUserInfo, refresh, setRefresh } = useWalletContext();
   const { register, watch, setValue, setError, handleSubmit, reset, formState: { isDirty, errors } } = useForm({
     defaultValues: {
-      username: userInfo.username,
+      username: userInfo.username ?? "",
       avatar: userInfo.avatar,
     }
   });
@@ -60,7 +60,7 @@ export default function ProfileUsername({ open, onClose }: { open: boolean; onCl
 
   useEffect(() => {
     reset({
-      username: userInfo.username,
+      username: userInfo.username ?? "",
       avatar: userInfo.avatar,
     })
   }, [userInfo.username, userInfo.avatar, open, reset]);

@@ -13,7 +13,7 @@ interface walletContextType {
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { username: string, avatar: number },
+	userInfo: { username: string | null, avatar: number },
 	setUserInfo: Function,
 	contractDeodd: Contract | undefined,
 	contractDeoddNFT: Contract | undefined,
@@ -79,7 +79,7 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
+	const [userInfo, setUserInfo] = useState<{ username: string | null, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
@@ -279,10 +279,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName ?? "", avatar: user?.avatarId ?? 0 });
+			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
 			LocalStorage.setUserInfo({
 				wallet: walletAddress,
-				username: user.userName ?? "",
+				username: user.userName,
 				avatarId: user.avatarId ?? 0,
 			});
 		}
