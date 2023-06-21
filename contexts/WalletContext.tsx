@@ -111,8 +111,7 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		Contract | undefined
 	>();
 	useEffect(() => {
-		if (chains[0].id !== chain?.id) {
-			debugger
+		if (chains && chains.length > 0 && chains[0].id !== chain?.id) {
 			// switchNetworkCus()
 			switchNetworkAsync?.(chains[0].id);
 		}
