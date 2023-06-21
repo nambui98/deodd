@@ -38,9 +38,9 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
 export const UPSTREAM_MESSAGE = 7;
 export const DOWNSTREAM_MESSAGE = 8;
 
-export const UrlBlockExplorer = process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === 'TESTNET'
-  ? 'https://testnet.bscscan.com'
-  : 'https://bscscan.com'
+export const UrlBlockExplorer = process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === 'MAINNET'
+  ? 'https://bscscan.com'
+  : 'https://testnet.bscscan.com'
 export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
   [EnumNFTNumber.BRONZE]: 'Bronze NFT Card',
   [EnumNFTNumber.GOLD]: 'Gold NFT Card',
