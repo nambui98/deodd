@@ -27,6 +27,7 @@ function ShopBanner({ amount }: { amount: number }) {
             position: "absolute",
             top: 16,
             right: 16,
+            zIndex: 2
           }}
         >
           <ShareButton title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
