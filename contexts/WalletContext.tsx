@@ -5,7 +5,6 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 import { deoddContract, deoddNFTContract, deoddShopContract } from "../libs/contract";
-import { previousDay } from "date-fns";
 
 interface walletContextType {
 	walletAddress: any,
