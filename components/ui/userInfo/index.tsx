@@ -109,7 +109,7 @@ export function UserInfo() {
 
   useEffect(() => {
     const isProfileModalOpened = LocalStorage.getIsProfileModalOpened();
-    if ((userInfo.username === undefined || userInfo.username === null) && walletAddress && isProfileModalOpened === false) {
+    if (userInfo.username == null && walletAddress && isProfileModalOpened === false) {
       setIsProfileOpened(true);
       LocalStorage.setIsProfileModalOpened(true);
     }

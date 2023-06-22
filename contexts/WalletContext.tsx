@@ -5,6 +5,7 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
 import { bscTestnet } from "wagmi/chains";
 import { deoddContract, deoddNFTContract, deoddShopContract } from "../libs/contract";
+import { previousDay } from "date-fns";
 
 interface walletContextType {
 	walletAddress: any,
@@ -160,6 +161,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setRefreshToken(refreshToken);
 			LocalStorage.setWalletAddress(wallet);
 			LocalStorage.setIsProfileModalOpened(false);
+			// Set username back to empty first so that when user change wallet, 
+			// the profile modal won't open if the previous wallet doesn't have a username
+			setUserInfo(prev => ({ ...prev, username: "" }));
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
 			setIsConnectingWallet(false)
