@@ -3,6 +3,7 @@ import {
   BgShopCollection,
   Bronze2Image,
   Diamond2Image,
+  Diamond3Image,
   Gold2Image
 } from "utils/Images";
 import ShareButton from "./components/ShareButton";
@@ -130,7 +131,7 @@ function ShopBanner({ amount }: { amount: number }) {
           <img src={Gold2Image} width={'100%'} />
         </Grid>
         <Grid item xs={2.4}>
-          <img src={Diamond2Image} width={'100%'} />
+          <img src={Diamond3Image} width={'100%'} />
         </Grid>
         <Grid item xs={4.8}>
           <img src={Diamond2Image} width={'100%'} />
