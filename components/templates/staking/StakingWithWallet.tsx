@@ -35,7 +35,7 @@ const dummyData = [
 ]
 
 function StakingWithWallet() {
-  const [stakeOption, setStakeOption] = useState(1);
+  const [stakeOption, setStakeOption] = useState(2);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
 

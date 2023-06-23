@@ -10,7 +10,7 @@ function StakingPage() {
   return (
     <Container sx={{ mt: 10, mb: { md: 10, xs: 8.125 }, mx: "auto", width: walletIsConnected ? 928 : 736 }}>
       {walletIsConnected ? <StakingWithWallet /> : <StakingNoWallet />}
-      <StakingSuccess />
+      {/* <StakingSuccess /> */}
     </Container>
   );
 }
