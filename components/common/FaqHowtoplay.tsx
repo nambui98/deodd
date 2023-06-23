@@ -198,7 +198,7 @@ const HowToPlay = () => (
             Step 3: Set your nickname (or display name) and choose an avatar from available options. <br />
             Step 4: Pick either Heads or Tails <br />
             Step 5: Select your bet amount with your BNB. <br />
-            Step 6: Click &ldquo;Double or Nothing&rdquo;. <br />
+            Step 6: Click &ldquo;FLIP NOW&rdquo;. <br />
             Step 7: Wait a few seconds and get the result. <br />
         </ParagraphRegular>
         <Typography variant='body2' color="white" fontWeight={400} fontSize={"0.75rem"} lineHeight={'1rem'}>
