@@ -22,10 +22,10 @@ export const getPathAvatar = (avatarId: number | undefined) => {
 
 export const getPathAvatarNFT = (avatarId: string | undefined) => {
   const basePath = '/assets/images';
-  switch (avatarId) {
-    case "DIAMOND": return basePath + '/diamond.png';
-    case "GOLD": return basePath + '/gold.png';
-    case "BRONZE": return basePath + '/bronze.png';
+  switch (avatarId?.toLowerCase()) {
+    case "diamond": return basePath + '/diamond.png';
+    case "gold": return basePath + '/gold.png';
+    case "bronze": return basePath + '/bronze.png';
     default: return basePath + '/bronze.png'
   }
 }
