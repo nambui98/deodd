@@ -3,6 +3,7 @@ import { Typography, Stack, Box, styled } from "@mui/material";
 import { ButtonFourth, ButtonMain } from "components/ui/button";
 import { CalculatorIcon, BnbIcon } from "utils/Icons";
 import StakingRowItem from "./components/StakingRowItem";
+import StakingCalculator from "./components/StakingCalculator";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -34,6 +35,7 @@ const dummyData = [
 
 function StakingWithWallet() {
   const [stakeOption, setStakeOption] = useState(1);
+  const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
 
   return (
     <Stack sx={{
@@ -71,7 +73,9 @@ function StakingWithWallet() {
             <MainTypography>Estimated profit</MainTypography>
             <Box component={"span"} sx={{
               cursor: "pointer",
-            }}>
+            }}
+              onClick={() => setIsCalculatorOpened(true)}
+            >
               <CalculatorIcon width={16} />
             </Box>
           </Stack>
@@ -98,6 +102,8 @@ function StakingWithWallet() {
         {dummyData.map((element, index) => <StakingRowItem key={index} NFTCards={element.NFTCards} estimatedProfit={element.estimatedProfit} sharePercent={element.sharePercent} />)}
       </Box>
 
+      {/* Calculator Modal */}
+      <StakingCalculator open={isCalculatorOpened} setOpen={setIsCalculatorOpened} />
 
       {/* Footer and Approve Button */}
       <Stack sx={{
