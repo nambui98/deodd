@@ -50,6 +50,7 @@ function ShopCollection({ setAmount }: Props) {
         enabled: true,
         refetchOnWindowFocus: false,
         queryFn: () => DeoddService.getShopList(filter),
+        // suspense: true,
         onSuccess(data) {
             if (data && data.data) {
                 setItems((prev) => [...prev, ...data.data.items]);
@@ -90,8 +91,7 @@ function ShopCollection({ setAmount }: Props) {
             </Grid>
 
             <Grid item xs={12} md={9} >
-
-                <Box position={{ xs: 'relative', md: 'sticky' }} bgcolor={'background.default'} zIndex={1} top={{ xs: 0, md: 112 }}>
+                <Box position={{ xs: 'relative', md: 'sticky' }} bgcolor={'background.default'} pt={'2px'} zIndex={1} top={{ xs: 0, md: 110 }}>
                     <Grid container pb={{ xs: 3, md: 4 }}>
                         <Grid item xs={12} md={6} display={'flex'} >
                             <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>

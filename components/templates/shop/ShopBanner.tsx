@@ -72,7 +72,7 @@ function ShopBanner({ amount }: { amount: number }) {
                     lineHeight={{ xs: '16px', md: "1.25rem" }}
                     color={"text.disabled"}
                   >
-                    Item amount
+                    Initial release
                   </Typography>
                   <Typography
                     fontSize={{ xs: 16, md: "1.5rem" }}

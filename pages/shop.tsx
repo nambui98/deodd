@@ -1,14 +1,13 @@
-import { Typography, Container } from "@mui/material";
-import React, { Suspense, lazy, useState } from "react";
-import ShopConnectWallet from "@/templates/shop/ShopConnectWallet";
 import ShopBanner from "@/templates/shop/ShopBanner";
+import ShopConnectWallet from "@/templates/shop/ShopConnectWallet";
+import { Container } from "@mui/material";
 import { useWalletContext } from "contexts/WalletContext";
+import { Suspense, useState } from "react";
 // import ShopCollection from "@/templates/shop/ShopCollection";
-import { useQuery } from "@tanstack/react-query";
-import { DeoddService } from "libs/apis";
 import CoinAnimation from "components/common/CoinAnimation";
 import { Meta } from "components/common/Meta";
-const ShopCollection = lazy(() => import("@/templates/shop/ShopCollection"));
+import dynamic from "next/dynamic";
+const ShopCollection = dynamic(() => import("@/templates/shop/ShopCollection"));
 type Props = {
 
 };
