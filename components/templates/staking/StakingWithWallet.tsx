@@ -4,6 +4,7 @@ import { ButtonFourth, ButtonMain } from "components/ui/button";
 import { CalculatorIcon, BnbIcon } from "utils/Icons";
 import StakingRowItem from "./components/StakingRowItem";
 import StakingCalculator from "./components/StakingCalculator";
+import ApproveModal from "./components/ApproveModal";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -36,6 +37,7 @@ const dummyData = [
 function StakingWithWallet() {
   const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
+  const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
 
   return (
     <>
@@ -137,7 +139,11 @@ function StakingWithWallet() {
               lineHeight: "1.375rem",
               backgroundColor: "primary.300"
             }}
+            onClick={() => {
+              setIsApproveModalOpened(true);
+            }}
           />
+          <ApproveModal open={isApproveModalOpened} setOpen={setIsApproveModalOpened} />
         </Stack>
       </Stack>
     </>
