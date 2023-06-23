@@ -1,31 +1,27 @@
 import { Button, Typography } from "@mui/material";
+import { useSiteContext } from "contexts/SiteContext";
 import { useRouter } from "next/router";
 import { ShareIcon } from "utils/Icons";
 
 const ShareButton = ({ title, description }: { title: string, description: string }) => {
     const router = useRouter();
+    const { setTitleSuccess, setIsSuccess } = useSiteContext();
     return (
         <Button
             onClick={async () => {
                 const shareData = {
                     title: title,
                     text: description,
-                    url: router.pathname
-                    // url: window.location.href,
+                    url: window.location.href,
                 };
 
-                await navigator.share(shareData)
-                // try {
-                //     await navigator.share(shareData);
-                // } catch (err) {
-
-                //     debugger
-                // }
-                // if (navigator.share && navigator.canShare(shareData)) {
-                // await navigator.share(shareData)
-                // } else {
-                //     // do something else like copying the data to the clipboard
-                // }
+                if (navigator.share && navigator.canShare(shareData)) {
+                    await navigator.share(shareData)
+                } else {
+                    navigator?.clipboard.writeText(window.location.href);
+                    setTitleSuccess("Copy to clipboard");
+                    setIsSuccess(true);
+                }
             }}
             disableElevation
             variant="contained"

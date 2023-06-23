@@ -7,9 +7,9 @@ import {
   Diamond3Image,
   Gold2Image
 } from "utils/Images";
-// import ShareButton from "./components/ShareButton";
+import ShareButton from "./components/ShareButton";
 
-const ShareButton = dynamic(() => import("./components/ShareButton"), { ssr: false });
+// const ShareButton = dynamic(() => import("./components/ShareButton"), { ssr: false });
 function ShopBanner({ amount }: { amount: number }) {
   return (
     <Stack mx={{ xs: -3, md: 0 }}>
