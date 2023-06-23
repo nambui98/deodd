@@ -7,8 +7,10 @@ import { useEffect, useRef } from "react";
 const ShareButton = ({ title, description }: { title: string, description: string }) => {
     const { setTitleSuccess, setIsSuccess } = useSiteContext();
     const buttonRef = useRef(null);
+    const router = useRouter();
+    console.log(router);
 
-    let text = window?.location?.href;
+    let text = router.asPath;
     useEffect(() => {
         if (buttonRef) {
             const clipboard = new ClipboardJS(buttonRef!.current!, {
