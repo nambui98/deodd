@@ -18,7 +18,7 @@ function StakingCalculator({ open, setOpen }: StakingCalculatorType) {
       open={open}
       setOpen={setOpen}
       haveIconClosed
-      iconProps={{ width: 16, color: Colors.secondary }}
+      iconProps={{ width: 24, color: Colors.secondary }}
       sx={{
         backgroundColor: "background.paper",
         maxWidth: 544,
