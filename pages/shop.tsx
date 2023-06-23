@@ -27,7 +27,7 @@ export default function Shop({ }: Props) {
   return (
     <Container sx={{ mt: 5 }}>
       <Meta title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
-      {!walletIsConnected ?
+      {walletIsConnected ?
         <>
           <ShopBanner amount={amount} />
           <Suspense fallback={<CoinAnimation mx="auto" width={100} height={100} />}>
