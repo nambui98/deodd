@@ -1,4 +1,5 @@
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import dynamic from "next/dynamic";
 import {
   BgShopCollection,
   Bronze2Image,
@@ -6,9 +7,9 @@ import {
   Diamond3Image,
   Gold2Image
 } from "utils/Images";
-import ShareButton from "./components/ShareButton";
+// import ShareButton from "./components/ShareButton";
 
-
+const ShareButton = dynamic(() => import("./components/ShareButton"), { ssr: false });
 function ShopBanner({ amount }: { amount: number }) {
   return (
     <Stack mx={{ xs: -3, md: 0 }}>
@@ -78,7 +79,7 @@ function ShopBanner({ amount }: { amount: number }) {
                     lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
-                    {amount}
+                    1983
                   </Typography>
                 </Stack>
                 <Stack gap={0.5}>
@@ -96,7 +97,7 @@ function ShopBanner({ amount }: { amount: number }) {
                     lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
-                    Apr 2023
+                    June 2023
                   </Typography>
                 </Stack>
                 <Stack gap={0.5}>

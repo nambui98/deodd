@@ -12,6 +12,7 @@ import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon, USDTI
 import { BnbImage } from 'utils/Images'
 import ListingItem, { ListingItemType } from './components/ListingItem'
 type Props = {
+
     setAmount: (value: number) => void
 }
 enum TypeFilterSort {
@@ -96,7 +97,7 @@ function ShopCollection({ setAmount }: Props) {
                             <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
                         </Grid>
                         <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
-                            <Box position={'sticky'} top={212}>
+                            <Box position={'sticky'} top={0}>
                                 <FormControl sx={{
                                     width: { xs: 1, md: 260 },
                                     border: 'none',

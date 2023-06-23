@@ -1,6 +1,6 @@
 import ListingItem, { ListingItemType } from '@/templates/shop/components/ListingItem';
 import ProcessingBuy from '@/templates/shop/components/ProcessingBuy';
-import ShareButton from '@/templates/shop/components/ShareButton';
+// import ShareButton from '@/templates/shop/components/ShareButton';
 import { Utils } from '@/utils/index';
 import { Box, Container, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -14,11 +14,11 @@ import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useRef, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
-
+const ShareButton = lazy(() => import("@/templates/shop/components/ShareButton"));
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();
