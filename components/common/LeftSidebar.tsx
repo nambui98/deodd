@@ -2,7 +2,7 @@ import { Box, Drawer as DrawerMobile, Divider, List, ListItem, ListItemButton, L
 
 import { Drawer } from 'components/ui/drawer';
 import { Colors, DRAWER_WIDTH } from 'constants/index';
-import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyIcon, Ref2EarnIcon, ShopIcon } from 'utils/Icons';
+import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyIcon, Ref2EarnIcon, ShopIcon, StrongBox2Icon } from 'utils/Icons';
 import { LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
 import Link from 'next/link';
@@ -104,11 +104,18 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
     },
     {
         id: 10,
+        icon: <StrongBox2Icon />,
+        title: 'Staking',
+        path: '/staking',
+        isLink: true
+    },
+    {
+        id: 11,
         isOnlyComponent: true,
         child: <Divider sx={{ mx: 3, mt: 3 }} />
     },
     {
-        id: 11,
+        id: 12,
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
         path: '/lottery',
@@ -122,7 +129,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         isLink: true
     },
     {
-        id: 12,
+        id: 13,
         isOnlyComponent: true,
         child: <Divider sx={{ mx: 3, mt: 1 }} />
     }
