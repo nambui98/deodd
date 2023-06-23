@@ -61,6 +61,8 @@ import TickCircleOutlineIcon from "public/assets/icons/tick-circle-outline.svg";
 import BagTickIcon from "public/assets/icons/bag-tick.svg";
 import MoreIcon from "public/assets/icons/more-square2.svg";
 import StrongBox2Icon from "public/assets/icons/strongbox-2.svg";
+import CalculatorIcon from "public/assets/icons/calculator.svg";
+import ArrowDown3Icon from "public/assets/icons/arrow-down-3.svg";
 function Bnb2Icon(props: SvgIconProps) {
   return (
     <SvgIcon {...props}>
@@ -143,5 +145,7 @@ export {
   ShareIcon,
   Growth1Icon,
   GoldCup1Icon,
-  StrongBox2Icon
+  StrongBox2Icon,
+  CalculatorIcon,
+  ArrowDown3Icon,
 };
