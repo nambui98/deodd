@@ -52,6 +52,7 @@ import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
 import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
+import InfoCircle2Icon from "public/assets/icons/info-circle-2.svg";
 import EmojiIcon from "public/assets/icons/emoji-happy.svg";
 import Marketplace1Icon from "public/assets/icons/marketplace1.svg";
 import ShareIcon from "public/assets/icons/share.svg";
@@ -141,6 +142,7 @@ export {
   ArchiveIcon,
   CloseSquareIcon2,
   InfoCircleIcon,
+  InfoCircle2Icon,
   Marketplace1Icon,
   ShareIcon,
   Growth1Icon,
