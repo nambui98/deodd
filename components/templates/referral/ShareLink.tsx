@@ -22,11 +22,10 @@ function ShareLink({ link }: Props) {
         setIsSuccess(true);
     }
 
-    let text = window?.location?.href;
     useEffect(() => {
         if (buttonRef) {
             const clipboard = new ClipboardJS(buttonRef!.current!, {
-                text: () => text
+                text: () => link
             })
             clipboard.on('success', () => {
                 setTitleSuccess("Copy to clipboard");
@@ -57,7 +56,7 @@ function ShareLink({ link }: Props) {
                         fill: Colors.bg80
                     }
                 }
-            }} style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={text}  >
+            }} style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={link}  >
                 <Typography variant='h4' fontSize={16} fontWeight={600} mr={3} textTransform={'none'} >
                     {
                         link

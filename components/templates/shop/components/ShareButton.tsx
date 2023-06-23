@@ -3,18 +3,19 @@ import { useSiteContext } from "contexts/SiteContext";
 import { useRouter } from "next/router";
 import { ShareIcon } from "utils/Icons";
 import ClipboardJS from 'clipboard';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 const ShareButton = ({ title, description }: { title: string, description: string }) => {
     const { setTitleSuccess, setIsSuccess } = useSiteContext();
+    const [link, setLink] = useState<string | undefined>();
     const buttonRef = useRef(null);
     const router = useRouter();
     console.log(router);
 
-    let text = router.asPath;
     useEffect(() => {
+        setLink(window.origin + router.asPath)
         if (buttonRef) {
             const clipboard = new ClipboardJS(buttonRef!.current!, {
-                text: () => text
+                text: () => window.origin + router.asPath
             })
             clipboard.on('success', () => {
                 setTitleSuccess("Copy to clipboard");
@@ -70,7 +71,7 @@ const ShareButton = ({ title, description }: { title: string, description: strin
             >
                 Share
             </Typography>
-            <button style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={text}>
+            <button style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={link}>
                 Copy
             </button>
         </Button>
