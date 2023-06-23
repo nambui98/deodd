@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Box, Typography, Stack, Divider, styled } from "@mui/material";
 import { ButtonMain } from "components/ui/button";
 import { BnbIcon, CupIcon } from "utils/Icons";
 import { Colors } from "constants/index";
 import StakingHistoryTable from "./components/StakingHistoryTable";
+import UnstakeModal from "./components/UnstakeModal";
 
 function StakingSuccess() {
+  const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
+
   return (
     <>
       <Stack sx={{
@@ -30,7 +34,9 @@ function StakingSuccess() {
               borderColor: "text.primary",
               color: "text.primary",
             }}
+            onClick={() => setIsUnstakeOpened(true)}
           />
+          <UnstakeModal open={isUnstakeOpened} setOpen={setIsUnstakeOpened} />
           <ButtonMain
             active={true}
             title="NFT Leaderboard"
