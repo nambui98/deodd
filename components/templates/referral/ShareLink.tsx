@@ -4,21 +4,41 @@ import { ButtonTertiary } from 'components/ui/button'
 import { Colors, SHARE } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import HowItWorkModal from './HowItWorkModal'
-
+import ClipboardJS from 'clipboard';
 type Props = {
     link: string
 }
 
 function ShareLink({ link }: Props) {
     const { setTitleSuccess, setIsSuccess } = useSiteContext();
+
+    const buttonRef = useRef(null);
     const handleCopy = () => {
         navigator?.clipboard.writeText(link);
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
+
+    let text = window?.location?.href;
+    useEffect(() => {
+        if (buttonRef) {
+            const clipboard = new ClipboardJS(buttonRef!.current!, {
+                text: () => text
+            })
+            clipboard.on('success', () => {
+                setTitleSuccess("Copy to clipboard");
+                setIsSuccess(true);
+            })
+            return () => {
+                clipboard.destroy();
+            }
+        }
+    }, [])
+
+
     return (
         <Box>
             <Typography variant='h4' textAlign={'center'}>
@@ -37,7 +57,7 @@ function ShareLink({ link }: Props) {
                         fill: Colors.bg80
                     }
                 }
-            }} onClick={handleCopy} >
+            }} style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={text}  >
                 <Typography variant='h4' fontSize={16} fontWeight={600} mr={3} textTransform={'none'} >
                     {
                         link

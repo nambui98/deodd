@@ -3,13 +3,11 @@ import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem
 import { useQuery } from '@tanstack/react-query'
 import CoinAnimation from 'components/common/CoinAnimation'
 import { ButtonLoading } from 'components/ui/button'
-import MyImage from 'components/ui/image'
 import { Colors } from 'constants/index'
 import { DeoddService } from 'libs/apis'
 import { useEffect, useState, useTransition } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon, USDTIcon } from 'utils/Icons'
-import { BnbImage } from 'utils/Images'
 import ListingItem, { ListingItemType } from './components/ListingItem'
 type Props = {
 
@@ -49,8 +47,7 @@ function ShopCollection({ setAmount }: Props) {
         queryKey: ["getShopList"],
         enabled: true,
         refetchOnWindowFocus: false,
-        queryFn: () => DeoddService.getShopList(filter),
-        // suspense: true,
+        queryFn: () => DeoddService.getShopList(filter),       // suspense: true,
         onSuccess(data) {
             if (data && data.data) {
                 setItems((prev) => [...prev, ...data.data.items]);

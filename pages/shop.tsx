@@ -2,12 +2,14 @@ import ShopBanner from "@/templates/shop/ShopBanner";
 import ShopConnectWallet from "@/templates/shop/ShopConnectWallet";
 import { Container } from "@mui/material";
 import { useWalletContext } from "contexts/WalletContext";
-import { Suspense, useState } from "react";
+import { Suspense, useState, lazy } from "react";
 // import ShopCollection from "@/templates/shop/ShopCollection";
 import CoinAnimation from "components/common/CoinAnimation";
 import { Meta } from "components/common/Meta";
 import dynamic from "next/dynamic";
-const ShopCollection = dynamic(() => import("@/templates/shop/ShopCollection"));
+const ShopCollection = lazy(() => import("@/templates/shop/ShopCollection"));
+
+// const ListUserFlip = lazy(() => import("./ListUserFlip"));
 type Props = {
 
 };
@@ -26,7 +28,7 @@ export default function Shop({ }: Props) {
   return (
     <Container sx={{ mt: 5 }}>
       <Meta title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
-      {walletIsConnected ?
+      {!walletIsConnected ?
         <>
           <ShopBanner amount={amount} />
           <Suspense fallback={<CoinAnimation mx="auto" width={100} height={100} />}>

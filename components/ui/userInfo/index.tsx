@@ -122,6 +122,10 @@ export function UserInfo() {
 
       router.replace("/");
     }
+    else if (/^\/shop-item-detail\/.*/.test(router.pathname)) {
+
+      router.replace("/shop");
+    }
 
   }
   const { disconnect } = useDisconnect()
