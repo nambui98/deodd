@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { Typography, Stack, Box, styled } from "@mui/material";
-import { ButtonFourth, ButtonMain } from "components/ui/button";
+import { ButtonFourth, ButtonLoading, ButtonMain } from "components/ui/button";
 import { CalculatorIcon, BnbIcon } from "utils/Icons";
 import StakingRowItem from "./components/StakingRowItem";
 import StakingCalculator from "./components/StakingCalculator";
 import ApproveModal from "./components/ApproveModal";
+import { useDeoddNFTContract } from "hooks/useDeoddNFTContract";
+import { useWalletContext } from "contexts/WalletContext";
+import { useQuery } from "@tanstack/react-query";
+import { DeoddService } from "libs/apis";
+import { EnumNFT, TypeDataNFT } from "libs/types";
+import FlowStake from "./components/FlowStake";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -35,9 +41,58 @@ const dummyData = [
 ]
 
 function StakingWithWallet() {
-  const [stakeOption, setStakeOption] = useState(2);
+  const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
+  const { walletAddress } = useWalletContext();
+  const { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken } = useDeoddNFTContract();
+
+  const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
+    queryKey: ["getAssetsBalance2"],
+    enabled: !!walletAddress,
+    queryFn: () => DeoddService.getAssetsBalance(walletAddress),
+    select: (data) => data.data ?
+      {
+        total: 0,
+        data: [
+          {
+            type: EnumNFT.DIAMOND,
+            list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
+              return {
+                id: d.token_id ?? '',
+                type: EnumNFT.DIAMOND,
+                image: d.image_link,
+                amount: 0
+              }
+            })
+          },
+          {
+            type: EnumNFT.GOLD,
+            list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
+              return {
+                id: d.token_id ?? '',
+                type: EnumNFT.GOLD,
+                image: d.image_link,
+                amount: 0
+              }
+            })
+          },
+          {
+            type: EnumNFT.BRONZE,
+            list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
+              return {
+                id: d.token_id ?? '',
+                type: EnumNFT.BRONZE,
+                image: d.image_link,
+                amount: 0
+              }
+            })
+          }
+
+        ]
+      }
+      : null
+  });
 
   return (
     <>
@@ -101,9 +156,13 @@ function StakingWithWallet() {
           justifyContent: "space-between",
           columnGap: 5,
           maxHeight: 280,
-          overflow: "scroll",
+          overflow: 'auto'
         }}>
-          {dummyData.map((element, index) => <StakingRowItem key={index} NFTCards={element.NFTCards} estimatedProfit={element.estimatedProfit} sharePercent={element.sharePercent} />)}
+          {
+            stakeOption === 1 ?
+              assets?.data.map((element, index: number) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element} estimatedProfit={0} sharePercent={0} />)
+              : walletTokens?.data?.map((element, index) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element} estimatedProfit={0} sharePercent={0} />)
+          }
         </Box>
 
         {/* Calculator Modal */}
@@ -128,22 +187,7 @@ function StakingWithWallet() {
             All figures are estimate provided for your convenience only <br />
             By no means represent guaranteed returns.
           </Typography>
-          <ButtonMain
-            active={true}
-            title="Approve"
-            sx={{
-              py: 2,
-              px: 5,
-              fontSize: "1rem",
-              fontWeight: 600,
-              lineHeight: "1.375rem",
-              backgroundColor: "primary.300"
-            }}
-            onClick={() => {
-              setIsApproveModalOpened(true);
-            }}
-          />
-          <ApproveModal open={isApproveModalOpened} setOpen={setIsApproveModalOpened} />
+          <FlowStake nftSelected={nftSelected} handleSetNftSelected={handleClickNFT} />
         </Stack>
       </Stack>
     </>

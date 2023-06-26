@@ -1,59 +1,29 @@
-import { Typography, Stack } from "@mui/material";
-import MyImage from "components/ui/image";
-import { CoinEmptyImage } from "utils/Images";
-import { ButtonMain } from "components/ui/button";
-import Link from "next/link";
+import { Stack, Typography } from "@mui/material";
+import { ButtonLoading } from "components/ui/button";
+import { useWalletContext } from "contexts/WalletContext";
 
 function StakingNoWallet() {
+  const { handleConnectWallet, isConnectingWallet } = useWalletContext();
   return (
     <>
       <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
-      <Stack sx={{
-        backgroundColor: "background.paper",
-        width: 1,
-        height: 364,
-        borderRadius: 2,
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
-        <MyImage
+      <Stack alignItems={'center'} mt={5}>
+        <Typography variant='h3' fontWeight={600}>Connect wallet for staking</Typography>
+        <ButtonLoading
+          onClick={handleConnectWallet}
           sx={{
-            width: { xs: 80, md: 144 },
-            height: { xs: 80, md: 144 },
+            px: 5, py: 2, mt: 3,
+            borderRadius: 2,
+            width: 'auto',
+            textTransform: 'none',
           }}
-          src={CoinEmptyImage}
-          alt="Empty Coin Image"
-        />
-        <Typography
-          sx={{
-            fontSize: "1rem",
-            lineHeight: "1.375rem",
-            fontWeight: 600,
-            color: "secondary.100",
-            textAlign: "center",
-            mt: 3,
-            mb: 5
-          }}
-        >
-          You don’t have any NFT. <br />
-          Let’s go shopping!
-        </Typography>
-        <Link href={"/shop"}>
-          <ButtonMain
-            active={true}
-            title="Shop now"
-            sx={{
-              py: 1,
-              px: 2,
-              fontSize: "0.75rem",
-              fontWeight: 400,
-              lineHeight: "1rem",
-              letterSpacing: "0.04em",
+          loading={isConnectingWallet}>
+          <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
+        </ButtonLoading>
 
-            }}
-          />
-        </Link>
+
       </Stack>
+
     </>
   );
 }

@@ -3,18 +3,22 @@ import { ArrowDown3Icon, BnbIcon, TickCircleIcon, TickCircleOutlineIcon } from "
 import { Box, styled, Typography, Stack, Accordion, AccordionSummary, AccordionDetails, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { getPathAvatarNFT } from "utils/checkAvatar";
 import Image from "next/image";
+import { EnumNFT, TypeNFT } from "libs/types";
 
 // CHANGE ME LATER
 type StakingRowItemType = {
+  handleClickNFT: Function,
   NFTCards: {
-    type: string;
-    list: string[]
+    type: EnumNFT;
+    list: TypeNFT[]
+
   }
   sharePercent: number;
   estimatedProfit: number;
+  nftSelected: TypeNFT | undefined;
 }
 
-function StakingRowItem({ NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
+function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
   return (
     <>
       <Accordion
@@ -52,6 +56,9 @@ function StakingRowItem({ NFTCards, sharePercent, estimatedProfit }: StakingRowI
         <AccordionDetails sx={{
           border: "none",
           marginLeft: 3.5,
+
+          // maxHeight: 200,
+          // overflowY: 'auto',
         }}>
           <Stack sx={{
             "& .MuiFormControlLabel-label": {
@@ -60,8 +67,8 @@ function StakingRowItem({ NFTCards, sharePercent, estimatedProfit }: StakingRowI
               fontWeight: 500,
             }
           }} >
-            {NFTCards.list.map((card, index) => (
-              <FormControlLabel key={index} name={card} control={<Checkbox icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label={card} />
+            {NFTCards.list.map((detailNFT, index) => (
+              <FormControlLabel onClick={() => handleClickNFT(detailNFT)} key={index} name={`DeODD #${detailNFT.id}`} control={<Checkbox checked={nftSelected?.id === detailNFT.id} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label={`DeODD #${detailNFT.id}`} />
             ))}
           </Stack>
 
