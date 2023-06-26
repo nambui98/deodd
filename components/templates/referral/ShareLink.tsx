@@ -17,13 +17,17 @@ function ShareLink({ link }: Props) {
 
     const buttonRef = useRef(null);
     const handleCopy = () => {
-        navigator?.clipboard.writeText(link);
-        setTitleSuccess("Copy to clipboard");
-        setIsSuccess(true);
+        try {
+            navigator?.clipboard.writeText(link);
+            setTitleSuccess("Copy to clipboard");
+            setIsSuccess(true);
+        } catch (error) {
+            (buttonRef?.current as any).click();
+        }
     }
 
     useEffect(() => {
-        if (buttonRef) {
+        if (buttonRef && buttonRef.current && link) {
             const clipboard = new ClipboardJS(buttonRef!.current!, {
                 text: () => link
             })
@@ -35,16 +39,21 @@ function ShareLink({ link }: Props) {
                 clipboard.destroy();
             }
         }
-    }, [])
+    }, [link, setIsSuccess, setTitleSuccess])
 
 
     return (
-        <Box>
+        <Box width={1}>
             <Typography variant='h4' textAlign={'center'}>
                 Your referral link
             </Typography>
-            <ButtonTertiary fullWidth sx={{
+            <button style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={link}>
+                Copy
+            </button>
+
+            <ButtonTertiary sx={{
                 mt: 3, py: '12px',
+                // width: 'auto',
                 color: 'secondary.main',
                 'svg': {
                     stroke: 'transparent',
@@ -56,13 +65,15 @@ function ShareLink({ link }: Props) {
                         fill: Colors.bg80
                     }
                 }
-            }} style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={link}  >
+            }} onClick={handleCopy}   >
+
                 <Typography variant='h4' fontSize={16} fontWeight={600} mr={3} textTransform={'none'} >
                     {
                         link
                     }
                 </Typography>
                 <CopyIcon />
+
             </ButtonTertiary>
 
             <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={3}>

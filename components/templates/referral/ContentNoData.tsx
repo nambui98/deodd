@@ -11,7 +11,10 @@ import {
 import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import HowItWorkModal from './HowItWorkModal'
+import ShareLink from './ShareLink'
+import { useEffect, useRef } from 'react'
 
+import ClipboardJS from 'clipboard';
 type Props = {
     ckReferral: boolean;
     link: string;
@@ -22,12 +25,28 @@ type Props = {
 function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props) {
     const { walletIsConnected, isConnectingWallet, handleConnectWallet } = useWalletContext();
     const { setIsSuccess, setTitleSuccess } = useSiteContext();
+    const buttonRef = useRef(null);
     const handleCopy = () => {
         navigator?.clipboard.writeText(link);
         setTitleSuccess("Copy to clipboard");
         setIsSuccess(true);
     }
-
+    useEffect(() => {
+        if (buttonRef && buttonRef.current && link) {
+            console.log();
+            debugger
+            const clipboard = new ClipboardJS(buttonRef!.current!, {
+                text: () => link
+            })
+            clipboard.on('success', () => {
+                setTitleSuccess("Copy to clipboard");
+                setIsSuccess(true);
+            })
+            return () => {
+                clipboard.destroy();
+            }
+        }
+    }, [link, setIsSuccess, setTitleSuccess])
     return (
         <>
             <Stack direction={'row'} mt={5} justifyContent={"center"} alignItems={'center'}>
@@ -61,53 +80,8 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
                 }
                 {
                     !ckReferral && walletIsConnected && <>
-                        <Typography variant='h4' textAlign={'center'} >
-                            Your referral link
-                        </Typography>
-                        <ButtonTertiary sx={{
-                            mt: 3, py: '12px',
-                            color: 'secondary.main',
-                            'svg': {
-                                fill: Colors.primaryDark,
-                            },
-                            '&:hover': {
-                                svg: {
-                                    fill: Colors.secondary
-                                }
-                            }
-                        }} onClick={handleCopy} >
-                            <Typography variant='h4' mr={3} textTransform={'none'} >
-                                {
-                                    link
-                                }
-                            </Typography>
-                            <CopyIcon />
-                        </ButtonTertiary>
-                        <Typography variant='h4' textAlign={'center'} color="secondary.100" mt={3}>
-                            Share to
-                        </Typography>
-                        <Stack direction={'row'} mt={2} justifyContent={'center'}>
-                            <TelegramShareButton url={link}
+                        <ShareLink link={link} />
 
-                                title={SHARE.title}>
-                                <IconButton color="primary" ><TelegramIcon fill="#96A5C0" /></IconButton>
-                            </TelegramShareButton>
-                            <TwitterShareButton
-                                url={link}
-                                title={SHARE.title}
-                                hashtags={["#Deodd"]}
-                            >
-                                <IconButton color="primary" ><TwiterIcon fill="#96A5C0" /></IconButton>
-                            </TwitterShareButton>
-                            <FacebookShareButton
-                                url={link}
-                                title={SHARE.title}
-                                quote={SHARE.title}
-                                hashtag={'#Deodd'}
-                            >
-                                <IconButton color="primary" ><FacebookIcon fill="#96A5C0" /></IconButton>
-                            </FacebookShareButton>
-                        </Stack>
                     </>
                 }
                 <HowItWorkModal />
