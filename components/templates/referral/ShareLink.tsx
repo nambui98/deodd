@@ -17,13 +17,15 @@ function ShareLink({ link }: Props) {
 
     const buttonRef = useRef(null);
     const handleCopy = () => {
-        try {
-            navigator?.clipboard.writeText(link);
-            setTitleSuccess("Copy to clipboard");
-            setIsSuccess(true);
-        } catch (error) {
-            (buttonRef?.current as any).click();
-        }
+
+        (buttonRef?.current as any).click();
+        // try {
+        //     navigator?.clipboard.writeText(link);
+        //     setTitleSuccess("Copy to clipboard");
+        //     setIsSuccess(true);
+        // } catch (error) {
+        //     (buttonRef?.current as any).click();
+        // }
     }
 
     useEffect(() => {

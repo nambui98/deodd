@@ -34,13 +34,15 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
 
     const buttonRef = useRef(null);
     const handleCopy = () => {
-        try {
-            navigator?.clipboard.writeText(link ?? '');
-            setTitleSuccess("Copy to clipboard");
-            setIsSuccess(true);
-        } catch (error) {
-            (buttonRef?.current as any).click();
-        }
+
+        (buttonRef?.current as any).click();
+        // try {
+        //     navigator?.clipboard.writeText(link ?? '');
+        //     setTitleSuccess("Copy to clipboard");
+        //     setIsSuccess(true);
+        // } catch (error) {
+        //     (buttonRef?.current as any).click();
+        // }
     }
 
     useEffect(() => {
