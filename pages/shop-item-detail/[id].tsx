@@ -156,7 +156,8 @@ function ShopItemDetail() {
                     '&:hover': {
                       borderWidth: 1,
                       borderColor: 'secondary.main',
-                      bgcolor: 'secondary.main',
+
+                      bgcolor: { xs: 'transparent', md: 'secondary.main' },
                       svg: { fill: Colors.bg80, stroke: 'none' }
                     }
                   }}>

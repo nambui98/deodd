@@ -268,7 +268,7 @@ function ProcessingBuy({ item, refresh, isShowBuy, setIsShowBuy }: Props) {
                                 color: 'secondary.main',
                                 svg: { transition: '.3s all', fill: Colors.secondaryDark, stroke: 'none' },
                                 '&:hover': {
-                                    bgcolor: 'secondary.main',
+                                    bgcolor: { xs: 'transparent', md: 'secondary.main' },
                                     borderWidth: 1,
                                     borderColor: "secondary.main",
                                     svg: { fill: Colors.bg80, stroke: 'none' }

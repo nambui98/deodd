@@ -240,6 +240,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			a.target = '_blank';
 			a.href = 'https://metamask.io/download';
 			a.click();
+
+			setIsConnectingWallet(false);
 		} else {
 			let resultAddress: string;
 			handleConnectWithCache()

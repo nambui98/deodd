@@ -46,14 +46,19 @@ export const ButtonSecondRemex2: React.FC<ButtonProps> = (props) => {
   } > {props.children} </Button>
 }
 export const ButtonLoading: React.FC<LoadingButtonProps> = ({ sx, ...props }) => {
+
   return <LoadingButton
     sx={{
       width: '100%',
-      borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main', '&:hover': {
-        backgroundColor: "secondary.main",
-        border: '1px solid',
-        borderColor: "secondary.main"
-      }, ...sx
+      borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main',
+
+      '&:hover': {
+        backgroundColor: { md: "secondary.main", xs: 'transparent' },
+        border: { md: '1px solid', xs: '1px solid' },
+        color: { xs: 'secondary.main', md: 'primary.300' },
+        borderColor: { md: "secondary.main", xs: 'secondary.main' }
+      }
+      , ...sx
     }}
 
     {...props}
