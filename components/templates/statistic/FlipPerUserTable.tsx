@@ -1,5 +1,6 @@
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
+import { DashboardErrorType, DashboardUserFlipType } from "libs/types/dashboardTypes";
 
 function RowItem({
   times,
@@ -39,11 +40,8 @@ function RowItem({
 }
 
 type FlipPerUserType = {
-  error: {
-    flipData: boolean;
-    errorMessage: string;
-  };
-  userFlipStat: any;
+  error: DashboardErrorType;
+  userFlipStat: DashboardUserFlipType;
 };
 
 export function FlipPerUserTable({
@@ -77,7 +75,7 @@ export function FlipPerUserTable({
         </Typography>
       </Box>
 
-      {error.flipData ? (<Box
+      {!error.flipData.noData ? (<Box
         width={1}
         display={"grid"}
         gridTemplateColumns={"auto 1fr auto auto"}
@@ -117,7 +115,7 @@ export function FlipPerUserTable({
               position: "absolute",
             },
           })}>
-          {error.errorMessage}
+          {error.flipData.errorMessage}
         </Typography>
       )}
     </Box>
