@@ -10,10 +10,11 @@ import { Format } from "utils/format";
 import { useSiteContext } from "contexts/SiteContext";
 import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
+import Link from "next/link";
 
 type Props = {};
 
-function HolderPool({ }: Props) {
+function HolderPool({}: Props) {
   const { walletAddress, walletIsConnected } = useWalletContext();
   const { leaderboard, setPeriod, periodInfo, loading, history, setReset } =
     useLoyaltyHolder();
@@ -33,7 +34,7 @@ function HolderPool({ }: Props) {
       if (res.data.data && res.status === 200) {
         setTitleSuccess("Claimed successfully");
         setIsSuccess(true);
-        setReset(prev => !prev);
+        setReset((prev) => !prev);
       } else {
         setIsError(true);
         setTitleError(res.data.meta.error_message);
@@ -76,35 +77,23 @@ function HolderPool({ }: Props) {
             <>
               <Typography
                 variant="body2"
-                lineHeight={"1.375rem"}
-                textTransform={"uppercase"}
+                lineHeight={20 / 14}
                 color={"text.disabled"}
+                mb={1}
               >
-                Your total reward is
-                <Box component={"span"} color={"text.secondary"}>
-                  {" "}
-                  {Format.formatMoney(periodInfo.totalReward, 7)} BNB
-                </Box>
-                <br />
-                claim NOW
+                It’s time to claim your reward
               </Typography>
               <ButtonMain
                 active={true}
-                title="claim reward"
+                title="Claim reward"
                 sx={{
                   fontSize: "0.75rem",
-                  fontWeight: 700,
+                  lineHeight: 16 / 12,
+                  fontWeight: 400,
                   minHeight: 0,
                   px: 2,
-                  py: 0.5,
+                  py: 1,
                   mb: 3,
-                  lineHeight: "1.375rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  borderWidth: 2,
-                  ":hover": {
-                    borderWidth: 2,
-                  },
                 }}
                 onClick={handleClaim}
               />
@@ -116,12 +105,12 @@ function HolderPool({ }: Props) {
         <Typography variant="body2">
           Period{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #{periodInfo.currentPeriod}
+            #{periodInfo.currentPeriod || 1}
           </Box>{" "}
           Started at{" "}
           {periodInfo.startTime
             ? Format.formatDateTime(periodInfo.startTime)
-            : ""}
+            : "--/--/----"}
         </Typography>
         <Typography variant="body2" color={"text.disabled"}>
           Total NFT Holder Reward
@@ -131,21 +120,23 @@ function HolderPool({ }: Props) {
           columnGap={1}
           alignItems={"center"}
           justifyContent={"center"}
-          mb={1.25}
         >
-          <Typography variant="h3" fontSize={"48px"}>
+          <Typography variant="h3" fontSize={"3rem"}>
             {Format.formatMoney(periodInfo.currentPrize, 4)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         {walletIsConnected &&
-          (periodInfo.currentReward !== null && periodInfo.currentReward >= 0 ? (
+          (periodInfo.currentReward !== null &&
+          periodInfo.currentReward >= 0 ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is
                 <Box component={"span"} color={"text.primary"}>
                   {" "}
-                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward, 7) : 0}{" "}
+                  {periodInfo.currentReward
+                    ? Format.formatMoney(periodInfo.currentReward, 7)
+                    : 0}{" "}
                   <Box component={"span"}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
@@ -154,9 +145,28 @@ function HolderPool({ }: Props) {
               <NFTHolderTimer setReset={setReset} periodInfo={periodInfo} />
             </>
           ) : (
-            <Typography variant="body2" color={"text.disabled"}>
-              Only NFT holders <br /> are able to get the reward{" "}
-            </Typography>
+            <>
+              <Typography variant="body2" color={"text.disabled"} mb={1}>
+                Only nft holders STAKING their nft
+                <br /> are able to get the reward{" "}
+              </Typography>
+
+              <Link href="/shop">
+                <ButtonMain
+                  active={true}
+                  title="Shop now"
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 16 / 12,
+                    fontWeight: 400,
+                    minHeight: 0,
+                    px: 2,
+                    py: 1,
+                    backgroundColor: "background.default",
+                  }}
+                />
+              </Link>
+            </>
           ))}
       </Stack>
       {walletIsConnected ? (
