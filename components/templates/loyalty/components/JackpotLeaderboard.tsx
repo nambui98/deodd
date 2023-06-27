@@ -16,19 +16,21 @@ import MyImage from "components/ui/image";
 import Image from "next/image";
 import { Convert } from "utils/convert";
 import { CoinEmptyImage } from "utils/Images";
-import {
-  LoyaltyJackpotLeaderboardType,
-  LoyaltyLoadingType,
-} from "libs/types/loyaltyTypes";
+import { LoyaltyJackpotLeaderboardType } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { useWalletContext } from "contexts/WalletContext";
 
 type PropsType = {
   leaderboard: LoyaltyJackpotLeaderboardType;
-  loading: LoyaltyLoadingType;
+  leaderboardIsLoading: boolean;
+  leaderboardIsError: boolean;
 };
 
-function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
+function JackpotLeaderboard({
+  leaderboard,
+  leaderboardIsLoading,
+  leaderboardIsError,
+}: PropsType) {
   const { userInfo, walletAddress } = useWalletContext();
 
   return (
@@ -66,12 +68,12 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
             position: "relative",
           }}
         >
-          {loading.leaderboard && (
+          {leaderboardIsLoading && (
             <Stack height={1} justifyContent={"center"} alignItems={"center"}>
               <CircularProgress size={40} color="secondary" />
             </Stack>
           )}
-          {!loading.leaderboard && leaderboard.leaderboardList.length <= 0 && (
+          {!leaderboardIsLoading && leaderboard.leaderboardList.length <= 0 && (
             <Stack
               sx={{ inset: 0 }}
               position={"absolute"}
@@ -120,7 +122,7 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                 },
               }}
             >
-              {!loading.leaderboard &&
+              {!leaderboardIsLoading &&
                 leaderboard.leaderboardList.length > 0 &&
                 leaderboard.leaderboardList.map((row) => (
                   <TableRow key={row.rank}>
@@ -159,7 +161,9 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                               : "text.primary"
                           }
                         >
-                          {`${row.userName ?? ""} (${Convert.convertWalletAddress(
+                          {`${
+                            row.userName ?? ""
+                          } (${Convert.convertWalletAddress(
                             row.wallet,
                             5,
                             4
@@ -211,7 +215,9 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
               <Typography variant="caption">
-                {leaderboard.connectWallet.rank ?? "--"}
+                {!leaderboardIsLoading
+                  ? leaderboard.connectWallet.rank ?? "--"
+                  : "--"}
               </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
@@ -223,14 +229,17 @@ function JackpotLeaderboard({ leaderboard, loading }: PropsType) {
                   alt="User Avatar"
                 />
                 <Typography variant="caption" fontWeight={400}>
-                  {userInfo.username ?? ""} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
+                  {userInfo.username ?? ""} (
+                  {Convert.convertWalletAddress(walletAddress, 5, 4)})
                 </Typography>
               </Stack>
             </TableCell>
             <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
-                {leaderboard.leaderboardList.length > 0
-                  ? leaderboard.connectWallet.tossPoint ?? 0
+                {!leaderboardIsLoading
+                  ? leaderboard.leaderboardList.length > 0
+                    ? leaderboard.connectWallet.tossPoint ?? 0
+                    : "--"
                   : "--"}
               </Typography>
             </TableCell>

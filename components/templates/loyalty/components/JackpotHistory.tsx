@@ -4,16 +4,14 @@ import Image from "next/image";
 import MyImage from "components/ui/image";
 import { BnbIcon } from "utils/Icons";
 import { CoinEmptyImage } from "utils/Images";
-import {
-  LoyaltyJackpotHistoryType,
-  LoyaltyLoadingType,
-} from "libs/types/loyaltyTypes";
+import { LoyaltyJackpotHistoryType } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { Format } from "utils/format";
 
 type PropsType = {
   history: LoyaltyJackpotHistoryType;
-  loading: LoyaltyLoadingType;
+  historyIsLoading: boolean;
+  historyIsError: boolean;
 };
 
 function formatNumber(number: number) {
@@ -28,7 +26,11 @@ function formatDate(dateString: string) {
   return `${hour} - ${date}`;
 }
 
-function JackpotHistory({ history, loading }: PropsType) {
+function JackpotHistory({
+  history,
+  historyIsLoading,
+  historyIsError,
+}: PropsType) {
   return (
     <Stack
       direction={"row"}
@@ -41,7 +43,7 @@ function JackpotHistory({ history, loading }: PropsType) {
         height: { xs: 218, md: history.endTime != null ? 218 : 384 },
       }}
     >
-      {loading.history && (
+      {historyIsLoading && (
         <Stack
           height={1}
           width={1}
@@ -51,7 +53,7 @@ function JackpotHistory({ history, loading }: PropsType) {
           <CircularProgress size={40} color="secondary" />
         </Stack>
       )}
-      {!loading.history && history.endTime && (
+      {!historyIsLoading && history.endTime && (
         <>
           <Stack justifyContent={"space-between"}>
             <Stack gap={1}>
@@ -127,7 +129,7 @@ function JackpotHistory({ history, loading }: PropsType) {
           </Stack>
         </>
       )}
-      {!loading.history && !history.endTime && (
+      {!historyIsLoading && !history.endTime && (
         <>
           <Stack
             sx={{ inset: 0 }}

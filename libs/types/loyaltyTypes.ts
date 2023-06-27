@@ -9,8 +9,16 @@ export type LoyaltyJackpotHistoryType = {
   winnerWallet: string;
 };
 
-export type LoyaltyJackpotLeaderboardType = {
+export type LoyaltyJackpotSeasonInfoType = {
   currentSeason: number;
+  startTime: string;
+  currentReward: number;
+  numberOfSeason: number;
+  tossPointRequire: number;
+  connectWalletTossPoint: number;
+}
+
+export type LoyaltyJackpotLeaderboardType = {
   leaderboardList: {
     rank: number;
     wallet: string;
@@ -25,11 +33,6 @@ export type LoyaltyJackpotLeaderboardType = {
     avatarId: number;
     tossPoint: number;
   };
-};
-
-export type LoyaltyLoadingType = {
-  leaderboard: boolean;
-  history: boolean;
 };
 
 export type LoyaltyHolderLeaderboardType = {

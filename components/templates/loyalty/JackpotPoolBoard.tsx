@@ -8,17 +8,34 @@ import JackpotHistory from "./components/JackpotHistory";
 import {
   LoyaltyJackpotLeaderboardType,
   LoyaltyJackpotHistoryType,
-  LoyaltyLoadingType,
+  LoyaltyJackpotSeasonInfoType,
 } from "libs/types/loyaltyTypes";
 
 type Props = {
-  leaderboard: LoyaltyJackpotLeaderboardType;
   setSeason: (value: number) => void;
+  leaderboard: LoyaltyJackpotLeaderboardType;
+  leaderboardIsLoading: boolean;
+  leaderboardIsError: boolean;
   history: LoyaltyJackpotHistoryType;
-  loading: LoyaltyLoadingType;
+  historyIsLoading: boolean;
+  historyIsError: boolean;
+  seasonInfo: LoyaltyJackpotSeasonInfoType;
+  seasonInfoIsLoading: boolean;
+  seasonInfoIsError: boolean;
 };
 
-function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
+function JackpotPoolBoard({
+  setSeason,
+  leaderboard,
+  leaderboardIsLoading,
+  leaderboardIsError,
+  history,
+  historyIsLoading,
+  historyIsError,
+  seasonInfo,
+  seasonInfoIsLoading,
+  seasonInfoIsError,
+}: Props) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [
@@ -46,13 +63,13 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
     },
   ];
 
-  const selectOptions = [];
+  const selectOptions = ["Current Season"];
 
-  for (let i = leaderboard.currentSeason; i >= 1; i--) {
-    if (i === leaderboard.currentSeason) {
-      selectOptions.push("Current Season");
-    } else {
-      selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
+  if (!seasonInfoIsLoading && !seasonInfoIsError) {
+    for (let i = seasonInfo.currentSeason; i >= 1; i--) {
+      if (i !== seasonInfo.currentSeason) {
+        selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
+      }
     }
   }
 
@@ -79,9 +96,17 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
       </Stack>
 
       {valueTab === 1 ? (
-        <JackpotLeaderboard loading={loading} leaderboard={leaderboard} />
+        <JackpotLeaderboard
+          leaderboard={leaderboard}
+          leaderboardIsLoading={leaderboardIsLoading}
+          leaderboardIsError={leaderboardIsError}
+        />
       ) : valueTab === 2 ? (
-        <JackpotHistory loading={loading} history={history} />
+        <JackpotHistory
+          history={history}
+          historyIsLoading={historyIsLoading}
+          historyIsError={historyIsError}
+        />
       ) : (
         ""
       )}

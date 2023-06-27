@@ -6,28 +6,23 @@ import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
 import { Format } from "utils/format";
-// import { useQuery } from "@tanstack/react-query";
-// import { getLoyaltyJackpotBoardCurrent } from "libs/apis/loyaltyAPI";
 
 type Props = {};
 
 function JackpotPool({}: Props) {
-  const { walletIsConnected, walletAddress } = useWalletContext();
-  const { leaderboard, setSeason, history, seasonInfo, loading } =
-    useLoyaltyJackpot();
-  // const leaderboardQuery = useQuery({
-  //   queryKey: ["leaderboard"],
-  //   queryFn: async () => {
-  //     const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-  //     if (promiseResult.status === 200) {
-  //       const data = promiseResult.data.data;
-  //       return data;
-  //     } else {
-  //       throw new Error("No data");
-  //     }
-  //   }
-  // });
-  // console.log(leaderboardQuery.data);
+  const { walletIsConnected } = useWalletContext();
+  const {
+    setSeason,
+    leaderboard,
+    leaderboardIsError,
+    leaderboardIsLoading,
+    history,
+    historyIsLoading,
+    historyIsError,
+    seasonInfo,
+    seasonInfoIsLoading,
+    seasonInfoIsError,
+  } = useLoyaltyJackpot();
 
   return (
     <Box width={1}>
@@ -57,17 +52,18 @@ function JackpotPool({}: Props) {
         <Typography mt={3.5} variant="body2">
           Season{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #{seasonInfo.currentSeason}
+            {seasonInfoIsLoading ? "..." : `#${seasonInfo.currentSeason}`}
           </Box>{" "}
-          {/* Started at {new Date(seasonInfo.startTime).toLocaleDateString()} */}
           Started at{" "}
-          {seasonInfo.startTime
-            ? Format.formatDateTime(seasonInfo.startTime)
-            : ""}
+          {seasonInfoIsLoading
+            ? "--/--/----"
+            : Format.formatDateTime(seasonInfo.startTime)}
         </Typography>
+
         <Typography variant="body2" color={"text.disabled"}>
           Jackpot Reward
         </Typography>
+
         <Stack
           direction={"row"}
           columnGap={1}
@@ -76,33 +72,42 @@ function JackpotPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            {Format.formatMoney(seasonInfo.currentReward, 4)}
+            {seasonInfoIsLoading
+              ? "---"
+              : Format.formatMoney(seasonInfo.currentReward, 4)}
           </Typography>
+
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
+
         {walletIsConnected && (
           <>
             <Typography variant="body2" color={"text.disabled"}>
               Tosspoint to win
             </Typography>
+
             <Typography
               fontSize={"1.75rem"}
               lineHeight={"2,2rem"}
               fontWeight={500}
               color={"text.primary"}
             >
-              {seasonInfo.connectWalletTossPoint ?? 0}/
+              {seasonInfoIsLoading
+                ? "--"
+                : seasonInfo.connectWalletTossPoint ?? 0}
+              /
               <Box
                 component={"span"}
                 color={"text.secondary"}
                 fontSize={"2.375rem"}
               >
-                {seasonInfo.tossPointRequire}
+                {seasonInfoIsLoading ? "..." : seasonInfo.tossPointRequire}
               </Box>
             </Typography>
           </>
         )}
       </Stack>
+
       {walletIsConnected ? (
         <>
           <Divider
@@ -112,11 +117,18 @@ function JackpotPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
+
           <JackpotPoolBoard
-            leaderboard={leaderboard}
             setSeason={setSeason}
+            leaderboard={leaderboard}
+            leaderboardIsLoading={leaderboardIsLoading}
+            leaderboardIsError={leaderboardIsError}
             history={history}
-            loading={loading}
+            historyIsLoading={historyIsLoading}
+            historyIsError={historyIsError}
+            seasonInfo={seasonInfo}
+            seasonInfoIsLoading={seasonInfoIsLoading}
+            seasonInfoIsError={seasonInfoIsError}
           />
         </>
       ) : null}

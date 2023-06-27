@@ -20,8 +20,8 @@ export const getLoyaltyJackpotBoardCurrent = async (
 
 export const getLoyaltyJackpotBoardHistory = async (
   wallet: string,
-  season: string | number,
-  signal: AbortSignal
+  season: number,
+  signal?: AbortSignal
 ) => {
   return vhIdRequest({
     url: baseURL + `/jackpot/board/season?wallet=${wallet}&season=${season}`,
@@ -32,8 +32,8 @@ export const getLoyaltyJackpotBoardHistory = async (
 
 export const getLoyaltyHistoryJackpot = async (
   wallet: string,
-  season: string | number,
-  signal: AbortSignal
+  season: number,
+  signal?: AbortSignal
 ) => {
   return vhIdRequest({
     url: baseURL + `/jackpot/history/season?wallet=${wallet}&season=${season}`,
@@ -56,7 +56,7 @@ export const getLoyaltyNFTCurrent = async (
 export const getLoyaltyNFTBoardBySeason = async (
   wallet: string,
   season: number,
-  signal: AbortSignal
+  signal?: AbortSignal
 ) => {
   return vhIdRequest({
     url: baseURL + `/nft/board/season?wallet=${wallet}&season=${season}`,
@@ -68,7 +68,7 @@ export const getLoyaltyNFTBoardBySeason = async (
 export const getNFTItemProfitBySeason = async (
   wallet: string,
   season: number,
-  signal: AbortSignal
+  signal?: AbortSignal
 ) => {
   return vhIdRequest({
     url: baseURL + `/nft/profit/season?wallet=${wallet}&season=${season}`,
