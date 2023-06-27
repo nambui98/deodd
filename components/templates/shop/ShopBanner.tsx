@@ -1,5 +1,4 @@
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
-import dynamic from "next/dynamic";
 import {
   BgShopCollection,
   Bronze2Image,
@@ -32,7 +31,7 @@ function ShopBanner({ amount }: { amount: number }) {
             zIndex: 2
           }}
         >
-          <ShareButton title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
+          <ShareButton title="DeODD NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
         </Box>
         <Grid container >
           <Grid item xs={12} md={7.2}>

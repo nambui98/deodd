@@ -46,3 +46,5 @@ export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
   [EnumNFTNumber.GOLD]: 'Gold NFT Card',
   [EnumNFTNumber.DIAMOND]: 'Diamond NFT Card'
 }
+export const DateOpenMainnet = "2023-06-29T09:00:00Z";
+export const DateOpenShop = "2023-06-27T13:00:00Z";

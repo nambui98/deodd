@@ -1,5 +1,7 @@
+import { AppConfig } from '@/utils/AppConfig';
 import { Box, Stack, Typography, useTheme } from '@mui/material'
 import Countdown from 'components/common/CountDown';
+import { Meta } from 'components/common/Meta';
 import MyImage from 'components/ui/image';
 import Link from 'next/link';
 
@@ -23,6 +25,7 @@ function MainnetLaunching({ }: Props) {
                 backgroundImage: `url(${BannerMainnetMobileImage})`,
             },
         }}>
+            <Meta title="Mainnet is not open" description={AppConfig.description} />
             <Box position={'relative'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>

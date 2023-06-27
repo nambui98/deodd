@@ -4,7 +4,7 @@ const baseURL =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
     ? '/deodd'
     : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
-      ? '/deodd-pretest' : ''
+      ? '/deodd' : ''
 export const getTopStreakToday = async () => {
   return vhIdRequest({
     url: baseURL + `/topstreak/today`,

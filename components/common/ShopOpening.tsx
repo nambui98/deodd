@@ -1,10 +1,10 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import Countdown from 'components/common/CountDown';
 import MyImage from 'components/ui/image';
 import Link from 'next/link';
 
-import React from 'react'
-import { BannerMainnetImage, BannerMainnetMobileImage, BannerShopOpenImage, BannerShopOpenMobileImage, LogoImage } from 'utils/Images'
+import { BannerShopOpenImage, BannerShopOpenMobileImage, LogoImage } from 'utils/Images';
+import { Meta } from './Meta';
 type Props = {}
 
 function ShopOpening({ }: Props) {
@@ -22,6 +22,8 @@ function ShopOpening({ }: Props) {
                 backgroundImage: `url(${BannerShopOpenMobileImage})`,
             },
         }}>
+
+            <Meta title="Shop is not open" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
             <Box position={'relative'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>

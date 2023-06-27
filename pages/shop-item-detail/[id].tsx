@@ -10,16 +10,14 @@ import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
 import { Colors, UrlBlockExplorer } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
-import { BigNumber } from 'ethers';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
-import { Format } from 'utils/format';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     redirect: {
