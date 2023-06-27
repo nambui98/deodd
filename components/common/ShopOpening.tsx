@@ -23,7 +23,7 @@ function ShopOpening({ }: Props) {
             },
         }}>
 
-            <Meta title="Shop is not open" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
+            <Meta title="DeODD Shop" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
             <Box position={'relative'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>
