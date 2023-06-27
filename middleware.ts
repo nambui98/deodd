@@ -16,7 +16,6 @@ export function middleware(request: NextRequest) {
             || url.pathname === '/lottery'
             || url.pathname === '/homepage'
             || url.pathname === '/campaign'
-            || url.pathname === '/assets'
         ) {
 
             if (isNotMainnetOpen) {
