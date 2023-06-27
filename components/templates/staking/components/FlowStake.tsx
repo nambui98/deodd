@@ -9,7 +9,7 @@ import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 
 type Props = {
-    nftSelected?: TypeNFT,
+    nftSelected?: TypeNFT | null,
     handleSetNftSelected: Function
 }
 
@@ -18,7 +18,8 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
     const { walletAddress } = useWalletContext();
     const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
     const [isApproved, setIsApproved] = useState(false);
-    const { writeAsync: approve, isLoading, isIdle } = useContractWrite({
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { writeAsync: approve, isLoading: isLoadingApprove, isIdle } = useContractWrite({
         address: deoddNFTContract.address,
         mode: 'recklesslyUnprepared',
         abi: deoddNFTContract.abi,
@@ -32,12 +33,12 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
         functionName: 'stakeNFT',
         args: [BigNumber.from(nftSelected?.id ?? 0)]
     })
-    const { refetch: getAllowance, isLoading: isLoadingGetAllowance } = useContractRead({
+    const { refetch: getAllowance, isLoading: isLoadingGetAllowance, isFetching } = useContractRead({
         address: deoddNFTContract.address,
         abi: deoddNFTContract.abi,
         functionName: 'getApproved',
         args: [BigNumber.from(nftSelected?.id ?? 0)],
-        // enabled: false,
+        enabled: !!nftSelected,
         onSuccess(data) {
             if (data === nftHolderContract.address) {
                 setIsApproved(true);
@@ -47,29 +48,36 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
         },
     })
     const handleApprove = () => {
+        setIsLoading(true);
         approve?.()
             .then(resWrite => {
                 return resWrite.wait();
             })
             .then((res) => {
                 getAllowance();
+                setIsLoading(false);
             })
             .catch(error => {
+                setIsLoading(false);
                 setIsError(true);
                 setTitleError(error.reason || 'Something went wrong');
             })
     }
     const handleStake = () => {
+        setIsLoading(true)
         stake?.()
             .then(resWrite => {
                 return resWrite.wait();
             })
             .then((res) => {
                 setIsApproveModalOpened(true);
-                handleSetNftSelected(null);
+                handleSetNftSelected(null)
+                setIsApproved(false);
+                setIsLoading(false);
             })
             .catch(error => {
                 debugger
+                setIsLoading(false);
                 setIsError(true);
                 setTitleError(error.reason || 'Something went wrong');
             })
@@ -83,12 +91,13 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
                             py: 2,
                             px: 5,
                             width: 'auto',
+                            textTransform: 'none',
                             fontSize: "1rem",
                             fontWeight: 600,
                             lineHeight: "1.375rem",
                             backgroundColor: "primary.300"
                         }}
-                        loading={isLoadingStake}
+                        loading={isLoadingStake || isLoading}
                         onClick={() => {
                             handleStake()
                         }}
@@ -100,13 +109,15 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
                         sx={{
                             py: 2,
                             px: 5,
+                            textTransform: 'none',
                             width: 'auto',
                             fontSize: "1rem",
                             fontWeight: 600,
                             lineHeight: "1.375rem",
                             backgroundColor: "primary.300"
                         }}
-                        loading={isLoading || isLoadingGetAllowance}
+                        disabled={!nftSelected}
+                        loading={isLoading || isLoadingApprove || isLoadingGetAllowance || isFetching}
                         onClick={() => {
                             handleApprove();
                         }}

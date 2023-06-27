@@ -15,7 +15,7 @@ type StakingRowItemType = {
   }
   sharePercent: number;
   estimatedProfit: number;
-  nftSelected: TypeNFT | undefined;
+  nftSelected: TypeNFT | undefined | null;
 }
 
 function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {

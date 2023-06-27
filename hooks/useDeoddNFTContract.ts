@@ -6,6 +6,8 @@ import { useSiteContext } from "contexts/SiteContext";
 import { getPriceToken } from "libs/apis/coinmarketcap";
 import { EnumNFT, TypeDataNFT } from "libs/types";
 import { DeoddService } from "libs/apis";
+import { deoddNFTContract } from "libs/contract";
+import { useContractRead } from "wagmi";
 export type TypeNFT = {
     id: number | string,
     type: EnumNFT,
@@ -16,7 +18,7 @@ export type TypeNFT = {
 export const useDeoddNFTContract = () => {
     const { walletAddress, contractDeoddNFT } = useWalletContext();
     const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
-    const [nftSelected, setNftSelected] = useState<TypeNFT | undefined>();
+    const [nftSelected, setNftSelected] = useState<TypeNFT | undefined | null>();
     const [reload, setReload] = useState<boolean>(false);
     const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const [priceToken, setPriceToken] = useState<number | undefined>();
@@ -26,15 +28,27 @@ export const useDeoddNFTContract = () => {
         // const data = getInfoTokens(res);
         // return data;
     };
-    const getTokenTypeId = async (id: BigNumber) => {
-        const res = await contractDeoddNFT?.getTokenTypeId(id)
-        return res;
-    };
-    const getWalletTokens = async () => {
-        const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
-        const data = getInfoTokens(res);
-        return data;
-    };
+    // const getTokenTypeId = async (id: BigNumber) => {
+    //     const res = await contractDeoddNFT?.getTokenTypeId(id)
+    //     return res;
+    // };
+    // const getWalletTokens = async () => {
+    //     const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
+    //     const data = getInfoTokens(res);
+    //     return data;
+    // };
+    const { refetch } = useContractRead({
+        address: deoddNFTContract.address,
+        abi: deoddNFTContract.abi,
+        functionName: 'getWalletTokens',
+        args: [walletAddress],
+        enabled: !!walletAddress,
+        watch: true,
+        async onSuccess(res: BigNumber[]) {
+            const data = await getInfoTokens(res);
+            setWalletTokens(data as TypeDataNFT);
+        },
+    })
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
             (tokens ?? []).map(async (token: BigNumber) => {
@@ -105,11 +119,11 @@ export const useDeoddNFTContract = () => {
 
     useEffect(() => {
         if (walletAddress) {
-            getWalletTokens().then(res => {
-                if (res && res.data.length > 0) {
-                    setWalletTokens(res);
-                }
-            });
+            // getWalletTokens().then(res => {
+            //     if (res && res.data.length > 0) {
+            //         setWalletTokens(res);
+            //     }
+            // });
             getPriceToken().then(res => {
                 if (res.status === 200) {
                     setPriceToken(res.data.data[0].quote['BUSD'].price)
@@ -120,7 +134,7 @@ export const useDeoddNFTContract = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reload, walletAddress])
 
-    const handleClickNFT = (nft: TypeNFT) => {
+    const handleClickNFT = (nft: TypeNFT | null) => {
         setNftSelected(nft)
     }
     const claimToWallet = async () => {

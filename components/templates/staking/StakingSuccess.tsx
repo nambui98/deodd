@@ -5,10 +5,22 @@ import { BnbIcon, CupIcon } from "utils/Icons";
 import { Colors } from "constants/index";
 import StakingHistoryTable from "./components/StakingHistoryTable";
 import UnstakeModal from "./components/UnstakeModal";
+import { nftHolderContract } from "libs/contract";
+import { useContractWrite } from "wagmi";
+import { BigNumber } from "ethers";
+import Link from "next/link";
 
 function StakingSuccess() {
   const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
-
+  const { writeAsync: unStake, isLoading: isLoadingUnStake, } = useContractWrite({
+    address: nftHolderContract.address,
+    mode: 'recklesslyUnprepared',
+    abi: nftHolderContract.abi,
+    functionName: 'unstakeNFT',
+  })
+  const handleUnStakeMultiNft = () => {
+    // unStake([BigNumber.from(nftSelected?.id ?? 0)])
+  }
   return (
     <>
       <Stack sx={{
@@ -38,6 +50,8 @@ function StakingSuccess() {
           />
           <UnstakeModal open={isUnstakeOpened} setOpen={setIsUnstakeOpened} />
           <ButtonMain
+            LinkComponent={Link}
+            href="/loyalty"
             active={true}
             title="NFT Leaderboard"
             sx={{
