@@ -120,6 +120,7 @@ function HolderPool({}: Props) {
           columnGap={1}
           alignItems={"center"}
           justifyContent={"center"}
+          mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"}>
             {Format.formatMoney(periodInfo.currentPrize, 4)}
