@@ -13,19 +13,34 @@ import { useSiteContext } from 'contexts/SiteContext';
 import { BigNumber } from 'ethers';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    redirect: {
+      destination: '/shop-opening',
+      permanent: false,
+    },
+  }
+  return {
+    props: {
+
+    }
+  }
+}
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();
   const [item, setItem] = useState<ListingItemType | undefined>()
   const [itemsSuggestion, setItemsSuggestion] = useState<ListingItemType[] | undefined>()
-  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
 
+
+  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
   const { refetch: getDetailShopItem, isFetching, isLoading } = useQuery({
     queryKey: ["getDetailShopItem"],
     enabled: false,

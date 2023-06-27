@@ -7,6 +7,7 @@ import { Suspense, useState, lazy } from "react";
 import CoinAnimation from "components/common/CoinAnimation";
 import { Meta } from "components/common/Meta";
 import dynamic from "next/dynamic";
+import { redirect } from 'next/navigation'
 const ShopCollection = lazy(() => import("@/templates/shop/ShopCollection"));
 
 // const ListUserFlip = lazy(() => import("./ListUserFlip"));
@@ -17,6 +18,7 @@ type Props = {
 export default function Shop({ }: Props) {
   const { walletIsConnected } = useWalletContext();
   const [amount, setAmount] = useState<number>(0)
+
   // return (
   //   <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
   //     Coming soon

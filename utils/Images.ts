@@ -49,6 +49,10 @@ export const Bronze2Image = "/assets/images/bronze2.png";
 export const Gold2Image = "/assets/images/gold2.png";
 export const Diamond2Image = "/assets/images/diamond2.png";
 export const Diamond3Image = "/assets/images/diamond3.png";
+export const BannerMainnetImage = "/assets/images/mainnet-banner.png";
+export const BannerMainnetMobileImage = "/assets/images/mainnet-banner-mobile.png";
+export const BannerShopOpenImage = "/assets/images/shop-banner.png";
+export const BannerShopOpenMobileImage = "/assets/images/shop-banner-mobile.png";
 
 
 export const MapIcon: { [key: string]: string } = {
