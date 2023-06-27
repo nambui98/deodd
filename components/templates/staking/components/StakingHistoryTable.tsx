@@ -20,6 +20,7 @@ function StakingHistoryTable() {
             border: "none",
             py: 0,
             pb: 2,
+            px: 0,
           }
         }}>
           <TableRow>
@@ -38,6 +39,7 @@ function StakingHistoryTable() {
           "& td": {
             border: "none",
             py: 0.5,
+            px: 0,
           }
         }}>
           <TableRow>
