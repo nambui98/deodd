@@ -347,7 +347,7 @@ function Chat({ open }: { open: boolean }) {
                 </Stack>
             </Box>
             <Divider />
-            <Typography fontWeight={600} textAlign={'center'} fontSize={24} mt={2}>Comming soon</Typography>
+            <Typography fontWeight={600} textAlign={'center'} fontSize={24} mt={2}>Coming soon</Typography>
             <Box
                 height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
                 display={'flex'}
