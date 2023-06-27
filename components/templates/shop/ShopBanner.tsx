@@ -48,7 +48,7 @@ function ShopBanner({ amount }: { amount: number }) {
               >
                 By{" "}
                 <Box component={"span"} color={"text.secondary"} fontWeight={500}>
-                  deODD
+                  DeODD
                 </Box>
               </Typography>
               <Typography
@@ -58,9 +58,9 @@ function ShopBanner({ amount }: { amount: number }) {
                 color={"text.disabled"}
                 mb={{ xs: 2, md: 3 }}
               >
-                Deodd is a smart contract that allows users to play Double or Nothing
+                DeODD is a smart contract that allows users to play Double or Nothing
                 with their BSC tokens. Odds are 50/50 with a 3.25% fee that partly
-                goes to Deodd NFT holders. The NFTs give its owners a portion of NFT
+                goes to DeODD NFT holders. The NFTs give its owners a portion of NFT
                 Holder as passive income.
               </Typography>
               <Stack direction={"row"} gap={5}>
