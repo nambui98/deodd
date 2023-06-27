@@ -8,6 +8,7 @@ import CoinAnimation from "components/common/CoinAnimation";
 import { Meta } from "components/common/Meta";
 import dynamic from "next/dynamic";
 import { redirect } from 'next/navigation'
+import ShopOpening from "components/common/ShopOpening";
 const ShopCollection = lazy(() => import("@/templates/shop/ShopCollection"));
 
 // const ListUserFlip = lazy(() => import("./ListUserFlip"));
@@ -15,7 +16,9 @@ type Props = {
 
 };
 
+
 export default function Shop({ }: Props) {
+  return <ShopOpening />
   const { walletIsConnected } = useWalletContext();
   const [amount, setAmount] = useState<number>(0)
 

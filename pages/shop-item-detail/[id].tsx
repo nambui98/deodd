@@ -23,7 +23,7 @@ import { Format } from 'utils/format';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     redirect: {
-      destination: '/shop-opening',
+      destination: '/shop',
       permanent: false,
     },
   }

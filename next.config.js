@@ -21,15 +21,16 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: '/shop',
-        destination: '/shop-opening',
-        permanent: false,
-      },{
-        source: '/shop-item-detail/[id]',
-        destination: '/shop-opening',
-        permanent: true,
-      },
+      // {
+      //   source: '/',
+      //   destination: '/shop-opening',
+      //   permanent: true,
+      // },
+      // {
+      //   source: '/shop-item-detail/[id]',
+      //   destination: '/shop-opening',
+      //   permanent: true,
+      // },
     ]
   },
   

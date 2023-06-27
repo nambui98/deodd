@@ -12,15 +12,16 @@ export function middleware(request: NextRequest) {
         || url.pathname === '/referral'
         || url.pathname === '/profile'
         || url.pathname === '/lottery'
-        || url.pathname === '/'
         || url.pathname === '/homepage'
         || url.pathname === '/campaign'
         || url.pathname === '/assets'
     ) {
         url.pathname = '/mainnet-launching'
         return NextResponse.redirect(url)
-    } else if (url.pathname === '/shop') {
-        url.pathname = '/shop-opening'
+    } else if (
+        url.pathname === '/'
+    ) {
+        url.pathname = '/shop'
         return NextResponse.redirect(url)
     }
 
