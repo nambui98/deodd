@@ -57,7 +57,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             }
         },
     });
-    console.log(dataClaimed);
 
     const {
         setIsSuccess,

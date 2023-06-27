@@ -1,18 +1,16 @@
 import { Input } from '@mui/base'
-import { Checkbox, Box, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Select, Stack, Typography, SelectChangeEvent } from '@mui/material'
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
+import CoinAnimation from 'components/common/CoinAnimation'
 import { ButtonLoading } from 'components/ui/button'
 import { Colors } from 'constants/index'
-import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon } from 'utils/Icons'
-import { BnbImage } from 'utils/Images'
-import ListingItem, { ListingItemType } from './components/ListingItem'
-import { useEffect, useState, useTransition } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { DeoddService } from 'libs/apis'
+import { useEffect, useState, useTransition } from 'react'
 import { useInView } from 'react-intersection-observer'
-import CoinAnimation from 'components/common/CoinAnimation'
-import MyImage from 'components/ui/image'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { ArrowDownIcon, FilterIcon, TickCircleIcon, TickCircleOutlineIcon, USDTIcon } from 'utils/Icons'
+import ListingItem, { ListingItemType } from './components/ListingItem'
 type Props = {
+
     setAmount: (value: number) => void
 }
 enum TypeFilterSort {
@@ -39,20 +37,17 @@ function ShopCollection({ setAmount }: Props) {
     const [filter, setFilter] = useState<FilterType>({
         limit: 9,
         offset: 0,
-        sortType: "TIME",
+        sortType: "VIEW",
         sortOrder: "DESC",
         minPrice: null,
         maxPrice: null,
         itemType: { ALL: true }
-
     })
     const { refetch: getShopList, isLoading, isFetched, isFetching } = useQuery({
         queryKey: ["getShopList"],
         enabled: true,
         refetchOnWindowFocus: false,
-        // suspense: true,
-        // retry: false,
-        queryFn: () => DeoddService.getShopList(filter),
+        queryFn: () => DeoddService.getShopList(filter),       // suspense: true,
         onSuccess(data) {
             if (data && data.data) {
                 setItems((prev) => [...prev, ...data.data.items]);
@@ -91,118 +86,101 @@ function ShopCollection({ setAmount }: Props) {
             <Grid item xs={12} md={3} >
                 <Filter onFilter={onFilter} filter={filter} setFilter={setFilter} />
             </Grid>
+
             <Grid item xs={12} md={9} >
+                <Box position={{ xs: 'relative', md: 'sticky' }} bgcolor={'background.default'} pt={'2px'} zIndex={1} top={{ xs: 0, md: 110 }}>
+                    <Grid container pb={{ xs: 3, md: 4 }}>
+                        <Grid item xs={12} md={6} display={'flex'} >
+                            <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
+                            <Box position={'sticky'} top={0}>
+                                <FormControl sx={{
+                                    width: { xs: 1, md: 260 },
+                                    border: 'none',
+                                    '& .MuiOutlinedInput-root': {
+                                        fontSize: 14,
+                                        bgcolor: 'secondary.800',
+                                        height: 36
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline ': {
+                                        border: 'none',
+                                    },
+                                    '& .MuiSelect-icon': {
+                                        top: 'auto'
+                                    }
+                                }}>
+                                    <Select
+                                        displayEmpty
+                                        variant='outlined'
+                                        value={sortValue as any}
+                                        IconComponent={(props) => <ArrowDownIcon width={20} height={20} fill={Colors.secondaryDark} {...props} />}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                        onChange={(e: SelectChangeEvent<TypeFilterSort | ''>) => {
+                                            let sortType: string = '';
+                                            let sortOrder: string = '';
+                                            if (e.target.value === TypeFilterSort.TIME_ASC) {
+                                                sortType = 'TIME';
+                                                sortOrder = 'ASC';
+                                            } else if (e.target.value === TypeFilterSort.VIEW_DESC) {
+                                                sortType = 'VIEW';
+                                                sortOrder = 'DESC';
+                                            } else if (e.target.value === TypeFilterSort.PRICE_ASC) {
+                                                sortType = 'PRICE';
+                                                sortOrder = 'ASC';
+                                            } else if (e.target.value === TypeFilterSort.PRICE_DESC) {
+                                                sortType = 'PRICE';
+                                                sortOrder = 'DESC';
+                                            } else if (e.target.value === TypeFilterSort.TIME_DESC) {
+                                                sortType = 'TIME';
+                                                sortOrder = 'DESC';
+                                            };
+                                            setFilter((prev) => ({ ...prev, sortType, sortOrder, offset: 0 }))
+                                            setSortValue(e.target.value)
+                                            onFilter();
+                                        }}
+                                    >
+                                        <MenuItem sx={{ fontSize: 14 }} disabled value={''}>Sort by</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_ASC}>Recently listed</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.VIEW_DESC}>Most viewed</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_ASC}>Price low to high</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_DESC}>Price high to low</MenuItem>
+                                        <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_DESC}>Oldest</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Box>
                 <Grid container spacing={{ xs: 3, md: 4 }}>
-                    <Grid item xs={12} md={6} display={'flex'} >
-
-                        <Typography variant='h5' fontWeight={{ xs: 600, md: 700 }} fontSize={{ xs: 16, md: 24 }} >{total} items</Typography>
-                    </Grid>
-
-                    <Grid item xs={12} md={6} display={'flex'} justifyContent={'flex-end'} >
-                        <FormControl sx={{
-                            width: { xs: 1, md: 260 },
-                            border: 'none',
-                            '& .MuiOutlinedInput-root': {
-                                // py: 1,
-
-                                fontSize: 14,
-                                bgcolor: 'secondary.800',
-                                height: 36
-                            },
-                            '& .MuiOutlinedInput-notchedOutline ': {
-                                border: 'none',
-                            },
-                            '& .MuiSelect-icon': {
-                                top: 'auto'
-                            }
-                        }}>
-                            <Select
-                                displayEmpty
-                                variant='outlined'
-                                value={sortValue as any}
-                                // renderValue={(selected: number | string | undefined) => {
-                                //     if (!selected || selected === '') {
-                                //         return <span>Sort by</span>;
-                                //     }
-                                //     return selected;
-                                // }}
-                                IconComponent={(props) => <ArrowDownIcon width={20} height={20} fill={Colors.secondaryDark} {...props} />}
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                onChange={(e: SelectChangeEvent<TypeFilterSort | ''>) => {
-                                    let sortType: string = '';
-                                    let sortOrder: string = '';
-                                    if (e.target.value === TypeFilterSort.TIME_ASC) {
-                                        sortType = 'TIME';
-                                        sortOrder = 'ASC';
-                                    } else if (e.target.value === TypeFilterSort.VIEW_DESC) {
-                                        sortType = 'VIEW';
-                                        sortOrder = 'DESC';
-                                    } else if (e.target.value === TypeFilterSort.PRICE_ASC) {
-                                        sortType = 'PRICE';
-                                        sortOrder = 'ASC';
-                                    } else if (e.target.value === TypeFilterSort.PRICE_DESC) {
-                                        sortType = 'VIEW';
-                                        sortOrder = 'DESC';
-                                    } else if (e.target.value === TypeFilterSort.TIME_DESC) {
-                                        sortType = 'TIME';
-                                        sortOrder = 'DESC';
-                                    };
-                                    setFilter((prev) => ({ ...prev, sortType, sortOrder, offset: 0 }))
-                                    setSortValue(e.target.value)
-
-
-                                    onFilter();
-                                }}
-                            >
-
-                                <MenuItem sx={{ fontSize: 14 }} disabled value={''}>Sort by</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_ASC}>Recently listed</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.VIEW_DESC}>Most viewed</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_ASC}>Price low to high</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.PRICE_DESC}>Price high to low</MenuItem>
-                                <MenuItem sx={{ fontSize: 14 }} value={TypeFilterSort.TIME_DESC}>Oldest</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                    </Grid>
                     {
-                        items.map((item, index) =>
-                            <Grid item key={item.token_id} xs={6} sm={4}>
-                                <ListingItem item={item} />
-                            </Grid>)
-                    }
-                    {/* {
-                        !isLoading && (
-                            items.length > 0 ?
+                        isFetched && (
+                            total > 0 ?
                                 items.map((item, index) =>
                                     <Grid item key={item.token_id} xs={6} sm={4}>
                                         <ListingItem item={item} />
                                     </Grid>
-
-                                ) : <Grid item xs={12} textAlign={'center'}>
+                                ) : !isFetching ? <Grid item xs={12} textAlign={'center'}>
                                     <Typography pt={10} variant="body1" fontWeight={600}>No items found for this search</Typography>
-                                    <Typography variant="body1" mt={3} color="secondary.main" fontWeight={500} onClick={() => {
+                                    <Typography variant="body1" mt={3} color="secondary.main" fontWeight={500} sx={{ cursor: 'pointer' }} onClick={() => {
                                         setFilter({
-                                            limit: 20,
+                                            limit: 9,
                                             offset: 0,
                                             sortType: "TIME",
                                             sortOrder: "DESC",
-                                            minPrice: 0,
-                                            maxPrice: 10000000,
+                                            minPrice: null,
+                                            maxPrice: null,
                                             itemType: { ALL: true }
                                         })
                                         setItems([])
                                         onFilter()
                                     }}>Back to all item</Typography>
-                                </Grid>
+                                </Grid> : null
                         )
-                    } */}
+                    }
                     <Grid item xs={12} display={isFetching ? 'flex' : 'none'} textAlign={'center'} justifyContent={'center'} alignItems={'center'}><CoinAnimation width={100} height={100} /></Grid>
                     <Box ref={bottomRef} />
-
                 </Grid>
-
-
             </Grid>
         </Grid >
     )
@@ -220,10 +198,16 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
     const [minPrice, setMinPrice] = useState<number | null>(filter.minPrice)
     const [maxPrice, setMaxPrice] = useState<number | null>(filter.maxPrice)
     const [itemType, setItemType] = useState<any>(filter.itemType)
+    const [errorMessage, setErrorMessage] = useState<string | undefined>();
     const [isPending, startTransition] = useTransition();
-    console.log(itemType);
 
-    return <>
+    useEffect(() => {
+        setMinPrice(filter.minPrice)
+        setMaxPrice(filter.maxPrice)
+        setItemType(filter.itemType)
+    }, [filter])
+
+    return <Box position={{ xs: 'relative', md: 'sticky' }} top={{ md: 112, sm: 72 }}>
         <Stack direction={'row'} alignItems={'center'} gap={{ xs: 1, md: 2 }}>
             <Box width={{ xs: 20, md: 24 }} height={{ xs: 20, md: 24 }}>
                 <FilterIcon width={'100%'} height={'100%'} />
@@ -242,8 +226,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                         return { ...prev };
                     })
                 }
-
-                debugger
             }}
             sx={{
                 '.MuiFormControlLabel-label': { fontSize: { xs: 14, md: 16 }, fontWeight: { xs: 400, md: 600 }, color: 'dark.60' },
@@ -257,7 +239,6 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 <FormControlLabel
                     name='ALL'
                     control={<Checkbox checked={itemType.ALL} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="All" />
-
                 <FormControlLabel name="DIAMOND" control={<Checkbox checked={itemType.DIAMOND ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Diamond" />
                 <FormControlLabel name="GOLD" control={<Checkbox checked={itemType.GOLD ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Gold" />
                 <FormControlLabel name="BRONZE" control={<Checkbox checked={itemType.BRONZE ?? false} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label="Bronze" />
@@ -286,24 +267,35 @@ const Filter = ({ setFilter, filter, onFilter }: { onFilter: Function, filter: F
                 }
             }
         }}>
-            <Input type='number' value={minPrice || filter.minPrice} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
+            <Input type='number' value={minPrice ?? ''} placeholder='Min' onChange={(e) => setMinPrice(parseFloat(e.target.value))} />
             <Typography>
                 -
             </Typography>
-            <Input type='number' value={maxPrice || filter.maxPrice} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
-            <MyImage src={BnbImage} width={20} height={20} alt="" />
+            <Input type='number' value={maxPrice ?? ''} placeholder='Max' onChange={(e) => setMaxPrice(parseFloat(e.target.value))} />
+            <USDTIcon fill="#50ae94" width={20} height={20} />
         </Stack>
 
         <ButtonLoading sx={{ py: 1, mt: { xs: 2, md: 3 }, fontSize: 12, fontWeight: 400, textTransform: 'none' }}
             onClick={() => {
                 startTransition(() => {
-                    setFilter((prev: FilterType) => {
-                        return { ...prev, minPrice: minPrice, maxPrice: maxPrice, itemType: Object.fromEntries(Object.entries(itemType).filter(([key, value]) => value === true)) } as FilterType
-                    })
-                    onFilter();
+                    if (minPrice && maxPrice && minPrice > maxPrice) {
+                        setErrorMessage('Minimum must be less than maximum')
+                    } else {
+                        setErrorMessage(undefined);
+                        setFilter((prev: FilterType) => {
+                            return { ...prev, minPrice: !Number.isNaN(minPrice) ? minPrice : null, maxPrice: !Number.isNaN(maxPrice) ? maxPrice : null, itemType: Object.fromEntries(Object.entries(itemType).filter(([key, value]) => value === true)) } as FilterType
+                        })
+                        onFilter();
+                    }
                 })
             }}
         >Apply filter</ButtonLoading >
-    </>
+        {
+            errorMessage &&
+            <Box mt={2}>
+                <Typography color="error.300" variant='caption' >{errorMessage}</Typography>
+            </Box>
+        }
+    </Box>
 
 }

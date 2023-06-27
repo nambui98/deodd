@@ -13,7 +13,7 @@ interface walletContextType {
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { username: string, avatar: number },
+	userInfo: { username: string | null, avatar: number },
 	setUserInfo: Function,
 	contractDeodd: Contract | undefined,
 	contractDeoddNFT: Contract | undefined,
@@ -79,15 +79,17 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
+	const [userInfo, setUserInfo] = useState<{ username: string | null, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
 	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
+	console.log(process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === "MAINNET");
 
-	const { chain } = useNetwork();
+	const { chain, chains } = useNetwork();
+	console.log(chains)
 
 	const { disconnect } = useDisconnect()
 	const { switchNetworkAsync } = useSwitchNetwork()
@@ -109,12 +111,12 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		Contract | undefined
 	>();
 	useEffect(() => {
-		if (bscTestnet.id !== chain?.id) {
+		if (chains && chains.length > 0 && chains[0].id !== chain?.id) {
 			// switchNetworkCus()
-			switchNetworkAsync?.(bscTestnet.id);
+			switchNetworkAsync?.(chains[0].id);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chain])
+	}, [chain, chains])
 	useEffect(() => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(
@@ -160,6 +162,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setRefreshToken(refreshToken);
 			LocalStorage.setWalletAddress(wallet);
 			LocalStorage.setIsProfileModalOpened(false);
+			// Set username back to empty first so that when user change wallet, 
+			// the profile modal won't open if the previous wallet doesn't have a username
+			setUserInfo(prev => ({ ...prev, username: "" }));
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
 			setIsConnectingWallet(false)
@@ -235,6 +240,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			a.target = '_blank';
 			a.href = 'https://metamask.io/download';
 			a.click();
+
+			setIsConnectingWallet(false);
 		} else {
 			let resultAddress: string;
 			handleConnectWithCache()
@@ -279,10 +286,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		async function getUserInfo() {
 			const userData = await DeoddService.getUserByPublicAddress(walletAddress);
 			const user = userData.data.data;
-			setUserInfo({ username: user?.userName ?? "", avatar: user?.avatarId ?? 0 });
+			setUserInfo({ username: user?.userName, avatar: user?.avatarId ?? 0 });
 			LocalStorage.setUserInfo({
 				wallet: walletAddress,
-				username: user.userName ?? "",
+				username: user.userName,
 				avatarId: user.avatarId ?? 0,
 			});
 		}

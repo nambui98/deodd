@@ -1,31 +1,47 @@
 import ListingItem, { ListingItemType } from '@/templates/shop/components/ListingItem';
 import ProcessingBuy from '@/templates/shop/components/ProcessingBuy';
 import ShareButton from '@/templates/shop/components/ShareButton';
+// import ShareButton from '@/templates/shop/components/ShareButton';
+import { Utils } from '@/utils/index';
 import { Box, Container, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
-import { Colors } from 'constants/index';
+import { Colors, UrlBlockExplorer } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
 import { BigNumber } from 'ethers';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 import { Format } from 'utils/format';
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    redirect: {
+      destination: '/shop',
+      permanent: false,
+    },
+  }
+  return {
+    props: {
 
+    }
+  }
+}
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();
   const [item, setItem] = useState<ListingItemType | undefined>()
   const [itemsSuggestion, setItemsSuggestion] = useState<ListingItemType[] | undefined>()
-  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
 
-  const { refetch: getDetailShopItem } = useQuery({
+
+  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
+  const { refetch: getDetailShopItem, isFetching, isLoading } = useQuery({
     queryKey: ["getDetailShopItem"],
     enabled: false,
     queryFn: () => DeoddService.getShopDetailItem(router.query.id?.toString() ?? ''),
@@ -50,6 +66,7 @@ function ShopItemDetail() {
     onSuccess(data) {
       if (data && data.data) {
         setItemsSuggestion(data.data)
+
       }
     },
     select: (data: any) => {
@@ -62,6 +79,8 @@ function ShopItemDetail() {
   });
   useEffect(() => {
     if (router.query.id) {
+      const test = document.getElementById('main-top')
+      test?.scrollIntoView({ behavior: "smooth" })
       getDetailShopItem();
       getSuggestion();
     }
@@ -80,14 +99,14 @@ function ShopItemDetail() {
       <Grid container spacing={{ xs: 2, md: 4 }}>
         <Grid item xs={12} md={4} order={1}>
           <Box p={3} width={1}>
-            <img width="100%" src={item?.image_link} alt="Image" />
+            <img width="100%" height={'auto'} src={item?.image_link} alt="Image" />
           </Box>
         </Grid>
         <Grid item xs={12} md={4} order={2}>
           <Stack gap={{ xs: 2, md: 3 }}>
 
-            <Typography component={'span'} variant='body1' fontSize={{ xs: 14, md: 16 }} fontWeight={{ xs: 500, md: 600 }} color="secondary.main">deODD NFT 1ST Collection</Typography>
-            <Typography fontSize={{ xs: 24, md: 40 }} fontWeight={700} lineHeight={{ xs: '32px', md: '50.6px' }}>deODD #{item?.token_id}</Typography>
+            <Typography component={'span'} variant='body1' fontSize={{ xs: 14, md: 16 }} fontWeight={{ xs: 500, md: 600 }} color="secondary.main">DeODD NFT 1ST Collection</Typography>
+            <Typography fontSize={{ xs: 24, md: 40 }} fontWeight={700} lineHeight={{ xs: '32px', md: '50.6px' }}>DeODD #{item?.token_id}</Typography>
             <Stack direction={'row'} gap={3} >
               <Stack gap={1}>
                 <Typography variant='body2'>
@@ -105,58 +124,69 @@ function ShopItemDetail() {
               </Stack>
               <Stack gap={1}>
 
-                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} onClick={handleCopy}>
+                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} component={Link} target='_blank' href={`${UrlBlockExplorer}/address/` + deoddNFTContract.address} >
                   {Convert.convertWalletAddress(deoddNFTContract.address, 4, 5)}
                 </Typography>
-                <Typography color="secondary.main" variant='body2'>
+                <Typography color="secondary.main" variant='body2' sx={{ cursor: 'pointer' }} component={Link} target='_blank' href={`${UrlBlockExplorer}/token/` + deoddNFTContract.address + '?a=' + item?.token_id}>
                   {item?.token_id}
                 </Typography>
                 <Typography variant='body2'>
-                  {item?.type ?? '---'}
+                  {Utils.getTypeNFT(item?.type) ?? '---'}
                 </Typography>
                 <Typography variant='body2'>
                   BSC
                 </Typography>
               </Stack>
             </Stack>
-            <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
+            {
+              (!isFetching && !isLoading) && (item?.status === "LISTING" &&
+                <Stack direction={'row'} gap={2} alignItems={'flex-end'}>
+                  <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
+                    value={item?.price ?? 0}
+                    valueSale={item?.sale_price ?? 0}
+                    typographySaleProps={{ variant: 'body1', fontWeight: 500, color: 'dark.60', ml: 1 }}
+                    token={<USDTIcon fill="#50ae94" width={24} height={24} />}
+                    tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
+                  />
+                </Stack>
+              )
+            }
+            {
+              (!isFetching && !isLoading) && (item?.status === "LISTING" ?
+                <ButtonLoading
+                  loading={isFetching || isLoading}
+                  onClick={() => {
+                    if (item?.status === "LISTING") {
+                      setIsShowBuy(true)
+                      // setItemSelected(item);
+                    }
+                  }}
+                  sx={{
+                    fontWeight: 400,
+                    py: 2,
+                    borderColor: 'secondary.main',
+                    svg: { transition: '.3s all', fill: Colors.secondaryDark, stroke: 'none' },
+                    color: 'secondary.main',
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderWidth: 1,
+                      borderColor: 'secondary.main',
 
-              <Price typographyProps={{ fontSize: 24, fontWeight: 700 }}
-                value={item?.price ?? 0}
-                token={<USDTIcon width={24} height={24} fill="#50ae94" />} />
-              {/* <Typography variant='body1' color="dark.60" fontWeight={600}>$124,124.00</Typography> */}
-            </Stack>
-            <ButtonLoading
-              onClick={() => {
-                if (item?.status === "LISTING") {
-                  setIsShowBuy(true)
-                }
-              }}
-              sx={{
-                fontWeight: 400,
-                py: 2,
-                borderColor: 'secondary.main',
-                svg: { transition: '.3s all', fill: Colors.secondaryDark, stroke: 'none' },
-                color: 'secondary.main',
-                textTransform: 'none',
-                '&:hover': {
-                  borderWidth: 1,
-                  borderColor: 'secondary.main',
-                  bgcolor: 'secondary.main',
-                  svg: { fill: Colors.bg80, stroke: 'none' }
-                }
-              }}>
-              {
-                item?.status === "LISTING" ?
+                      bgcolor: { xs: 'transparent', md: 'secondary.main' },
+                      svg: { fill: Colors.bg80, stroke: 'none' }
+                    }
+                  }}>
                   <Stack direction={'row'} alignItems={'center'} gap={1}>
-                    <BagTickIcon />
+                    {(!isFetching || isLoading) && (
+                      <BagTickIcon />
+                    )}
                     Buy now
                   </Stack>
-                  : 'Sold out'
-              }
 
-
-            </ButtonLoading>
+                </ButtonLoading>
+                : <Typography color="error.300" fontWeight={600}>Sold out</Typography>
+              )
+            }
           </Stack>
         </Grid>
         <Grid item xs={12} order={{ xs: 0, md: 3 }} md={4}>
@@ -168,7 +198,6 @@ function ShopItemDetail() {
             </Box>
           </Stack>
         </Grid>
-
       </Grid>
       <Divider sx={{ borderColor: 'secondary.300', my: { xs: 3, md: 5 } }} />
       <Stack direction={'row'} mb={3} alignItems={'center'} justifyContent={'space-between'}>

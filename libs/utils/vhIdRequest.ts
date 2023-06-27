@@ -3,7 +3,7 @@ import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
 
 const BASEURL_DEV = 'https://apidev.deodd.io';
-const BASEURL_PRODUCTION = 'https://testnet.deodd.io';
+const BASEURL_PRODUCTION = 'https://api.deodd.io';
 
 const apiRouter =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'

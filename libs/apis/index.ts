@@ -74,11 +74,18 @@ const getTotalVolume = async (wallet: string) => {
         method: 'get',
     })
 }
+const getNFTDetailById = async (id: string | number) => {
+    return vhIdRequest({
+        url: baseURL + `/nft-item/${id}`,
+        method: 'get',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getNFTDetailById,
     getUserTestail,
     saveInfoUser,
     getRecentFlipping,

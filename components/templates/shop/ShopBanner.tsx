@@ -1,13 +1,15 @@
 import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import dynamic from "next/dynamic";
 import {
   BgShopCollection,
   Bronze2Image,
   Diamond2Image,
+  Diamond3Image,
   Gold2Image
 } from "utils/Images";
 import ShareButton from "./components/ShareButton";
 
-
+// const ShareButton = dynamic(() => import("./components/ShareButton"), { ssr: true });
 function ShopBanner({ amount }: { amount: number }) {
   return (
     <Stack mx={{ xs: -3, md: 0 }}>
@@ -27,6 +29,7 @@ function ShopBanner({ amount }: { amount: number }) {
             position: "absolute",
             top: 16,
             right: 16,
+            zIndex: 2
           }}
         >
           <ShareButton title="Deodd NFT 1st collection" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
@@ -69,14 +72,14 @@ function ShopBanner({ amount }: { amount: number }) {
                     lineHeight={{ xs: '16px', md: "1.25rem" }}
                     color={"text.disabled"}
                   >
-                    Item amount
+                    Initial release
                   </Typography>
                   <Typography
                     fontSize={{ xs: 16, md: "1.5rem" }}
                     lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
-                    {amount}
+                    1983
                   </Typography>
                 </Stack>
                 <Stack gap={0.5}>
@@ -94,7 +97,7 @@ function ShopBanner({ amount }: { amount: number }) {
                     lineHeight={{ xs: '22px', md: "2rem" }}
                     fontWeight={700}
                   >
-                    Apr 2023
+                    June 2023
                   </Typography>
                 </Stack>
                 <Stack gap={0.5}>
@@ -129,7 +132,7 @@ function ShopBanner({ amount }: { amount: number }) {
           <img src={Gold2Image} width={'100%'} />
         </Grid>
         <Grid item xs={2.4}>
-          <img src={Diamond2Image} width={'100%'} />
+          <img src={Diamond3Image} width={'100%'} />
         </Grid>
         <Grid item xs={4.8}>
           <img src={Diamond2Image} width={'100%'} />

@@ -1,11 +1,11 @@
 import type { Chain, Client, Connector } from 'wagmi';
 import { configureChains, createClient } from 'wagmi';
-import { bscTestnet } from 'wagmi/chains';
+import { bscTestnet, bsc } from 'wagmi/chains';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 
 export const { chains, provider, webSocketProvider }: any = configureChains(
-  [bscTestnet],
+  [process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === "MAINNET" ? bsc : bscTestnet],
   [publicProvider()]
 );
 // const needsInjectedWalletFallback =

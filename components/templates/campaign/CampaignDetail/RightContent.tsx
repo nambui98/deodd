@@ -1,4 +1,5 @@
 import { Box, IconButton, Stack, Typography } from '@mui/material';
+import ClipboardJS from 'clipboard';
 import { TelegramIcon, TwiterIcon } from 'components/common/icons';
 import { ButtonLoading, ButtonTertiary } from 'components/ui/button';
 import { Colors, SHARE } from 'constants/index';
@@ -8,7 +9,7 @@ import useReferral from 'hooks/useReferral';
 import { FacebookShareButton, TelegramShareButton, TwitterShareButton } from 'next-share';
 import { useRouter } from 'next/router';
 import { Campaign } from 'pages/campaign';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CopyIcon, FacebookIcon } from 'utils/Icons';
 
 
@@ -30,12 +31,34 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
         setLinkEnded(linkEnded);
     }, [campaign.href, link, setLinkEnded])
 
+
+    const buttonRef = useRef(null);
     const handleCopy = () => {
-        navigator?.clipboard.writeText(link ?? '');
-        setTitleSuccess("Copy to clipboard");
-        setIsSuccess(true);
+
+        (buttonRef?.current as any).click();
+        // try {
+        //     navigator?.clipboard.writeText(link ?? '');
+        //     setTitleSuccess("Copy to clipboard");
+        //     setIsSuccess(true);
+        // } catch (error) {
+        //     (buttonRef?.current as any).click();
+        // }
     }
-    console.log(router);
+
+    useEffect(() => {
+        if (buttonRef && buttonRef.current && link) {
+            const clipboard = new ClipboardJS(buttonRef!.current!, {
+                text: () => link
+            })
+            clipboard.on('success', () => {
+                setTitleSuccess("Copy to clipboard");
+                setIsSuccess(true);
+            })
+            return () => {
+                clipboard.destroy();
+            }
+        }
+    }, [link, setIsSuccess, setTitleSuccess])
 
     // let linkEnded = link !== undefined ? link : campaign.href !== "referral-campaign" ? (window as any)?.location.href : '';
 
@@ -71,6 +94,9 @@ function RightContent({ image, campaign }: { image: string, campaign: Campaign }
 
                             campaign.href === 'referral-campaign' &&
                             <>
+                                <button style={{ display: 'none' }} ref={buttonRef} data-clipboard-text={link}>
+                                    Copy
+                                </button>
                                 <Typography variant='h4' textAlign={'center'}>
                                     Your referral link
                                 </Typography>

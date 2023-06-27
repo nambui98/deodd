@@ -99,9 +99,9 @@ function Chat({ open }: { open: boolean }) {
             }
         },
         onError(err: any) {
-            setIsLoadMoreWithoutAuth(false);
-            setIsError(true)
-            setTitleError(err.response?.data?.meta.error_message)
+            // setIsLoadMoreWithoutAuth(false);
+            // setIsError(true)
+            // setTitleError(err.response?.data?.meta.error_message)
         },
         select: (data: any) => {
             if (data.status === 200) {
@@ -149,7 +149,6 @@ function Chat({ open }: { open: boolean }) {
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
         const parseJson = JSON.parse(text);
-        console.log("🚀 ~ file: Chat.tsx:146 ~ getDataFromBlob ~ parseJson:", parseJson)
         if (parseInt(parseJson[0][0]) !== 1) {
             let result: { [key: number]: any } = {};
             for (let index = 0; index < parseJson.length; index++) {
@@ -191,7 +190,7 @@ function Chat({ open }: { open: boolean }) {
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
     }[readyState];
-    console.log(connectionStatus);
+    console.log('status chat: ', connectionStatus);
 
     const handleScroll = (e: any) => {
         const bottom = e.target.scrollTop > -80;
@@ -208,7 +207,6 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             } else {
-                debugger
                 getMessagesWithoutAuth();
             }
         }
@@ -339,7 +337,6 @@ function Chat({ open }: { open: boolean }) {
             }, 10);
         },
     });
-    console.log(walletAddress);
 
     return (
         <Box position={'relative'} overflow={'hidden'} >
@@ -350,6 +347,7 @@ function Chat({ open }: { open: boolean }) {
                 </Stack>
             </Box>
             <Divider />
+            <Typography fontWeight={600} textAlign={'center'} fontSize={24} mt={2}>Comming soon</Typography>
             <Box
                 height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
                 display={'flex'}
@@ -357,7 +355,7 @@ function Chat({ open }: { open: boolean }) {
                 onScroll={handleScroll}
                 p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
                 <Box ref={refBottomChat} />
-                {
+                {/* {
                     messages.map((message) => {
                         return <ChatItem
                             handleUndoReport={handleUndoReport}
@@ -374,10 +372,10 @@ function Chat({ open }: { open: boolean }) {
                     isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
                         <CoinAnimation mx="auto" width={30} height={30} />
                     </Box>
-                }
+                } */}
                 <Box ref={refTopChat} />
             </Box>
-            <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
+            {/* <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
                 <Stack direction={'row'} p={2} height={80} alignItems={'center'} width={1} columnGap={2}>
                     {
                         walletIsConnected ?
@@ -432,7 +430,7 @@ function Chat({ open }: { open: boolean }) {
                         }
                     </Button>
                 }
-            </Box>
+            </Box> */}
             <PopoverItem
                 handleReport={handleReport}
                 handleBlock={handleBlock}
@@ -903,4 +901,7 @@ const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: {
         }
 
     </Box >
+}
+const ContentChat = () => {
+    return <Typography>Coming Soon</Typography>
 }

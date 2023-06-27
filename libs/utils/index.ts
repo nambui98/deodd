@@ -21,6 +21,14 @@ export const Utils = {
     getImageNFTString: (type: EnumNFT) => {
         return MapIconNFTString[type];
     },
+    getTypeNFT: (type: number | string | undefined) => {
+        const types: { [key: string]: string } = {
+            'DIAMOND': 'Diamond',
+            'GOLD': 'Gold',
+            'BRONZE': 'Bronze'
+        }
+        return types[type ?? ''] ?? ''
+    },
     openedMixin: (theme: Theme): CSSObject => ({
         width: DRAWER_WIDTH,
         transition: theme.transitions.create('width', {

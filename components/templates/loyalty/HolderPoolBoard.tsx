@@ -55,15 +55,9 @@ function HolderPoolBoard({
 
   for (let i = leaderboard.currentPeriod; i >= 1; i--) {
     if (i === leaderboard.currentPeriod) {
-      selectOptions.push({
-        value: 0,
-        text: "Current Period",
-      });
+      selectOptions.push("Current Period");
     } else {
-      selectOptions.push({
-        value: i,
-        text: `Period #${i < 10 ? "0" : ""}${i}`,
-      });
+      selectOptions.push(`Period #${i < 10 ? "0" : ""}${i}`);
     }
   }
 

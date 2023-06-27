@@ -4,21 +4,14 @@ import { useWalletContext } from "../contexts/WalletContext";
 
 import { useSiteContext } from "contexts/SiteContext";
 import { getPriceToken } from "libs/apis/coinmarketcap";
-import { EnumNFT } from "libs/types";
+import { EnumNFT, TypeDataNFT } from "libs/types";
+import { DeoddService } from "libs/apis";
 export type TypeNFT = {
     id: number | string,
-    type: number | string,
+    type: EnumNFT,
+    image: string,
     amount: number,
 }
-
-export type TypeDataNFT = {
-    total: number | undefined;
-    data: {
-        type: EnumNFT,
-        list: TypeNFT[]
-    }[];
-
-} | undefined;
 
 export const useDeoddNFTContract = () => {
     const { walletAddress, contractDeoddNFT } = useWalletContext();
@@ -44,12 +37,13 @@ export const useDeoddNFTContract = () => {
     };
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
-            (tokens ?? []).map(async (token) => {
-                const type: BigNumber = await getTokenTypeId(token);
-                token = BigNumber.from(token);
+            (tokens ?? []).map(async (token: BigNumber) => {
+                const { data } = await DeoddService.getNFTDetailById(Number(token));
+                const detailNFT = data.data;
                 const nft: TypeNFT = {
-                    id: token.toNumber(),
-                    type: type.toNumber(),
+                    id: Number(token),
+                    type: detailNFT.type,
+                    image: detailNFT.image_link,
                     amount: 1
                 }
                 return nft;

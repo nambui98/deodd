@@ -19,7 +19,7 @@ function ListingItem({ item }: Props) {
     const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
     return (
         <>
-            <Stack component={Link} prefetch href={"/shop-item-detail/" + item.token_id}>
+            <Stack component={Link} href={"/shop-item-detail/" + item.token_id}>
                 <img src={item.image_link} alt="" />
             </Stack>
             <Box mt={2}>
@@ -27,22 +27,18 @@ function ListingItem({ item }: Props) {
             </Box>
             <Box mt={1}>
                 <Price
-                    value={item.price} typographyProps={{ variant: 'body1', fontWeight: 600 }}
-                    tokenSize={24}
+                    value={item.price}
+                    typographyProps={{ variant: 'body1', fontWeight: 600 }}
+                    valueSale={item.sale_price}
+                    typographySaleProps={{ variant: 'caption', fontWeight: 500, color: 'dark.60' }}
                     token={<USDTIcon fill="#50ae94" width={24} height={24} />}
+                    tokenSale={<USDTIcon fill="#50ae94" width={16} height={16} />}
                 />
 
             </Box>
             <ButtonSecondRemex
-                onClick={() => {
-                    if (item?.status === "LISTING") {
-                        setIsShowBuy(true)
-                    } else {
-                        setTitleError('Sold out');
-                        setIsError(true);
-                    }
-                }}
-
+                LinkComponent={Link}
+                href={"/shop-item-detail/" + item.token_id}
                 sx={{
                     width: 1,
                     mt: 2,
@@ -72,6 +68,7 @@ function ListingItem({ item }: Props) {
 export default ListingItem
 export type ListingItemType = {
     price: number,
+    sale_price: number,
     status: string,
     token_id: number,
     image_link: string,

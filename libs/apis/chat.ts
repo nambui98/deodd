@@ -63,7 +63,6 @@ const blockUser = async (data: { wallet: string }) => {
     })
 }
 const unBlockUser = async (data: { wallet: string }) => {
-    debugger
     return await vhIdRequest({
         url: baseURLChat + `/unblock`,
         method: 'POST',

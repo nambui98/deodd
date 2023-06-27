@@ -27,6 +27,7 @@ function ContentAssets({ }: Props) {
         },
 
     ]
+
     return (
         <Container>
             <Box display={{ xs: 'block', md: 'none' }}>

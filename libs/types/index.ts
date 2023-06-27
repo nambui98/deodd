@@ -57,6 +57,11 @@ export enum EnumNFT {
     GOLD = 'GOLD',
     DIAMOND = 'DIAMOND'
 }
+export enum EnumNFTNumber {
+    BRONZE,
+    GOLD,
+    DIAMOND
+}
 export enum EnumNFTTitle {
     BRONZE = 'Bronze NFT Card',
     GOLD = 'Gold NFT Card',
@@ -81,6 +86,7 @@ export enum MessageCommand {
 export type TypeNFT = {
     id: number | string,
     type: number | string,
+    image: string,
     amount: number,
 }
 
