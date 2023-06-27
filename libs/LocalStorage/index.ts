@@ -2,7 +2,7 @@ const accessToken = 'access_token1';
 const refreshToken = 'refresh_token1';
 const walletAddress = 'wallet_address1';
 const userInfo = "user_info1";
-const isProfileModalOpened = 'is_profile_modal_opened';
+const isProfileModalOpened = 'is_profile_modal_opened1';
 const setAccessToken = (token: string) => {
     localStorage.setItem(accessToken, token);
 }
