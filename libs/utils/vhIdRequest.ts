@@ -19,7 +19,8 @@ const vhIdRequest = axios.create({
 
 vhIdRequest.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = LocalStorage.getAccessToken();
+  
     if (config.headers) {
       config.headers["Authorization"] = 'Bearer ' + token
     }
