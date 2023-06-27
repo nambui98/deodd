@@ -99,9 +99,9 @@ function Chat({ open }: { open: boolean }) {
             }
         },
         onError(err: any) {
-            setIsLoadMoreWithoutAuth(false);
-            setIsError(true)
-            setTitleError(err.response?.data?.meta.error_message)
+            // setIsLoadMoreWithoutAuth(false);
+            // setIsError(true)
+            // setTitleError(err.response?.data?.meta.error_message)
         },
         select: (data: any) => {
             if (data.status === 200) {
