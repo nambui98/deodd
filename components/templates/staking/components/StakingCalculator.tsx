@@ -20,6 +20,8 @@ type StakingCalculatorType = {
 }
 
 function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingCalculatorType) {
+  console.log(currentPool);
+
   const [duration, setDuration] = useState<number>(1)
   const { data, refetch: caculateEstProfit } = useQuery({
     queryKey: ["caculateEstProfit"],
@@ -75,10 +77,9 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
             <BnbIcon width={20} height={20} color={Colors.primaryDark} />
           }
           inputComponent={FormatNumber as any}
-          value={10000}
-          // type="number"
+          value={ethers.utils.formatEther(currentPool.current_prize)}
           sx={{
-            // pointerEvents: 'none',
+            pointerEvents: 'none',
             backgroundColor: "primary.300",
             borderRadius: "0.5rem",
             px: 3,

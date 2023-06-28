@@ -25,6 +25,8 @@ function StakingPage() {
       }
     },
   });
+  console.log(currentPool);
+
   const { refetch, data, isLoading: isLoadingGetPools } = useQuery({
     queryKey: ["getPools"],
     enabled: !!walletIsConnected,

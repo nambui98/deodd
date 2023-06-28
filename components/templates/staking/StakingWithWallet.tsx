@@ -46,6 +46,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
   const { walletAddress } = useWalletContext();
   const { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken } = useDeoddNFTContract();
+  console.log(currentPool);
 
   const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
     queryKey: ["getAssetsBalance2"],
