@@ -7,11 +7,10 @@ import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotHistoryType } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { Format } from "utils/format";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  history: LoyaltyJackpotHistoryType;
-  historyIsLoading: boolean;
-  historyIsError: boolean;
+  history: UseQueryResult<LoyaltyJackpotHistoryType, unknown>;
 };
 
 function formatNumber(number: number) {
@@ -26,24 +25,22 @@ function formatDate(dateString: string) {
   return `${hour} - ${date}`;
 }
 
-function JackpotHistory({
-  history,
-  historyIsLoading,
-  historyIsError,
-}: PropsType) {
+function JackpotHistory({ history }: PropsType) {
   return (
     <Stack
       direction={"row"}
-      justifyContent={history.endTime != null ? "space-between" : "center"}
+      justifyContent={
+        history?.data?.endTime != null ? "space-between" : "center"
+      }
       bgcolor={"background.paper"}
       p={2}
       borderRadius={3}
       sx={{
         mx: { xs: 2, md: 0 },
-        height: { xs: 218, md: history.endTime != null ? 218 : 384 },
+        height: { xs: 218, md: history?.data?.endTime != null ? 218 : 384 },
       }}
     >
-      {historyIsLoading && (
+      {history.isLoading && (
         <Stack
           height={1}
           width={1}
@@ -53,7 +50,7 @@ function JackpotHistory({
           <CircularProgress size={40} color="secondary" />
         </Stack>
       )}
-      {!historyIsLoading && history.endTime && (
+      {!history.isLoading && !history.isError && history.data.endTime && (
         <>
           <Stack justifyContent={"space-between"}>
             <Stack gap={1}>
@@ -61,12 +58,12 @@ function JackpotHistory({
                 Your TossPoint
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {formatNumber(history.userTossPoint) ?? 0}
+                {formatNumber(history.data.userTossPoint) ?? 0}
               </Typography>
             </Stack>
             <Stack direction={"row"} gap={1}>
               <Image
-                src={getPathAvatar(history.winnerAvatarId)}
+                src={getPathAvatar(history.data.winnerAvatarId)}
                 width={24}
                 height={24}
                 alt="Winner Avatar"
@@ -81,12 +78,17 @@ function JackpotHistory({
                   Winner
                 </Typography>
                 <Typography variant="body2" lineHeight={"1.25rem"}>
-                  {history.winnerUserName ?? ""} (
-                  {Convert.convertWalletAddress(history.winnerWallet, 5, 4)})
+                  {history.data.winnerUserName ?? ""} (
+                  {Convert.convertWalletAddress(
+                    history.data.winnerWallet,
+                    5,
+                    4
+                  )}
+                  )
                 </Typography>
                 <Stack direction={"row"} gap={1} color={"text.secondary"}>
                   <Typography variant="h2" lineHeight={"2rem"}>
-                    {formatNumber(history.jackpot)}
+                    {formatNumber(history.data.jackpot)}
                   </Typography>
                   <BnbIcon width={24} />
                 </Stack>
@@ -99,7 +101,7 @@ function JackpotHistory({
                 TossPoint Required
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {formatNumber(history.tossPointRequire)}
+                {formatNumber(history.data.tossPointRequire)}
               </Typography>
             </Stack>
             <Stack gap={0.5}>
@@ -112,7 +114,7 @@ function JackpotHistory({
                 Start
               </Typography>
               <Typography variant="body2" lineHeight={"1.25rem"}>
-                {formatDate(history.startTime)}
+                {formatDate(history.data.startTime)}
               </Typography>
               <Typography
                 fontSize={"0.75rem"}
@@ -123,13 +125,13 @@ function JackpotHistory({
                 End
               </Typography>
               <Typography variant="body2" lineHeight={"1.25rem"}>
-                {formatDate(history.endTime)}
+                {formatDate(history.data.endTime)}
               </Typography>
             </Stack>
           </Stack>
         </>
       )}
-      {!historyIsLoading && !history.endTime && (
+      {!history.isLoading && (history.isError || !history.data.endTime) && (
         <>
           <Stack
             sx={{ inset: 0 }}

@@ -11,18 +11,7 @@ type Props = {};
 
 function JackpotPool({}: Props) {
   const { walletIsConnected } = useWalletContext();
-  const {
-    setSeason,
-    leaderboard,
-    leaderboardIsError,
-    leaderboardIsLoading,
-    history,
-    historyIsLoading,
-    historyIsError,
-    seasonInfo,
-    seasonInfoIsLoading,
-    seasonInfoIsError,
-  } = useLoyaltyJackpot();
+  const { setSeason, leaderboard, history, seasonInfo } = useLoyaltyJackpot();
 
   return (
     <Box width={1}>
@@ -52,12 +41,18 @@ function JackpotPool({}: Props) {
         <Typography mt={3.5} variant="body2">
           Season{" "}
           <Box component={"span"} color={"text.secondary"}>
-            {seasonInfoIsLoading ? "..." : `#${seasonInfo.currentSeason}`}
+            {seasonInfo.isLoading
+              ? "..."
+              : seasonInfo.isError
+              ? "--"
+              : `#${seasonInfo.data.currentSeason}`}
           </Box>{" "}
           Started at{" "}
-          {seasonInfoIsLoading
+          {seasonInfo.isLoading
             ? "--/--/----"
-            : Format.formatDateTime(seasonInfo.startTime)}
+            : seasonInfo.isError
+            ? "--/--/----"
+            : Format.formatDateTime(seasonInfo.data.startTime)}
         </Typography>
 
         <Typography variant="body2" color={"text.disabled"}>
@@ -72,9 +67,11 @@ function JackpotPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            {seasonInfoIsLoading
+            {seasonInfo.isLoading
               ? "---"
-              : Format.formatMoney(seasonInfo.currentReward, 4)}
+              : seasonInfo.isError
+              ? "---"
+              : Format.formatMoney(seasonInfo.data.currentReward, 4)}
           </Typography>
 
           <BnbIcon width={40} color={Colors.primaryDark} />
@@ -92,16 +89,22 @@ function JackpotPool({}: Props) {
               fontWeight={500}
               color={"text.primary"}
             >
-              {seasonInfoIsLoading
+              {seasonInfo.isLoading
                 ? "--"
-                : seasonInfo.connectWalletTossPoint ?? 0}
+                : seasonInfo.isError
+                ? "--"
+                : seasonInfo.data.connectWalletTossPoint ?? 0}
               /
               <Box
                 component={"span"}
                 color={"text.secondary"}
                 fontSize={"2.375rem"}
               >
-                {seasonInfoIsLoading ? "..." : seasonInfo.tossPointRequire}
+                {seasonInfo.isLoading
+                  ? "..."
+                  : seasonInfo.isError
+                  ? "--"
+                  : seasonInfo.data.tossPointRequire}
               </Box>
             </Typography>
           </>
@@ -121,14 +124,8 @@ function JackpotPool({}: Props) {
           <JackpotPoolBoard
             setSeason={setSeason}
             leaderboard={leaderboard}
-            leaderboardIsLoading={leaderboardIsLoading}
-            leaderboardIsError={leaderboardIsError}
             history={history}
-            historyIsLoading={historyIsLoading}
-            historyIsError={historyIsError}
             seasonInfo={seasonInfo}
-            seasonInfoIsLoading={seasonInfoIsLoading}
-            seasonInfoIsError={seasonInfoIsError}
           />
         </>
       ) : null}

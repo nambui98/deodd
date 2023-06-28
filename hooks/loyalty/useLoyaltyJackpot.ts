@@ -6,6 +6,7 @@ import {
 } from "libs/apis/loyaltyAPI";
 import { useWalletContext } from "contexts/WalletContext";
 import { useQuery } from "@tanstack/react-query";
+import { LoyaltyJackpotLeaderboardType, LoyaltyJackpotHistoryType, LoyaltyJackpotSeasonInfoType } from "libs/types/loyaltyTypes";
 
 function useLoyaltyJackpot() {
   const { walletAddress, walletIsConnected } = useWalletContext();
@@ -13,15 +14,16 @@ function useLoyaltyJackpot() {
   const [season, setSeason] = useState<number>(0);
 
   // Data for Jackpot banner
-  const {
-    data: seasonInfo,
-    isError: seasonInfoIsError,
-    isLoading: seasonInfoIsLoading,
-  } = useQuery({
+  const seasonInfo = useQuery({
     queryKey: ["jackpotSeasonInfo"],
-    queryFn: async () => {
+    queryFn: async (): Promise<LoyaltyJackpotSeasonInfoType> => {
       const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-      return (promiseResult.data.data);
+      if (promiseResult.data.data != null) {
+        return (promiseResult.data.data);
+      } else {
+        // Throw error when response if ok but there is no data
+        throw new Error("No Data");
+      }
     },
     enabled: walletIsConnected,
     staleTime: 2500,
@@ -29,27 +31,34 @@ function useLoyaltyJackpot() {
   });
 
   // Data for Jackpot leaderboard tab
-  const {
-    data: leaderboard,
-    isError: leaderboardIsError,
-    isLoading: leaderboardIsLoading,
-  } = useQuery({
+  const leaderboard = useQuery({
     queryKey: ["leaderboard", season],
-    queryFn: async () => {
+    queryFn: async (): Promise<LoyaltyJackpotLeaderboardType> => {
       if (season === 0) {
         const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-        if (promiseResult.data != null) {
+        if (promiseResult.data.data != null) {
           const leaderboardList = promiseResult.data.data.dashboard.dashboard;
           const connectWallet = promiseResult.data.data.dashboard.connectWallet;
           return {
             leaderboardList,
             connectWallet,
           }
+        } else {
+          // Throw error when response if ok but there is no data
+          throw new Error("No Data");
         }
       } else {
         const promiseResult = await getLoyaltyJackpotBoardHistory(walletAddress, season);
-        if (promiseResult.data != null) {
-          return promiseResult.data.data;
+        if (promiseResult.data.data != null) {
+          const leaderboardList = promiseResult.data.data.dashboard;
+          const connectWallet = promiseResult.data.data.connectWallet;
+          return {
+            leaderboardList,
+            connectWallet,
+          }
+        } else {
+          // Throw error when response if ok but there is no data
+          throw new Error("No Data");
         }
       }
     },
@@ -59,32 +68,29 @@ function useLoyaltyJackpot() {
   });
 
   // Data for Jackpot history tab
-  const {
-    data: history,
-    isError: historyIsError,
-    isLoading: historyIsLoading,
-  } = useQuery({
+  const history = useQuery({
     queryKey: ["jackpotHistory", season],
-    queryFn: async () => {
+    queryFn: async (): Promise<LoyaltyJackpotHistoryType> => {
       const promiseResult = await getLoyaltyHistoryJackpot(walletAddress, season);
-      return promiseResult.data.data;
+      if (promiseResult.data.data != null) {
+        return promiseResult.data.data;
+      } else {
+        // Throw error when response if ok but there is no data
+        throw new Error("No Data");
+      }
     },
     enabled: walletIsConnected,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
+  console.log(history.data)
+
   return {
     setSeason,
     leaderboard,
-    leaderboardIsLoading,
-    leaderboardIsError,
     history,
-    historyIsLoading,
-    historyIsError,
     seasonInfo,
-    seasonInfoIsLoading,
-    seasonInfoIsError,
   };
 }
 

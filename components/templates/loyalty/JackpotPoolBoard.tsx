@@ -10,31 +10,20 @@ import {
   LoyaltyJackpotHistoryType,
   LoyaltyJackpotSeasonInfoType,
 } from "libs/types/loyaltyTypes";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type Props = {
   setSeason: (value: number) => void;
-  leaderboard: LoyaltyJackpotLeaderboardType;
-  leaderboardIsLoading: boolean;
-  leaderboardIsError: boolean;
-  history: LoyaltyJackpotHistoryType;
-  historyIsLoading: boolean;
-  historyIsError: boolean;
-  seasonInfo: LoyaltyJackpotSeasonInfoType;
-  seasonInfoIsLoading: boolean;
-  seasonInfoIsError: boolean;
+  leaderboard: UseQueryResult<LoyaltyJackpotLeaderboardType, unknown>;
+  history: UseQueryResult<LoyaltyJackpotHistoryType, unknown>;
+  seasonInfo: UseQueryResult<LoyaltyJackpotSeasonInfoType, unknown>;
 };
 
 function JackpotPoolBoard({
   setSeason,
   leaderboard,
-  leaderboardIsLoading,
-  leaderboardIsError,
   history,
-  historyIsLoading,
-  historyIsError,
   seasonInfo,
-  seasonInfoIsLoading,
-  seasonInfoIsError,
 }: Props) {
   const [valueTab, setValueTab] = useState(1);
 
@@ -65,9 +54,9 @@ function JackpotPoolBoard({
 
   const selectOptions = ["Current Season"];
 
-  if (!seasonInfoIsLoading && !seasonInfoIsError) {
-    for (let i = seasonInfo.currentSeason; i >= 1; i--) {
-      if (i !== seasonInfo.currentSeason) {
+  if (!seasonInfo.isLoading && !seasonInfo.isError) {
+    for (let i = seasonInfo.data.currentSeason; i >= 1; i--) {
+      if (i !== seasonInfo.data.currentSeason) {
         selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
       }
     }
@@ -96,17 +85,9 @@ function JackpotPoolBoard({
       </Stack>
 
       {valueTab === 1 ? (
-        <JackpotLeaderboard
-          leaderboard={leaderboard}
-          leaderboardIsLoading={leaderboardIsLoading}
-          leaderboardIsError={leaderboardIsError}
-        />
+        <JackpotLeaderboard leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
-        <JackpotHistory
-          history={history}
-          historyIsLoading={historyIsLoading}
-          historyIsError={historyIsError}
-        />
+        <JackpotHistory history={history} />
       ) : (
         ""
       )}

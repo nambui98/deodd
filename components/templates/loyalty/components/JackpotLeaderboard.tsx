@@ -19,18 +19,13 @@ import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyJackpotLeaderboardType } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { useWalletContext } from "contexts/WalletContext";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  leaderboard: LoyaltyJackpotLeaderboardType;
-  leaderboardIsLoading: boolean;
-  leaderboardIsError: boolean;
+  leaderboard: UseQueryResult<LoyaltyJackpotLeaderboardType, unknown>;
 };
 
-function JackpotLeaderboard({
-  leaderboard,
-  leaderboardIsLoading,
-  leaderboardIsError,
-}: PropsType) {
+function JackpotLeaderboard({ leaderboard }: PropsType) {
   const { userInfo, walletAddress } = useWalletContext();
 
   return (
@@ -68,38 +63,41 @@ function JackpotLeaderboard({
             position: "relative",
           }}
         >
-          {leaderboardIsLoading && (
+          {leaderboard.isLoading && (
             <Stack height={1} justifyContent={"center"} alignItems={"center"}>
               <CircularProgress size={40} color="secondary" />
             </Stack>
           )}
-          {!leaderboardIsLoading && leaderboard.leaderboardList.length <= 0 && (
-            <Stack
-              sx={{ inset: 0 }}
-              position={"absolute"}
-              gap={5}
-              justifyContent={"center"}
-              alignItems={"center"}
-              textAlign={"center"}
-            >
-              <MyImage
-                sx={{
-                  width: { xs: 80, md: 144 },
-                  height: { xs: 80, md: 144 },
-                }}
-                src={CoinEmptyImage}
-                alt="Empty Coin Image"
-              />
-              <Typography
-                fontSize={"1rem"}
-                lineHeight={"1.375rem"}
-                fontWeight={600}
-                color={"secondary.100"}
+
+          {!leaderboard.isLoading &&
+            (leaderboard.isError ||
+              leaderboard.data.leaderboardList.length === 0) && (
+              <Stack
+                sx={{ inset: 0 }}
+                position={"absolute"}
+                gap={5}
+                justifyContent={"center"}
+                alignItems={"center"}
+                textAlign={"center"}
               >
-                There is no one here
-              </Typography>
-            </Stack>
-          )}
+                <MyImage
+                  sx={{
+                    width: { xs: 80, md: 144 },
+                    height: { xs: 80, md: 144 },
+                  }}
+                  src={CoinEmptyImage}
+                  alt="Empty Coin Image"
+                />
+                <Typography
+                  fontSize={"1rem"}
+                  lineHeight={"1.375rem"}
+                  fontWeight={600}
+                  color={"secondary.100"}
+                >
+                  {leaderboard.isError ? "No Data" : "There is no one here"}
+                </Typography>
+              </Stack>
+            )}
           <Table stickyHeader aria-label="simple table">
             <colgroup>
               <col width={"11%"} />
@@ -122,15 +120,16 @@ function JackpotLeaderboard({
                 },
               }}
             >
-              {!leaderboardIsLoading &&
-                leaderboard.leaderboardList.length > 0 &&
-                leaderboard.leaderboardList.map((row) => (
+              {!leaderboard.isLoading &&
+                !leaderboard.isError &&
+                leaderboard.data.leaderboardList.length > 0 &&
+                leaderboard.data.leaderboardList.map((row) => (
                   <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet.wallet
+                          row.wallet === leaderboard.data.connectWallet.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -156,7 +155,7 @@ function JackpotLeaderboard({
                           fontWeight={400}
                           lineHeight={"1.25rem"}
                           color={
-                            row.wallet === leaderboard.connectWallet.wallet
+                            row.wallet === leaderboard.data.connectWallet.wallet
                               ? "text.secondary"
                               : "text.primary"
                           }
@@ -178,7 +177,7 @@ function JackpotLeaderboard({
                       <Typography
                         variant="caption"
                         color={
-                          row.wallet === leaderboard.connectWallet.wallet
+                          row.wallet === leaderboard.data.connectWallet.wallet
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -215,8 +214,10 @@ function JackpotLeaderboard({
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
               <Typography variant="caption">
-                {!leaderboardIsLoading
-                  ? leaderboard.connectWallet.rank ?? "--"
+                {!leaderboard.isLoading
+                  ? !leaderboard.isError
+                    ? leaderboard.data.connectWallet.rank ?? "--"
+                    : "--"
                   : "--"}
               </Typography>
             </TableCell>
@@ -236,9 +237,11 @@ function JackpotLeaderboard({
             </TableCell>
             <TableCell align="right" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
-                {!leaderboardIsLoading
-                  ? leaderboard.leaderboardList.length > 0
-                    ? leaderboard.connectWallet.tossPoint ?? 0
+                {!leaderboard.isLoading
+                  ? !leaderboard.isError
+                    ? leaderboard.data.leaderboardList.length > 0
+                      ? leaderboard.data.connectWallet.tossPoint ?? 0
+                      : "--"
                     : "--"
                   : "--"}
               </Typography>
