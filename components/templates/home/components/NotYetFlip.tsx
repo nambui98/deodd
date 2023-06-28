@@ -132,6 +132,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
             color: isSelected ? 'secondary.main' : 'secondary.700',
             flex: '1 1 50%',
             width: '100%',
+            '-webkit-tap-highlight-color': 'transparent',
             py: { sm: 3, xs: 2 },
             '.disabled, .enabled': {
                 position: 'absolute',
@@ -144,19 +145,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                 zIndex: isSelected ? 1 : 0,
                 opacity: isSelected ? 1 : 0,
             },
-            '&:hover': {
-                border: "1px solid #FEF156",
-                color: 'secondary.main',
-                backgroundColor: "primary.100",
-                '.disabled': {
-                    zIndex: 0,
-                    opacity: 0,
-                },
-                '.enabled': {
-                    zIndex: 1,
-                    opacity: 1
-                },
-            },
+
         }}>
 
             {

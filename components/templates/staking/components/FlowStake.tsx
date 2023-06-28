@@ -7,13 +7,16 @@ import { BigNumber, ethers } from 'ethers';
 import { TypeNFT } from 'libs/types';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
+import { useMutation } from '@tanstack/react-query';
+import { DeoddService } from 'libs/apis';
 
 type Props = {
     nftSelected?: TypeNFT | null,
-    handleSetNftSelected: Function
+    handleSetNftSelected: Function,
+    stakeOption: number
 }
 
-function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
+function FlowStake({ stakeOption, nftSelected, handleSetNftSelected }: Props) {
     const { setIsError, setTitleError } = useSiteContext();
     const { walletAddress } = useWalletContext();
     const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
@@ -47,6 +50,27 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
             }
         },
     })
+    // stake balance
+    const { mutateAsync: stakeInBalance } = useMutation({
+
+        mutationFn: () => {
+            return DeoddService.stakeNft(nftSelected!.id!);
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+
+            setIsLoading(false);
+            debugger
+            setTitleError(error?.response?.data.meta.error_message || error.message)
+        },
+        onSuccess(data, variables, context) {
+            setIsApproveModalOpened(true);
+            handleSetNftSelected(null)
+            setIsApproved(false);
+            setIsLoading(false);
+
+        },
+    });
     const handleApprove = () => {
         setIsLoading(true);
         approve?.()
@@ -62,30 +86,37 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
                 setIsError(true);
                 setTitleError(error.reason || 'Something went wrong');
             })
+
+
     }
     const handleStake = () => {
         setIsLoading(true)
-        stake?.()
-            .then(resWrite => {
-                return resWrite.wait();
-            })
-            .then((res) => {
-                setIsApproveModalOpened(true);
-                handleSetNftSelected(null)
-                setIsApproved(false);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                debugger
-                setIsLoading(false);
-                setIsError(true);
-                setTitleError(error.reason || 'Something went wrong');
-            })
+        if (stakeOption === 1) {
+            stakeInBalance();
+        } else {
+
+            stake?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                    setIsApproveModalOpened(true);
+                    handleSetNftSelected(null)
+                    setIsApproved(false);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    debugger
+                    setIsLoading(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Something went wrong');
+                })
+        }
     }
     return (
         <>
             {
-                isApproved ?
+                isApproved || stakeOption === 1 ?
                     <ButtonLoading
                         sx={{
                             py: 2,
@@ -97,6 +128,7 @@ function FlowStake({ nftSelected, handleSetNftSelected }: Props) {
                             lineHeight: "1.375rem",
                             backgroundColor: "primary.300"
                         }}
+                        disabled={!nftSelected}
                         loading={isLoadingStake || isLoading}
                         onClick={() => {
                             handleStake()

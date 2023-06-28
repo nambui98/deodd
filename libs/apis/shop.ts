@@ -3,7 +3,7 @@ const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
         ? '/deodd'
         : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
-            ? '/deodd-pretest' : ''
+            ? '/deodd' : ''
 const getShopList = async ({
     limit,
     offset,

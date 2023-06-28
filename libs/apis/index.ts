@@ -4,12 +4,13 @@ import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
 import { getCurrentIp } from "./ip"
 import { ShopApis } from "./shop"
+import { EnumNFT } from "libs/types"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
         ? '/deodd'
         : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
-            ? '/deodd-pretest' : ''
+            ? '/deodd' : ''
 const saveInfoUser = async (body: object) => {
     return vhIdRequest({
         url: baseURL + `/users/information`,
@@ -80,6 +81,48 @@ const getNFTDetailById = async (id: string | number) => {
         method: 'get',
     })
 }
+const caculateEstProfit = async ({ typeNft, duration }: { typeNft: EnumNFT, duration: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/nft-item/staking/calculate`,
+        method: 'POST',
+        data: {
+            duration,
+            itemType: typeNft
+        }
+    })
+}
+const stakeNft = async (tokenId: string | number) => {
+    return await vhIdRequest({
+        url: baseURL + `/users/nft/stake`,
+        method: 'POST',
+        data: {
+            tokenId: tokenId
+        }
+    })
+}
+const getCurrentPool = () => {
+    return vhIdRequest({
+        url: baseURL + `/nft/staking/current-pool`,
+        method: 'GET',
+
+    })
+}
+const getPoolsAndRewardsByUser = () => {
+    return vhIdRequest({
+        url: baseURL + `/nft/staking/pools`,
+        method: 'GET',
+
+    })
+}
+const getNFTStaked = async (poolId: string | number) => {
+    return await vhIdRequest({
+        url: baseURL + `/users/nft/stake`,
+        method: 'POST',
+        data: {
+            poolId: poolId
+        }
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -96,5 +139,10 @@ export const DeoddService = {
     getResultByFlipId,
     getCurrentIp,
     getWinLoseStreak,
-    getTotalVolume
+    getTotalVolume,
+    caculateEstProfit,
+    stakeNft,
+    getNFTStaked,
+    getCurrentPool,
+    getPoolsAndRewardsByUser
 }

@@ -1,25 +1,88 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Stack, Divider, styled } from "@mui/material";
 import { ButtonMain } from "components/ui/button";
 import { BnbIcon, CupIcon } from "utils/Icons";
-import { Colors } from "constants/index";
+import { Colors, DateOpenMainnet } from "constants/index";
 import StakingHistoryTable from "./components/StakingHistoryTable";
 import UnstakeModal from "./components/UnstakeModal";
 import { nftHolderContract } from "libs/contract";
-import { useContractWrite } from "wagmi";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { BigNumber } from "ethers";
 import Link from "next/link";
+import { useSiteContext } from "contexts/SiteContext";
+import { isBefore } from "date-fns";
+import { parseEther } from "ethers/lib/utils.js";
 
-function StakingSuccess() {
+function StakingSuccess({
+  handleHiddenPools
+}: {
+
+  handleHiddenPools: VoidFunction
+}) {
   const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
-  const { writeAsync: unStake, isLoading: isLoadingUnStake, } = useContractWrite({
+  const [countNftUnstacked, setCountNftUnstaked] = useState<number>(0);
+  const { setIsError, setTitleError } = useSiteContext();
+  const [currentStageModal, setCurrentStageModal] = useState<number>(1);
+
+
+  useEffect(() => {
+
+    const isAllowUnstake = isBefore(new Date(), new Date("2023-06-29T13:00:00Z"));
+    if (isAllowUnstake) {
+      setCurrentStageModal(3)
+    } else {
+      setCurrentStageModal(1)
+    }
+  }, [])
+
+  const { writeAsync: unStake, isLoading: isLoadingUnStake, write } = useContractWrite({
     address: nftHolderContract.address,
     mode: 'recklesslyUnprepared',
     abi: nftHolderContract.abi,
     functionName: 'unstakeNFT',
+    // onError(error: Error, variables, context) {
+    //   setIsError(true)
+    //   setTitleError(error.message || 'Something wend wrong.');
+    // },
+    // onSuccess(result) {
+    //   //       setCountNftUnstaked((prev) => {
+    //   //         if (prev + 1 === list.length) {
+
+    //   // setCurrentStageModal(3);
+    //   // setIsUnstakeOpened(true);
+    //   //         }
+    //   //         return prev + 1
+    //   //       });
+
+    // }
   })
+  const { config } = usePrepareContractWrite({
+    address: nftHolderContract.address,
+    // mode: 'recklesslyUnprepared',
+    abi: nftHolderContract.abi,
+    functionName: 'unstakeNFT',
+
+  })
+  // const { data, isLoading, isSuccess, write } = useContractWrite(config)
   const handleUnStakeMultiNft = () => {
-    // unStake([BigNumber.from(nftSelected?.id ?? 0)])
+    let list: number[] = [414, 408];
+    // write?.({
+    //   recklesslySetUnpreparedArgs: [408],
+    // })
+
+    for (let index = 0; index < list.length; index++) {
+      const nft = list[index];
+      write?.({
+        recklesslySetUnpreparedArgs: [nft],
+      })
+      // unStake.arguments([nft])
+      // write({ args: [6] })
+      // unStake({
+
+      //   // recklesslySetUnpreparedArgs: [nft]
+      // })
+    }
+
   }
   return (
     <>
@@ -46,9 +109,15 @@ function StakingSuccess() {
               borderColor: "text.primary",
               color: "text.primary",
             }}
-            onClick={() => setIsUnstakeOpened(true)}
+            onClick={() => {
+              if (currentStageModal === 3) {
+                handleUnStakeMultiNft();
+              } else {
+                setIsUnstakeOpened(true)
+              }
+            }}
           />
-          <UnstakeModal open={isUnstakeOpened} setOpen={setIsUnstakeOpened} />
+          <UnstakeModal currentStage={currentStageModal} open={isUnstakeOpened} setOpen={setIsUnstakeOpened} />
           <ButtonMain
             LinkComponent={Link}
             href="/loyalty"
@@ -67,6 +136,7 @@ function StakingSuccess() {
           />
           <ButtonMain
             active={true}
+            onClick={handleHiddenPools}
             title="Stake more"
             sx={{
               py: 1,
@@ -78,7 +148,7 @@ function StakingSuccess() {
 
             }}
           />
-          <ButtonMain
+          {/* <ButtonMain
             active={true}
             title={<Stack sx={{ flexDirection: "row", gap: 1 }}>
               Claim
@@ -100,7 +170,7 @@ function StakingSuccess() {
                 }
               }
             }}
-          />
+          /> */}
         </Stack>
       </Stack>
 

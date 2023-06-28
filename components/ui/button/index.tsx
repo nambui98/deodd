@@ -83,16 +83,46 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       backgroundColor: "primary.100",
       border: '1px solid transparent',
       borderColor: active ? "secondary.main" : 'transparent',
+      '-webkit-tap-highlight-color': 'transparent',
       svg: {
         fill: active ? Colors.secondaryDark : "#fff"
       },
-      '&:hover, &:active, &:focus, &:focus-within': {
+      '&:hover': {
         color: 'secondary.main',
         backgroundColor: "primary.100",
         border: '1px solid',
         borderColor: "secondary.main",
         svg: {
           fill: Colors.secondaryDark
+        }
+      },
+      '@media (hover: hover) and (pointer: fine)': {
+        '&:hover': {
+          border: "1px solid #FEF156",
+          color: 'secondary.main',
+          backgroundColor: "primary.100",
+
+          '.disabled': {
+            zIndex: 0,
+            opacity: 0,
+          },
+          '.enabled': {
+            zIndex: 1,
+            opacity: 1
+          },
+        },
+      },
+
+      '@media (hover: none) and (pointer: coarse)': {
+        '&:hover': {
+          // backgroundColor: "primary.100",
+          // border: '1px solid transparent',
+
+          // borderColor: 'transparent',
+          // color: 'inherit',
+          // svg: {
+          //   fill: "#fff"
+          // },
         }
       },
       ...props.sx

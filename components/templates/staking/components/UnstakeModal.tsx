@@ -6,17 +6,18 @@ import { Typography } from "@mui/material";
 
 type UnstakeModalType = {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  currentStage: number
 }
 
-function UnstakeModal({ open, setOpen }: UnstakeModalType) {
-  const [stage, setStage] = useState(1);
+function UnstakeModal({ open, setOpen, currentStage }: UnstakeModalType) {
+  const [stage, setStage] = useState(currentStage);
 
   useEffect(() => {
     if (open) {
-      setStage(1);
+      setStage(currentStage);
     }
-  }, [open]);
+  }, [open, currentStage]);
 
   return (
     <MyModal

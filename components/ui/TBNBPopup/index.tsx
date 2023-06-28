@@ -31,34 +31,38 @@ export default function TBNBPopup() {
 
   return (
     <>
-      <ButtonSecondRemex onClick={handleOpen} sx={{
-        backgroundColor: "secondary.main",
-        boxShadow: "0px 2px 16px rgba(254, 241, 86, 0.5)",
-        color: "primary.200",
-        textTransform: "none",
-        px: 1.5,
-        py: 1.25,
-        width: 1,
-        svg: {
-          border: "none",
-          stroke: "transparent",
-        },
-        ":hover": {
+      {
+        process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN !== "MAINNET" &&
+        <ButtonSecondRemex onClick={handleOpen} sx={{
+          backgroundColor: "secondary.main",
+          boxShadow: "0px 2px 16px rgba(254, 241, 86, 0.5)",
           color: "primary.200",
+          textTransform: "none",
+          px: 1.5,
+          py: 1.25,
+          width: 1,
           svg: {
+            border: "none",
             stroke: "transparent",
-            border: "none"
           },
-          boxShadow: "0px 2px 10px rgba(254, 241, 86, 0.5)",
+          ":hover": {
+            color: "primary.200",
+            svg: {
+              stroke: "transparent",
+              border: "none"
+            },
+            boxShadow: "0px 2px 10px rgba(254, 241, 86, 0.5)",
 
-        }
-      }}>
-        <BnbIcon width={20} />
-        <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"} ml={1}>
-          Get tBNB now
-        </Typography>
-      </ButtonSecondRemex>
+          }
+        }}>
+          <BnbIcon width={20} />
+          <Typography variant="body2" fontWeight={400} lineHeight={"1.25rem"} ml={1}>
+            Get tBNB now
+          </Typography>
+        </ButtonSecondRemex>
 
+
+      }
       <MyModal
         open={open}
         setOpen={setOpen}

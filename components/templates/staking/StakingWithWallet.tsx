@@ -40,7 +40,7 @@ const dummyData = [
   },
 ]
 
-function StakingWithWallet() {
+function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
@@ -56,11 +56,11 @@ function StakingWithWallet() {
         total: 0,
         data: [
           {
-            type: EnumNFT.DIAMOND,
-            list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
+            type: EnumNFT.BRONZE,
+            list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
               return {
                 id: d.token_id ?? '',
-                type: EnumNFT.DIAMOND,
+                type: EnumNFT.BRONZE,
                 image: d.image_link,
                 amount: 0
               }
@@ -77,17 +77,19 @@ function StakingWithWallet() {
               }
             })
           },
+
           {
-            type: EnumNFT.BRONZE,
-            list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
+            type: EnumNFT.DIAMOND,
+            list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
               return {
                 id: d.token_id ?? '',
-                type: EnumNFT.BRONZE,
+                type: EnumNFT.DIAMOND,
                 image: d.image_link,
                 amount: 0
               }
             })
-          }
+          },
+
 
         ]
       }
@@ -123,8 +125,15 @@ function StakingWithWallet() {
           //
         }}>
           <Stack sx={{ flexDirection: "row", gap: 1, maxHeight: 36 }}>
-            <ButtonFourth active={stakeOption === 1} onClick={() => setStakeOption(1)} label={"Balance"} />
-            <ButtonFourth active={stakeOption === 2} onClick={() => setStakeOption(2)} label={"Wallet"} />
+            <ButtonFourth active={stakeOption === 1} onClick={() => {
+              setStakeOption(1)
+              handleClickNFT(null);
+            }} label={"Balance"} />
+            <ButtonFourth active={stakeOption === 2} onClick={() => {
+
+              handleClickNFT(null);
+              setStakeOption(2)
+            }} label={"Wallet"} />
           </Stack>
           <MainTypography >%Share per NFT</MainTypography>
           <Stack sx={{ gap: 2 }}>
@@ -166,7 +175,7 @@ function StakingWithWallet() {
         </Box>
 
         {/* Calculator Modal */}
-        <StakingCalculator open={isCalculatorOpened} setOpen={setIsCalculatorOpened} />
+        <StakingCalculator nftSelected={nftSelected} currentPool={currentPool} open={isCalculatorOpened} setOpen={setIsCalculatorOpened} />
 
         {/* Footer and Approve Button */}
         <Stack sx={{
@@ -187,7 +196,7 @@ function StakingWithWallet() {
             All figures are estimate provided for your convenience only <br />
             By no means represent guaranteed returns.
           </Typography>
-          <FlowStake nftSelected={nftSelected} handleSetNftSelected={handleClickNFT} />
+          <FlowStake stakeOption={stakeOption} nftSelected={nftSelected} handleSetNftSelected={handleClickNFT} />
         </Stack>
       </Stack>
     </>

@@ -43,7 +43,7 @@ export const useDeoddNFTContract = () => {
         functionName: 'getWalletTokens',
         args: [walletAddress],
         enabled: !!walletAddress,
-        watch: true,
+        // watch: true,
         async onSuccess(res: BigNumber[]) {
             const data = await getInfoTokens(res);
             setWalletTokens(data as TypeDataNFT);

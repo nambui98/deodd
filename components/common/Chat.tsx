@@ -3,7 +3,7 @@ import { ClickAwayListener } from '@mui/base'
 import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Popper, Stack, Typography } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
-import { DOWNSTREAM_MESSAGE } from 'constants/index'
+import { DOWNSTREAM_MESSAGE, DateOpenMainnet } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import EmojiPicker from 'emoji-picker-react'
@@ -19,6 +19,7 @@ import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
 import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
+import { isBefore } from 'date-fns'
 
 export type MessageType = {
     userInfo: {
@@ -56,6 +57,7 @@ function Chat({ open }: { open: boolean }) {
     const [isStartBlock, setIsStartBlock] = useState<boolean>(false);
     const [blockState, setBlockState] = useState<enumBlockState>(enumBlockState.BlockList);
 
+    const isNotMainnetOpen = isBefore(new Date(), new Date(DateOpenMainnet))
     const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
     const { refetch: getMessages, } = useQuery({
         queryKey: ["getMessages"],
@@ -99,9 +101,9 @@ function Chat({ open }: { open: boolean }) {
             }
         },
         onError(err: any) {
-            setIsLoadMoreWithoutAuth(false);
-            setIsError(true)
-            setTitleError(err.response?.data?.meta.error_message)
+            // setIsLoadMoreWithoutAuth(false);
+            // setIsError(true)
+            // setTitleError(err.response?.data?.meta.error_message)
         },
         select: (data: any) => {
             if (data.status === 200) {
@@ -347,89 +349,97 @@ function Chat({ open }: { open: boolean }) {
                 </Stack>
             </Box>
             <Divider />
-            <Box
-                height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
-                display={'flex'}
-                flexDirection={'column-reverse'}
-                onScroll={handleScroll}
-                p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
-                <Box ref={refBottomChat} />
-                {
-                    messages.map((message) => {
-                        return <ChatItem
-                            handleUndoReport={handleUndoReport}
-                            key={message.id}
-                            data={message}
-                            isReport={message.is_hidden}
-                            handleClick={(e) => handleClick(e, message)}
-                            id={message.id}
-                            isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
-                        />
-                    })
-                }
-                {
-                    isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
-                        <CoinAnimation mx="auto" width={30} height={30} />
-                    </Box>
-                }
-                <Box ref={refTopChat} />
-            </Box>
-            <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
-                <Stack direction={'row'} p={2} height={80} alignItems={'center'} width={1} columnGap={2}>
-                    {
-                        walletIsConnected ?
-                            <Stack>
-                                <Box height={10}>
-                                    <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping || ''}</Typography>
-                                </Box>
-                                <SendMessage setReplyUser={setReplyUser} replyUser={replyUser} sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
-                            </Stack>
-                            : <ButtonLoading
-                                onClick={handleConnectWallet}
-                                sx={{
-                                    py: 1,
-                                    borderRadius: 2,
-                                    width: '100%'
-                                }}
-                                loading={false}>
-                                <Typography variant='body2' fontWeight={600} textTransform={'uppercase'}>Connect wallet to chat</Typography>
-                            </ButtonLoading>
-                    }
-                </Stack>
-                {
-                    !isScrollBottom &&
-                    <Button
-                        variant="outlined"
-                        onClick={() => {
-                            handleScrollToBottom()
-                        }}
-                        sx={{
-                            position: 'absolute',
-                            bottom: 77,
-                            right: 8,
-                            borderRadius: "100%",
-                            p: 1,
-                            minWidth: 0,
-                            border: "1px solid ",
-                            borderColor: "secondary.main",
-                            boxShadow: "0px 2px 16px rgba(254, 241, 86, 0.5)",
-                            bgcolor: "primary.200",
-                            '&:hover': {
-                                bgcolor: 'transparent',
-                                border: '1px solid',
-                                borderColor: 'secondary.main',
+            {
+                isNotMainnetOpen ?
+                    <Typography fontWeight={600} textAlign={'center'} fontSize={24} mt={2}>Coming soon</Typography>
+                    :
+                    <>
+                        <Box
+                            height={{ xs: 'calc(100vh - 208px)', md: 'calc(100vh - 143px)' }}
+                            display={'flex'}
+                            flexDirection={'column-reverse'}
+                            onScroll={handleScroll}
+                            p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
+                            <Box ref={refBottomChat} />
+                            {
+                                messages.map((message) => {
+                                    return <ChatItem
+                                        handleUndoReport={handleUndoReport}
+                                        key={message.id}
+                                        data={message}
+                                        isReport={message.is_hidden}
+                                        handleClick={(e) => handleClick(e, message)}
+                                        id={message.id}
+                                        isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
+                                    />
+                                })
                             }
-                        }}
-                    >
-                        <ArrowDown2Icon />
-                        {
-                            isHasNewMessage &&
+                            {
+                                isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
+                                    <CoinAnimation mx="auto" width={30} height={30} />
+                                </Box>
+                            }
+                            <Box ref={refTopChat} />
+                        </Box>
+                        <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} bottom={0} right={0} left={0}>
+                            <Stack direction={'row'} p={2} height={80} alignItems={'center'} width={1} columnGap={2}>
+                                {
+                                    walletIsConnected ?
+                                        <Stack>
+                                            <Box height={10}>
+                                                <Typography variant='body2' fontWeight={400} color={'secondary.700'} fontSize={10}>{textTyping || ''}</Typography>
+                                            </Box>
+                                            <SendMessage setReplyUser={setReplyUser} replyUser={replyUser} sendMessageCancelTyping={sendMessageCancelTyping} sendMessageTyping={sendMessageTyping} disabled={readyState !== ReadyState.OPEN} walletAddress={walletAddress} />
+                                        </Stack>
+                                        : <ButtonLoading
+                                            onClick={handleConnectWallet}
+                                            sx={{
+                                                py: 1,
+                                                borderRadius: 2,
+                                                width: '100%'
+                                            }}
+                                            loading={false}>
+                                            <Typography variant='body2' fontWeight={600} textTransform={'uppercase'}>Connect wallet to chat</Typography>
+                                        </ButtonLoading>
+                                }
+                            </Stack>
+                            {
+                                !isScrollBottom &&
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {
+                                        handleScrollToBottom()
+                                    }}
+                                    sx={{
+                                        position: 'absolute',
+                                        bottom: 77,
+                                        right: 8,
+                                        borderRadius: "100%",
+                                        p: 1,
+                                        minWidth: 0,
+                                        border: "1px solid ",
+                                        borderColor: "secondary.main",
+                                        boxShadow: "0px 2px 16px rgba(254, 241, 86, 0.5)",
+                                        bgcolor: "primary.200",
+                                        '&:hover': {
+                                            bgcolor: 'transparent',
+                                            border: '1px solid',
+                                            borderColor: 'secondary.main',
+                                        }
+                                    }}
+                                >
+                                    <ArrowDown2Icon />
+                                    {
+                                        isHasNewMessage &&
 
-                            <Box width={12} height={12} bgcolor="#FF5870" borderRadius={'100%'} position={'absolute'} top={0} right={0} />
-                        }
-                    </Button>
-                }
-            </Box>
+                                        <Box width={12} height={12} bgcolor="#FF5870" borderRadius={'100%'} position={'absolute'} top={0} right={0} />
+                                    }
+                                </Button>
+                            }
+                        </Box>
+
+                    </>
+            }
             <PopoverItem
                 handleReport={handleReport}
                 handleBlock={handleBlock}
@@ -900,4 +910,7 @@ const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: {
         }
 
     </Box >
+}
+const ContentChat = () => {
+    return <Typography>Coming Soon</Typography>
 }

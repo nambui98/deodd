@@ -4,7 +4,7 @@ const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
         ? '/deodd'
         : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
-            ? '/deodd-pretest' : ''
+            ? '/deodd' : ''
 const checkUserReferral = async (address: string) => {
     return vhIdRequest({
         url: baseURL + `/users/ref/checkref?address=${address}`,
