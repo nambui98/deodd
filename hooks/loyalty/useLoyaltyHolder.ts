@@ -82,7 +82,10 @@ function useLoyaltyHolder() {
         // Throw error when response if ok but there is no data
         throw new Error("No Data");
       }
-    }
+    },
+    enabled: walletIsConnected,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
 
