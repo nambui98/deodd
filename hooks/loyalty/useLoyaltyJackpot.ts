@@ -32,7 +32,7 @@ function useLoyaltyJackpot() {
 
   // Data for Jackpot leaderboard tab
   const leaderboard = useQuery({
-    queryKey: ["leaderboard", season],
+    queryKey: ["jackpotLeaderboard", season],
     queryFn: async (): Promise<LoyaltyJackpotLeaderboardType> => {
       if (season === 0) {
         const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);

@@ -7,22 +7,23 @@ import HolderHistory from "./components/HolderHistory";
 import HolderLeaderboard from "./components/HolderLeaderboard";
 import {
   LoyaltyHolderLeaderboardType,
-  LoyaltyLoadingType,
   LoyaltyHolderHistoryType,
+  LoyaltyHolderPeriodInfoType,
 } from "libs/types/loyaltyTypes";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  leaderboard: LoyaltyHolderLeaderboardType;
+  periodInfo: UseQueryResult<LoyaltyHolderPeriodInfoType, unknown>;
+  leaderboard: UseQueryResult<LoyaltyHolderLeaderboardType, unknown>;
+  history: UseQueryResult<LoyaltyHolderHistoryType, unknown>;
   setPeriod: (value: number) => void;
-  loading: LoyaltyLoadingType;
-  history: LoyaltyHolderHistoryType;
 };
 
 function HolderPoolBoard({
+  periodInfo,
   leaderboard,
-  setPeriod,
-  loading,
   history,
+  setPeriod,
 }: PropsType) {
   const [valueTab, setValueTab] = useState(1);
 
@@ -51,13 +52,13 @@ function HolderPoolBoard({
     },
   ];
 
-  const selectOptions = [];
+  const selectOptions = ["Current Period"];
 
-  for (let i = leaderboard.currentPeriod; i >= 1; i--) {
-    if (i === leaderboard.currentPeriod) {
-      selectOptions.push("Current Period");
-    } else {
-      selectOptions.push(`Period #${i < 10 ? "0" : ""}${i}`);
+  if (!periodInfo.isLoading && !periodInfo.isError) {
+    for (let i = periodInfo.data.currentPeriod; i >= 1; i--) {
+      if (i !== periodInfo.data.currentPeriod) {
+        selectOptions.push(`Period #${i < 10 ? "0" : ""}${i}`);
+      }
     }
   }
 
@@ -84,9 +85,9 @@ function HolderPoolBoard({
       </Stack>
 
       {valueTab === 1 ? (
-        <HolderLeaderboard leaderboard={leaderboard} loading={loading} />
+        <HolderLeaderboard leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
-        <HolderHistory history={history} loading={loading} />
+        <HolderHistory history={history} />
       ) : (
         ""
       )}

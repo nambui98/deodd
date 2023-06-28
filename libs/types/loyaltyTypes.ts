@@ -36,7 +36,6 @@ export type LoyaltyJackpotLeaderboardType = {
 };
 
 export type LoyaltyHolderLeaderboardType = {
-  currentPeriod: number;
   leaderboardList: {
     rank: number;
     owner: string;
@@ -63,7 +62,7 @@ export type LoyaltyHolderHistoryType = {
   profit: number;
 }[];
 
-export type LoyaltyPeriodInfoType = {
+export type LoyaltyHolderPeriodInfoType = {
   currentPeriod: number;
   startTime: string;
   endTime: string;

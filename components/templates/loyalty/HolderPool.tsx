@@ -16,7 +16,7 @@ type Props = {};
 
 function HolderPool({}: Props) {
   const { walletAddress, walletIsConnected } = useWalletContext();
-  const { leaderboard, setPeriod, periodInfo, loading, history, setReset } =
+  const { periodInfo, leaderboard, history, setReset, setPeriod } =
     useLoyaltyHolder();
   const {
     setIsSuccess,
@@ -73,7 +73,10 @@ function HolderPool({}: Props) {
         }}
       >
         {walletIsConnected &&
-          (periodInfo.currentPeriod > 1 && periodInfo.totalReward > 0 ? (
+          !periodInfo.isLoading &&
+          !periodInfo.isError &&
+          (periodInfo.data.currentPeriod > 1 &&
+          periodInfo.data.totalReward > 0 ? (
             <>
               <Typography
                 variant="body2"
@@ -105,16 +108,24 @@ function HolderPool({}: Props) {
         <Typography variant="body2">
           Period{" "}
           <Box component={"span"} color={"text.secondary"}>
-            #{periodInfo.currentPeriod || 1}
+            {periodInfo.isLoading
+              ? "..."
+              : periodInfo.isError
+              ? "--"
+              : `#${periodInfo.data.currentPeriod}`}
           </Box>{" "}
           Started at{" "}
-          {periodInfo.startTime
-            ? Format.formatDateTime(periodInfo.startTime)
-            : "--/--/----"}
+          {periodInfo.isLoading
+            ? "--/--/----"
+            : periodInfo.isError
+            ? "--/--/----"
+            : Format.formatDateTime(periodInfo.data.startTime)}
         </Typography>
+
         <Typography variant="body2" color={"text.disabled"}>
           Total NFT Holder Reward
         </Typography>
+
         <Stack
           direction={"row"}
           columnGap={1}
@@ -123,20 +134,26 @@ function HolderPool({}: Props) {
           mb={1.25}
         >
           <Typography variant="h3" fontSize={"3rem"}>
-            {Format.formatMoney(periodInfo.currentPrize, 4)}
+            {periodInfo.isLoading
+              ? "---"
+              : periodInfo.isError
+              ? "---"
+              : Format.formatMoney(periodInfo.data.currentPrize, 4)}
           </Typography>
           <BnbIcon width={40} color={Colors.primaryDark} />
         </Stack>
         {walletIsConnected &&
-          (periodInfo.currentReward !== null &&
-          periodInfo.currentReward >= 0 ? (
+          !periodInfo.isLoading &&
+          !periodInfo.isError &&
+          (periodInfo.data.currentReward !== null &&
+          periodInfo.data.currentReward >= 0 ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is
                 <Box component={"span"} color={"text.primary"}>
                   {" "}
-                  {periodInfo.currentReward
-                    ? Format.formatMoney(periodInfo.currentReward, 7)
+                  {periodInfo.data.currentReward
+                    ? Format.formatMoney(periodInfo.data.currentReward, 7)
                     : 0}{" "}
                   <Box component={"span"}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
@@ -180,10 +197,10 @@ function HolderPool({}: Props) {
             }}
           />
           <HolderPoolBoard
+            periodInfo={periodInfo}
             leaderboard={leaderboard}
-            setPeriod={setPeriod}
-            loading={loading}
             history={history}
+            setPeriod={setPeriod}
           />
         </>
       ) : null}

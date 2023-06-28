@@ -14,18 +14,15 @@ import { BnbIcon } from "utils/Icons";
 import Image from "next/image";
 import MyImage from "components/ui/image";
 import { CoinEmptyImage } from "utils/Images";
-import {
-  LoyaltyLoadingType,
-  LoyaltyHolderHistoryType,
-} from "libs/types/loyaltyTypes";
+import { LoyaltyHolderHistoryType } from "libs/types/loyaltyTypes";
 import { getPathAvatarNFT } from "utils/checkAvatar";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  history: LoyaltyHolderHistoryType;
-  loading: LoyaltyLoadingType;
+  history: UseQueryResult<LoyaltyHolderHistoryType, unknown>;
 };
 
-function HolderHistory({ history, loading }: PropsType) {
+function HolderHistory({ history }: PropsType) {
   return (
     <Box
       sx={{
@@ -36,7 +33,7 @@ function HolderHistory({ history, loading }: PropsType) {
         backgroundColor: "background.paper",
       }}
     >
-      {loading.history && (
+      {history.isLoading && (
         <Stack
           height={1}
           width={1}
@@ -46,7 +43,7 @@ function HolderHistory({ history, loading }: PropsType) {
           <CircularProgress size={40} color="secondary" />
         </Stack>
       )}
-      {!loading.history && history.length > 0 && (
+      {!history.isLoading && !history.isError && history.data.length > 0 && (
         <TableContainer
           sx={{
             height: 384,
@@ -94,7 +91,7 @@ function HolderHistory({ history, loading }: PropsType) {
                 },
               }}
             >
-              {history.map((row) => (
+              {history.data.map((row) => (
                 <TableRow
                   key={row.tokenId}
                   sx={{
@@ -133,7 +130,9 @@ function HolderHistory({ history, loading }: PropsType) {
                         lineHeight={"1rem"}
                         fontWeight={400}
                       >
-                        {new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(row.profit)}
+                        {new Intl.NumberFormat("en", {
+                          maximumFractionDigits: 12,
+                        }).format(row.profit)}
                       </Typography>
                       <BnbIcon width={16} />
                     </Stack>
@@ -144,7 +143,7 @@ function HolderHistory({ history, loading }: PropsType) {
           </Table>
         </TableContainer>
       )}
-      {!loading.history && history.length <= 0 && (
+      {!history.isLoading && (history.isError || history.data.length === 0) && (
         <Stack
           sx={{ inset: 0 }}
           gap={5}
