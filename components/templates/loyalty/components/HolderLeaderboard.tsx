@@ -125,7 +125,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                   fontWeight={600}
                   color={"secondary.100"}
                 >
-                  There is no one here
+                  {leaderboard.isError ? "No Data" : "There is no one here"}
                 </Typography>
               </Stack>
             )}
