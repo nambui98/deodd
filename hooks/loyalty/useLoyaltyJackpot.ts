@@ -84,8 +84,6 @@ function useLoyaltyJackpot() {
     refetchOnWindowFocus: false,
   });
 
-  console.log(history.data)
-
   return {
     setSeason,
     leaderboard,
