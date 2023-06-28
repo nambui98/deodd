@@ -8,8 +8,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
-import { Colors, UrlBlockExplorer } from 'constants/index';
+import { Colors, DateOpenShop, UrlBlockExplorer } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
+import { isBefore } from 'date-fns';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
 import { GetServerSideProps } from 'next';
@@ -18,19 +19,24 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   return {
-//     redirect: {
-//       destination: '/shop',
-//       permanent: false,
-//     },
-//   }
-//   return {
-//     props: {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
-//     }
-//   }
-// }
+  const isNotShopOpen = process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION" ? isBefore(new Date(), new Date(DateOpenShop)) : false;
+  if (isNotShopOpen) {
+    return {
+      redirect: {
+        destination: '/shop',
+        permanent: false,
+      },
+    }
+
+  }
+  return {
+    props: {
+
+    }
+  }
+}
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();

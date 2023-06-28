@@ -17,7 +17,7 @@ type Props = {
 export default function Shop({ }: Props) {
   const { walletIsConnected } = useWalletContext();
   const [amount, setAmount] = useState<number>(0)
-  const isNotShopOpen = isBefore(new Date(), new Date(DateOpenShop))
+  const isNotShopOpen = process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION" ? isBefore(new Date(), new Date(DateOpenShop)) : false;
 
   if (isNotShopOpen) {
     return <ShopOpening />
