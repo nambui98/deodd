@@ -6,7 +6,7 @@ import { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
 
-    const isNotMainnetOpen = process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION" ? isBefore(new Date(), new Date(DateOpenMainnet)) : false;
+    const isNotMainnetOpen = process.env.NEXT_PUBLIC_OPEN_MAINNET === "FALSE" ? isBefore(new Date(), new Date(DateOpenMainnet)) : false;
     debugger
     if (isNotMainnetOpen) {
         if (url.pathname === '/loyalty'

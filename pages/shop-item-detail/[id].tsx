@@ -21,7 +21,7 @@ import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
-  const isNotShopOpen = process.env.NEXT_PUBLIC_ENVIRONMENT === "PRODUCTION" ? isBefore(new Date(), new Date(DateOpenShop)) : false;
+  const isNotShopOpen = process.env.NEXT_PUBLIC_OPEN_MAINNET === "FALSE" ? isBefore(new Date(), new Date(DateOpenShop)) : false;
   if (isNotShopOpen) {
     return {
       redirect: {
