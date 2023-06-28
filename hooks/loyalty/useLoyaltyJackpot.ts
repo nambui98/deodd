@@ -15,7 +15,7 @@ function useLoyaltyJackpot() {
 
   // Data for Jackpot banner
   const seasonInfo = useQuery({
-    queryKey: ["jackpotSeasonInfo"],
+    queryKey: ["jackpotSeasonInfo", walletAddress],
     queryFn: async (): Promise<LoyaltyJackpotSeasonInfoType> => {
       const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
       if (promiseResult.data.data != null) {
@@ -32,7 +32,7 @@ function useLoyaltyJackpot() {
 
   // Data for Jackpot leaderboard tab
   const leaderboard = useQuery({
-    queryKey: ["jackpotLeaderboard", season],
+    queryKey: ["jackpotLeaderboard", season, walletAddress],
     queryFn: async (): Promise<LoyaltyJackpotLeaderboardType> => {
       if (season === 0) {
         const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
@@ -69,7 +69,7 @@ function useLoyaltyJackpot() {
 
   // Data for Jackpot history tab
   const history = useQuery({
-    queryKey: ["jackpotHistory", season],
+    queryKey: ["jackpotHistory", season, walletAddress],
     queryFn: async (): Promise<LoyaltyJackpotHistoryType> => {
       const promiseResult = await getLoyaltyHistoryJackpot(walletAddress, season);
       if (promiseResult.data.data != null) {
