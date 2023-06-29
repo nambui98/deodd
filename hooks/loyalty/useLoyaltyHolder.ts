@@ -51,6 +51,7 @@ function useLoyaltyHolder() {
     enabled: walletIsConnected && !!periodsInfo.data ? true : false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   // Data for NFT holder history tab.
@@ -73,6 +74,7 @@ function useLoyaltyHolder() {
     enabled: walletIsConnected && !!periodsInfo.data ? true : false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   return { periodsInfo, leaderboard, history, setPeriod, setReset };

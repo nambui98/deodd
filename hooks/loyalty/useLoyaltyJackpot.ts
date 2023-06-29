@@ -64,6 +64,7 @@ function useLoyaltyJackpot() {
     enabled: walletIsConnected,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   // Data for Jackpot history tab
@@ -81,6 +82,7 @@ function useLoyaltyJackpot() {
     enabled: walletIsConnected,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   return {
