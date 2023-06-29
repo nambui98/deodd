@@ -28,15 +28,16 @@ function ComingSoon({ title, subTitle, hasCountDown }: Props) {
 
                 backgroundImage: `url(${BannerMainnetMobileImage})`,
             },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }}>
-            <Meta title="Mainnet is not open" description={AppConfig.description} />
-            <Box position={'relative'} top={22} left={16} component={Link} href="/">
+            <Box position={'absolute'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>
-            <Stack mt={{ xs: 10, md: 20 }} px={{ xs: 8, md: 0 }} alignItems={'center'}>
+            <Stack px={{ xs: 8, md: 0 }} alignItems={'center'}>
                 <Stack sx={{ borderLeft: 8, borderColor: 'secondary.main', pl: 2 }}>
-                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={4} color="secondary.main">{title}</Typography>
-
+                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={{ xs: 2, md: 4 }} color="secondary.main">{title}</Typography>
                     <Typography fontSize={{ xs: 18, md: 24 }} fontWeight={500} letterSpacing={2}>{subTitle}</Typography>
                 </Stack>
 
