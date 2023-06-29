@@ -1,6 +1,6 @@
-import { Box, Stack, Typography, Divider } from "@mui/material";
+import { Box, Stack, Typography, Divider, Skeleton } from "@mui/material";
 import { BnbIcon, Growth1Icon } from "utils/Icons";
-import { LoyaltyImage, Loyalty2Image, LeaderboardImage } from "utils/Images";
+import { Loyalty2Image } from "utils/Images";
 import { Colors } from "constants/index";
 import HolderPoolBoard from "./HolderPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
@@ -105,43 +105,45 @@ function HolderPool({}: Props) {
             ""
           ))}
 
-        <Typography variant="body2">
-          Period{" "}
-          <Box component={"span"} color={"text.secondary"}>
-            {periodInfo.isLoading
-              ? "..."
-              : periodInfo.isError
-              ? "--"
-              : `#${periodInfo.data.currentPeriod}`}
-          </Box>{" "}
-          Started at{" "}
-          {periodInfo.isLoading
-            ? "--/--/----"
-            : periodInfo.isError
-            ? "--/--/----"
-            : Format.formatDateTime(periodInfo.data.startTime)}
-        </Typography>
+        {periodInfo.isLoading ? (
+          <Skeleton variant="text" width={200} />
+        ) : (
+          <Typography variant="body2">
+            Period{" "}
+            <Box component={"span"} color={"text.secondary"}>
+              {periodInfo.isError ? "--" : `#${periodInfo.data.currentPeriod}`}
+            </Box>{" "}
+            Started at{" "}
+            {periodInfo.isError
+              ? "--/--/----"
+              : Format.formatDateTime(periodInfo.data.startTime)}
+          </Typography>
+        )}
 
         <Typography variant="body2" color={"text.disabled"}>
           Total NFT Holder Reward
         </Typography>
 
-        <Stack
-          direction={"row"}
-          columnGap={1}
-          alignItems={"center"}
-          justifyContent={"center"}
-          mb={1.25}
-        >
-          <Typography variant="h3" fontSize={"3rem"}>
-            {periodInfo.isLoading
-              ? "---"
-              : periodInfo.isError
-              ? "---"
-              : Format.formatMoney(periodInfo.data.currentPrize, 4)}
-          </Typography>
-          <BnbIcon width={40} color={Colors.primaryDark} />
-        </Stack>
+        {periodInfo.isLoading ? (
+          <Skeleton variant="text" width={250} sx={{ fontSize: 48 }} />
+        ) : (
+          <Stack
+            direction={"row"}
+            columnGap={1}
+            alignItems={"center"}
+            justifyContent={"center"}
+            mb={1.25}
+          >
+            <Typography variant="h1" lineHeight={"3.75rem"}>
+              {periodInfo.isError
+                ? "---"
+                : Format.formatMoney(periodInfo.data.currentPrize, 4)}
+            </Typography>
+
+            <BnbIcon width={40} color={Colors.primaryDark} />
+          </Stack>
+        )}
+
         {walletIsConnected &&
           !periodInfo.isLoading &&
           !periodInfo.isError &&
