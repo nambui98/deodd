@@ -58,7 +58,7 @@ function useLoyaltyJackpot() {
         const data = promiseResult.data.data;
         setSeasonInfo({
           currentSeason: data.currentSeason,
-          currentReward: Math.round(data.currentReward * 1000) / 1000,
+          currentReward: data.currentReward,
           connectWalletTossPoint: data.connectWalletTossPoint,
           tossPointRequire: data.tossPointRequire,
           startTime: data.startTime,
