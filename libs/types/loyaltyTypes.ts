@@ -36,38 +36,44 @@ export type LoyaltyJackpotLeaderboardType = {
 };
 
 export type LoyaltyHolderLeaderboardType = {
-  leaderboardList: {
+  leaderboard: {
     rank: number;
-    owner: string;
-    userName: string;
-    avatarId: number;
-    totalDiamondNFT: number;
-    totalGoldNFT: number;
-    totalBronzeNFT: number;
+    wallet: string;
+    user_name: string;
+    avatar_id: number;
+    diamond_holding: number;
+    gold_holding: number;
+    bronze_holding: number;
   }[];
-  connectWallet: {
+  currentUser: {
     rank: number;
-    owner: string;
-    userName: string;
-    avatarId: number;
-    totalDiamondNFT: number;
-    totalGoldNFT: number;
-    totalBronzeNFT: number;
+    wallet: string;
+    user_name: string;
+    avatar_id: number;
+    diamond_holding: number;
+    gold_holding: number;
+    bronze_holding: number;
   };
 };
 
 export type LoyaltyHolderHistoryType = {
-  tokenId: string;
-  typeId: string;
+  type: string;
+  wallet: string;
   profit: number;
+  token_id: number;
+  stake_atz: string;
+  unstake_atz: null | string;
+  image_link: "string";
 }[];
 
-export type LoyaltyHolderPeriodInfoType = {
-  currentPeriod: number;
-  startTime: string;
-  endTime: string;
-  currentPrize: number;
-  currentReward: number;
-  totalReward: number;
-  isActive: boolean;
-};
+export type LoyaltyHolderPeriodsInfoType = {
+  current_prize: number;
+  end_time: string;
+  id: string;
+  init_prize: number;
+  is_active: boolean;
+  is_claimed: boolean | null;
+  reward: number | null;
+  season: number;
+  start_time: string;
+}[]

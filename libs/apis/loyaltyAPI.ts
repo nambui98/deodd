@@ -93,3 +93,31 @@ export const getJackpotBoom = async () => {
     method: 'get',
   })
 }
+
+export const getCurrentNftPool = async () => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/current-pool`,
+    method: 'get',
+  })
+}
+
+export const getNftPoolPeriodsInfo = async () => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/pools`,
+    method: 'get',
+  })
+}
+
+export const getNftHistoryInfo = async (poolId: string) => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/nft-staked?poolId=${poolId}`,
+    method: 'get',
+  })
+}
+
+export const getNftLeaderboardInfo = async (poolId: string) => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/leaderboard?poolId=${poolId}`,
+    method: 'get',
+  })
+}

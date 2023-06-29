@@ -8,19 +8,19 @@ import HolderLeaderboard from "./components/HolderLeaderboard";
 import {
   LoyaltyHolderLeaderboardType,
   LoyaltyHolderHistoryType,
-  LoyaltyHolderPeriodInfoType,
+  LoyaltyHolderPeriodsInfoType,
 } from "libs/types/loyaltyTypes";
 import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  periodInfo: UseQueryResult<LoyaltyHolderPeriodInfoType, unknown>;
+  periodsInfo: UseQueryResult<LoyaltyHolderPeriodsInfoType, unknown>;
   leaderboard: UseQueryResult<LoyaltyHolderLeaderboardType, unknown>;
   history: UseQueryResult<LoyaltyHolderHistoryType, unknown>;
   setPeriod: (value: number) => void;
 };
 
 function HolderPoolBoard({
-  periodInfo,
+  periodsInfo,
   leaderboard,
   history,
   setPeriod,
@@ -52,13 +52,13 @@ function HolderPoolBoard({
     },
   ];
 
-  const selectOptions = ["Current Period"];
+  let selectOptions = ["Current Period"];
 
-  if (!periodInfo.isLoading && !periodInfo.isError) {
-    for (let i = periodInfo.data.currentPeriod; i >= 1; i--) {
-      if (i !== periodInfo.data.currentPeriod) {
-        selectOptions.push(`Period #${i < 10 ? "0" : ""}${i}`);
-      }
+  if (!periodsInfo.isLoading && !periodsInfo.isError) {
+    for (let i = 1; i < periodsInfo.data.length; i++) {
+      selectOptions.push(
+        `Period #${i < 10 ? "0" : ""}${periodsInfo.data[i].season}`
+      );
     }
   }
 

@@ -1,16 +1,16 @@
 import { Dispatch, SetStateAction } from "react";
 import { Typography } from "@mui/material";
 import useHolderTimer from "hooks/loyalty/useHolderTimer";
-import { LoyaltyHolderPeriodInfoType } from "libs/types/loyaltyTypes";
+import { LoyaltyHolderPeriodsInfoType } from "libs/types/loyaltyTypes";
 import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
   setReset: Dispatch<SetStateAction<boolean>>;
-  periodInfo: UseQueryResult<LoyaltyHolderPeriodInfoType, unknown>;
+  periodsInfo: UseQueryResult<LoyaltyHolderPeriodsInfoType, unknown>;
 };
 
-function NFTHolderTimer({ setReset, periodInfo }: PropsType) {
-  const timeLeft = useHolderTimer({ setReset, periodInfo });
+function NFTHolderTimer({ setReset, periodsInfo }: PropsType) {
+  const timeLeft = useHolderTimer({ setReset, periodsInfo });
 
   return <Typography variant="body2">Claimable in: {timeLeft}</Typography>;
 }

@@ -100,35 +100,33 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
               <CircularProgress size={40} color="secondary" />
             </Stack>
           )}
-          {!leaderboard.isLoading &&
-            (leaderboard.isError ||
-              leaderboard.data.leaderboardList.length === 0) && (
-              <Stack
-                sx={{ inset: 0 }}
-                position={"absolute"}
-                gap={5}
-                justifyContent={"center"}
-                alignItems={"center"}
-                textAlign={"center"}
+          {!leaderboard.isLoading && leaderboard.isError && (
+            <Stack
+              sx={{ inset: 0 }}
+              position={"absolute"}
+              gap={5}
+              justifyContent={"center"}
+              alignItems={"center"}
+              textAlign={"center"}
+            >
+              <MyImage
+                sx={{
+                  width: { xs: 80, md: 144 },
+                  height: { xs: 80, md: 144 },
+                }}
+                src={CoinEmptyImage}
+                alt="Empty Coin Image"
+              />
+              <Typography
+                fontSize={"1rem"}
+                lineHeight={"1.375rem"}
+                fontWeight={600}
+                color={"secondary.100"}
               >
-                <MyImage
-                  sx={{
-                    width: { xs: 80, md: 144 },
-                    height: { xs: 80, md: 144 },
-                  }}
-                  src={CoinEmptyImage}
-                  alt="Empty Coin Image"
-                />
-                <Typography
-                  fontSize={"1rem"}
-                  lineHeight={"1.375rem"}
-                  fontWeight={600}
-                  color={"secondary.100"}
-                >
-                  {leaderboard.isError ? "No Data" : "There is no one here"}
-                </Typography>
-              </Stack>
-            )}
+                {leaderboard.isError ? "No Data" : "There is no one here"}
+              </Typography>
+            </Stack>
+          )}
           <Table aria-label="simple table">
             <colgroup>
               <col width={"12%"} />
@@ -155,14 +153,14 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             >
               {!leaderboard.isLoading &&
                 !leaderboard.isError &&
-                leaderboard.data.leaderboardList.length > 0 &&
-                leaderboard.data.leaderboardList.map((row) => (
+                leaderboard.data.leaderboard.length > 0 &&
+                leaderboard.data.leaderboard.map((row) => (
                   <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.data.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -179,21 +177,25 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                         <Image
                           width={24}
                           height={24}
-                          src={getPathAvatar(row.avatarId)}
+                          src={getPathAvatar(row.avatar_id)}
                           alt="Avatar Image"
                         />
                         <Typography
                           variant="caption"
                           fontWeight={400}
                           color={
-                            row.owner === leaderboard.data.connectWallet.owner
+                            row.wallet === walletAddress
                               ? "text.secondary"
                               : "text.primary"
                           }
                         >
                           {`${
-                            row.userName ?? ""
-                          } (${Convert.convertWalletAddress(row.owner, 5, 4)})`}
+                            row.user_name ?? ""
+                          } (${Convert.convertWalletAddress(
+                            row.wallet,
+                            5,
+                            4
+                          )})`}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -204,13 +206,13 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.data.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalDiamondNFT}
+                        {row.diamond_holding}
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -220,13 +222,13 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.data.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalGoldNFT}
+                        {row.gold_holding}
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -236,13 +238,13 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.data.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalBronzeNFT}
+                        {row.bronze_holding}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -279,7 +281,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                   ? "--"
                   : leaderboard.isError
                   ? "--"
-                  : leaderboard.data.connectWallet.rank}
+                  : leaderboard.data.currentUser?.rank ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
@@ -302,7 +304,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                   ? "--"
                   : leaderboard.isError
                   ? "--"
-                  : leaderboard.data.connectWallet.totalDiamondNFT ?? 0}
+                  : leaderboard.data.currentUser?.diamond_holding ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
@@ -311,7 +313,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                   ? "--"
                   : leaderboard.isError
                   ? "--"
-                  : leaderboard.data.connectWallet.totalGoldNFT ?? 0}
+                  : leaderboard.data.currentUser?.gold_holding ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
@@ -320,7 +322,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
                   ? "--"
                   : leaderboard.isError
                   ? "--"
-                  : leaderboard.data.connectWallet.totalBronzeNFT ?? 0}
+                  : leaderboard.data.currentUser?.bronze_holding ?? "--"}
               </Typography>
             </TableCell>
           </TableRow>

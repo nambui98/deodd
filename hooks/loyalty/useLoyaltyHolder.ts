@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useWalletContext } from "contexts/WalletContext";
 import {
-  getLoyaltyNFTCurrent,
-  getLoyaltyNFTBoardBySeason,
-  getNFTItemProfitBySeason,
+  getNftPoolPeriodsInfo,
+  getNftHistoryInfo,
+  getNftLeaderboardInfo
 } from "libs/apis/loyaltyAPI";
 import { useQuery } from "@tanstack/react-query";
-import { LoyaltyHolderPeriodInfoType, LoyaltyHolderLeaderboardType, LoyaltyHolderHistoryType } from "libs/types/loyaltyTypes";
+import { LoyaltyHolderLeaderboardType, LoyaltyHolderHistoryType, LoyaltyHolderPeriodsInfoType } from "libs/types/loyaltyTypes";
 
 function useLoyaltyHolder() {
   const { walletAddress, walletIsConnected } = useWalletContext();
@@ -15,47 +15,40 @@ function useLoyaltyHolder() {
 
   const [reset, setReset] = useState(false); // state to reset when reaching new period
 
-  // Data for NFT holder banner.
-  const periodInfo = useQuery({
-    queryKey: ["periodInfo", reset, walletAddress],
-    queryFn: async (): Promise<LoyaltyHolderPeriodInfoType> => {
-      const promiseResult = await getLoyaltyNFTCurrent(walletAddress);
+  // Data for NFT holder banner and select list.
+  const periodsInfo = useQuery({
+    queryKey: ["periodsInfo", reset],
+    queryFn: async (): Promise<LoyaltyHolderPeriodsInfoType> => {
+      const promiseResult = await getNftPoolPeriodsInfo();
       if (promiseResult.data.data != null) {
-        const promiseData = promiseResult.data.data;
-        return {
-          currentPeriod: promiseData.num_period,
-          startTime: promiseData.start_time,
-          endTime: promiseData.end_time,
-          currentPrize: promiseData.current_prize,
-          currentReward: promiseData.current_reward,
-          totalReward: promiseData.total_reward,
-          isActive: promiseData.is_active,
-        }
+        return promiseResult.data.data;
       } else {
         // Throw error when response if ok but there is no data
         throw new Error("No Data");
       }
     },
-    staleTime: 2500,
-    refetchInterval: 5000, // refetch every 5 seconds
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   // Data for NFT holder leaderboard tab.
   const leaderboard = useQuery({
     queryKey: ["holderLeaderboard", period, walletAddress],
     queryFn: async (): Promise<LoyaltyHolderLeaderboardType> => {
-      const promiseResult = await getLoyaltyNFTBoardBySeason(walletAddress, period);
-      if (promiseResult.data.data != null) {
-        return {
-          leaderboardList: promiseResult.data.data.dashboard,
-          connectWallet: promiseResult.data.data.connectWallet,
+      if (periodsInfo.data != null) {
+        const promiseResult = await getNftLeaderboardInfo(periodsInfo.data[period].id);
+        if (promiseResult.data.data != null) {
+          console.log("leaderboard", promiseResult.data.data);
+          return promiseResult.data.data;
+        } else {
+          // Throw error when response if ok but there is no data
+          throw new Error("No Data");
         }
       } else {
-        // Throw error when response if ok but there is no data
-        throw new Error("No Data");
+        throw new Error("No data to fetch");
       }
     },
-    enabled: walletIsConnected,
+    enabled: walletIsConnected && !!periodsInfo.data,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
@@ -64,31 +57,25 @@ function useLoyaltyHolder() {
   const history = useQuery({
     queryKey: ["holderHistory", period, walletAddress],
     queryFn: async (): Promise<LoyaltyHolderHistoryType> => {
-      const promiseResult = await getNFTItemProfitBySeason(walletAddress, period);
-      if (promiseResult.data.data != null) {
-        return promiseResult.data.data.nftItemProfits.map(
-          (obj: {
-            token_id: string;
-            type_id: string;
-            profit: number;
-          }) => ({
-            tokenId: obj.token_id,
-            typeId: obj.type_id,
-            profit: obj.profit,
-          })
-        );
+      if (periodsInfo.data != null) {
+        const promiseResult = await getNftHistoryInfo(periodsInfo.data[period].id);
+        if (promiseResult.data.data != null) {
+          console.log("history", promiseResult.data.data);
+          return promiseResult.data.data
+        } else {
+          // Throw error when response if ok but there is no data
+          throw new Error("No Data");
+        }
       } else {
-        // Throw error when response if ok but there is no data
-        throw new Error("No Data");
+        throw new Error("No data to fetch");
       }
     },
-    enabled: walletIsConnected,
+    enabled: walletIsConnected && !!periodsInfo.data,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 
-
-  return { periodInfo, leaderboard, history, setPeriod, setReset };
+  return { periodsInfo, leaderboard, history, setPeriod, setReset };
 }
 
 export default useLoyaltyHolder;

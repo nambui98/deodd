@@ -15,7 +15,6 @@ import Image from "next/image";
 import MyImage from "components/ui/image";
 import { CoinEmptyImage } from "utils/Images";
 import { LoyaltyHolderHistoryType } from "libs/types/loyaltyTypes";
-import { getPathAvatarNFT } from "utils/checkAvatar";
 import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
@@ -93,7 +92,7 @@ function HolderHistory({ history }: PropsType) {
             >
               {history.data.map((row) => (
                 <TableRow
-                  key={row.tokenId}
+                  key={row.token_id}
                   sx={{
                     "td:first-child": {
                       pl: 2,
@@ -106,13 +105,13 @@ function HolderHistory({ history }: PropsType) {
                   <TableCell>
                     <Stack direction={"row"} gap={1} alignItems={"flex-start"}>
                       <Image
-                        src={getPathAvatarNFT(row.typeId)}
+                        src={row.image_link}
                         width={32}
                         height={32}
                         alt="NFT Item"
                       />
                       <Typography variant="body2" lineHeight="1.25rem">
-                        #{row.tokenId}
+                        {`DeODD #${row.token_id}`}
                       </Typography>
                     </Stack>
                   </TableCell>
