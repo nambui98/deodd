@@ -83,18 +83,54 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       backgroundColor: "primary.100",
       border: '1px solid transparent',
       borderColor: active ? "secondary.main" : 'transparent',
+      '-webkit-tap-highlight-color': 'transparent',
       svg: {
         fill: active ? Colors.secondaryDark : "#fff"
       },
-      '&:hover, &:active, &:focus, &:focus-within': {
-        color: 'secondary.main',
-        backgroundColor: "primary.100",
-        border: '1px solid',
-        borderColor: "secondary.main",
-        svg: {
-          fill: Colors.secondaryDark
+      // '&:hover, &:active, &:focus, &:focus-within': {
+      //   color: 'secondary.main',
+      //   backgroundColor: "primary.100",
+      //   border: '1px solid',
+      //   borderColor: "secondary.main",
+      //   svg: {
+      //     fill: Colors.secondaryDark
+      //   }
+      // },
+      '@media (hover: hover) and (pointer: fine)': {
+        '&:hover': {
+          color: 'secondary.main',
+          border: '1px solid',
+          borderColor: "secondary.main",
+          backgroundColor: "primary.100",
+          svg: {
+            fill: Colors.secondaryDark
+          },
+
+          '.disabled': {
+            zIndex: 0,
+            opacity: 0,
+          },
+          '.enabled': {
+            zIndex: 1,
+            opacity: 1
+          },
+        },
+      },
+
+      '@media (hover: none) and (pointer: coarse)': {
+        '&:hover': {
+          backgroundColor: "primary.100",
+          border: '1px solid transparent',
+
+          borderColor: 'secondary.main',
+          color: 'secondary.main'
+          // color: 'inherit',
+          // svg: {
+          //   fill: "#fff"
+          // },
         }
       },
+
       ...props.sx
     }
     }
