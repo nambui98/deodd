@@ -67,13 +67,13 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         path: '/statistic',
         isLink: true,
     },
-    {
-        id: 5,
-        icon: <FlipIcon />,
-        title: 'Flip',
-        path: '/',
-        isLink: true
-    },
+    // {
+    //     id: 5,
+    //     icon: <FlipIcon />,
+    //     title: 'Flip',
+    //     path: '/',
+    //     isLink: true
+    // },
     {
         id: 6,
         icon: <Ref2EarnIcon />,
