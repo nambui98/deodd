@@ -13,6 +13,7 @@ import { Convert } from 'utils/convert'
 import MyModal from '../../components/common/Modal'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
+import { GetServerSideProps } from 'next/types'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
