@@ -8,9 +8,13 @@ import Link from 'next/link';
 import React from 'react'
 import { BannerMainnetImage, BannerMainnetMobileImage, LogoImage } from 'utils/Images'
 
-type Props = {}
+type Props = {
+    title: string,
+    subTitle: string,
+    hasCountDown: boolean,
+}
 
-function MainnetLaunching({ }: Props) {
+function ComingSoon({ title, subTitle, hasCountDown }: Props) {
 
     const theme = useTheme();
     return (
@@ -24,24 +28,33 @@ function MainnetLaunching({ }: Props) {
 
                 backgroundImage: `url(${BannerMainnetMobileImage})`,
             },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         }}>
-            <Meta title="DeODD" description={AppConfig.description} />
-            <Box position={'relative'} top={22} left={16} component={Link} href="/">
+            <Box position={'absolute'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>
-            <Stack mt={{ xs: 10, md: 20 }} px={{ xs: 8, md: 0 }} alignItems={'center'}>
+            <Stack px={{ xs: 8, md: 0 }} alignItems={'center'}>
                 <Stack sx={{ borderLeft: 8, borderColor: 'secondary.main', pl: 2 }}>
-                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={4} color="secondary.main">Mainnet Launching</Typography>
-                    <Typography fontSize={{ xs: 18, md: 24 }} fontWeight={500} letterSpacing={2}>June 29 at 09:00 UTC</Typography>
+                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={{ xs: 2, md: 4 }} color="secondary.main" dangerouslySetInnerHTML={{ __html: title }} />
+                    <Typography fontSize={{ xs: 18, md: 24 }} fontWeight={500} letterSpacing={2}>{subTitle}</Typography>
                 </Stack>
 
             </Stack>
-            <Typography textAlign={'center'} mt={3} fontSize={16} fontWeight={500}>Start in</Typography>
-            <Stack mt={1} alignItems={'center'}>
-                <Countdown endDate={'2023-06-29T09:00:00Z'} />
-            </Stack>
+            {
+                hasCountDown &&
+                <>
+                    <Typography textAlign={'center'} mt={3} fontSize={16} fontWeight={500}>Start in</Typography>
+                    <Stack mt={1} alignItems={'center'}>
+                        <Countdown endDate={'2023-06-29T09:00:00Z'} />
+                    </Stack>
+
+                </>
+            }
+
         </Box>
     )
 }
 
-export default MainnetLaunching
+export default ComingSoon

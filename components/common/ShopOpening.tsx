@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { BannerShopOpenImage, BannerShopOpenMobileImage, LogoImage } from 'utils/Images';
 import { Meta } from './Meta';
+import { AppConfig } from '@/utils/AppConfig';
 type Props = {}
 
 function ShopOpening({ }: Props) {
@@ -23,7 +24,7 @@ function ShopOpening({ }: Props) {
             },
         }}>
 
-            <Meta title="DeODD Shop" description="Own your NFTs and participate in a decentralized coin flip and lottery mechanism by using your BNB with DeODD." />
+            <Meta title="DeODD Shop" description={AppConfig.description} />
             <Box position={'relative'} top={22} left={16} component={Link} href="/">
                 <MyImage src={LogoImage} height={52} width={86} alt="logo" />
             </Box>
