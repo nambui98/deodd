@@ -3,13 +3,11 @@ import { bgWinStreakImage, bgLossStreakImage } from "utils/Images";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { Convert } from "utils/convert";
+import { DashboardErrorType, DashboardStreakType } from "libs/types/dashboardTypes";
 
 type StreakPropsType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  streak: any;
+  error: DashboardErrorType
+  streak: DashboardStreakType;
 };
 
 export function StreakSection({ error, streak }: StreakPropsType) {
@@ -40,7 +38,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          {error.haveFlipped ? (
+          {!error.streakData.noData ? (
             <>
               <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
                 {streak.winStreak < 10 && streak.winStreak >= 1
@@ -54,7 +52,7 @@ export function StreakSection({ error, streak }: StreakPropsType) {
               </Typography>
             </>
           ) : (
-            <Typography variant="h3">{error.errorMessage}</Typography>
+            <Typography variant="h3">{error.streakData.errorMessage}</Typography>
           )}
         </Box>
       </DashboardCard>
@@ -76,14 +74,14 @@ export function StreakSection({ error, streak }: StreakPropsType) {
         height="13.5rem"
       >
         <TitleTextAbsolute text="highest loss streak" />
-        {error.haveFlipped ? (
+        {!error.streakData.noData ? (
           <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.795rem"}>
             {streak.lossStreak < 10 && streak.lossStreak >= 1
               ? `0${streak.lossStreak}`
               : streak.lossStreak}
           </Typography>
         ) : (
-          <Typography variant="h3">{error.errorMessage}</Typography>
+          <Typography variant="h3">{error.streakData.errorMessage}</Typography>
         )}
       </DashboardCard>
     </>

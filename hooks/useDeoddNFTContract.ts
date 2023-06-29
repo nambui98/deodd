@@ -9,6 +9,7 @@ import { DeoddService } from "libs/apis";
 import { deoddNFTContract } from "libs/contract";
 import { useContractRead } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
+import { DefaultSeason, SharePerNFT, DefaultRewardPool, DefaultStaked } from "constants/index";
 export type TypeNFT = {
     id: number | string,
     type: EnumNFT,
@@ -18,7 +19,10 @@ export type TypeNFT = {
 
 export const useDeoddNFTContract = () => {
     const { walletAddress, contractDeoddNFT } = useWalletContext();
-    const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
+    const [walletTokens, setWalletTokens] = useState<TypeDataNFT & {
+        estProfit: number,
+        percentSharePerNFT: number
+    }>();
     const [nftSelected, setNftSelected] = useState<TypeNFT | undefined | null>();
     const [reload, setReload] = useState<boolean>(false);
     const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
@@ -35,6 +39,8 @@ export const useDeoddNFTContract = () => {
                 data: [
                     {
                         type: EnumNFT.BRONZE,
+                        percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * data.data.data.nftItemHoldingDTOForUser.totalBronzeNFT * DefaultStaked / DefaultSeason,
                         list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
                             return {
                                 id: d.token_id ?? '',
@@ -46,6 +52,9 @@ export const useDeoddNFTContract = () => {
                     },
                     {
                         type: EnumNFT.GOLD,
+
+                        percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * data.data.data.nftItemHoldingDTOForUser.totalGoldNFT * DefaultStaked / DefaultSeason,
                         list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
                             return {
                                 id: d.token_id ?? '',
@@ -58,6 +67,9 @@ export const useDeoddNFTContract = () => {
 
                     {
                         type: EnumNFT.DIAMOND,
+
+                        percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * data.data.data.nftItemHoldingDTOForUser.totalDiamondNFT * DefaultStaked / DefaultSeason,
                         list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
                             return {
                                 id: d.token_id ?? '',
@@ -81,7 +93,10 @@ export const useDeoddNFTContract = () => {
         enabled: false,
         async onSuccess(res: BigNumber[]) {
             const data = await getInfoTokens(res);
-            setWalletTokens(data as TypeDataNFT);
+            setWalletTokens(data as TypeDataNFT & {
+                estProfit: number,
+                percentSharePerNFT: number
+            });
         },
     })
     const getInfoTokens = async (tokens: BigNumber[]) => {
@@ -112,23 +127,40 @@ export const useDeoddNFTContract = () => {
         let total: number = arr.length;
         let dataBronze: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.BRONZE,
+            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
+
             list: []
         };
         let dataGold: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.GOLD,
+
+            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
+
             list: []
         };
         let dataDiamond: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.DIAMOND,
+
+            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
+
             list: []
         };
         for (let index = 0; index < arr.length; index++) {

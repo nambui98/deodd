@@ -68,13 +68,13 @@ function Chat({ open }: { open: boolean }) {
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
-                if (lastCreatedAt !== data.data[data.data.length - 1].created_at) {
+                if (lastCreatedAt !== data.data[data.data.length - 1]?.created_at) {
                     if (lastCreatedAt === null) {
                         setMessages(data.data);
                     } else {
                         setMessages((prev) => ([...prev, ...data.data]))
                     }
-                    setLastCreatedAt(data.data[data.data.length - 1].created_at);
+                    setLastCreatedAt(data.data[data.data.length - 1]?.created_at || null);
                 }
             }
         },
@@ -375,7 +375,7 @@ function Chat({ open }: { open: boolean }) {
                                 })
                             }
                             {
-                                isLoadMoreWithoutAuth === true || walletAddress && <Box mb={2} height={30}>
+                                (isLoadMoreWithoutAuth === true || walletAddress) && messages.length > 8 && <Box mb={2} height={30}>
                                     <CoinAnimation mx="auto" width={30} height={30} />
                                 </Box>
                             }

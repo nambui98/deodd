@@ -32,7 +32,7 @@ const refreshToken = async () => {
         url: baseURL + `/users/auth?grant_type=refresh`,
         method: 'POST',
         data: JSON.stringify({
-            refreshToken: localStorage.getItem('refresh_token'),
+            refreshToken: localStorage.getItem('refresh_token1'),
         })
     })
 }

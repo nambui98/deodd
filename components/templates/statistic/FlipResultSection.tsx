@@ -1,19 +1,15 @@
 import Image from "next/image";
 import { coin0, coin6 } from "utils/Images";
 import { Typography, Box, Stack } from "@mui/material";
-import { Colors } from "constants/index";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
-import { ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { DonutDisplay } from "./DonutDisplay";
 import { CompareText } from "./CompareText";
+import { DashboardErrorType, DashboardFlipType } from "libs/types/dashboardTypes";
 
 type FlipPropsType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  flipDashboardStat: any;
+  error: DashboardErrorType;
+  flipDashboardStat: DashboardFlipType;
 };
 
 export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
@@ -180,7 +176,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         <TitleTextAbsolute text="flip total" />
 
         <Image src={coin0} width={80} height={80} alt="coin-img" />
-        {error.haveFlipped ? (
+        {!error.statData.noData ? (
           <>
             <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.8125rem"}>
               {flipDashboardStat.numberFlipToday < 10
@@ -190,7 +186,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
             <CompareText data={flipDashboardStat.flipCompareYesterdayPercentage} />
           </>
         ) : (
-          <Typography variant="body2">{error.errorMessage}</Typography>
+          <Typography variant="body2">{error.statData.errorMessage}</Typography>
         )}
       </DashboardCard>
     </>

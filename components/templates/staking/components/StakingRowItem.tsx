@@ -10,6 +10,8 @@ type StakingRowItemType = {
   handleClickNFT: Function,
   NFTCards: {
     type: EnumNFT;
+    estProfit: number,
+    percentSharePerNFT: number,
     list: TypeNFT[]
 
   }
@@ -75,9 +77,9 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
         </AccordionDetails>
       </Accordion>
 
-      <MainTypography >{sharePercent}</MainTypography>
+      <MainTypography >{NFTCards.percentSharePerNFT}</MainTypography>
       <Stack direction={"row"} gap={1} >
-        <MainTypography >{estimatedProfit}</MainTypography>
+        <MainTypography >{NFTCards.estProfit}</MainTypography>
         <Box component={"span"} color={"secondary.main"}>
           <BnbIcon width={20} />
         </Box>

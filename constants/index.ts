@@ -1,4 +1,4 @@
-import { EnumNFTNumber } from "libs/types";
+import { EnumNFT, EnumNFTNumber } from "libs/types";
 
 export const Colors = {
   primary: "#FC753F",
@@ -48,3 +48,12 @@ export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
 }
 export const DateOpenMainnet = "2023-06-29T09:00:00Z";
 export const DateOpenShop = "2023-06-27T13:00:00Z";
+
+export const DefaultRewardPool: number = 1000;
+export const DefaultStaked: number = 30;
+export const DefaultSeason: number = 30;
+export const SharePerNFT: Record<EnumNFT, number> = {
+  [EnumNFT.BRONZE]: 0.008,
+  [EnumNFT.GOLD]: 0.032,
+  [EnumNFT.DIAMOND]: 0.106
+};
