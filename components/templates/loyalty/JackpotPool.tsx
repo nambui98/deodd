@@ -36,6 +36,7 @@ function JackpotPool({}: Props) {
           alignItems: "center",
           textAlign: "center",
           mx: { xs: 2, md: 0 },
+          p: 4,
         }}
       >
         {seasonInfo.isLoading ? (
@@ -60,21 +61,18 @@ function JackpotPool({}: Props) {
         {seasonInfo.isLoading ? (
           <Skeleton variant="text" width={250} sx={{ fontSize: 48 }} />
         ) : (
-          <Stack
-            direction={"row"}
-            columnGap={1}
-            alignItems={"center"}
-            justifyContent={"center"}
-            mb={1.25}
+          <Typography
+            variant="h1"
+            lineHeight={"3.75rem"}
+            sx={{ overflowWrap: "anywhere", mb: 1.25 }}
           >
-            <Typography variant="h1" lineHeight={"3.75rem"}>
-              {seasonInfo.isError
-                ? "---"
-                : Format.formatMoney(seasonInfo.data.currentReward, 4)}
-            </Typography>
-
-            <BnbIcon width={40} color={Colors.primaryDark} />
-          </Stack>
+            {seasonInfo.isError
+              ? "---"
+              : Format.formatMoney(seasonInfo.data.currentReward, 4)}
+            <Box component={"span"} sx={{ ml: 1 }}>
+              <BnbIcon width={40} color={Colors.primaryDark} />
+            </Box>
+          </Typography>
         )}
 
         {walletIsConnected && (

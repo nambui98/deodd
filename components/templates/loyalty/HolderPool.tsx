@@ -70,6 +70,7 @@ function HolderPool({}: Props) {
           alignItems: "center",
           textAlign: "center",
           mx: { xs: 2, md: 0 },
+          p: 4,
         }}
       >
         {walletIsConnected &&
@@ -127,21 +128,21 @@ function HolderPool({}: Props) {
         {periodInfo.isLoading ? (
           <Skeleton variant="text" width={250} sx={{ fontSize: 48 }} />
         ) : (
-          <Stack
-            direction={"row"}
-            columnGap={1}
-            alignItems={"center"}
-            justifyContent={"center"}
-            mb={1.25}
+          <Typography
+            variant="h1"
+            lineHeight={"3.75rem"}
+            sx={{ overflowWrap: "anywhere", mb: 1.25 }}
           >
-            <Typography variant="h1" lineHeight={"3.75rem"}>
-              {periodInfo.isError
-                ? "---"
-                : Format.formatMoney(periodInfo.data.currentPrize, 4)}
-            </Typography>
-
-            <BnbIcon width={40} color={Colors.primaryDark} />
-          </Stack>
+            {periodInfo.isError
+              ? "---"
+              : Format.formatMoney(
+                  periodInfo.data.currentPrize / Math.pow(10, 18),
+                  4
+                )}
+            <Box component={"span"} sx={{ ml: 1 }}>
+              <BnbIcon width={40} color={Colors.primaryDark} />
+            </Box>
+          </Typography>
         )}
 
         {walletIsConnected &&
