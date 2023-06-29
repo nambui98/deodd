@@ -37,7 +37,7 @@ function ComingSoon({ title, subTitle, hasCountDown }: Props) {
             </Box>
             <Stack px={{ xs: 8, md: 0 }} alignItems={'center'}>
                 <Stack sx={{ borderLeft: 8, borderColor: 'secondary.main', pl: 2 }}>
-                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={{ xs: 2, md: 4 }} color="secondary.main">{title}</Typography>
+                    <Typography fontSize={{ xs: 32, md: 40 }} fontWeight={900} letterSpacing={{ xs: 2, md: 4 }} color="secondary.main" dangerouslySetInnerHTML={{ __html: title }} />
                     <Typography fontSize={{ xs: 18, md: 24 }} fontWeight={500} letterSpacing={2}>{subTitle}</Typography>
                 </Stack>
 
