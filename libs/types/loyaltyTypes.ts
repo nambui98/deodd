@@ -63,7 +63,7 @@ export type LoyaltyHolderHistoryType = {
   token_id: number;
   stake_atz: string;
   unstake_atz: null | string;
-  image_link: "string";
+  image_link: string;
 }[];
 
 export type LoyaltyHolderPeriodsInfoType = {
