@@ -12,7 +12,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import {
-  AvatarImage,
   BronzeImage,
   CoinEmptyImage,
   DiamondImage,
@@ -100,33 +99,35 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
               <CircularProgress size={40} color="secondary" />
             </Stack>
           )}
-          {!leaderboard.isLoading && leaderboard.isError && (
-            <Stack
-              sx={{ inset: 0 }}
-              position={"absolute"}
-              gap={5}
-              justifyContent={"center"}
-              alignItems={"center"}
-              textAlign={"center"}
-            >
-              <MyImage
-                sx={{
-                  width: { xs: 80, md: 144 },
-                  height: { xs: 80, md: 144 },
-                }}
-                src={CoinEmptyImage}
-                alt="Empty Coin Image"
-              />
-              <Typography
-                fontSize={"1rem"}
-                lineHeight={"1.375rem"}
-                fontWeight={600}
-                color={"secondary.100"}
+          {!leaderboard.isLoading &&
+            (leaderboard.isError ||
+              leaderboard.data.leaderboard.length === 0) && (
+              <Stack
+                sx={{ inset: 0 }}
+                position={"absolute"}
+                gap={5}
+                justifyContent={"center"}
+                alignItems={"center"}
+                textAlign={"center"}
               >
-                {leaderboard.isError ? "No Data" : "There is no one here"}
-              </Typography>
-            </Stack>
-          )}
+                <MyImage
+                  sx={{
+                    width: { xs: 80, md: 144 },
+                    height: { xs: 80, md: 144 },
+                  }}
+                  src={CoinEmptyImage}
+                  alt="Empty Coin Image"
+                />
+                <Typography
+                  fontSize={"1rem"}
+                  lineHeight={"1.375rem"}
+                  fontWeight={600}
+                  color={"secondary.100"}
+                >
+                  {leaderboard.isError ? "No Data" : "There is no one here"}
+                </Typography>
+              </Stack>
+            )}
           <Table aria-label="simple table">
             <colgroup>
               <col width={"12%"} />
@@ -278,7 +279,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
               <Typography variant="caption">
                 {leaderboard.isLoading
-                  ? "--"
+                  ? "..."
                   : leaderboard.isError
                   ? "--"
                   : leaderboard.data.currentUser?.rank ?? "--"}
@@ -301,7 +302,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
                 {leaderboard.isLoading
-                  ? "--"
+                  ? "..."
                   : leaderboard.isError
                   ? "--"
                   : leaderboard.data.currentUser?.diamond_holding ?? "--"}
@@ -310,7 +311,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
                 {leaderboard.isLoading
-                  ? "--"
+                  ? "..."
                   : leaderboard.isError
                   ? "--"
                   : leaderboard.data.currentUser?.gold_holding ?? "--"}
@@ -319,7 +320,7 @@ function HolderLeaderboard({ leaderboard }: PropsType) {
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
                 {leaderboard.isLoading
-                  ? "--"
+                  ? "..."
                   : leaderboard.isError
                   ? "--"
                   : leaderboard.data.currentUser?.bronze_holding ?? "--"}

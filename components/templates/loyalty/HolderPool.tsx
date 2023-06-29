@@ -15,36 +15,36 @@ import Link from "next/link";
 type Props = {};
 
 function HolderPool({}: Props) {
-  const { walletAddress, walletIsConnected } = useWalletContext();
-  const { periodInfo, periodsInfo, leaderboard, history, setReset, setPeriod } =
+  const { walletIsConnected } = useWalletContext();
+  const { periodsInfo, leaderboard, history, setReset, setPeriod } =
     useLoyaltyHolder();
-  const {
-    setIsSuccess,
-    setTitleSuccess,
-    setIsLoading,
-    setIsError,
-    setTitleError,
-  } = useSiteContext();
+  // const {
+  //   setIsSuccess,
+  //   setTitleSuccess,
+  //   setIsLoading,
+  //   setIsError,
+  //   setTitleError,
+  // } = useSiteContext();
 
-  const handleClaim = async () => {
-    try {
-      setIsLoading(true);
-      const res = await claimNFTReward(walletAddress);
-      setIsLoading(false);
-      if (res.data.data && res.status === 200) {
-        setTitleSuccess("Claimed successfully");
-        setIsSuccess(true);
-        setReset((prev) => !prev);
-      } else {
-        setIsError(true);
-        setTitleError(res.data.meta.error_message);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      setIsError(true);
-      setTitleError("Something went wrong! Please try again later");
-    }
-  };
+  // const handleClaim = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await claimNFTReward(walletAddress);
+  //     setIsLoading(false);
+  //     if (res.data.data && res.status === 200) {
+  //       setTitleSuccess("Claimed successfully");
+  //       setIsSuccess(true);
+  //       setReset((prev) => !prev);
+  //     } else {
+  //       setIsError(true);
+  //       setTitleError(res.data.meta.error_message);
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     setIsError(true);
+  //     setTitleError("Something went wrong! Please try again later");
+  //   }
+  // };
 
   return (
     <Box width={1}>
@@ -77,6 +77,7 @@ function HolderPool({}: Props) {
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
           (periodsInfo.data[0].season > 1 &&
+          periodsInfo.data.some((period) => period.is_claimed != null) &&
           periodsInfo.data[0].reward != null ? (
             <>
               <Typography
@@ -135,7 +136,7 @@ function HolderPool({}: Props) {
             sx={{ overflowWrap: "anywhere", mb: 1.25 }}
           >
             {periodsInfo.isError
-              ? "---"
+              ? "----"
               : Format.formatMoney(
                   periodsInfo.data[0].current_prize / Math.pow(10, 18),
                   4
@@ -160,7 +161,7 @@ function HolderPool({}: Props) {
                   </Box>
                 </Box>
               </Typography>
-              <NFTHolderTimer setReset={setReset} periodInfo={periodInfo} />
+              <NFTHolderTimer setReset={setReset} periodsInfo={periodsInfo} />
             </>
           ) : (
             <>
@@ -203,7 +204,6 @@ function HolderPool({}: Props) {
             }}
           />
           <HolderPoolBoard
-            periodInfo={periodInfo}
             periodsInfo={periodsInfo}
             leaderboard={leaderboard}
             history={history}
