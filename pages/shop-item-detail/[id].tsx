@@ -18,19 +18,19 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // return {
-  //   redirect: {
-  //     destination: '/shop',
-  //     permanent: false,
-  //   },
-  // }
-  return {
-    props: {
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   return {
+//     redirect: {
+//       destination: '/shop',
+//       permanent: false,
+//     },
+//   }
+//   return {
+//     props: {
 
-    }
-  }
-}
+//     }
+//   }
+// }
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();
