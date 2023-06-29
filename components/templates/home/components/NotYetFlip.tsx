@@ -50,8 +50,6 @@ function FormActions() {
         const ck = await refetch();
         if (ck.data === false) {
             const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
-
-            debugger
             let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
             if (totalAmount.gte(bnbBalance)) {
                 setIsError(true);
