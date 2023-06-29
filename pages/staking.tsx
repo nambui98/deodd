@@ -25,12 +25,11 @@ function StakingPage() {
       }
     },
   });
-  const { refetch, data, isLoading: isLoadingGetPools } = useQuery({
+  const { refetch, data: pools, isLoading: isLoadingGetPools, isFetching: isFetchGetPools } = useQuery({
     queryKey: ["getPools"],
     enabled: !!walletIsConnected,
     queryFn: () => DeoddService.getPoolsAndRewardsByUser(),
     refetchOnWindowFocus: false,
-
     select: (data: any) => {
       if (data.status === 200) {
         return data.data.data;
@@ -39,17 +38,39 @@ function StakingPage() {
       }
     },
     onError(err) {
-      setIsShowPools(true)
+    },
+
+  });
+  const { data: nftStaked, isLoading: isLoadingGetNFTStaked, isFetching: isFetchGetNFTStaked } = useQuery({
+    queryKey: ["getNFTStaked"],
+    enabled: !!walletIsConnected && (currentPool !== null && currentPool?.id !== undefined),
+    queryFn: () => DeoddService.getNFTStaked(currentPool.id),
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      if (data.length > 0) {
+        setIsShowPools(true)
+      }
+    },
+    select: (data: any) => {
+      if (data.status === 200) {
+
+        return data.data.data;
+      } else {
+        return undefined
+      }
+    },
+    onError(err) {
     },
 
   });
 
-  if (walletIsConnected === undefined || isLoadingGetPools) {
+
+  if (walletIsConnected === undefined || (isFetchGetPools) || isFetchGetNFTStaked) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
   return (
     <Container sx={{ mt: 10, mb: { md: 10, xs: 8.125 }, mx: "auto", width: walletIsConnected ? 1 : 736 }}>
-      {walletIsConnected ? (isShowPools ? <StakingSuccess handleHiddenPools={() => setIsShowPools(false)} /> : <StakingWithWallet currentPool={currentPool} />) : <StakingNoWallet />}
+      {walletIsConnected ? (isShowPools ? <StakingSuccess pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} /> : <StakingWithWallet currentPool={currentPool} />) : <StakingNoWallet />}
     </Container>
   );
 }

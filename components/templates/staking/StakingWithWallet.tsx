@@ -45,56 +45,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
   const { walletAddress } = useWalletContext();
-  const { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken } = useDeoddNFTContract();
-
-  const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
-    queryKey: ["getAssetsBalance2"],
-    enabled: !!walletAddress,
-    queryFn: () => DeoddService.getAssetsBalance(walletAddress),
-    select: (data) => data.data ?
-      {
-        total: 0,
-        data: [
-          {
-            type: EnumNFT.BRONZE,
-            list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
-              return {
-                id: d.token_id ?? '',
-                type: EnumNFT.BRONZE,
-                image: d.image_link,
-                amount: 0
-              }
-            })
-          },
-          {
-            type: EnumNFT.GOLD,
-            list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
-              return {
-                id: d.token_id ?? '',
-                type: EnumNFT.GOLD,
-                image: d.image_link,
-                amount: 0
-              }
-            })
-          },
-
-          {
-            type: EnumNFT.DIAMOND,
-            list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
-              return {
-                id: d.token_id ?? '',
-                type: EnumNFT.DIAMOND,
-                image: d.image_link,
-                amount: 0
-              }
-            })
-          },
-
-
-        ]
-      }
-      : null
-  });
+  const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft, priceToken } = useDeoddNFTContract();
 
   return (
     <>
@@ -149,7 +100,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
             </Stack>
             <Stack direction={"row"} gap={1}>
               <MainTypography>
-                1.534
+                {/* 1.534 */}
+                0
               </MainTypography>
               <Box component={"span"} sx={{
                 color: "secondary.main",
@@ -196,7 +148,14 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
             All figures are estimate provided for your convenience only <br />
             By no means represent guaranteed returns.
           </Typography>
-          <FlowStake stakeOption={stakeOption} nftSelected={nftSelected} handleSetNftSelected={handleClickNFT} />
+          <FlowStake
+            stakeOption={stakeOption}
+            nftSelected={nftSelected}
+            handleSetNftSelected={handleClickNFT}
+            refetchGetAssetsBalance={refetchGetAssetsBalance}
+            getBalanceNft={getBalanceNft}
+          />
+
         </Stack>
       </Stack>
     </>

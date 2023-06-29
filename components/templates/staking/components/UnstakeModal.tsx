@@ -7,10 +7,12 @@ import { Typography } from "@mui/material";
 type UnstakeModalType = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  currentStage: number
+  currentStage: number,
+  handleUnStake: Function,
+  isLoadingUnStake: boolean
 }
 
-function UnstakeModal({ open, setOpen, currentStage }: UnstakeModalType) {
+function UnstakeModal({ open, setOpen, currentStage, handleUnStake, isLoadingUnStake }: UnstakeModalType) {
   const [stage, setStage] = useState(currentStage);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ function UnstakeModal({ open, setOpen, currentStage }: UnstakeModalType) {
 
         {stage === 1 ? "Cancel" : stage === 2 ? "Comback" : "Confirm"}
       </ButtonLoading>
-      {stage !== 3 && <ButtonLoading
+      {stage === 1 && <ButtonLoading
         fullWidth
         sx={{
           py: 2,
@@ -71,14 +73,36 @@ function UnstakeModal({ open, setOpen, currentStage }: UnstakeModalType) {
         }}
         onClick={() => {
           if (stage < 3) {
-            setStage(prev => prev + 1)
+            setStage(prev =>
+              prev + 1
+            )
           } else {
             setOpen(false);
           }
         }}
       >
 
-        {stage === 1 ? "Unstake anyway" : "Yes"}
+        Unstake anyway
+      </ButtonLoading>}
+      {stage === 2 && <ButtonLoading
+        fullWidth
+        sx={{
+          py: 2,
+          px: 5,
+          fontSize: "1rem",
+          fontWeight: 600,
+          textTransform: 'none',
+          lineHeight: "1.375rem",
+          backgroundColor: "primary.300",
+          color: "primary.main",
+          borderColor: "primary.main",
+        }}
+        loading={isLoadingUnStake}
+        onClick={() => {
+          handleUnStake();
+        }}
+      >
+        Yes
       </ButtonLoading>}
     </MyModal>
   );

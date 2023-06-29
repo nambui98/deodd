@@ -116,11 +116,9 @@ const getPoolsAndRewardsByUser = () => {
 }
 const getNFTStaked = async (poolId: string | number) => {
     return await vhIdRequest({
-        url: baseURL + `/users/nft/stake`,
-        method: 'POST',
-        data: {
-            poolId: poolId
-        }
+        url: baseURL + `/nft/staking/nft-staked?poolId=${poolId}`,
+        method: 'GET',
+
     })
 }
 export const DeoddService = {

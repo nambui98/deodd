@@ -7,22 +7,25 @@ import { BigNumber, ethers } from 'ethers';
 import { TypeNFT } from 'libs/types';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { DeoddService } from 'libs/apis';
 
 type Props = {
     nftSelected?: TypeNFT | null,
     handleSetNftSelected: Function,
+    refetchGetAssetsBalance: Function,
+    getBalanceNft: Function,
     stakeOption: number
 }
 
-function FlowStake({ stakeOption, nftSelected, handleSetNftSelected }: Props) {
+function FlowStake({ stakeOption, nftSelected, handleSetNftSelected, refetchGetAssetsBalance, getBalanceNft }: Props) {
     const { setIsError, setTitleError } = useSiteContext();
-    const { walletAddress } = useWalletContext();
     const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
     const [isApproved, setIsApproved] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { writeAsync: approve, isLoading: isLoadingApprove, isIdle } = useContractWrite({
+
+    const queryClient = useQueryClient();
+    const { writeAsync: approve, isLoading: isLoadingApprove } = useContractWrite({
         address: deoddNFTContract.address,
         mode: 'recklesslyUnprepared',
         abi: deoddNFTContract.abi,
@@ -52,23 +55,23 @@ function FlowStake({ stakeOption, nftSelected, handleSetNftSelected }: Props) {
     })
     // stake balance
     const { mutateAsync: stakeInBalance } = useMutation({
-
         mutationFn: () => {
             return DeoddService.stakeNft(nftSelected!.id!);
         },
         onError(error: any, variables, context) {
             setIsError(true)
-
             setIsLoading(false);
-            debugger
+
             setTitleError(error?.response?.data.meta.error_message || error.message)
         },
         onSuccess(data, variables, context) {
             setIsApproveModalOpened(true);
             handleSetNftSelected(null)
+            refetchGetAssetsBalance();
             setIsApproved(false);
             setIsLoading(false);
 
+            queryClient.invalidateQueries({ queryKey: ['getNFTStaked'] });
         },
     });
     const handleApprove = () => {
@@ -102,8 +105,11 @@ function FlowStake({ stakeOption, nftSelected, handleSetNftSelected }: Props) {
                 .then((res) => {
                     setIsApproveModalOpened(true);
                     handleSetNftSelected(null)
+                    getBalanceNft();
                     setIsApproved(false);
                     setIsLoading(false);
+
+                    queryClient.invalidateQueries({ queryKey: ['getNFTStaked'] });
                 })
                 .catch(error => {
                     debugger

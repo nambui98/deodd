@@ -8,6 +8,7 @@ import { EnumNFT, TypeDataNFT } from "libs/types";
 import { DeoddService } from "libs/apis";
 import { deoddNFTContract } from "libs/contract";
 import { useContractRead } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
 export type TypeNFT = {
     id: number | string,
     type: EnumNFT,
@@ -23,27 +24,61 @@ export const useDeoddNFTContract = () => {
     const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const [priceToken, setPriceToken] = useState<number | undefined>();
 
-    const getSpendingTokens = async () => {
-        // const res = await contractDeoddNft?.getSpendingTokens(walletAddress)
-        // const data = getInfoTokens(res);
-        // return data;
-    };
-    // const getTokenTypeId = async (id: BigNumber) => {
-    //     const res = await contractDeoddNFT?.getTokenTypeId(id)
-    //     return res;
-    // };
-    // const getWalletTokens = async () => {
-    //     const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
-    //     const data = getInfoTokens(res);
-    //     return data;
-    // };
-    const { refetch } = useContractRead({
+
+    const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
+        queryKey: ["getAssetsBalance2"],
+        enabled: !!walletAddress,
+        queryFn: () => DeoddService.getAssetsBalance(walletAddress),
+        select: (data) => data.data ?
+            {
+                total: 0,
+                data: [
+                    {
+                        type: EnumNFT.BRONZE,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.BRONZE,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+                    {
+                        type: EnumNFT.GOLD,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.GOLD,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+
+                    {
+                        type: EnumNFT.DIAMOND,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.DIAMOND,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+
+
+                ]
+            }
+            : null
+    });
+    const { refetch: getBalanceNft } = useContractRead({
         address: deoddNFTContract.address,
         abi: deoddNFTContract.abi,
         functionName: 'getWalletTokens',
         args: [walletAddress],
-        enabled: !!walletAddress,
-        // watch: true,
+        enabled: false,
         async onSuccess(res: BigNumber[]) {
             const data = await getInfoTokens(res);
             setWalletTokens(data as TypeDataNFT);
@@ -119,43 +154,25 @@ export const useDeoddNFTContract = () => {
 
     useEffect(() => {
         if (walletAddress) {
-            // getWalletTokens().then(res => {
-            //     if (res && res.data.length > 0) {
-            //         setWalletTokens(res);
-            //     }
-            // });
-            getPriceToken().then(res => {
-                if (res.status === 200) {
-                    setPriceToken(res.data.data[0].quote['BUSD'].price)
-                }
-            })
+            getBalanceNft();
+            refetchGetAssetsBalance();
 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [reload, walletAddress])
-
+    }, [walletAddress])
     const handleClickNFT = (nft: TypeNFT | null) => {
         setNftSelected(nft)
     }
-    const claimToWallet = async () => {
-        // const res = await contractDeoddNft?.claimToWallet(BigNumber.from(nftSelected?.id));
-        // return res.wait();
+
+
+    return {
+        walletTokens,
+        handleClickNFT,
+        nftSelected,
+        priceToken,
+        assets,
+        getBalanceNft,
+
+        refetchGetAssetsBalance
     }
-    const handleClaimNFT = async () => {
-        // try {
-        //     setIsLoading(true);
-        //     let res = await claimToWallet();
-        //     setIsLoading(false);
-        //     if (res.status) {
-        //         setTitleSuccess('Claimed successfully')
-        //         setIsSuccess(true);
-        //         setReload(!reload);
-        //     }
-        // } catch (error: any) {
-        //     setIsLoading(false);
-        //     setTitleError(error.reason || 'Something went wrong. Please try again!')
-        //     setIsError(true);
-        // }
-    }
-    return { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken }
 }
