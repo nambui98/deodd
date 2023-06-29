@@ -14,18 +14,31 @@ import MyModal from '../../components/common/Modal'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
 import { Format } from 'utils/format'
+import { GetServerSideProps } from 'next/types'
 
-
-export async function getStaticProps({ params }: { params: { path: string } }) {
-    const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
         redirect: {
             destination: '/campaign',
             permanent: false,
         },
     }
-    return { props: { campaign } };
+    return {
+        props: {
+
+        }
+    }
 }
+// export async function getStaticProps({ params }: { params: { path: string } }) {
+//     const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
+//     return {
+//         redirect: {
+//             destination: '/campaign',
+//             permanent: false,
+//         },
+//     }
+//     return { props: { campaign } };
+// }
 function VolumeCampaign({ campaign }: { campaign: Campaign | undefined }) {
     return (
         <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>
