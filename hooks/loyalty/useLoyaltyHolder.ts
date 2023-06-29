@@ -36,7 +36,6 @@ function useLoyaltyHolder() {
         throw new Error("No Data");
       }
     },
-    enabled: walletIsConnected,
     staleTime: 2500,
     refetchInterval: 5000, // refetch every 5 seconds
   });
