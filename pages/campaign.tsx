@@ -5,6 +5,7 @@ import { useState } from 'react'
 import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
 import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage, VolumeBannerImage, VolumeImage, WinLoseStreakBannerImage, WinLoseStreakImage } from '../utils/Images'
+import ComingSoon from 'components/common/ComingSoon'
 
 type Props = {}
 export type Campaign = {
@@ -85,6 +86,7 @@ function Campaign({ }: Props) {
             {/* <ClaimReward /> */}
         </Box>
     }
+    return <ComingSoon hasCountDown={false} title={"Leaderboard of Testnet's campaign"} subTitle='will be announced at 8 UTC June 30, 2023' />
 
     return (
         <Box >

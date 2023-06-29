@@ -16,10 +16,16 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 import { ButtonFourth } from 'components/ui/button'
 
 
-// export async function getStaticProps({ params }: { params: { path: string } }) {
-//     const campaign = CAMPAIGNS.find(c => c.href === 'winlose-streak-campaign');
-//     return { props: { campaign } };
-// }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    const campaign = CAMPAIGNS.find(c => c.href === 'winlose-streak-campaign');
+    return {
+        redirect: {
+            destination: '/campaign',
+            permanent: false,
+        },
+    }
+    return { props: { campaign } };
+}
 function WinloseStreakCampaign({ campaign }: { campaign: Campaign | undefined }) {
     return (
         <Typography variant='h2' mx="auto" mt={4} textAlign={'center'}>

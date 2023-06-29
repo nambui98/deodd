@@ -17,6 +17,12 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
     const campaign = CAMPAIGNS.find(c => c.href === 'testnet-campaign');
+    return {
+        redirect: {
+            destination: '/campaign',
+            permanent: false,
+        },
+    }
     return { props: { campaign } };
 }
 function TestnetCampaign({ campaign }: { campaign: Campaign }) {

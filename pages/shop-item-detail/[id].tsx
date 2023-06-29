@@ -19,12 +19,12 @@ import { useEffect, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return {
-    redirect: {
-      destination: '/shop',
-      permanent: false,
-    },
-  }
+  // return {
+  //   redirect: {
+  //     destination: '/shop',
+  //     permanent: false,
+  //   },
+  // }
   return {
     props: {
 
