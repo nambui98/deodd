@@ -59,10 +59,9 @@ function JackpotPool({}: Props) {
           <Box component={"span"} color={"text.secondary"}>
             #{seasonInfo.currentSeason}
           </Box>{" "}
-          {/* Started at {new Date(seasonInfo.startTime).toLocaleDateString()} */}
           Started at{" "}
           {seasonInfo.startTime
-            ? Format.formatDateTime(seasonInfo.startTime)
+            ? Format.formatDateTimeAlt(seasonInfo.startTime, "UTC")
             : ""}
         </Typography>
         <Typography variant="body2" color={"text.disabled"}>
