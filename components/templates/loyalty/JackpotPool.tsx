@@ -9,7 +9,7 @@ import { Format } from "utils/format";
 
 type Props = {};
 
-function JackpotPool({}: Props) {
+function JackpotPool({ }: Props) {
   const { walletIsConnected } = useWalletContext();
   const { setSeason, leaderboard, history, seasonInfo } = useLoyaltyJackpot();
 
@@ -42,7 +42,7 @@ function JackpotPool({}: Props) {
         {seasonInfo.isLoading ? (
           <Skeleton variant="text" width={200} />
         ) : (
-          <Typography mt={3.5} variant="body2">
+          <Typography variant="body2">
             Season{" "}
             <Box component={"span"} color={"text.secondary"}>
               {seasonInfo.isError ? "--" : `#${seasonInfo.data.currentSeason}`}
