@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MyModal from "components/common/Modal";
-import { Colors } from "constants/index";
+import { Colors, DefaultRewardPool, SharePerNFT } from "constants/index";
 import { Box, Stack, Typography, InputBase } from "@mui/material";
 import { ButtonFourth } from "components/ui/button";
 import { BnbIcon, InfoCircle2Icon } from "utils/Icons";
@@ -23,25 +23,25 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
   console.log(currentPool);
 
   const [duration, setDuration] = useState<number>(1)
-  const { data, refetch: caculateEstProfit } = useQuery({
-    queryKey: ["caculateEstProfit"],
-    enabled: !!nftSelected && open,
-    queryFn: () => DeoddService.caculateEstProfit({ typeNft: nftSelected!.type as EnumNFT, duration: duration }),
-    select: (data: any) => {
-      if (data.status === 200) {
-        return data.data;
-      } else {
-        return undefined
-      }
-    },
-  });
-  useEffect(() => {
-    if (duration) {
-      caculateEstProfit();
-    }
-  }, [caculateEstProfit, duration])
+  // const { data, refetch: caculateEstProfit } = useQuery({
+  //   queryKey: ["caculateEstProfit"],
+  //   enabled: !!nftSelected && open,
+  //   queryFn: () => DeoddService.caculateEstProfit({ typeNft: nftSelected!.type as EnumNFT, duration: duration }),
+  //   select: (data: any) => {
+  //     if (data.status === 200) {
+  //       return data.data;
+  //     } else {
+  //       return undefined
+  //     }
+  //   },
+  // });
+  // useEffect(() => {
+  //   if (duration) {
+  //     caculateEstProfit();
+  //   }
+  // }, [caculateEstProfit, duration])
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <MyModal
@@ -77,7 +77,7 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
             <BnbIcon width={20} height={20} color={Colors.primaryDark} />
           }
           inputComponent={FormatNumber as any}
-          value={ethers.utils.formatEther(currentPool.current_prize)}
+          value={DefaultRewardPool}
           sx={{
             pointerEvents: 'none',
             backgroundColor: "primary.300",
@@ -102,7 +102,8 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
           <Typography variant="body2">EST. Profit</Typography>
           <Stack sx={{ flexDirection: "row", gap: 1, mb: 3 }}>
             <Typography variant="body2">{
-              new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(parseFloat(ethers.utils.formatEther(data?.data?.estimatedProfit ?? 0)))
+              nftSelected &&
+              Format.formatMoney(Utils.calculatorProfit(nftSelected, 1, duration))
             }</Typography>
             <BnbIcon width={20} color={Colors.primaryDark} />
           </Stack>

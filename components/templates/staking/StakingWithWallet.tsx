@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DeoddService } from "libs/apis";
 import { EnumNFT, TypeDataNFT } from "libs/types";
 import FlowStake from "./components/FlowStake";
+import { Format } from "utils/format";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -46,7 +47,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
   const { walletAddress } = useWalletContext();
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft, priceToken } = useDeoddNFTContract();
-
+  let totalEstProfit = (stakeOption === 1 ? assets : walletTokens)?.data.reduce((sum, asset) => sum + (asset as any).estProfit, 0) ?? 0
   return (
     <>
       <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
@@ -101,7 +102,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
             <Stack direction={"row"} gap={1}>
               <MainTypography>
                 {/* 1.534 */}
-                0
+                {Format.formatMoney(totalEstProfit)}
               </MainTypography>
               <Box component={"span"} sx={{
                 color: "secondary.main",

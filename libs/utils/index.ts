@@ -1,7 +1,7 @@
 import { Color } from '@mui/material';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import { DRAWER_WIDTH } from 'constants/index';
-import { EnumNFT } from "libs/types";
+import { DRAWER_WIDTH, DefaultRewardPool, DefaultSeason, DefaultStaked, SharePerNFT } from 'constants/index';
+import { EnumNFT, TypeNFT } from "libs/types";
 import { MapIconNFT, MapIconNFTString } from "utils/Images";
 const getPathAvatar = (avatarId: number | undefined) => {
     const basePath = '/assets/images';
@@ -13,6 +13,9 @@ const getPathAvatar = (avatarId: number | undefined) => {
         case 4: return basePath + '/avatar-green.png';
         default: return basePath + '/avatar-yellow.png'
     }
+}
+const calculatorProfit = (nft: TypeNFT, amount?: number, dayStaked?: number) => {
+    return (DefaultRewardPool * SharePerNFT[nft.type as EnumNFT] * (amount ?? 1) * (dayStaked ?? DefaultStaked) / DefaultSeason) / 100;
 }
 export const Utils = {
     getImageNFT: (type: number | string) => {
@@ -52,5 +55,6 @@ export const Utils = {
             width: isWidthNone ? 0 : `calc(${theme.spacing(8.5)})`,
         },
     }),
-    getPathAvatar
+    getPathAvatar,
+    calculatorProfit
 }

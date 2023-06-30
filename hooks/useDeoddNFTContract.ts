@@ -133,7 +133,7 @@ export const useDeoddNFTContract = () => {
         } | undefined = {
             type: EnumNFT.BRONZE,
             percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 1 * DefaultStaked / DefaultSeason,
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 1 * DefaultStaked / DefaultSeason) / 100,
 
             list: []
         };
@@ -145,7 +145,7 @@ export const useDeoddNFTContract = () => {
         } | undefined = {
             type: EnumNFT.GOLD,
             percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * 1 * DefaultStaked / DefaultSeason,
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * 1 * DefaultStaked / DefaultSeason) / 100,
 
             list: []
         };
@@ -157,7 +157,7 @@ export const useDeoddNFTContract = () => {
         } | undefined = {
             type: EnumNFT.DIAMOND,
             percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * 1 * DefaultStaked / DefaultSeason,
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * 1 * DefaultStaked / DefaultSeason) / 100,
             list: []
         };
         for (let index = 0; index < arr.length; index++) {

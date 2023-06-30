@@ -14,6 +14,7 @@ import { useContractWrite } from "wagmi";
 import StakingHistoryTable from "./components/StakingHistoryTable";
 import UnstakeModal from "./components/UnstakeModal";
 import { de } from 'date-fns/locale';
+import { Format } from "utils/format";
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
@@ -267,10 +268,10 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
       </Stack>
       <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Stack gap={1}>
-          <DisabledTypography>Start: {format(new Date(pool.start_time), "HH:mm 'UTC' dd/MM/yyyy")}</DisabledTypography>
-          <DisabledTypography>End: {format(new Date(pool.end_time), "HH:mm 'UTC' dd/MM/yyyy")}</DisabledTypography>
+          <DisabledTypography>Start: {Format.formatDateTimeAlt(pool.start_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
+          <DisabledTypography>End: {Format.formatDateTimeAlt(pool.end_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
         </Stack>
-        <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography>
+        {/* <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography> */}
       </Stack>
 
 
@@ -281,6 +282,7 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
             backgroundColor: "secondary.900",
           }}
         />
+        <Typography variant="body2" mb={2} color={'secondary.main'}>Choose NFT you want to unstake</Typography>
 
         <StakingHistoryTable nfts={nftStaked} idNftSelected={idNftSelected} setIdNftSelected={setIdNftSelected} />
       </Collapse>
