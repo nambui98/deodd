@@ -11,13 +11,42 @@ import { useSiteContext } from "contexts/SiteContext";
 import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
+import { DeoddService } from "libs/apis";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {};
 
 function HolderPool({}: Props) {
-  const { walletIsConnected } = useWalletContext();
+  const { walletIsConnected, walletAddress } = useWalletContext();
   const { periodsInfo, leaderboard, history, setReset, setPeriod } =
     useLoyaltyHolder();
+
+  // Check if user is an nft holder
+  const isNftHolder = useQuery({
+    queryKey: ["isNftHolder"],
+    queryFn: async (): Promise<boolean> => {
+      const promiseResult = await DeoddService.getAssetsBalance(walletAddress);
+
+      if (promiseResult.data.data != null) {
+        const nftQuantity = promiseResult.data.data.nftItemHoldingDTOForUser;
+
+        if (
+          nftQuantity.totalDiamondNFT > 0 ||
+          nftQuantity.totalGoldNFT > 0 ||
+          nftQuantity.totalBronzeNft > 0
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        throw new Error("No Data");
+      }
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
   // const {
   //   setIsSuccess,
   //   setTitleSuccess,
@@ -77,8 +106,7 @@ function HolderPool({}: Props) {
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
           (periodsInfo.data[0].season > 1 &&
-          periodsInfo.data.some((period) => period.is_claimed != null) &&
-          periodsInfo.data[0].reward != null ? (
+          periodsInfo.data.some((period) => period.is_claimed != null) ? (
             <>
               <Typography
                 variant="body2"
@@ -147,10 +175,19 @@ function HolderPool({}: Props) {
           </Typography>
         )}
 
+        {isNftHolder.isLoading && (
+          <>
+            <Skeleton width={200} />
+            <Skeleton width={100} height={50} />
+          </>
+        )}
+
         {walletIsConnected &&
-          !periodsInfo.isLoading &&
-          !periodsInfo.isError &&
-          (periodsInfo.data[0].reward !== null ? (
+        !periodsInfo.isLoading &&
+        !periodsInfo.isError &&
+        !isNftHolder.isLoading &&
+        isNftHolder.data ? (
+          periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is
@@ -161,6 +198,7 @@ function HolderPool({}: Props) {
                   </Box>
                 </Box>
               </Typography>
+
               <NFTHolderTimer setReset={setReset} periodsInfo={periodsInfo} />
             </>
           ) : (
@@ -170,16 +208,10 @@ function HolderPool({}: Props) {
                 <br /> are able to get the reward{" "}
               </Typography>
 
-              <Link
-                href={
-                  periodsInfo.data[0].reward !== null ? "/staking" : "/shop"
-                }
-              >
+              <Link href={"/staking"}>
                 <ButtonMain
                   active={true}
-                  title={
-                    periodsInfo.data[0].reward !== null ? "Stake" : "Shop now"
-                  }
+                  title={"Stake"}
                   sx={{
                     fontSize: "0.75rem",
                     lineHeight: 16 / 12,
@@ -192,8 +224,34 @@ function HolderPool({}: Props) {
                 />
               </Link>
             </>
-          ))}
+          )
+        ) : (
+          !isNftHolder.isLoading && (
+            <>
+              <Typography variant="body2" color={"text.disabled"} mb={1}>
+                Only NFT Holders are able to get the reward
+              </Typography>
+
+              <Link href={"/shop"}>
+                <ButtonMain
+                  active={true}
+                  title={"Shop now"}
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 16 / 12,
+                    fontWeight: 400,
+                    minHeight: 0,
+                    px: 2,
+                    py: 1,
+                    backgroundColor: "background.default",
+                  }}
+                />
+              </Link>
+            </>
+          )
+        )}
       </Stack>
+
       {walletIsConnected ? (
         <>
           <Divider
