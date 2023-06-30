@@ -13,14 +13,8 @@ type PropsType = {
   history: UseQueryResult<LoyaltyJackpotHistoryType, unknown>;
 };
 
-function formatNumber(number: number) {
-  return new Intl.NumberFormat("en-us").format(
-    Math.round(number * 1000) / 1000
-  );
-}
-
 function formatDate(dateString: string) {
-  const date = Format.formatDateTime(dateString);
+  const date = Format.formatDateTime(dateString, "MMMM dd, yyyy");
   const hour = Format.formatDateTime(dateString, "kk:mm");
   return `${hour} - ${date}`;
 }
@@ -58,7 +52,9 @@ function JackpotHistory({ history }: PropsType) {
                 Your TossPoint
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {formatNumber(history.data.userTossPoint) ?? 0}
+                {history.data.userTossPoint
+                  ? Format.formatMoney(history.data.userTossPoint, 4)
+                  : 0}
               </Typography>
             </Stack>
             <Stack direction={"row"} gap={1}>
@@ -88,7 +84,7 @@ function JackpotHistory({ history }: PropsType) {
                 </Typography>
                 <Stack direction={"row"} gap={1} color={"text.secondary"}>
                   <Typography variant="h2" lineHeight={"2rem"}>
-                    {formatNumber(history.data.jackpot)}
+                    {Format.formatMoney(history.data.jackpot, 4)}
                   </Typography>
                   <BnbIcon width={24} />
                 </Stack>
@@ -101,7 +97,7 @@ function JackpotHistory({ history }: PropsType) {
                 TossPoint Required
               </Typography>
               <Typography fontSize={"2.5rem"} fontWeight={500}>
-                {formatNumber(history.data.tossPointRequire)}
+                {Format.formatMoney(history.data.tossPointRequire, 4)}
               </Typography>
             </Stack>
             <Stack gap={0.5}>
