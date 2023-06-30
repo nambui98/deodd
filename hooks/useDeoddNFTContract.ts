@@ -133,7 +133,7 @@ export const useDeoddNFTContract = () => {
         } | undefined = {
             type: EnumNFT.BRONZE,
             percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 1 * DefaultStaked / DefaultSeason,
 
             list: []
         };
@@ -144,9 +144,8 @@ export const useDeoddNFTContract = () => {
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.GOLD,
-
-            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
+            percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * 1 * DefaultStaked / DefaultSeason,
 
             list: []
         };
@@ -157,10 +156,8 @@ export const useDeoddNFTContract = () => {
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.DIAMOND,
-
-            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
-            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 0 * DefaultStaked / DefaultSeason,
-
+            percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
+            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * 1 * DefaultStaked / DefaultSeason,
             list: []
         };
         for (let index = 0; index < arr.length; index++) {
@@ -177,9 +174,9 @@ export const useDeoddNFTContract = () => {
         return {
             total: total,
             data: [
-                { ...dataBronze },
-                { ...dataGold },
-                { ...dataDiamond }
+                { ...dataBronze, estProfit: dataBronze.estProfit * dataBronze.list.length },
+                { ...dataGold, estProfit: dataGold.estProfit * dataGold.list.length },
+                { ...dataDiamond, estProfit: dataDiamond.estProfit * dataDiamond.list.length }
             ]
         }
     }
