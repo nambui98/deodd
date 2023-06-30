@@ -876,7 +876,7 @@ const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: {
             <Typography variant='body2' fontWeight={500} >{data.userInfo.userName ?? Convert.convertWalletAddress(data.from, 4, 5)}</Typography>
         </Stack>
         <Stack direction={'row'} alignItems={'baseline'} gap={1} mt={.5}>
-            <Typography variant='body2' fontWeight={400} color={'secondary.700'} lineHeight={'14px'} fontSize={10}>{Format.formatDateTime(data.updated_at, 'HH:mm')}</Typography>
+            <Typography variant='body2' fontWeight={400} color={'secondary.700'} lineHeight={'14px'} fontSize={10}>{Format.formatDateTimeAlt(data.updated_at, 'UTC', 'HH:mm')}</Typography>
             <Stack>
                 {
                     data.replied_content && <Stack sx={{ borderLeft: 1, borderColor: 'secondary.main' }} mb={.5}>

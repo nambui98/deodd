@@ -57,7 +57,7 @@ function StakingHistoryTable({ nfts, idNftSelected, setIdNftSelected }: { nfts: 
                       icon={<TickCircleOutlineIcon />}
                       checkedIcon={<TickCircleIcon />} />
                     <MainTypography>
-                      {formatDate(nft.stake_atz)}
+                      {Format.formatDateTimeAlt(nft.stake_atz, 'UTC', "dd/MM/yyyy '-' HH:mm:ss")}
                     </MainTypography>
 
                   </Stack>
