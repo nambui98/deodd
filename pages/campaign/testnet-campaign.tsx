@@ -14,38 +14,20 @@ import MyModal from '../../components/common/Modal'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
 import { GetServerSideProps } from 'next/types'
+import CoinAnimation from 'components/common/CoinAnimation'
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    return {
-        redirect: {
-            destination: '/campaign',
-            permanent: false,
-        },
-    }
-    return {
-        props: {
 
-        }
-    }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    const campaign = CAMPAIGNS.find(c => c.href === 'testnet-campaign');
+    return { props: { campaign } };
 }
-// export async function getStaticProps({ params }: { params: { path: string } }) {
-//     return {
-//         redirect: {
-//             destination: '/campaign',
-//             permanent: false,
-//         },
-//     }
-//     const campaign = CAMPAIGNS.find(c => c.href === 'testnet-campaign');
-
-//     return { props: { campaign } };
-// }
 function TestnetCampaign({ campaign }: { campaign: Campaign }) {
 
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, walletIsConnected } = useWalletContext();
-    const { data: testails } = useQuery({
+    const { data: testails, isLoading } = useQuery({
         queryKey: ["getLeaderboardTestail"],
         enabled: campaign.href === 'testnet-campaign',
         refetchInterval: 2000,
@@ -84,6 +66,7 @@ function TestnetCampaign({ campaign }: { campaign: Campaign }) {
                             </Typography>
                         </Stack>
                         <TableContainer sx={{ mt: 1, backgroundColor: "transparent", position: 'relative', maxHeight: '500px', backgroundImage: 'none', boxShadow: "none" }} component={Paper}>
+
                             <Table stickyHeader aria-label="simple table">
                                 <TableHead>
                                     <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
@@ -118,7 +101,7 @@ function TestnetCampaign({ campaign }: { campaign: Campaign }) {
                                             </TableRow>
                                         ))}
                                     {
-                                        walletIsConnected && <TableRow
+                                        walletIsConnected && !isLoading && <TableRow
                                             sx={{
                                                 position: 'sticky',
                                                 bottom: 0,
@@ -149,8 +132,11 @@ function TestnetCampaign({ campaign }: { campaign: Campaign }) {
                                     }
                                 </TableBody>
                             </Table>
+                            {isLoading &&
+                                <CoinAnimation mx="auto" width={50} height={50} />
+                            }
                             {
-                                !rows || rows?.length <= 0 &&
+                                !rows || rows?.length <= 0 && !isLoading &&
                                 <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
                                     <MyImage width={144} src={CoinEmptyImage} alt="" />
                                     <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
