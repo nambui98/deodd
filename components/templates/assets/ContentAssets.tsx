@@ -11,7 +11,7 @@ type Props = {}
 
 function ContentAssets({ }: Props) {
     const { walletAddress } = useWalletContext();
-    const { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken } = useDeoddNFTContract();
+    const { walletTokens, handleClickNFT, nftSelected, priceToken } = useDeoddNFTContract();
 
     const [valueTab, setValueTab] = useState<number>(1);
     const listTabs: TypeTab[] = [
@@ -35,14 +35,14 @@ function ContentAssets({ }: Props) {
                 <Box mt={3}>
                     {
                         valueTab === 1 ?
-                            <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected} handleClaimNFT={handleClaimNFT} />
+                            <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected as any} />
                             :
                             <RightContent walletAddress={walletAddress} priceToken={priceToken} walletTokens={walletTokens} />
                     }
                 </Box>
             </Box>
             <Stack display={{ xs: 'none', md: 'flex' }} direction="row" mt={3} columnGap={4}>
-                <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected} handleClaimNFT={handleClaimNFT} />
+                <LeftContent handleClickNFT={handleClickNFT} priceToken={priceToken} nftSelected={nftSelected as any} />
                 <RightContent walletAddress={walletAddress} priceToken={priceToken} walletTokens={walletTokens} />
             </Stack >
         </Container >
