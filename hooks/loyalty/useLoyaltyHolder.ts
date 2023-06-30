@@ -38,7 +38,6 @@ function useLoyaltyHolder() {
       if (periodsInfo.data != null) {
         const promiseResult = await getNftLeaderboardInfo(periodsInfo.data[period].id);
         if (promiseResult.data.data != null) {
-          console.log("leaderboard", promiseResult.data.data);
           return promiseResult.data.data;
         } else {
           // Throw error when response if ok but there is no data
@@ -61,7 +60,6 @@ function useLoyaltyHolder() {
       if (periodsInfo.data != null) {
         const promiseResult = await getNftHistoryInfo(periodsInfo.data[period].id);
         if (promiseResult.data.data != null) {
-          console.log("history", promiseResult.data.data);
           return promiseResult.data.data
         } else {
           // Throw error when response if ok but there is no data
