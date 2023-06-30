@@ -1,5 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 export const Format = {
     formatMoney: (value: string | number, fixed?: number) => {
@@ -40,6 +41,11 @@ export const Format = {
         });
     },
 
-
     formatDateTime: (date: string, type = 'dd/MM/yyyy') => format(new Date(date), type),
-} 
+
+    formatDateTimeAlt: (date: string, timezone: string, type = 'HH:mm zzz MMMM dd, yyyy') => {
+        if (date) {
+            return formatInTimeZone(date, timezone, type)
+        }
+    },
+}
