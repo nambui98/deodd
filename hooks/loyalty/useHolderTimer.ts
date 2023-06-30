@@ -1,7 +1,8 @@
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useWalletContext } from "contexts/WalletContext";
-import { LoyaltyPeriodInfoType } from "libs/types/loyaltyTypes";
+import { LoyaltyHolderPeriodsInfoType } from "libs/types/loyaltyTypes";
+import { UseQueryResult } from "@tanstack/react-query";
 
 function formatTime(time: number) {
   const day = Math.floor(time / 86400);
@@ -27,23 +28,19 @@ function formatTime(time: number) {
 
 type PropsType = {
   setReset: Dispatch<SetStateAction<boolean>>;
-  periodInfo: LoyaltyPeriodInfoType;
+  periodsInfo: UseQueryResult<LoyaltyHolderPeriodsInfoType, unknown>;
 }
 
-function useHolderTimer({ setReset, periodInfo }: PropsType) {
+function useHolderTimer({ setReset, periodsInfo }: PropsType) {
   const { walletIsConnected } = useWalletContext();
   const [timeLeft, setTimeLeft] = useState(0);
-  // const [time, setTime] = useState({
-  //   endDate: "",
-  //   timeLeft: 0,
-  // });
 
   // Set time left based on the end date fetched from the database
   useEffect(() => {
     if (walletIsConnected) {
       const interval = setInterval(() => {
-        if (periodInfo.endTime) {
-          const secondLeftString = formatDistanceToNowStrict(new Date(periodInfo.endTime), { unit: "second", addSuffix: true });
+        if (!periodsInfo.isLoading && !periodsInfo.isError && periodsInfo.data[0].end_time) {
+          const secondLeftString = formatDistanceToNowStrict(new Date(periodsInfo.data[0].end_time), { unit: "second", addSuffix: true });
           if (secondLeftString.includes("ago")) {
             // Set timer to 0.
             setTimeLeft(0);
@@ -58,7 +55,7 @@ function useHolderTimer({ setReset, periodInfo }: PropsType) {
 
       return () => { clearInterval(interval) };
     }
-  }, [periodInfo.endTime, walletIsConnected, setReset]);
+  }, [periodsInfo.isLoading, periodsInfo.isError, periodsInfo.data, walletIsConnected, setReset]);
 
   return formatTime(timeLeft);
 }

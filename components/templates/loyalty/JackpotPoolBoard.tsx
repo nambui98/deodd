@@ -8,17 +8,23 @@ import JackpotHistory from "./components/JackpotHistory";
 import {
   LoyaltyJackpotLeaderboardType,
   LoyaltyJackpotHistoryType,
-  LoyaltyLoadingType,
+  LoyaltyJackpotSeasonInfoType,
 } from "libs/types/loyaltyTypes";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type Props = {
-  leaderboard: LoyaltyJackpotLeaderboardType;
   setSeason: (value: number) => void;
-  history: LoyaltyJackpotHistoryType;
-  loading: LoyaltyLoadingType;
+  leaderboard: UseQueryResult<LoyaltyJackpotLeaderboardType, unknown>;
+  history: UseQueryResult<LoyaltyJackpotHistoryType, unknown>;
+  seasonInfo: UseQueryResult<LoyaltyJackpotSeasonInfoType, unknown>;
 };
 
-function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
+function JackpotPoolBoard({
+  setSeason,
+  leaderboard,
+  history,
+  seasonInfo,
+}: Props) {
   const [valueTab, setValueTab] = useState(1);
 
   const listTabs: TypeTab[] = [
@@ -46,13 +52,13 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
     },
   ];
 
-  const selectOptions = [];
+  const selectOptions = ["Current Season"];
 
-  for (let i = leaderboard.currentSeason; i >= 1; i--) {
-    if (i === leaderboard.currentSeason) {
-      selectOptions.push("Current Season");
-    } else {
-      selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
+  if (!seasonInfo.isLoading && !seasonInfo.isError) {
+    for (let i = seasonInfo.data.currentSeason; i >= 1; i--) {
+      if (i !== seasonInfo.data.currentSeason) {
+        selectOptions.push(`Season #${i < 10 ? "0" : ""}${i}`);
+      }
     }
   }
 
@@ -79,9 +85,9 @@ function JackpotPoolBoard({ leaderboard, setSeason, history, loading }: Props) {
       </Stack>
 
       {valueTab === 1 ? (
-        <JackpotLeaderboard loading={loading} leaderboard={leaderboard} />
+        <JackpotLeaderboard leaderboard={leaderboard} />
       ) : valueTab === 2 ? (
-        <JackpotHistory loading={loading} history={history} />
+        <JackpotHistory history={history} />
       ) : (
         ""
       )}

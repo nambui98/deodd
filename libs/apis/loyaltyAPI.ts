@@ -20,8 +20,8 @@ export const getLoyaltyJackpotBoardCurrent = async (
 
 export const getLoyaltyJackpotBoardHistory = async (
   wallet: string,
-  season: string | number,
-  signal: AbortSignal
+  season: number,
+  signal?: AbortSignal
 ) => {
   return vhIdRequest({
     url: baseURL + `/jackpot/board/season?wallet=${wallet}&season=${season}`,
@@ -32,46 +32,11 @@ export const getLoyaltyJackpotBoardHistory = async (
 
 export const getLoyaltyHistoryJackpot = async (
   wallet: string,
-  season: string | number,
-  signal: AbortSignal
-) => {
-  return vhIdRequest({
-    url: baseURL + `/jackpot/history/season?wallet=${wallet}&season=${season}`,
-    method: "get",
-    signal: signal,
-  });
-};
-
-export const getLoyaltyNFTCurrent = async (
-  wallet: string,
+  season: number,
   signal?: AbortSignal
 ) => {
   return vhIdRequest({
-    url: baseURL + `/nft/board/current?wallet=${wallet}`,
-    method: "get",
-    signal: signal,
-  });
-};
-
-export const getLoyaltyNFTBoardBySeason = async (
-  wallet: string,
-  season: number,
-  signal: AbortSignal
-) => {
-  return vhIdRequest({
-    url: baseURL + `/nft/board/season?wallet=${wallet}&season=${season}`,
-    method: "get",
-    signal: signal,
-  });
-};
-
-export const getNFTItemProfitBySeason = async (
-  wallet: string,
-  season: number,
-  signal: AbortSignal
-) => {
-  return vhIdRequest({
-    url: baseURL + `/nft/profit/season?wallet=${wallet}&season=${season}`,
+    url: baseURL + `/jackpot/history/season?wallet=${wallet}&season=${season}`,
     method: "get",
     signal: signal,
   });
@@ -90,6 +55,27 @@ export const claimNFTReward = async (address: string) => {
 export const getJackpotBoom = async () => {
   return await vhIdRequest({
     url: baseURL + `/jackpot/boom`,
+    method: 'get',
+  })
+}
+
+export const getNftPoolPeriodsInfo = async () => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/pools`,
+    method: 'get',
+  })
+}
+
+export const getNftHistoryInfo = async (poolId: string) => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/nft-staked?poolId=${poolId}`,
+    method: 'get',
+  })
+}
+
+export const getNftLeaderboardInfo = async (poolId: string) => {
+  return await vhIdRequest({
+    url: baseURL + `/nft/staking/leaderboard?poolId=${poolId}`,
     method: 'get',
   })
 }

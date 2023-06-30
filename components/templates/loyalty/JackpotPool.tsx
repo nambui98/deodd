@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, Divider } from "@mui/material";
+import { Box, Stack, Typography, Divider, Skeleton } from "@mui/material";
 import { BnbIcon, GoldCup1Icon } from "utils/Icons";
 import { LoyaltyImage } from "utils/Images";
 import { Colors } from "constants/index";
@@ -6,28 +6,12 @@ import JackpotPoolBoard from "./JackpotPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import useLoyaltyJackpot from "hooks/loyalty/useLoyaltyJackpot";
 import { Format } from "utils/format";
-// import { useQuery } from "@tanstack/react-query";
-// import { getLoyaltyJackpotBoardCurrent } from "libs/apis/loyaltyAPI";
 
 type Props = {};
 
 function JackpotPool({}: Props) {
-  const { walletIsConnected, walletAddress } = useWalletContext();
-  const { leaderboard, setSeason, history, seasonInfo, loading } =
-    useLoyaltyJackpot();
-  // const leaderboardQuery = useQuery({
-  //   queryKey: ["leaderboard"],
-  //   queryFn: async () => {
-  //     const promiseResult = await getLoyaltyJackpotBoardCurrent(walletAddress);
-  //     if (promiseResult.status === 200) {
-  //       const data = promiseResult.data.data;
-  //       return data;
-  //     } else {
-  //       throw new Error("No data");
-  //     }
-  //   }
-  // });
-  // console.log(leaderboardQuery.data);
+  const { walletIsConnected } = useWalletContext();
+  const { setSeason, leaderboard, history, seasonInfo } = useLoyaltyJackpot();
 
   return (
     <Box width={1}>
@@ -52,56 +36,77 @@ function JackpotPool({}: Props) {
           alignItems: "center",
           textAlign: "center",
           mx: { xs: 2, md: 0 },
+          p: 4,
         }}
       >
-        <Typography mt={3.5} variant="body2">
-          Season{" "}
-          <Box component={"span"} color={"text.secondary"}>
-            #{seasonInfo.currentSeason}
-          </Box>{" "}
-          Started at{" "}
-          {seasonInfo.startTime
-            ? Format.formatDateTimeAlt(seasonInfo.startTime, "UTC")
-            : ""}
-        </Typography>
+        {seasonInfo.isLoading ? (
+          <Skeleton variant="text" width={200} />
+        ) : (
+          <Typography mt={3.5} variant="body2">
+            Season{" "}
+            <Box component={"span"} color={"text.secondary"}>
+              {seasonInfo.isError ? "--" : `#${seasonInfo.data.currentSeason}`}
+            </Box>{" "}
+            Started at{" "}
+            {seasonInfo.isError
+              ? "--/--/----"
+              : Format.formatDateTimeAlt(seasonInfo.data.startTime, "UTC")}
+          </Typography>
+        )}
+
         <Typography variant="body2" color={"text.disabled"}>
           Jackpot Reward
         </Typography>
-        <Stack
-          direction={"row"}
-          columnGap={1}
-          alignItems={"center"}
-          justifyContent={"center"}
-          mb={1.25}
-        >
-          <Typography variant="h3" fontSize={"3rem"} lineHeight={"3.75rem"}>
-            {Format.formatMoney(seasonInfo.currentReward, 4)}
+
+        {seasonInfo.isLoading ? (
+          <Skeleton variant="text" width={250} sx={{ fontSize: 48 }} />
+        ) : (
+          <Typography
+            variant="h1"
+            lineHeight={"3.75rem"}
+            sx={{ overflowWrap: "anywhere", mb: 1.25 }}
+          >
+            {seasonInfo.isError
+              ? "---"
+              : Format.formatMoney(seasonInfo.data.currentReward, 4)}
+            <Box component={"span"} sx={{ ml: 1 }}>
+              <BnbIcon width={40} color={Colors.primaryDark} />
+            </Box>
           </Typography>
-          <BnbIcon width={40} color={Colors.primaryDark} />
-        </Stack>
+        )}
+
         {walletIsConnected && (
           <>
             <Typography variant="body2" color={"text.disabled"}>
               Tosspoint to win
             </Typography>
-            <Typography
-              fontSize={"1.75rem"}
-              lineHeight={"2,2rem"}
-              fontWeight={500}
-              color={"text.primary"}
-            >
-              {seasonInfo.connectWalletTossPoint ?? 0}/
-              <Box
-                component={"span"}
-                color={"text.secondary"}
-                fontSize={"2.375rem"}
+
+            {seasonInfo.isLoading ? (
+              <Skeleton variant="text" width={200} sx={{ fontSize: 38 }} />
+            ) : (
+              <Typography
+                fontSize={"1.75rem"}
+                lineHeight={"2,2rem"}
+                fontWeight={500}
+                color={"text.primary"}
               >
-                {seasonInfo.tossPointRequire}
-              </Box>
-            </Typography>
+                {seasonInfo.isError
+                  ? "--"
+                  : seasonInfo.data.connectWalletTossPoint ?? 0}
+                /
+                <Box
+                  component={"span"}
+                  color={"text.secondary"}
+                  fontSize={"2.375rem"}
+                >
+                  {seasonInfo.isError ? "--" : seasonInfo.data.tossPointRequire}
+                </Box>
+              </Typography>
+            )}
           </>
         )}
       </Stack>
+
       {walletIsConnected ? (
         <>
           <Divider
@@ -111,11 +116,12 @@ function JackpotPool({}: Props) {
               backgroundColor: "primary.100",
             }}
           />
+
           <JackpotPoolBoard
-            leaderboard={leaderboard}
             setSeason={setSeason}
+            leaderboard={leaderboard}
             history={history}
-            loading={loading}
+            seasonInfo={seasonInfo}
           />
         </>
       ) : null}
