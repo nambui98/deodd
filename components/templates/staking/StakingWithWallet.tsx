@@ -47,7 +47,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
   const { walletAddress } = useWalletContext();
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft, priceToken } = useDeoddNFTContract();
-  let totalEstProfit = (stakeOption === 1 ? assets : walletTokens)?.data.reduce((sum, asset) => sum + (asset as any).estProfit, 0) ?? 0
+  let totalEstProfit = (stakeOption === 1 ? assets : walletTokens)?.data?.reduce((sum, asset) => sum + (asset as any).estProfit, 0) ?? 0
   return (
     <>
       <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
