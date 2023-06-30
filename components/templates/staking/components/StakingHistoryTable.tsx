@@ -1,17 +1,18 @@
 import { getPathAvatarNFT } from "utils/checkAvatar";
 import Image from "next/image";
 import { Format } from "utils/format";
-import { BnbIcon } from "utils/Icons";
+import { BnbIcon, TickCircleIcon, TickCircleOutlineIcon } from "utils/Icons";
 import { Colors } from "constants/index";
-import { styled, Typography, Stack, TableContainer, Table, TableBody, TableHead, TableCell, TableRow } from "@mui/material";
+import { styled, Typography, Stack, TableContainer, Table, TableBody, TableHead, TableCell, TableRow, FormControlLabel, Checkbox } from "@mui/material";
+import { EnumNFT, EnumNFTTitle, TypeNFT } from "libs/types";
+import { format } from "date-fns";
 
 function formatDate(dateString: string) {
-  const date = Format.formatDateTime(dateString);
-  const hour = Format.formatDateTime(dateString, "kk:mm:ss");
-  return `${date} - ${hour}`;
+  return format(new Date(dateString), "dd/MM/yyyy '-' HH:mm:ss")
 }
 
-function StakingHistoryTable() {
+
+function StakingHistoryTable({ nfts, idNftSelected, setIdNftSelected }: { nfts: any[], idNftSelected: number | null, setIdNftSelected: Function }) {
   return (
     <TableContainer>
       <Table aria-label="stake history table">
@@ -42,25 +43,41 @@ function StakingHistoryTable() {
             px: 0,
           }
         }}>
-          <TableRow>
-            <TableCell>
-              <MainTypography>
-                {formatDate(new Date().toString())}
-              </MainTypography>
-            </TableCell>
-            <TableCell>
-              <Stack sx={{ flexDirection: "row", gap: 1 }}>
-                <Image src={getPathAvatarNFT("bronze")} width={24} height={24} alt="Diamond NFT" />
-                <Typography variant="body2">Bronze NFT Card #125122</Typography>
-              </Stack>
-            </TableCell>
-            <TableCell align="right">
-              <Stack sx={{ flexDirection: "row", gap: 1, justifyContent: "flex-end" }}>
-                <Typography variant="body2">0,2</Typography>
-                <BnbIcon width={20} color={Colors.primaryDark} />
-              </Stack>
-            </TableCell>
-          </TableRow>
+
+          {
+            nfts?.map((nft) =>
+
+              <TableRow key={nft.token_id}
+
+                onClick={() => setIdNftSelected(nft.token_id)}
+              >
+                <TableCell>
+                  <Stack direction={'row'} alignItems={'center'}>
+                    <Checkbox checked={idNftSelected !== null && idNftSelected === nft.token_id}
+                      icon={<TickCircleOutlineIcon />}
+                      checkedIcon={<TickCircleIcon />} />
+                    <MainTypography>
+                      {formatDate(nft.stake_atz)}
+                    </MainTypography>
+
+                  </Stack>
+                </TableCell>
+                <TableCell>
+                  <Stack sx={{ flexDirection: "row", gap: 1 }} alignItems={'center'}>
+                    <img src={nft.image_link} width={24} alt="Diamond NFT" />
+                    <Typography variant="body2">{EnumNFTTitle[nft.type as EnumNFT]} #{nft.token_id}</Typography>
+                  </Stack>
+                </TableCell>
+                <TableCell align="right">
+                  <Stack sx={{ flexDirection: "row", gap: 1, justifyContent: "flex-end" }}>
+                    <Typography variant="body2">{new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(nft.profit)}</Typography>
+                    <BnbIcon width={20} color={Colors.primaryDark} />
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            )
+          }
+
         </TableBody>
       </Table>
     </TableContainer>

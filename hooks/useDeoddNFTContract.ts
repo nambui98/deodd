@@ -6,6 +6,10 @@ import { useSiteContext } from "contexts/SiteContext";
 import { getPriceToken } from "libs/apis/coinmarketcap";
 import { EnumNFT, TypeDataNFT } from "libs/types";
 import { DeoddService } from "libs/apis";
+import { deoddNFTContract } from "libs/contract";
+import { useContractRead } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
+import { DefaultSeason, SharePerNFT, DefaultRewardPool, DefaultStaked } from "constants/index";
 export type TypeNFT = {
     id: number | string,
     type: EnumNFT,
@@ -15,26 +19,86 @@ export type TypeNFT = {
 
 export const useDeoddNFTContract = () => {
     const { walletAddress, contractDeoddNFT } = useWalletContext();
-    const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
-    const [nftSelected, setNftSelected] = useState<TypeNFT | undefined>();
+    const [walletTokens, setWalletTokens] = useState<TypeDataNFT & {
+        estProfit: number,
+        percentSharePerNFT: number
+    }>();
+    const [nftSelected, setNftSelected] = useState<TypeNFT | undefined | null>();
     const [reload, setReload] = useState<boolean>(false);
     const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const [priceToken, setPriceToken] = useState<number | undefined>();
 
-    const getSpendingTokens = async () => {
-        // const res = await contractDeoddNft?.getSpendingTokens(walletAddress)
-        // const data = getInfoTokens(res);
-        // return data;
-    };
-    const getTokenTypeId = async (id: BigNumber) => {
-        const res = await contractDeoddNFT?.getTokenTypeId(id)
-        return res;
-    };
-    const getWalletTokens = async () => {
-        const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
-        const data = getInfoTokens(res);
-        return data;
-    };
+
+    const { data: assets, refetch: refetchGetAssetsBalance } = useQuery({
+        queryKey: ["getAssetsBalance2"],
+        enabled: !!walletAddress,
+        queryFn: () => DeoddService.getAssetsBalance(walletAddress),
+        select: (data) => data.data ?
+            {
+                total: 0,
+                data: [
+                    {
+                        type: EnumNFT.BRONZE,
+                        percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * data.data.data.nftItemHoldingDTOForUser.totalBronzeNFT * DefaultStaked / DefaultSeason,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.BRONZE,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+                    {
+                        type: EnumNFT.GOLD,
+
+                        percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * data.data.data.nftItemHoldingDTOForUser.totalGoldNFT * DefaultStaked / DefaultSeason,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.GOLD,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+
+                    {
+                        type: EnumNFT.DIAMOND,
+
+                        percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
+                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * data.data.data.nftItemHoldingDTOForUser.totalDiamondNFT * DefaultStaked / DefaultSeason,
+                        list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
+                            return {
+                                id: d.token_id ?? '',
+                                type: EnumNFT.DIAMOND,
+                                image: d.image_link,
+                                amount: 0
+                            }
+                        })
+                    },
+
+
+                ]
+            }
+            : null
+    });
+    const { refetch: getBalanceNft } = useContractRead({
+        address: deoddNFTContract.address,
+        abi: deoddNFTContract.abi,
+        functionName: 'getWalletTokens',
+        args: [walletAddress],
+        enabled: false,
+        async onSuccess(res: BigNumber[]) {
+            const data = await getInfoTokens(res);
+            setWalletTokens(data as unknown as (TypeDataNFT & {
+                estProfit: number,
+                percentSharePerNFT: number
+            }));
+        },
+    })
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
             (tokens ?? []).map(async (token: BigNumber) => {
@@ -63,23 +127,37 @@ export const useDeoddNFTContract = () => {
         let total: number = arr.length;
         let dataBronze: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.BRONZE,
+            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * 1 * DefaultStaked / DefaultSeason) / 100,
+
             list: []
         };
         let dataGold: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.GOLD,
+            percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * 1 * DefaultStaked / DefaultSeason) / 100,
+
             list: []
         };
         let dataDiamond: {
             type: EnumNFT,
+            estProfit: number,
+            percentSharePerNFT: number,
             list: TypeNFT[]
         } | undefined = {
             type: EnumNFT.DIAMOND,
+            percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
+            estProfit: (DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * 1 * DefaultStaked / DefaultSeason) / 100,
             list: []
         };
         for (let index = 0; index < arr.length; index++) {
@@ -96,52 +174,34 @@ export const useDeoddNFTContract = () => {
         return {
             total: total,
             data: [
-                { ...dataBronze },
-                { ...dataGold },
-                { ...dataDiamond }
+                { ...dataBronze, estProfit: dataBronze.estProfit * dataBronze.list.length },
+                { ...dataGold, estProfit: dataGold.estProfit * dataGold.list.length },
+                { ...dataDiamond, estProfit: dataDiamond.estProfit * dataDiamond.list.length }
             ]
         }
     }
 
     useEffect(() => {
         if (walletAddress) {
-            getWalletTokens().then(res => {
-                if (res && res.data.length > 0) {
-                    setWalletTokens(res);
-                }
-            });
-            getPriceToken().then(res => {
-                if (res.status === 200) {
-                    setPriceToken(res.data.data[0].quote['BUSD'].price)
-                }
-            })
+            getBalanceNft();
+            refetchGetAssetsBalance();
 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [reload, walletAddress])
-
-    const handleClickNFT = (nft: TypeNFT) => {
+    }, [walletAddress])
+    const handleClickNFT = (nft: TypeNFT | null) => {
         setNftSelected(nft)
     }
-    const claimToWallet = async () => {
-        // const res = await contractDeoddNft?.claimToWallet(BigNumber.from(nftSelected?.id));
-        // return res.wait();
+
+
+    return {
+        walletTokens,
+        handleClickNFT,
+        nftSelected,
+        priceToken,
+        assets,
+        getBalanceNft,
+
+        refetchGetAssetsBalance
     }
-    const handleClaimNFT = async () => {
-        // try {
-        //     setIsLoading(true);
-        //     let res = await claimToWallet();
-        //     setIsLoading(false);
-        //     if (res.status) {
-        //         setTitleSuccess('Claimed successfully')
-        //         setIsSuccess(true);
-        //         setReload(!reload);
-        //     }
-        // } catch (error: any) {
-        //     setIsLoading(false);
-        //     setTitleError(error.reason || 'Something went wrong. Please try again!')
-        //     setIsError(true);
-        // }
-    }
-    return { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken }
 }

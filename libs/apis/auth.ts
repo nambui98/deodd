@@ -3,7 +3,7 @@ const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
         ? '/deodd'
         : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
-            ? '/deodd-pretest' : ''
+            ? '/deodd' : ''
 const getUserNonce = async (address: string) => {
     return await vhIdRequest({
         url: baseURL + `/users/nonce/fetch?wallet=${address}`,
@@ -32,7 +32,7 @@ const refreshToken = async () => {
         url: baseURL + `/users/auth?grant_type=refresh`,
         method: 'POST',
         data: JSON.stringify({
-            refreshToken: localStorage.getItem('refresh_token'),
+            refreshToken: localStorage.getItem('refresh_token1'),
         })
     })
 }

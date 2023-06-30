@@ -1,17 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyModal from "components/common/Modal";
-import { Colors } from "constants/index";
+import { Colors, DefaultRewardPool, SharePerNFT } from "constants/index";
 import { Box, Stack, Typography, InputBase } from "@mui/material";
 import { ButtonFourth } from "components/ui/button";
 import { BnbIcon, InfoCircle2Icon } from "utils/Icons";
+import { EnumNFT, TypeNFT } from "libs/types";
+import { useQuery } from "@tanstack/react-query";
+import { DeoddService } from "libs/apis";
+import { Utils } from "@/utils/index";
+import { Format } from "utils/format";
+import { BigNumber, ethers } from "ethers";
+import FormatNumber from "components/common/FormatNumber";
 
 type StakingCalculatorType = {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Function;
+  nftSelected?: TypeNFT | null,
+  currentPool: any
 }
 
-function StakingCalculator({ open, setOpen }: StakingCalculatorType) {
-  const [stakePeriod, setStakePeriod] = useState(1);
+function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingCalculatorType) {
+  console.log(currentPool);
+
+  const [duration, setDuration] = useState<number>(1)
+  // const { data, refetch: caculateEstProfit } = useQuery({
+  //   queryKey: ["caculateEstProfit"],
+  //   enabled: !!nftSelected && open,
+  //   queryFn: () => DeoddService.caculateEstProfit({ typeNft: nftSelected!.type as EnumNFT, duration: duration }),
+  //   select: (data: any) => {
+  //     if (data.status === 200) {
+  //       return data.data;
+  //     } else {
+  //       return undefined
+  //     }
+  //   },
+  // });
+  // useEffect(() => {
+  //   if (duration) {
+  //     caculateEstProfit();
+  //   }
+  // }, [caculateEstProfit, duration])
+
+  // console.log(data);
 
   return (
     <MyModal
@@ -37,22 +67,19 @@ function StakingCalculator({ open, setOpen }: StakingCalculatorType) {
           Staked for
         </Typography>
         <Stack sx={{ flexDirection: "row", gap: 1, mb: 5 }}>
-          <ButtonFourth active={stakePeriod === 1} onClick={() => { setStakePeriod(1) }} label="1 Day" />
-          <ButtonFourth active={stakePeriod === 2} onClick={() => { setStakePeriod(2) }} label="7 Days" />
-          <ButtonFourth active={stakePeriod === 3} onClick={() => { setStakePeriod(3) }} label="30 Days" />
+          <ButtonFourth active={duration === 1} onClick={() => { setDuration(1) }} label="1 Day" />
+          <ButtonFourth active={duration === 7} onClick={() => { setDuration(7) }} label="7 Days" />
+          <ButtonFourth active={duration === 30} onClick={() => { setDuration(30) }} label="30 Days" />
         </Stack>
         <Typography variant="body2" sx={{ mb: 1 }}>Total Reward Pool</Typography>
         <InputBase
-          // {...register("username", {
-          //   onChange: (e) => {
-          //     setValue("username", e.target.value.split(" ").join("").replaceAll(/[^a-zA-Z0-9!@#\$%\^\&\~\*\(\)_\+`\-=\[\]\\{}|;':",\.<>\/\?]/g, ''))
-          //   }
-          // })}
           endAdornment={
             <BnbIcon width={20} height={20} color={Colors.primaryDark} />
           }
-          type="number"
+          inputComponent={FormatNumber as any}
+          value={DefaultRewardPool}
           sx={{
+            pointerEvents: 'none',
             backgroundColor: "primary.300",
             borderRadius: "0.5rem",
             px: 3,
@@ -74,7 +101,10 @@ function StakingCalculator({ open, setOpen }: StakingCalculatorType) {
         <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
           <Typography variant="body2">EST. Profit</Typography>
           <Stack sx={{ flexDirection: "row", gap: 1, mb: 3 }}>
-            <Typography variant="body2">1.534</Typography>
+            <Typography variant="body2">{
+              nftSelected &&
+              Format.formatMoney(Utils.calculatorProfit(nftSelected, 1, duration))
+            }</Typography>
             <BnbIcon width={20} color={Colors.primaryDark} />
           </Stack>
         </Stack>

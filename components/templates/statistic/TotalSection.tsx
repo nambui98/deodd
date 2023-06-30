@@ -7,22 +7,18 @@ import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { FlipPerUserTable } from "./FlipPerUserTable";
 import { CompareText } from "./CompareText";
+import { DashboardErrorType, DashboardFlipType, DashboardUserFlipType } from "libs/types/dashboardTypes";
 
 type TotalPropsType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  userFlipStat: any;
-  totalUser: number;
-  flipDashboardStat: any;
+  error: DashboardErrorType;
+  userFlipStat: DashboardUserFlipType;
+  flipDashboardStat: DashboardFlipType;
 };
 
 export function TotalSection({
   flipDashboardStat,
   error,
   userFlipStat,
-  totalUser,
 }: TotalPropsType) {
   return (
     <>
@@ -41,7 +37,7 @@ export function TotalSection({
         position={"relative"}
       >
         <TitleTextAbsolute text="fee total" />
-        {error.haveFlipped ? (
+        {!error.flipData.noData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
@@ -57,7 +53,7 @@ export function TotalSection({
             <CompareText data={flipDashboardStat.feeTotalCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
-          <Typography variant="body2">{error.errorMessage}</Typography>
+          <Typography variant="body2">{error.flipData.errorMessage}</Typography>
         )}
       </DashboardCard >
 
@@ -98,7 +94,7 @@ export function TotalSection({
         position={"relative"}
       >
         <TitleTextAbsolute text="BNB total" />
-        {error.haveFlipped ? (
+        {!error.flipData.noData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
               {+(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
@@ -114,7 +110,7 @@ export function TotalSection({
             <CompareText data={flipDashboardStat.amountCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
-          <Typography variant="body2">{error.errorMessage}</Typography>
+          <Typography variant="body2">{error.flipData.errorMessage}</Typography>
         )}
       </DashboardCard>
 
@@ -136,7 +132,7 @@ export function TotalSection({
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <CupIcon fill={Colors.primaryDark} width={"2.5rem"} />
           <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-            {error.haveFlipped ? flipDashboardStat.flipWinPercentage : "0"}
+            {!error.flipData.noData ? flipDashboardStat.flipWinPercentage : "0"}
             <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
               %
             </Typography>
@@ -162,7 +158,7 @@ export function TotalSection({
         <Box display={"flex"} alignItems={"center"} gap={1}>
           <MobileIcon fill={Colors.primary} width={"2.5rem"} />
           <Typography variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-            {error.haveFlipped ? "49" : "0"}
+            {!error.flipData.noData ? "49" : "0"}
             <Typography variant="h2" component={"span"} fontSize={"1.5rem"}>
               %
             </Typography>

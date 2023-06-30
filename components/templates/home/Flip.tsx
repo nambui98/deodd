@@ -63,7 +63,7 @@ export const Flip = React.memo(() => {
     <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
 
       <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
-      <TestailPoint />
+      {/* <TestailPoint /> */}
       <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
       <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
       <FlipResult isShowing={statusGame === StatusGame.FLIP_RESULT} />

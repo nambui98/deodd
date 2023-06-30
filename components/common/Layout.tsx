@@ -100,9 +100,12 @@ const Layout = ({ children }: IProps) => {
                 <DrawerHeader id="main-top" />
                 <main >
                     {children}
+
                 </main>
+
                 <FaqHowtoplay />
             </Main>
+
             <JackpotPopup />
             <RightSidebar mobileOpen={mobileOpenRight} handleDrawerToggle={handleDrawerToggleRight} open={rightOpen} />
             <Paper sx={{ display: { md: 'none', xs: 'block', zIndex: 999999 }, position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>

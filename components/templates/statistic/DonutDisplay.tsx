@@ -1,14 +1,12 @@
 import { Donut } from "components/ui/donuts";
 import { Box, Typography } from "@mui/material";
+import { DashboardErrorType, DashboardFlipType } from "libs/types/dashboardTypes";
 
 type DonutDisplayType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  flipDashboardStat: any;
-  tail: string;
-  head: string;
+  error: DashboardErrorType;
+  flipDashboardStat: DashboardFlipType;
+  tail: keyof DashboardFlipType;
+  head: keyof DashboardFlipType;
 };
 
 // tail and head is for choosing from result or user's choice
@@ -35,7 +33,7 @@ export function DonutDisplay({
       >
         <Typography variant="h2" fontWeight={"700"} fontSize={"1.5rem"} lineHeight={1.265}>
           {/* If user have not flipped, return 0. If yes, check if it's smaller than 10 and append 0 before it */}
-          {!error.haveFlipped
+          {error.statData.noData
             ? "0"
             : flipDashboardStat.numberFlipToday < 10
               ? "0" + flipDashboardStat.numberFlipToday

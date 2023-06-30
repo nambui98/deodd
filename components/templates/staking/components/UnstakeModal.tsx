@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
 import MyModal from "components/common/Modal";
 import { Colors } from "constants/index";
-import { ButtonMain } from "components/ui/button";
+import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Typography } from "@mui/material";
 
 type UnstakeModalType = {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  currentStage: number,
+  handleUnStake: Function,
+  isLoadingUnStake: boolean
 }
 
-function UnstakeModal({ open, setOpen }: UnstakeModalType) {
-  const [stage, setStage] = useState(1);
+function UnstakeModal({ open, setOpen, currentStage, handleUnStake, isLoadingUnStake }: UnstakeModalType) {
+  const [stage, setStage] = useState(currentStage);
 
   useEffect(() => {
     if (open) {
-      setStage(1);
+      setStage(currentStage);
     }
-  }, [open]);
+  }, [open, currentStage]);
 
   return (
     <MyModal
@@ -38,30 +41,31 @@ function UnstakeModal({ open, setOpen }: UnstakeModalType) {
         Yes</Typography>}
       {stage === 3 && <Typography variant="body2" textAlign={"center"} mb={3}>Unstake successfully</Typography>}
 
-      <ButtonMain
-        active={true}
-        title={stage === 1 ? "Cancel" : stage === 2 ? "Comback" : "Confirm"}
+      <ButtonLoading
         fullWidth
         sx={{
           py: 2,
           px: 5,
           fontSize: "1rem",
+          textTransform: 'none',
           fontWeight: 600,
           lineHeight: "1.375rem",
           backgroundColor: "primary.300",
           mb: 2,
         }}
         onClick={() => { setOpen(false) }}
-      />
-      {stage !== 3 && <ButtonMain
-        active={true}
-        title={stage === 1 ? "Unstake anyway" : "Yes"}
+      >
+
+        {stage === 1 ? "Cancel" : stage === 2 ? "Comback" : "Confirm"}
+      </ButtonLoading>
+      {stage === 1 && <ButtonLoading
         fullWidth
         sx={{
           py: 2,
           px: 5,
           fontSize: "1rem",
           fontWeight: 600,
+          textTransform: 'none',
           lineHeight: "1.375rem",
           backgroundColor: "primary.300",
           color: "primary.main",
@@ -69,12 +73,37 @@ function UnstakeModal({ open, setOpen }: UnstakeModalType) {
         }}
         onClick={() => {
           if (stage < 3) {
-            setStage(prev => prev + 1)
+            setStage(prev =>
+              prev + 1
+            )
           } else {
             setOpen(false);
           }
         }}
-      />}
+      >
+
+        Unstake anyway
+      </ButtonLoading>}
+      {stage === 2 && <ButtonLoading
+        fullWidth
+        sx={{
+          py: 2,
+          px: 5,
+          fontSize: "1rem",
+          fontWeight: 600,
+          textTransform: 'none',
+          lineHeight: "1.375rem",
+          backgroundColor: "primary.300",
+          color: "primary.main",
+          borderColor: "primary.main",
+        }}
+        loading={isLoadingUnStake}
+        onClick={() => {
+          handleUnStake();
+        }}
+      >
+        Yes
+      </ButtonLoading>}
     </MyModal>
   );
 }

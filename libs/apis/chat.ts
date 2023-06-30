@@ -1,4 +1,5 @@
 import vhIdRequest from "@/utils/vhIdRequest"
+import { EnumNFT, EnumNFTTitle } from "libs/types"
 
 const baseURLChat = '/dejaw'
 const sendMessage = async ({ from, to, repliedTo, content }: { from: string, to: string | undefined, repliedTo: string | undefined, content: string }) => {
@@ -75,9 +76,9 @@ const getBlockList = async ({ page = 1, size = 15 }: { page: number, size: numbe
     return await vhIdRequest({
         url: baseURLChat + `/block-list?page=${page}&size=${size}`,
         method: 'GET',
-
     })
 }
+
 export const ChatApis = {
     getMessagesWithAuth,
     getMessagesWithoutAuth,

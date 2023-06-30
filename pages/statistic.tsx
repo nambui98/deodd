@@ -6,7 +6,7 @@ import { FlipResultSection } from "@/templates/statistic/FlipResultSection";
 import { TotalSection } from "@/templates/statistic/TotalSection";
 
 export default function Statistic() {
-  const { error, flipDashboardStat, streak, userFlipStat, totalUser } =
+  const { error, flipDashboardStat, streak, userFlipStat } =
     useDashboardStat();
 
   return (
@@ -29,7 +29,6 @@ export default function Statistic() {
           error={error}
           flipDashboardStat={flipDashboardStat}
           userFlipStat={userFlipStat}
-          totalUser={totalUser}
         />
       </Box>
     </Container>

@@ -21,12 +21,10 @@ type Props = {
     // spendingTokens: TypeDataNFT,
     handleClickNFT: Function,
     nftSelected: TypeNFT | undefined,
-    handleClaimNFT: Function,
     priceToken: number | undefined
-
 }
 
-function LeftContent({ handleClaimNFT, handleClickNFT, nftSelected, priceToken }: Props) {
+function LeftContent({ handleClickNFT, nftSelected, priceToken }: Props) {
     const [openNftType, setOpenNftType] = useState<EnumNFT | undefined>()
     const [openModal, setOpenModal] = useState(false)
 

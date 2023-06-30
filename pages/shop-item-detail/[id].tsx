@@ -8,24 +8,43 @@ import { useQuery } from '@tanstack/react-query';
 import { Meta } from 'components/common/Meta';
 import Price from 'components/common/Price';
 import { ButtonLoading } from 'components/ui/button';
-import { Colors, UrlBlockExplorer } from 'constants/index';
+import { Colors, DateOpenShop, UrlBlockExplorer } from 'constants/index';
 import { useSiteContext } from 'contexts/SiteContext';
-import { BigNumber } from 'ethers';
+import { isBefore } from 'date-fns';
 import { DeoddService } from 'libs/apis';
 import { deoddNFTContract } from 'libs/contract';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BagTickIcon, EyeIcon, RightIcon, USDTIcon } from 'utils/Icons';
 import { Convert } from 'utils/convert';
-import { Format } from 'utils/format';
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const isNotShopOpen = process.env.NEXT_PUBLIC_OPEN_MAINNET === "FALSE" ? isBefore(new Date(), new Date(DateOpenShop)) : false;
+  if (isNotShopOpen) {
+    return {
+      redirect: {
+        destination: '/shop',
+        permanent: false,
+      },
+    }
+
+  }
+  return {
+    props: {
+
+    }
+  }
+}
 function ShopItemDetail() {
   const router = useRouter();
   const { setIsSuccess, setTitleSuccess } = useSiteContext();
   const [item, setItem] = useState<ListingItemType | undefined>()
   const [itemsSuggestion, setItemsSuggestion] = useState<ListingItemType[] | undefined>()
-  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
 
+
+  const [isShowBuy, setIsShowBuy] = useState<boolean>(false);
   const { refetch: getDetailShopItem, isFetching, isLoading } = useQuery({
     queryKey: ["getDetailShopItem"],
     enabled: false,

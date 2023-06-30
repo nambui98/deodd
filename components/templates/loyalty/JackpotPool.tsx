@@ -50,7 +50,7 @@ function JackpotPool({}: Props) {
             Started at{" "}
             {seasonInfo.isError
               ? "--/--/----"
-              : Format.formatDateTime(seasonInfo.data.startTime)}
+              : Format.formatDateTimeAlt(seasonInfo.data.startTime, "UTC")}
           </Typography>
         )}
 

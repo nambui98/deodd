@@ -5,6 +5,7 @@ import { useState } from 'react'
 import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
 import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage, VolumeBannerImage, VolumeImage, WinLoseStreakBannerImage, WinLoseStreakImage } from '../utils/Images'
+import ComingSoon from 'components/common/ComingSoon'
 
 type Props = {}
 export type Campaign = {
@@ -15,13 +16,13 @@ export type Campaign = {
     imageDetail: string
 }
 export const CAMPAIGNS: Campaign[] = [
-    // {
-    //     id: 4,
-    //     href: 'volume-campaign',
-    //     label: 'Volume of Bets',
-    //     image: VolumeImage,
-    //     imageDetail: VolumeBannerImage
-    // },
+    {
+        id: 4,
+        href: 'volume-campaign',
+        label: 'Volume of Bets',
+        image: VolumeImage,
+        imageDetail: VolumeBannerImage
+    },
     {
 
         id: 3,
@@ -30,13 +31,13 @@ export const CAMPAIGNS: Campaign[] = [
         image: CampaignImage4,
         imageDetail: CampaignImage4
     },
-    // {
-    //     id: 1,
-    //     href: 'winlose-streak-campaign',
-    //     label: 'Win/Lose Streak Campaign',
-    //     image: WinLoseStreakImage,
-    //     imageDetail: WinLoseStreakBannerImage
-    // },
+    {
+        id: 1,
+        href: 'winlose-streak-campaign',
+        label: 'Win/Lose Streak Campaign',
+        image: WinLoseStreakImage,
+        imageDetail: WinLoseStreakBannerImage
+    },
     {
         id: 2,
         href: 'referral-campaign',
@@ -85,6 +86,7 @@ function Campaign({ }: Props) {
             {/* <ClaimReward /> */}
         </Box>
     }
+    return <ComingSoon hasCountDown={false} title={"Leaderboard </br> of Testnet's campaign"} subTitle='will be announced at 8 UTC June 30, 2023' />
 
     return (
         <Box >
