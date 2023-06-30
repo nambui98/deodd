@@ -71,15 +71,19 @@ function useLoyaltyJackpot() {
   const history = useQuery({
     queryKey: ["jackpotHistory", season, walletAddress],
     queryFn: async (): Promise<LoyaltyJackpotHistoryType> => {
-      const promiseResult = await getLoyaltyHistoryJackpot(walletAddress, season);
-      if (promiseResult.data.data != null) {
-        return promiseResult.data.data;
+      if (seasonInfo.data != null) {
+        const promiseResult = await getLoyaltyHistoryJackpot(walletAddress, seasonInfo.data?.currentSeason - season);
+        if (promiseResult.data.data != null) {
+          return promiseResult.data.data;
+        } else {
+          // Throw error when response if ok but there is no data
+          throw new Error("No Data");
+        }
       } else {
-        // Throw error when response if ok but there is no data
-        throw new Error("No Data");
+        throw new Error("No data to fetch");
       }
     },
-    enabled: walletIsConnected,
+    enabled: walletIsConnected && seasonInfo.data ? true : false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
