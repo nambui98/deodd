@@ -51,7 +51,7 @@ export const Format = {
 
     formatDateTime: (date: string, type = 'dd/MM/yyyy') => format(new Date(date), type),
 
-    formatDateTimeAlt: (date: string, timezone: string, type = 'HH:mm zzz MMMM dd, yyyy') => {
+    formatDateTimeAlt: (date: string | Date, timezone: string, type = 'HH:mm zzz MMMM dd, yyyy') => {
         if (date) {
             return formatInTimeZone(date, timezone, type)
         }

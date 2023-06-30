@@ -19,7 +19,7 @@ import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
 import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
-import { isBefore } from 'date-fns'
+import { isAfter, isBefore, isEqual } from 'date-fns'
 
 export type MessageType = {
     userInfo: {
@@ -339,7 +339,9 @@ function Chat({ open }: { open: boolean }) {
             }, 10);
         },
     });
-
+    let indexEndedOnSameDay: number | null;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -362,17 +364,41 @@ function Chat({ open }: { open: boolean }) {
                             p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
                             <Box ref={refBottomChat} />
                             {
-                                messages.map((message) => {
-                                    debugger
-                                    return <ChatItem
-                                        handleUndoReport={handleUndoReport}
+                                messages.map((message, index) => {
+                                    console.log(new Date());
+                                    let dateMessage = new Date(message.created_at);
+                                    dateMessage.setHours(0, 0, 0, 0);
+                                    let dateMessagePrev: Date = new Date(messages[index - 1]?.created_at ?? message.created_at);
+                                    dateMessagePrev.setHours(0, 0, 0, 0);
+                                    let isToday = false;
+                                    const isSameDay = isEqual(dateMessage, dateMessagePrev);
+                                    let isYesterday = false;
+                                    if (!isSameDay) {
+                                        indexEndedOnSameDay = index - 1;
+                                        isToday = isEqual(currentDate, dateMessagePrev);
+
+                                        isYesterday = isEqual(currentDate.setDate(currentDate.getDate() - 1), dateMessagePrev);
+                                    }
+                                    return <Stack
                                         key={message.id}
-                                        data={message}
-                                        isReport={message.is_hidden}
-                                        handleClick={(e) => handleClick(e, message)}
-                                        id={message.id}
-                                        isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
-                                    />
+                                        alignItems={'center'}
+                                    >
+                                        <Box width={1}>
+                                            <ChatItem
+                                                handleUndoReport={handleUndoReport}
+                                                data={message}
+                                                isReport={message.is_hidden}
+                                                handleClick={(e) => handleClick(e, message)}
+                                                id={message.id}
+                                                isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
+                                            />
+                                        </Box>
+                                        {
+                                            index - 1 === indexEndedOnSameDay && <Box display='inline-block' borderRadius={6} mb={1} px={1} py={.5} bgcolor={"background.paper"}>
+                                                <Typography variant='caption' >{isToday ? 'Today' : isYesterday ? 'Yesterday' : Format.formatDateTimeAlt(dateMessagePrev, 'UTC', 'MM dd, yyyy')}</Typography>
+                                            </Box>
+                                        }
+                                    </Stack>
                                 })
                             }
                             {
