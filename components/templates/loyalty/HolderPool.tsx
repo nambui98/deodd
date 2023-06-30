@@ -147,7 +147,7 @@ function HolderPool({}: Props) {
             Started at{" "}
             {periodsInfo.isError
               ? "--/--/----"
-              : Format.formatDateTime(periodsInfo.data[0].start_time)}
+              : Format.formatDateTimeAlt(periodsInfo.data[0].start_time, "UTC")}
           </Typography>
         )}
 

@@ -14,8 +14,8 @@ type PropsType = {
 };
 
 function formatDate(dateString: string) {
-  const date = Format.formatDateTime(dateString, "MMMM dd, yyyy");
-  const hour = Format.formatDateTime(dateString, "kk:mm");
+  const date = Format.formatDateTimeAlt(dateString, "UTC", "MMMM dd, yyyy");
+  const hour = Format.formatDateTimeAlt(dateString, "UTC", "kk:mm");
   return `${hour} - ${date}`;
 }
 
