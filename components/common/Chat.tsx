@@ -68,7 +68,7 @@ function Chat({ open }: { open: boolean }) {
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
-                if (lastCreatedAt !== data.data[data.data.length - 1]?.created_at) {
+                if (lastCreatedAt !== data.data[data.data.length - 1]?.created_at && data.data.length > 0) {
                     if (lastCreatedAt === null) {
                         setMessages(data.data);
                     } else {
