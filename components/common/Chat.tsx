@@ -395,7 +395,7 @@ function Chat({ open }: { open: boolean }) {
                                         </Box>
                                         {
                                             index - 1 === indexEndedOnSameDay && <Box display='inline-block' borderRadius={6} mb={1} px={1} py={.5} bgcolor={"background.paper"}>
-                                                <Typography variant='caption' >{isToday ? 'Today' : isYesterday ? 'Yesterday' : Format.formatDateTimeAlt(dateMessagePrev, 'UTC', 'MM dd, yyyy')}</Typography>
+                                                <Typography variant='caption' >{isToday ? 'Today' : isYesterday ? 'Yesterday' : Format.formatDateTimeAlt(dateMessagePrev, 'UTC', 'MMMM dd, yyyy')}</Typography>
                                             </Box>
                                         }
                                     </Stack>
