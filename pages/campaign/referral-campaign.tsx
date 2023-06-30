@@ -14,33 +14,20 @@ import MyModal from '../../components/common/Modal'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../utils/Icons'
 import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } from '../../utils/Images'
 import { GetServerSideProps } from 'next/types'
+import CoinAnimation from 'components/common/CoinAnimation'
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    return {
-        redirect: {
-            destination: '/campaign',
-            permanent: false,
-        },
-    }
-    return {
-        props: {
 
-        }
-    }
+
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    const campaign = CAMPAIGNS.find(c => c.href === 'referral-campaign');
+    return { props: { campaign } };
 }
-
-// export async function getStaticProps({ params }: { params: { path: string } }) {
-//     const campaign = CAMPAIGNS.find(c => c.href === 'referral-campaign');
-
-
-//     return { props: { campaign } };
-// }
 function ReferralCampaign({ campaign }: { campaign: Campaign }) {
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, walletIsConnected } = useWalletContext();
-    const { data: referral } = useQuery({
+    const { data: referral, isLoading } = useQuery({
         queryKey: ["getLeaderboardReferral"],
         refetchInterval: 2000,
         queryFn: () => DeoddService.getLeaderboardReferral(walletAddress),
@@ -87,7 +74,10 @@ function ReferralCampaign({ campaign }: { campaign: Campaign }) {
                                         <TableCell align="left">Users</TableCell>
                                         <TableCell align="right">Friends invited</TableCell>
                                     </TableRow>
+
                                 </TableHead>
+
+
                                 <TableBody sx={{ bgcolor: 'background.paper' }}>
                                     {
                                         rows?.length > 0 && rows?.map((row: any, index: number) => (
@@ -114,7 +104,7 @@ function ReferralCampaign({ campaign }: { campaign: Campaign }) {
                                             </TableRow>
                                         ))}
                                     {
-                                        walletIsConnected && <TableRow
+                                        walletIsConnected && !isLoading && <TableRow
                                             sx={{
                                                 position: 'sticky',
                                                 bottom: 0,
@@ -145,8 +135,12 @@ function ReferralCampaign({ campaign }: { campaign: Campaign }) {
                                     }
                                 </TableBody>
                             </Table>
+                            {isLoading &&
+                                <CoinAnimation mx="auto" width={50} height={50} />
+                            }
+
                             {
-                                !rows || rows?.length <= 0 &&
+                                !rows || rows?.length <= 0 && !isLoading &&
                                 <Box mt={6} mb={12} display={'block'} textAlign={'center'}>
                                     <MyImage width={144} src={CoinEmptyImage} alt="" />
                                     <Typography fontSize={16} color={"secondary.100"} mt={2}>Nothing here</Typography>
