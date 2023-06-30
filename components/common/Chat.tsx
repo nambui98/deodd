@@ -59,7 +59,7 @@ function Chat({ open }: { open: boolean }) {
 
     const isNotMainnetOpen = isBefore(new Date(), new Date(DateOpenMainnet))
     const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
-    const { refetch: getMessages, } = useQuery({
+    const { refetch: getMessages, isFetching: isFetchingMessages } = useQuery({
         queryKey: ["getMessages"],
         enabled: false,
         queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
@@ -89,7 +89,7 @@ function Chat({ open }: { open: boolean }) {
 
     //get messages without auth
     const [isLoadMoreWithoutAuth, setIsLoadMoreWithoutAuth] = useState<boolean>(false)
-    const { refetch: getMessagesWithoutAuth } = useQuery({
+    const { refetch: getMessagesWithoutAuth, isFetching: isFetchingMessageWithoutAuth } = useQuery({
         queryKey: ["getMessagesWithoutAuth"],
         enabled: false,
         retry: false,
@@ -363,6 +363,7 @@ function Chat({ open }: { open: boolean }) {
                             <Box ref={refBottomChat} />
                             {
                                 messages.map((message) => {
+                                    debugger
                                     return <ChatItem
                                         handleUndoReport={handleUndoReport}
                                         key={message.id}
@@ -375,7 +376,7 @@ function Chat({ open }: { open: boolean }) {
                                 })
                             }
                             {
-                                (isLoadMoreWithoutAuth === true || walletAddress) && messages.length > 8 && <Box mb={2} height={30}>
+                                <Box mb={2} height={30} display={isFetchingMessageWithoutAuth || isFetchingMessages ? 'block' : 'none'}>
                                     <CoinAnimation mx="auto" width={30} height={30} />
                                 </Box>
                             }
@@ -462,7 +463,7 @@ function Chat({ open }: { open: boolean }) {
                     messageSelected={messageSelected!}
                     setIsStartBlock={setIsStartBlock} />
             }
-        </Box>
+        </Box >
     )
 }
 
