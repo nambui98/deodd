@@ -122,7 +122,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           {
             stakeOption === 1 ?
               assets?.data.map((element, index: number) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element} estimatedProfit={0} sharePercent={0} />)
-              : walletTokens?.data?.map((element, index) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element} estimatedProfit={0} sharePercent={0} />)
+              : walletTokens?.data?.map((element, index) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element as any} estimatedProfit={0} sharePercent={0} />)
           }
         </Box>
 

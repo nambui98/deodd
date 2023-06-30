@@ -93,10 +93,10 @@ export const useDeoddNFTContract = () => {
         enabled: false,
         async onSuccess(res: BigNumber[]) {
             const data = await getInfoTokens(res);
-            setWalletTokens(data as TypeDataNFT & {
+            setWalletTokens(data as unknown as (TypeDataNFT & {
                 estProfit: number,
                 percentSharePerNFT: number
-            });
+            }));
         },
     })
     const getInfoTokens = async (tokens: BigNumber[]) => {

@@ -13,7 +13,7 @@ import { BnbIcon, CupIcon } from "utils/Icons";
 import { useContractWrite } from "wagmi";
 import StakingHistoryTable from "./components/StakingHistoryTable";
 import UnstakeModal from "./components/UnstakeModal";
-
+import { de } from 'date-fns/locale';
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
