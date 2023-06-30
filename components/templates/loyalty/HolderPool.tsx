@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 
 type Props = {};
 
-function HolderPool({}: Props) {
+function HolderPool({ }: Props) {
   const { walletIsConnected, walletAddress } = useWalletContext();
   const { periodsInfo, leaderboard, history, setReset, setPeriod } =
     useLoyaltyHolder();
@@ -106,7 +106,7 @@ function HolderPool({}: Props) {
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
           (periodsInfo.data[0].season > 1 &&
-          periodsInfo.data.some((period) => period.is_claimed != null) ? (
+            periodsInfo.data.some((period) => period.is_claimed != null) ? (
             <>
               <Typography
                 variant="body2"
@@ -166,16 +166,16 @@ function HolderPool({}: Props) {
             {periodsInfo.isError
               ? "----"
               : Format.formatMoney(
-                  periodsInfo.data[0].current_prize / Math.pow(10, 18),
-                  4
-                )}
+                periodsInfo.data[0].current_prize / Math.pow(10, 18),
+                4
+              )}
             <Box component={"span"} sx={{ ml: 1 }}>
               <BnbIcon width={40} color={Colors.primaryDark} />
             </Box>
           </Typography>
         )}
 
-        {isNftHolder.isLoading && (
+        {walletIsConnected && isNftHolder.isLoading && (
           <>
             <Skeleton width={200} />
             <Skeleton width={100} height={50} />
@@ -183,10 +183,10 @@ function HolderPool({}: Props) {
         )}
 
         {walletIsConnected &&
-        !periodsInfo.isLoading &&
-        !periodsInfo.isError &&
-        !isNftHolder.isLoading &&
-        isNftHolder.data ? (
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          !isNftHolder.isLoading &&
+          isNftHolder.data ? (
           periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
@@ -226,7 +226,7 @@ function HolderPool({}: Props) {
             </>
           )
         ) : (
-          !isNftHolder.isLoading && (
+          !isNftHolder.isLoading && walletIsConnected && !periodsInfo.isError && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only NFT Holders are able to get the reward
