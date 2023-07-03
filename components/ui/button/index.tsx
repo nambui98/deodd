@@ -87,20 +87,24 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       svg: {
         fill: active ? Colors.secondaryDark : "#fff"
       },
-      '&:hover': {
-        color: 'secondary.main',
-        backgroundColor: "primary.100",
-        border: '1px solid',
-        borderColor: "secondary.main",
-        svg: {
-          fill: Colors.secondaryDark
-        }
-      },
+      // '&:hover, &:active, &:focus, &:focus-within': {
+      //   color: 'secondary.main',
+      //   backgroundColor: "primary.100",
+      //   border: '1px solid',
+      //   borderColor: "secondary.main",
+      //   svg: {
+      //     fill: Colors.secondaryDark
+      //   }
+      // },
       '@media (hover: hover) and (pointer: fine)': {
         '&:hover': {
-          border: "1px solid #FEF156",
           color: 'secondary.main',
+          border: '1px solid',
+          borderColor: "secondary.main",
           backgroundColor: "primary.100",
+          svg: {
+            fill: Colors.secondaryDark
+          },
 
           '.disabled': {
             zIndex: 0,
@@ -115,16 +119,18 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
 
       '@media (hover: none) and (pointer: coarse)': {
         '&:hover': {
-          // backgroundColor: "primary.100",
-          // border: '1px solid transparent',
+          backgroundColor: "primary.100",
+          border: '1px solid transparent',
 
-          // borderColor: 'transparent',
+          borderColor: 'secondary.main',
+          color: 'secondary.main'
           // color: 'inherit',
           // svg: {
           //   fill: "#fff"
           // },
         }
       },
+
       ...props.sx
     }
     }
