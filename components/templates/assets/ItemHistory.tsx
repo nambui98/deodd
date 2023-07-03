@@ -1,15 +1,15 @@
 import { Stack, Typography } from "@mui/material"
-import { ArrowLeftIcon, ArrowRightIcon, LeftIcon, RightIcon } from "utils/Icons"
+import { LeftIcon, RightIcon } from "utils/Icons"
 
 export enum StatusTransfer {
-    Inprogress,
-    Complete,
-    Failed
+    INPROGRESS = 'Inprogress',
+    COMPLETED = 'Complete',
+    FAILED = 'Failed'
 }
 type TypeItem = {
     isDeposit: boolean,
     title: string,
-    status: StatusTransfer,
+    status: string,
     value: string,
     date: string,
 }
@@ -23,7 +23,7 @@ export const ItemHistory: React.FC<TypeItem> = ({ title, isDeposit, status, valu
             <Typography variant="body2" color={"secondary"} mt={0.5}>{value}</Typography>
         </Stack>
         <Stack ml="auto" textAlign={"end"}>
-            <Typography color={"dark.60"} variant='caption'>{StatusTransfer[status]}</Typography>
+            <Typography color={"dark.60"} variant='caption'>{StatusTransfer[status as keyof typeof StatusTransfer]}</Typography>
             <Typography color={"dark.60"} variant='caption' mt={0.5}>{date}</Typography>
         </Stack>
     </Stack>

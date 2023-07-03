@@ -1,41 +1,65 @@
-import { MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Autocomplete, TextField, Box } from '@mui/material'
 import React, { useState } from 'react'
+import { Colors } from 'constants/index';
 
-type Props = {}
+type Props = {
+    selectOptions: string[];
+    setValue: (value: number) => void;
+}
 
-function SelectBox({ }: Props) {
-    const [valueSelect, setValueSelect] = useState<string>()
+function SelectBox({ selectOptions, setValue }: Props) {
+    const [valueSelect, setValueSelect] = useState<number>(0);
+    const [open, setOpen] = useState(false); // Have to use controlled state so that the TextField close even when click on itself, not only on arrow button.
     return (
-        <Select
-            value={valueSelect}
-            placeholder='Select-'
-            onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
-            displayEmpty
+        <Autocomplete
+            options={selectOptions}
+            open={open}
+            renderInput={(params) =>
+                <Box ref={params.InputProps.ref} onClick={() => { setOpen(!open) }}>
+                    <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} />
+                </Box>}
+            value={selectOptions[valueSelect]}
+            disableClearable
+            size='small'
+            ListboxProps={{
+                sx: {
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                    lineHeight: "1.25rem",
+                },
+            }}
+            onClose={() => { setOpen(false) }} // Close the select options when click outside
+            onChange={(e) => {
+                if (e.target instanceof HTMLLIElement) {
+                    if (e.target.dataset.optionIndex) {
+                        setValue(+e.target.dataset.optionIndex);
+                        setValueSelect(+e.target.dataset.optionIndex);
+                    }
+                }
+            }}
             sx={styleInput}
-            inputProps={{ 'aria-label': 'Without label' }}
-        >
-            <MenuItem disabled value={""}>
-                <Typography color={"secondary.100"}>Select-</Typography>
-            </MenuItem>
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
+        />
     )
 }
 const styleInput = {
-    backgroundColor: "background.paper", border: '0px solid', borderColor: 'background.paper', '.MuiOutlinedInput-notchedOutline': {
+    backgroundColor: "background.paper",
+    '.MuiOutlinedInput-notchedOutline': {
         border: 'none'
     },
-    // width: "100%",
-    fontSize: 16,
-    'div': {
-        py: "8px",
-        fontSize: 16,
+    maxWidth: "10.2rem",
+    minWidth: "10.2rem",
+    borderRadius: 2,
+    "& input": {
+        cursor: "pointer",
     },
-    '.MuiSelect-select': {
-        color: "secondary.main"
-    }
-
+    '& .MuiInputBase-root': {
+        fontSize: "0.875rem",
+        fontWeight: 500,
+        lineHeight: "1.25rem",
+        cursor: "pointer",
+    },
+    '& .MuiSvgIcon-root ': {
+        fill: Colors.secondary,
+    },
 }
-export default SelectBox
+export default SelectBox;

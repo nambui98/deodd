@@ -7,7 +7,7 @@ import { Box, Typography } from "@mui/material";
 // import { feeManagerContract } from "libs/contract"
 import MyModal from "components/common/Modal";
 import { ButtonLoading } from "components/ui/button";
-import { StatusGame, useContractContext } from "contexts/ContractContext";
+import { StatusGame, useGameContext } from "contexts/GameContext";
 import { useSiteContext } from "contexts/SiteContext";
 import { deoddContract } from "libs/contract";
 import { useContractWrite } from "wagmi";
@@ -15,6 +15,9 @@ import NotYetFlip from "./components/NotYetFlip";
 import Flipping from "./components/Flipping";
 import FlipResult from "./components/FlipResult";
 import FlipLogDetail from "./components/FlipLogDetail";
+import { DeoddService } from "libs/apis";
+import { useQuery } from "@tanstack/react-query";
+import TestailPoint from "./components/TestailPoint";
 
 const avatar = [
   'assets/images/avatar-yellow.png',
@@ -26,7 +29,7 @@ const avatar = [
 
 // eslint-disable-next-line react/display-name
 export const Flip = React.memo(() => {
-  const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useContractContext();
+  const { statusGame, openModalPendingTransaction, setOpenModalPendingTransaction } = useGameContext();
   const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { writeAsync } = useContractWrite({
@@ -35,6 +38,7 @@ export const Flip = React.memo(() => {
     abi: deoddContract.abi,
     functionName: 'rollbackUnfulfilled',
   })
+
   const handleRefun = () => {
     setIsLoading(true);
     writeAsync?.()
@@ -56,8 +60,10 @@ export const Flip = React.memo(() => {
 
   return <Box>
 
-    <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
     <Box mt={{ xl: 10, md: 3, xs: 2 }} position={'relative'}>
+
+      <FlipLogDetail isShowing={statusGame === StatusGame.FLIP_LOG_DETAIL} />
+      {/* <TestailPoint /> */}
       <NotYetFlip isShowing={statusGame === StatusGame.FLIP} />
       <Flipping isShowing={statusGame === StatusGame.FLIPPING} />
       <FlipResult isShowing={statusGame === StatusGame.FLIP_RESULT} />

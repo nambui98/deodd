@@ -4,6 +4,7 @@ import { useColorModeContext } from "../../../contexts/ColorModeContext";
 // import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import { LoadingButton, LoadingButtonProps } from '@mui/lab';
 import { Colors } from "constants/index";
+import CoinAnimation from "components/common/CoinAnimation";
 
 interface IProps extends ButtonProps {
   title: any
@@ -44,18 +45,24 @@ export const ButtonSecondRemex2: React.FC<ButtonProps> = (props) => {
   }
   } > {props.children} </Button>
 }
-export const ButtonLoading: React.FC<LoadingButtonProps> = (props) => {
+export const ButtonLoading: React.FC<LoadingButtonProps> = ({ sx, ...props }) => {
+
   return <LoadingButton
-    {...props}
     sx={{
       width: '100%',
-      borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main', '&:hover': {
-        backgroundColor: "secondary.main",
-        border: '1px solid',
-        borderColor: "secondary.main"
-      }, ...props.sx
-    }
-    }
+      borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main',
+
+      '&:hover': {
+        backgroundColor: { md: "secondary.main", xs: 'transparent' },
+        border: { md: '1px solid', xs: '1px solid' },
+        color: { xs: 'secondary.main', md: 'primary.300' },
+        borderColor: { md: "secondary.main", xs: 'secondary.main' }
+      }
+      , ...sx
+    }}
+
+    {...props}
+    // loadingIndicator={<CoinAnimation width={50} height={50} />}
 
     variant="outlined"
   >
@@ -76,18 +83,54 @@ export const ButtonLoadingShadow: React.FC<LoadingButtonProps & { active: boolea
       backgroundColor: "primary.100",
       border: '1px solid transparent',
       borderColor: active ? "secondary.main" : 'transparent',
+      '-webkit-tap-highlight-color': 'transparent',
       svg: {
         fill: active ? Colors.secondaryDark : "#fff"
       },
-      '&:hover, &:active, &:focus, &:focus-within': {
-        color: 'secondary.main',
-        backgroundColor: "primary.100",
-        border: '1px solid',
-        borderColor: "secondary.main",
-        svg: {
-          fill: Colors.secondaryDark
+      // '&:hover, &:active, &:focus, &:focus-within': {
+      //   color: 'secondary.main',
+      //   backgroundColor: "primary.100",
+      //   border: '1px solid',
+      //   borderColor: "secondary.main",
+      //   svg: {
+      //     fill: Colors.secondaryDark
+      //   }
+      // },
+      '@media (hover: hover) and (pointer: fine)': {
+        '&:hover': {
+          color: 'secondary.main',
+          border: '1px solid',
+          borderColor: "secondary.main",
+          backgroundColor: "primary.100",
+          svg: {
+            fill: Colors.secondaryDark
+          },
+
+          '.disabled': {
+            zIndex: 0,
+            opacity: 0,
+          },
+          '.enabled': {
+            zIndex: 1,
+            opacity: 1
+          },
+        },
+      },
+
+      '@media (hover: none) and (pointer: coarse)': {
+        '&:hover': {
+          backgroundColor: "primary.100",
+          border: '1px solid transparent',
+
+          borderColor: 'secondary.main',
+          color: 'secondary.main'
+          // color: 'inherit',
+          // svg: {
+          //   fill: "#fff"
+          // },
         }
       },
+
       ...props.sx
     }
     }

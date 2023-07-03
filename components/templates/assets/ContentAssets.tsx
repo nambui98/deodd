@@ -1,11 +1,11 @@
 import { Box, Container, Stack } from '@mui/material'
 import MyTabs, { TypeTab } from 'components/common/Tabs'
 import { useWalletContext } from 'contexts/WalletContext'
-import { useDeoddNFTContract } from 'hooks/useDeoddNFTContract'
 import { useState } from 'react'
 import { Convert } from 'utils/convert'
 import LeftContent from './LeftContent'
 import RightContent from './RightContent'
+import { useDeoddNFTContract } from 'hooks/useDeoddNFTContract'
 
 type Props = {}
 
@@ -27,6 +27,7 @@ function ContentAssets({ }: Props) {
         },
 
     ]
+
     return (
         <Container>
             <Box display={{ xs: 'block', md: 'none' }}>

@@ -1,15 +1,14 @@
-import { BigNumber, Contract, ethers } from "ethers";
-import { useWalletContext } from "../contexts/WalletContext";
-import { useCallback, useEffect, useState } from "react";
-import { deoddContract } from "../libs/contract";
+import { StatusGame, useGameContext } from "contexts/GameContext";
 import { useSiteContext } from "contexts/SiteContext";
-import { StatusGame, useContractContext } from "contexts/ContractContext";
+import { BigNumber } from "ethers";
 import { AudioPlay } from "libs/types";
+import { useCallback } from "react";
+import { useWalletContext } from "../contexts/WalletContext";
 
 export const useDeoddContract = () => {
     const { contractDeodd } = useWalletContext();
 
-    const { setStatusGame } = useContractContext();
+    const { setStatusGame } = useGameContext();
     const { setIsLoading, setIsError, audioPlayer, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const claimBNB = async () => {
         const res = await contractDeodd?.claimBNB();

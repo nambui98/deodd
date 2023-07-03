@@ -6,6 +6,7 @@ export const DiamondImage = "/assets/images/diamond.png";
 export const CampaignImage = "/assets/images/campaign.png";
 export const CampaignImage2 = "/assets/images/campaign2.png";
 export const CampaignImage3 = "/assets/images/campaign3.png";
+export const CampaignImage4 = "/assets/images/campaign4.png";
 export const CoinEmptyImage = "/assets/images/coin-empty.png";
 export const Rank1Image = "/assets/images/rank_diamond.png";
 export const Rank2Image = "/assets/images/rank_gold.png";
@@ -34,6 +35,26 @@ export const HeadCoinImage = "/assets/icons/head.svg";
 export const TailCoinImage = "/assets/icons/tail.svg";
 export const GoldCupImage = "/assets/images/gold-cup.png";
 export const ArrowDownImage = "/assets/images/arrow-down.png";
+export const LeaderboardImage = "/assets/images/leaderboard.png";
+export const BnbLogoImage = "/assets/images/bnbo-logo.png";
+export const BzImage = "/assets/images/bz.png";
+export const DjImage = "/assets/images/dj.png";
+export const YahooFImage = "/assets/images/yahoof.png";
+export const MwImage = "/assets/images/mw.png";
+export const WinLoseStreakImage = "/assets/images/winlosestreak.png";
+export const WinLoseStreakBannerImage = "/assets/images/winlosestreak-banner.png";
+export const VolumeImage = "/assets/images/volume.png";
+export const VolumeBannerImage = "/assets/images/volume-banner.png";
+export const Bronze2Image = "/assets/images/bronze2.png";
+export const Gold2Image = "/assets/images/gold2.png";
+export const Diamond2Image = "/assets/images/diamond2.png";
+export const Diamond3Image = "/assets/images/diamond3.png";
+export const BannerMainnetImage = "/assets/images/mainnet-banner.png";
+export const BannerMainnetMobileImage = "/assets/images/mainnet-banner-mobile.png";
+export const BannerShopOpenImage = "/assets/images/shop-banner.png";
+export const BannerShopOpenMobileImage = "/assets/images/shop-banner-mobile.png";
+
+
 export const MapIcon: { [key: string]: string } = {
   BNB: BnbImage,
   Bronze: BronzeImage,
@@ -52,3 +73,6 @@ export const MapIconNFTString: { [key in EnumNFT]: string } = {
 };
 
 export const HowRef2EarnWorkImage = "/assets/images/how-ref2earn-work.png"
+export const GoldenHourSidebarImage = "/assets/images/golden-hour-sidebar.svg"
+
+export const BgShopCollection = "assets/images/bgshopcollection.png";

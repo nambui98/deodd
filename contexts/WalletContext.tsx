@@ -1,71 +1,10 @@
 import { BigNumber, Contract, ethers } from "ethers";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { UserService } from "../services/user.service";
-import { ENVIRONMENT_SWITCH } from "../libs/common";
-import { deoddContract, deoddNFTContract, feeManagerContract, jackpotContract, luckyProfile, nftHolderContract } from "../libs/contract";
-import { useAccount, useBalance, useConnect, useContractRead, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
-import { bscTestnet } from "wagmi/chains";
-import { DeoddService } from "libs/apis";
 import { LocalStorage } from "libs/LocalStorage";
-
-interface Map {
-	[key: string]: any;
-}
-
-const networks: Map = {
-	['bscTestnet']: {
-		chainId: `0x${Number(97).toString(16)}`,
-		chainName: 'Binance Smart Chain Testnet',
-		nativeCurrency: {
-			name: "Binance Chain Native Token",
-			symbol: "tBNB",
-			decimals: 18
-		},
-		rpcUrls: [
-			"https://data-seed-prebsc-1-s1.binance.org:8545",
-			"https://data-seed-prebsc-2-s1.binance.org:8545",
-			"https://data-seed-prebsc-1-s2.binance.org:8545",
-			"https://data-seed-prebsc-2-s2.binance.org:8545",
-			"https://data-seed-prebsc-1-s3.binance.org:8545",
-			"https://data-seed-prebsc-2-s3.binance.org:8545"
-		],
-		blockExplorerUrls: ["https://testnet.bscscan.com"],
-	},
-	['bscMainnet']: {
-		chainId: `0x${Number(56).toString(16)}`,
-		chainName: 'BNB Chain',
-		nativeCurrency: {
-			name: "Binance Chain Native Token",
-			symbol: "BNB",
-			decimals: 18
-		},
-		rpcUrls: [
-			"https://bsc-dataseed.binance.org/",
-			"https://bsc-dataseed1.binance.org/",
-			"https://bsc-dataseed2.binance.org/",
-			"https://bsc-dataseed3.binance.org/",
-			"https://bsc-dataseed4.binance.org/",
-			"https://bsc-dataseed1.defibit.io/",
-			"https://bsc-dataseed2.defibit.io/",
-			"https://bsc-dataseed3.defibit.io/",
-			"https://bsc-dataseed4.defibit.io/",
-			"https://bsc-dataseed1.ninicoin.io/",
-			"https://bsc-dataseed2.ninicoin.io/",
-			"https://bsc-dataseed3.ninicoin.io/",
-			"https://bsc-dataseed4.ninicoin.io/"
-		],
-		blockExplorerUrls: ["https://bscscan.com/"],
-	},
-	['localhost8545']: {
-		chainId: `0x${Number(1337).toString(16)}`,
-		chainName: 'Localhost 8545',
-		nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-		rpcUrls: ['http://127.0.0.1:8545'],
-		blockExplorerUrls: ['']
-	}
-};
-
-const network = networks[ENVIRONMENT_SWITCH === 'prod' ? 'bscMainnet' : 'bscTestnet'];
+import { DeoddService } from "libs/apis";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useAccount, useBalance, useConnect, useDisconnect, useNetwork, useSignMessage, useSwitchNetwork } from "wagmi";
+import { bscTestnet } from "wagmi/chains";
+import { deoddContract, deoddNFTContract, deoddShopContract } from "../libs/contract";
 
 interface walletContextType {
 	walletAddress: any,
@@ -74,17 +13,14 @@ interface walletContextType {
 	setIsLoading: Function;
 	isLoading: boolean;
 	bnbBalance: BigNumber,
-	userInfo: { username: string, avatar: number },
+	userInfo: { username: string | null, avatar: number },
 	setUserInfo: Function,
-	contractProfile: Contract | undefined,
 	contractDeodd: Contract | undefined,
-	contractDeoddNft: Contract | undefined,
-	contractFeeManager: Contract | undefined,
-	contractJackpot: Contract | undefined,
-	contractNftHolder: Contract | undefined,
+	contractDeoddNFT: Contract | undefined,
 	handleConnectWallet: () => any,
 	setRefresh: (refresh: boolean) => void,
-	refresh: boolean
+	refresh: boolean,
+	isConnectingWallet: boolean
 }
 
 interface IProps {
@@ -101,14 +37,11 @@ const WalletContext = createContext<walletContextType>({
 	userInfo: { username: '', avatar: 0 },
 	setUserInfo: () => { },
 	contractDeodd: undefined,
-	contractProfile: undefined,
-	contractFeeManager: undefined,
-	contractJackpot: undefined,
-	contractNftHolder: undefined,
-	contractDeoddNft: undefined,
+	contractDeoddNFT: undefined,
 	handleConnectWallet: () => { },
 	refresh: false,
 	setRefresh: () => { },
+	isConnectingWallet: false
 })
 
 export const useWalletContext = () => useContext(WalletContext);
@@ -146,15 +79,17 @@ const switchNetworkCus = async () => {
 export const WalletProvider: React.FC<IProps> = ({ children }) => {
 	const [bnbBalance, setBnbBalance] = useState<BigNumber>(BigNumber.from(0));
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [userInfo, setUserInfo] = useState<{ username: string, avatar: number }>({ username: "", avatar: 0 })
+	const [userInfo, setUserInfo] = useState<{ username: string | null, avatar: number }>({ username: "", avatar: 0 })
 	const [walletAddress, setWalletAddress] = useState<any>();
 	const [walletIsConnected, setWalletIsConnected] = useState<any>();
 	const [refresh, setRefresh] = useState<boolean>(false);
 	const [isConnectingWallet, setIsConnectingWallet] = useState<boolean>(false);
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage()
+	console.log(process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === "MAINNET");
 
-	const { chain } = useNetwork();
+	const { chain, chains } = useNetwork();
+	console.log(chains)
 
 	const { disconnect } = useDisconnect()
 	const { switchNetworkAsync } = useSwitchNetwork()
@@ -166,60 +101,34 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		watch: true
 	})
 
-	const { data: resInfo }: { data: any[] | undefined } = useContractRead({
-		address: luckyProfile.address,
-		abi: luckyProfile.abi,
-		functionName: 'getUserInfo',
-		args: [walletAddress],
-		watch: true
-	})
-	const [contractProfile, setContractProfile] = useState<
-		Contract | undefined
-	>();
 	const [contractDeodd, setContractDeodd] = useState<
 		Contract | undefined
 	>();
-	const [contractFeeManager, setContractFeeManager] = useState<
+	const [contractDeoddShop, setContractDeoddShop] = useState<
 		Contract | undefined
 	>();
-	const [contractJackpot, setContractJackpot] = useState<
-		Contract | undefined
-	>();
-	const [contractNftHolder, setContractNftHolder] = useState<
-		Contract | undefined
-	>();
-	const [contractDeoddNft, setContractDeoddNft] = useState<
+	const [contractDeoddNFT, setContractDeoddNFT] = useState<
 		Contract | undefined
 	>();
 	useEffect(() => {
-		if (bscTestnet.id !== chain?.id) {
+		if (chains && chains.length > 0 && chains[0].id !== chain?.id) {
 			// switchNetworkCus()
-			switchNetworkAsync?.(bscTestnet.id);
+			switchNetworkAsync?.(chains[0].id);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [chain])
+	}, [chain, chains])
 	useEffect(() => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(
 				window.ethereum as any
 			);
 			const signer = provider.getSigner();
-			const contractProfile = new ethers.Contract(luckyProfile.address, luckyProfile.abi, signer);
 			const contractDeodd = new ethers.Contract(deoddContract.address, deoddContract.abi, signer)
-			const contractFeeManager = new ethers.Contract(feeManagerContract.address, feeManagerContract.abi, signer)
-			const contractJackpot = new ethers.Contract(jackpotContract.address, jackpotContract.abi, signer)
-			const contractNftHolder = new ethers.Contract(nftHolderContract.address, nftHolderContract.abi, signer)
-			const contractDeoddNft = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
-			setContractProfile(contractProfile);
+			const contractDeoddShop = new ethers.Contract(deoddShopContract.address, deoddShopContract.abi, signer)
+			const contractDeoddNFT = new ethers.Contract(deoddNFTContract.address, deoddNFTContract.abi, signer)
 			setContractDeodd(contractDeodd);
-			setContractFeeManager(contractFeeManager);
-			setContractJackpot(contractJackpot);
-			setContractNftHolder(contractNftHolder);
-			setContractDeoddNft(contractDeoddNft);
-			// (provider as any).getHistory('0xD48259f0701f743066ed2d98eB8091370f61ecC8').then((history) => {
-			// 	debugger
-			// });
-
+			setContractDeoddShop(contractDeoddShop);
+			setContractDeoddNFT(contractDeoddNFT);
 		}
 	}, [chain]);
 
@@ -253,6 +162,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			LocalStorage.setRefreshToken(refreshToken);
 			LocalStorage.setWalletAddress(wallet);
 			LocalStorage.setIsProfileModalOpened(false);
+			// Set username back to empty first so that when user change wallet, 
+			// the profile modal won't open if the previous wallet doesn't have a username
+			setUserInfo(prev => ({ ...prev, username: "" }));
 			setWalletIsConnected(true);
 			setWalletAddress(wallet);
 			setIsConnectingWallet(false)
@@ -328,6 +240,8 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			a.target = '_blank';
 			a.href = 'https://metamask.io/download';
 			a.click();
+
+			setIsConnectingWallet(false);
 		} else {
 			let resultAddress: string;
 			handleConnectWithCache()
@@ -404,13 +318,10 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 			setUserInfo,
 			handleConnectWallet,
 			contractDeodd,
-			contractProfile,
-			contractFeeManager,
-			contractJackpot,
-			contractNftHolder,
-			contractDeoddNft,
+			contractDeoddNFT,
 			refresh,
-			setRefresh
+			setRefresh,
+			isConnectingWallet
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -421,12 +332,9 @@ export const WalletProvider: React.FC<IProps> = ({ children }) => {
 		bnbBalance,
 		userInfo,
 		contractDeodd,
-		contractProfile,
-		contractFeeManager,
-		contractJackpot,
-		contractNftHolder,
-		contractDeoddNft,
+		contractDeoddNFT,
 		refresh,
+		isConnectingWallet
 	])
 	return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }

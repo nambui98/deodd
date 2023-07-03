@@ -14,6 +14,7 @@ export const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open
     // let countOpen = useMemo(() => rightOpen && leftOpen ? 2 : (rightOpen || leftOpen) ? 1 : 0, [rightOpen, leftOpen])
     return ({
         flexGrow: 1,
+        containerType: "inline-size",
         display: 'flex',
         flexDirection: 'column',
         overflowX: "hidden",

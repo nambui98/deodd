@@ -180,7 +180,8 @@ export const darkTheme = createTheme({
 		error: {
 			main: red.A400,
 			"100": '#FC753F',
-			"200": '#ff6f61'
+			"200": '#ff6f61',
+			'300': '#FF5870'
 		},
 		background: {
 			default: "#161821",
@@ -254,7 +255,9 @@ export const darkTheme = createTheme({
 					scrollbarColor: "#FEF156 #2A2D3E",
 					"&::-webkit-scrollbar, & *::-webkit-scrollbar": {
 						backgroundColor: "#2A2D3E",
-						width: '4px'
+						width: '4px',
+						height: '4px',
+
 					},
 					"&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
 						borderRadius: 8,

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { RightIcon } from "utils/Icons";
 import { BnbImage, GoldCupImage } from "utils/Images";
 import { Format } from "utils/format";
-import { StatusGame, useContractContext } from "../../../../contexts/ContractContext";
+import { StatusGame, useGameContext } from "../../../../contexts/GameContext";
 import { ButtonLoading } from "../../../ui/button";
 
 const dataTypeNFT: { [key in EnumNFT]: string } = {
@@ -15,7 +15,7 @@ const dataTypeNFT: { [key in EnumNFT]: string } = {
   [EnumNFT.DIAMOND]: "/assets/images/diamond.png",
 }
 export default function FlipResult({ isShowing }: { isShowing: boolean }) {
-  const { gameResult, setStatusGame } = useContractContext();
+  const { gameResult, setStatusGame } = useGameContext();
   const {
     coinSide,
     isWinner,

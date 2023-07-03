@@ -11,22 +11,22 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import { TypeTab } from "components/common/Tabs";
 import { ButtonFourth, ButtonLoading } from "components/ui/button";
 import MyImage from "components/ui/image";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { useWalletContext } from "contexts/WalletContext";
+import { format } from "date-fns";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { useMemo, useState } from "react";
 import { BnbIcon } from "utils/Icons";
-import { AvatarImage, BnbImage, CoinEmptyImage } from "utils/Images";
+import { BnbImage, CoinEmptyImage } from "utils/Images";
+import { checkAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { Format } from "utils/format";
 import ShareLink from "./ShareLink";
-import { checkAvatar } from "utils/checkAvatar";
-import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
     dataAvailable: any | undefined;
@@ -35,7 +35,6 @@ type Props = {
     reload: Function;
 };
 function createData(avatar: number | undefined, name: string, expire: string, profit: BigNumber) {
-    debugger
     return {
         avatar: checkAvatar(avatar),
         name,
@@ -45,8 +44,20 @@ function createData(avatar: number | undefined, name: string, expire: string, pr
 }
 function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     const [valueTab, setValueTab] = useState<number>(1);
-
     const { walletAddress, bnbBalance } = useWalletContext();
+    const { data: dataClaimed, refetch: getClaimedReward } = useQuery({
+        queryKey: ["getClaimedReward"],
+        enabled: true,
+        queryFn: () => DeoddService.getClaimedReward(),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+
     const {
         setIsSuccess,
         setTitleSuccess,
@@ -85,7 +96,6 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
     );
     let rows = valueTab === 1 ? rowsAvailable : rowsExpired;
 
-
     const handleClaim = async () => {
         try {
             setIsLoading(true);
@@ -105,23 +115,32 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
             setTitleError("Something went wrong!");
         }
     };
-    console.log(
-        bnbBalance)
-    console.log(
-
-        // BigNumber.from(0.08)
-    )
-
 
     return (
         <Container>
             <Stack
-                direction={{ xs: "column-reverse", md: "row" }}
+                sx={theme => ({
+                    [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                        flexDirection: "column-reverse",
+                    },
+                    [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                        flexDirection: "row",
+                    },
+                })}
+                direction={{ xs: "column-reverse", md: "row" }} // fallback
                 mt={2}
                 columnGap={4}
             >
                 <Box
                     flexGrow={1}
+                    sx={theme => ({
+                        [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                            mt: 2,
+                        },
+                        [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                            mt: 0,
+                        },
+                    })}
                     mt={{ xs: 2, md: 0 }}
                     flexShrink={1}
                     flexBasis={"60%"}
@@ -154,8 +173,8 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                                 alignItems={"center"}
                             >
                                 <Typography variant="body2" color="secondary.main">
-                                    {Format.formatMoneyFromBigNumberEther(
-                                        dataAvailable?.claimedReward ?? 0
+                                    {Format.formatMoney(
+                                        dataClaimed?.data ?? 0
                                     )}
                                 </Typography>
                                 <BnbIcon width={20} height={20} fill={Colors.secondaryDark} />
@@ -279,8 +298,21 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             )}
                         </TableContainer>
                     </Box>
-                    <Box display={{ xs: "block", md: "none" }}>
-                        <ShareLink link={link} />
+                    <Box
+                        display={{ xs: "block", md: "none" }} // fallback
+                        sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                display: "block",
+                            },
+                            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                                display: "none",
+                            },
+                        })}>
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
+
                     </Box>
                 </Box>
                 <Box flexGrow={1} flexShrink={1} flexBasis={"40%"}>
@@ -367,8 +399,21 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
                             Claim reward
                         </Typography>
                     </ButtonLoading>
-                    <Box display={{ xs: "none", md: "block" }}>
-                        <ShareLink link={link} />
+                    <Box
+                        display={{ xs: "none", md: "block" }} // fallback
+                        sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                display: "none",
+                            },
+                            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+                                display: "block",
+                            },
+                        })}>
+
+                        <Box mt={5}>
+
+                            <ShareLink link={link} />
+                        </Box>
                     </Box>
                 </Box>
             </Stack>

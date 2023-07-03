@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Close2Icon, Flip2Icon, LotteryIcon, MenuIcon, MessageIcon } from 'utils/Icons';
+import { Archive2Icon, ArchiveIcon, Close2Icon, Flip2Icon, LotteryIcon, MenuIcon, MessageIcon } from 'utils/Icons';
 import { Avatar2Image } from 'utils/Images';
 import { checkAvatar } from 'utils/checkAvatar';
 
@@ -20,7 +20,6 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
     const { userInfo } = useWalletContext();
     const [value, setValue] = useState('');
     const route = useRouter();
-    console.log(route);
 
     const MENU_MOBILE = [
         {
@@ -30,9 +29,7 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
             iconActive: <Close2Icon fill="#fff" />,
             href: '',
             onClick: () => {
-                console.log("aaaaaaaaaaaaaa");
                 handleOpenLeftSidebar();
-
             }
         },
         {
@@ -41,7 +38,7 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
             icon: <Flip2Icon fill="#96A5C0" />,
             iconActive: <Flip2Icon fill="#fff" />,
             href: '/',
-            onClick: () => { console.log('aaaaa', 123) }
+            onClick: () => { }
         }, {
             label: '',
             value: 'lottery',
@@ -52,8 +49,8 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
         }, {
             label: '',
             value: 'avatar',
-            icon: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
-            iconActive: <Avatar sx={{ width: 32, height: 32 }} alt="" src={`assets/images/${checkAvatar(userInfo?.avatar)}.png`} />,
+            icon: <Archive2Icon width={'32px'} height={'32px'} fill="#96A5C0" />,
+            iconActive: <Archive2Icon width={'32px'} height={'32px'} fill="#fff" />,
             href: '/assets',
             onClick: () => { }
         },
@@ -70,7 +67,6 @@ export default function MyBottomNavigation({ handleOpenLeftSidebar, handleOpenRi
     ]
 
     const valueCurrentActive: string | undefined = useMemo(() => MENU_MOBILE.find(menu => menu.href === route.pathname)?.value, [route.isReady])
-    console.log(valueCurrentActive);
     useEffect(() => {
         if (valueCurrentActive) {
             setValue(valueCurrentActive);

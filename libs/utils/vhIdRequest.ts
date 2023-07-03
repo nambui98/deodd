@@ -1,9 +1,15 @@
 import axios from 'axios';
 import { LocalStorage } from 'libs/LocalStorage';
 import { DeoddService } from 'libs/apis';
-// import { getLocalRefreshToken, updateLocalRefreshToken } from '../../services/token.service';
 
-const apiRouter = 'https://testapi.befitter.io/deodd'
+const BASEURL_DEV = 'https://apidev.deodd.io';
+const BASEURL_PRODUCTION = 'https://api.deodd.io';
+
+const apiRouter =
+  process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+    ? BASEURL_DEV
+    : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+      ? BASEURL_PRODUCTION : ''
 const vhIdRequest = axios.create({
   baseURL: apiRouter,
   headers: {
@@ -13,7 +19,7 @@ const vhIdRequest = axios.create({
 
 vhIdRequest.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token1');
     if (config.headers) {
       config.headers["Authorization"] = 'Bearer ' + token
     }
@@ -30,9 +36,7 @@ vhIdRequest.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config
-
     if (err.response) {
-      debugger
       // Token was expired
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true
@@ -41,7 +45,6 @@ vhIdRequest.interceptors.response.use(
             const response = await DeoddService.refreshToken();
             const { accessToken } = response.data.data;
             LocalStorage.setAccessToken(accessToken);
-            debugger
             err.config.headers['Authorization'] = 'Bearer ' + accessToken;
             return vhIdRequest.request(err.config);
           } catch (error) {
@@ -55,8 +58,9 @@ vhIdRequest.interceptors.response.use(
           window.location.reload();
         }
       } else {
+
         // ToastUtils.error(err.response.meta.message)
-        return false;
+        return Promise.reject(err)
       }
     }
 

@@ -3,7 +3,7 @@ import CoinAnimation from 'components/common/CoinAnimation';
 import { ButtonLoading, ButtonLoadingShadow } from 'components/ui/button';
 import MyImage from 'components/ui/image';
 import { VRF_FEE, AMOUNTS } from 'constants/index';
-import { DataSelected, StatusGame, useContractContext } from 'contexts/ContractContext';
+import { DataSelected, StatusGame, useGameContext } from 'contexts/GameContext';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useWalletContext } from 'contexts/WalletContext';
 import { BigNumber, ethers } from 'ethers';
@@ -14,6 +14,7 @@ import { AudioPlay } from 'libs/types';
 import React, { useState } from 'react'
 import { BnbIcon } from 'utils/Icons';
 import { ButtonProps } from '@mui/base';
+import TestailPoint from './TestailPoint';
 
 type Props = {
     isShowing: boolean
@@ -29,7 +30,7 @@ export default function NotYetFlip({ isShowing }: Props) {
 
 function FormActions() {
 
-    const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useContractContext();
+    const { setIsFinish, setStatusGame, dataSelected, setOpenModalPendingTransaction, setDataSelected } = useGameContext();
     const { contractDeodd, bnbBalance, walletAddress } = useWalletContext()
     const [statusLoadingFlip, setStatusLoadingFlip] = useState<boolean>(false)
 
@@ -47,7 +48,6 @@ function FormActions() {
 
         setStatusLoadingFlip(true);
         const ck = await refetch();
-        debugger
         if (ck.data === false) {
             const fee = await contractDeodd?.calcServiceFee(BigNumber.from(dataSelected?.index))
             let totalAmount: BigNumber = ethers.utils.parseUnits((dataSelected!.amount! + VRF_FEE).toString()).add(fee);
@@ -73,9 +73,6 @@ function FormActions() {
                             }
                         }
                     } catch (error: any) {
-                        console.log(error);
-
-                        debugger
                         audioPlayer(AudioPlay.STOP);
                         setStatusLoadingFlip(false)
                         setStatusGame(StatusGame.FLIP)
@@ -122,7 +119,7 @@ function FormActions() {
                     onClick={handleFlip}
                     disabled={dataSelected?.coinSide !== undefined && dataSelected?.coinSide >= 0 && dataSelected?.amount ? false : true}
                     loading={statusLoadingFlip}>
-                    <Typography variant={"h3"} fontWeight={600}>double or nothing</Typography>
+                    <Typography variant={"h3"} fontWeight={600}>FLIP NOW</Typography>
                 </ButtonLoading>
             </Box>
         </Box >
@@ -147,25 +144,37 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                 zIndex: isSelected ? 1 : 0,
                 opacity: isSelected ? 1 : 0,
             },
-            '&:hover': {
-                border: "1px solid #FEF156",
-                color: 'secondary.main',
-                backgroundColor: "primary.100",
-                '.disabled': {
-                    zIndex: 0,
-                    opacity: 0,
+
+            '@media (hover: hover) and (pointer: fine)': {
+                '&:hover': {
+                    border: "1px solid #FEF156",
+                    color: 'secondary.main',
+                    backgroundColor: "primary.100",
+                    '.disabled': {
+                        zIndex: 0,
+                        opacity: 0,
+                    },
+                    '.enabled': {
+                        zIndex: 1,
+                        opacity: 1
+                    },
                 },
-                '.enabled': {
-                    zIndex: 1,
-                    opacity: 1
-                },
-            },
+            }
         }}>
 
             {
                 isHead ?
                     <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
-                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                height: 48,
+                                width: 48,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                height: 64,
+                                width: 64,
+                            },
+                        })}>
                             <Box className="disabled" width={1} height={1}>
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/head-disable.svg`} />
                             </Box>
@@ -173,7 +182,14 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/head.svg`} />
                             </Box>
                         </Box>
-                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                fontSize: 24,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                fontSize: 40,
+                            },
+                        })}>
                             HEAD
                         </Typography>
 
@@ -181,7 +197,16 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                     </Stack>
                     :
                     <Stack direction={'row'} gap={{ xs: 2, md: 3 }} justifyContent={'center'} alignItems={'center'} >
-                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }}>
+                        <Box position={'relative'} height={{ sm: 64, xs: 48 }} width={{ sm: 64, xs: 48 }} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                height: 48,
+                                width: 48,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                height: 64,
+                                width: 64,
+                            },
+                        })}>
                             <Box className="disabled" width={1} height={1}>
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/tail-disable.svg`} />
                             </Box>
@@ -189,7 +214,14 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
                                 <MyImage alt="" width={1} height={1} src={`/assets/icons/tail.svg`} />
                             </Box>
                         </Box>
-                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} >
+                        <Typography variant="body2" fontSize={{ sm: 40, xs: 24 }} fontWeight={700} sx={theme => ({
+                            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+                                fontSize: 24,
+                            },
+                            [theme.breakpoints.up("sm").replace("@media", "@container")]: {
+                                fontSize: 40,
+                            },
+                        })}>
                             TAIL
                         </Typography>
                     </Stack>

@@ -4,24 +4,17 @@ import { useWalletContext } from "../contexts/WalletContext";
 
 import { useSiteContext } from "contexts/SiteContext";
 import { getPriceToken } from "libs/apis/coinmarketcap";
-import { EnumNFT } from "libs/types";
+import { EnumNFT, TypeDataNFT } from "libs/types";
+import { DeoddService } from "libs/apis";
 export type TypeNFT = {
     id: number | string,
-    type: number | string,
+    type: EnumNFT,
+    image: string,
     amount: number,
 }
 
-export type TypeDataNFT = {
-    total: number | undefined;
-    data: {
-        type: EnumNFT,
-        list: TypeNFT[]
-    }[];
-
-} | undefined;
-
 export const useDeoddNFTContract = () => {
-    const { contractDeoddNft, walletAddress } = useWalletContext();
+    const { walletAddress, contractDeoddNFT } = useWalletContext();
     const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
     const [nftSelected, setNftSelected] = useState<TypeNFT | undefined>();
     const [reload, setReload] = useState<boolean>(false);
@@ -29,27 +22,28 @@ export const useDeoddNFTContract = () => {
     const [priceToken, setPriceToken] = useState<number | undefined>();
 
     const getSpendingTokens = async () => {
-        const res = await contractDeoddNft?.getSpendingTokens(walletAddress)
-        const data = getInfoTokens(res);
-        return data;
+        // const res = await contractDeoddNft?.getSpendingTokens(walletAddress)
+        // const data = getInfoTokens(res);
+        // return data;
     };
     const getTokenTypeId = async (id: BigNumber) => {
-        const res = await contractDeoddNft?.getTokenTypeId(id)
+        const res = await contractDeoddNFT?.getTokenTypeId(id)
         return res;
     };
     const getWalletTokens = async () => {
-        const res = await contractDeoddNft?.getWalletTokens(walletAddress)
+        const res = await contractDeoddNFT?.getWalletTokens(walletAddress)
         const data = getInfoTokens(res);
         return data;
     };
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
-            (tokens ?? []).map(async (token) => {
-                const type: BigNumber = await getTokenTypeId(token);
-                token = BigNumber.from(token);
+            (tokens ?? []).map(async (token: BigNumber) => {
+                const { data } = await DeoddService.getNFTDetailById(Number(token));
+                const detailNFT = data.data;
                 const nft: TypeNFT = {
-                    id: token.toNumber(),
-                    type: type.toNumber(),
+                    id: Number(token),
+                    type: detailNFT.type,
+                    image: detailNFT.image_link,
                     amount: 1
                 }
                 return nft;
@@ -60,7 +54,6 @@ export const useDeoddNFTContract = () => {
                 return data;
             })
             .catch((err) => {
-                console.log(err);
                 return;
             });
         return res;
@@ -131,24 +124,24 @@ export const useDeoddNFTContract = () => {
         setNftSelected(nft)
     }
     const claimToWallet = async () => {
-        const res = await contractDeoddNft?.claimToWallet(BigNumber.from(nftSelected?.id));
-        return res.wait();
+        // const res = await contractDeoddNft?.claimToWallet(BigNumber.from(nftSelected?.id));
+        // return res.wait();
     }
     const handleClaimNFT = async () => {
-        try {
-            setIsLoading(true);
-            let res = await claimToWallet();
-            setIsLoading(false);
-            if (res.status) {
-                setTitleSuccess('Claimed successfully')
-                setIsSuccess(true);
-                setReload(!reload);
-            }
-        } catch (error: any) {
-            setIsLoading(false);
-            setTitleError(error.reason || 'Something went wrong. Please try again!')
-            setIsError(true);
-        }
+        // try {
+        //     setIsLoading(true);
+        //     let res = await claimToWallet();
+        //     setIsLoading(false);
+        //     if (res.status) {
+        //         setTitleSuccess('Claimed successfully')
+        //         setIsSuccess(true);
+        //         setReload(!reload);
+        //     }
+        // } catch (error: any) {
+        //     setIsLoading(false);
+        //     setTitleError(error.reason || 'Something went wrong. Please try again!')
+        //     setIsError(true);
+        // }
     }
     return { walletTokens, handleClickNFT, nftSelected, handleClaimNFT, priceToken }
 }

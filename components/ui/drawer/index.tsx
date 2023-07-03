@@ -30,9 +30,9 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
     alignItems: "center",
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    height: 72,
+    minHeight: 72,
     justifyContent: "flex-end",
     [theme.breakpoints.up('md')]: {
-        height: 112
+        minHeight: 112
     }
 }));

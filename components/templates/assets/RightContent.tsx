@@ -4,16 +4,16 @@ import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, sty
 import MyModal from 'components/common/Modal'
 import { useWalletContext } from 'contexts/WalletContext'
 import { ethers } from 'ethers'
-import { TypeDataNFT } from 'hooks/useDeoddNFTContract'
-import { EnumNFT } from 'libs/types'
+import { EnumNFT, EnumNFTTitle, TypeDataNFT } from 'libs/types'
 import React, { useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Format } from 'utils/format'
 
 import EastIcon from '@mui/icons-material/East';
 import { ItemHistory, StatusTransfer } from './ItemHistory'
-import { Colors } from 'constants/index'
+import { Colors, mapTypeTitle } from 'constants/index'
 import { Convert } from 'utils/convert'
+import { MapIconNFTString } from 'utils/Images'
 
 type Props = { walletAddress: string, walletTokens: TypeDataNFT, priceToken: number | undefined }
 
@@ -30,7 +30,6 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
         }
     };
     let price = useMemo(() => parseFloat(ethers.utils.formatEther(bnbBalance)) * (priceToken ?? 0), [priceToken, bnbBalance]);
-
 
     return (
         <Box flexGrow={1} flexShrink={1} flexBasis={"50%"}>
@@ -92,10 +91,10 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                             ?
                             <div key={nft.type + index}>
                                 <ListItemButton sx={{ padding: "8px 0px" }} onClick={() => handleClick(nft.type)}>
-                                    {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} /> : <ArrowDownIcon width={24} height={24} />}
+                                    {openNftType === nft.type ? <ArrowUpIcon width={24} height={24} fill="#96A5C0" /> : <ArrowDownIcon width={24} height={24} fill="#96A5C0" />}
                                     <Stack ml={1} direction={"row"} alignItems={"center"}>
-                                        <img width={30} src={Utils.getImageNFT(nft.type)} alt="" />
-                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>bronze nft card</Typography>
+                                        <img width={30} src={MapIconNFTString[nft.type]} alt="" />
+                                        <Typography color={"text.primary"} ml={1} variant='body2' >{EnumNFTTitle[nft.type]}</Typography>
                                     </Stack>
                                     <Typography ml="auto" variant='h2' color={"secondary"}>
                                         {
@@ -104,16 +103,13 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
                                     </Typography>
                                 </ListItemButton>
                                 <Collapse in={openNftType === nft.type} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
+                                    <List component="div" disablePadding sx={{ maxHeight: 200, overflowY: 'auto' }}>
                                         {
                                             nft.list.map((detailNFT, index) => {
-
                                                 return <ListItemButton key={detailNFT.id?.toString() + index} sx={{ pl: 3, pr: 0, pt: 1 }} >
-                                                    <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={Utils.getImageNFT(detailNFT.type)} alt="" />
-                                                        <Typography color={"text.primary"} ml={1} variant='body2' textTransform={"uppercase"}>{detailNFT.id}</Typography> </Stack>
-                                                    <Typography ml="auto" variant='h2' color={"secondary"}>
-                                                        {detailNFT.amount}
-                                                    </Typography>
+                                                    <Stack ml={1} direction={"row"} alignItems={"center"}><img width={30} src={detailNFT.image} alt="" />
+                                                        <Typography color={"text.primary"} ml={1} variant='body2' >DeODD #{detailNFT.id}</Typography> </Stack>
+
                                                 </ListItemButton>
 
                                             }
@@ -129,9 +125,6 @@ function RightContent({ walletTokens, priceToken, walletAddress }: Props) {
             </Stack>
             <MyModal open={openModalWallet} setOpen={setOpenModalWallet} >
                 <Typography color='dark.60' mb={2} typography={'body1'} fontWeight={600}>Wallet History</Typography>
-                {/* <ItemHistory isDeposit={true} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' />
-                <ItemHistory isDeposit={false} title="Win flip" date='12 seconds ago' status={StatusTransfer.Complete} value='+10 BNB' /> */}
-
                 <Typography textAlign={'center'} variant='body1' color='dark.60'>Empty</Typography>
             </MyModal>
 

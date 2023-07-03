@@ -10,6 +10,7 @@ import NotiIcon from "public/assets/icons/noti.svg";
 import LogoHeadIcon from "public/assets/icons/head.svg";
 import CupIcon from "public/assets/icons/cup.svg";
 import ClockIcon from "public/assets/icons/clock.svg";
+import Clock2Icon from "public/assets/icons/clock2.svg";
 import CloseIcon from "public/assets/icons/close-circle2.svg";
 import FacebookIcon from "public/assets/icons/facebook.svg";
 import MobileIcon from "public/assets/icons/mobile.svg";
@@ -30,6 +31,7 @@ import TwitterIcon from "public/assets/icons/mdi_twitter.svg";
 import ChatBoxIcon from "public/assets/icons/bubble-chat_1.svg";
 import ProfileCircleIcon from "public/assets/icons/profile-circle.svg";
 import ArchiveIcon from "public/assets/icons/archive.svg";
+import Archive2Icon from "public/assets/icons/archive2.svg";
 import HeadCoinIcon from "public/assets/icons/head.svg";
 import TailCoinIcon from "public/assets/icons/tail.svg";
 import MessageIcon from "public/assets/icons/message.svg";
@@ -50,9 +52,15 @@ import { SvgIcon, SvgIconProps } from "@mui/material";
 // import Icon from "public/assets/icons/.svg";
 import CloseSquareIcon2 from "public/assets/icons/close-square2.svg";
 import InfoCircleIcon from "public/assets/icons/info-circle.svg";
+import EmojiIcon from "public/assets/icons/emoji-happy.svg";
+import Marketplace1Icon from "public/assets/icons/marketplace1.svg";
+import ShareIcon from "public/assets/icons/share.svg";
+import FilterIcon from "public/assets/icons/filter.svg";
+import TickCircleIcon from "public/assets/icons/tick-circle.svg";
+import TickCircleOutlineIcon from "public/assets/icons/tick-circle-outline.svg";
+import BagTickIcon from "public/assets/icons/bag-tick.svg";
+import MoreIcon from "public/assets/icons/more-square2.svg";
 function Bnb2Icon(props: SvgIconProps) {
-  console.log(props);
-
   return (
     <SvgIcon {...props}>
       <path d="M10.375 1.95835L5.96666 6.36668C5.8 6.53335 5.8 6.79168 5.96666 6.95835L7.04166 8.03335C7.20832 8.20002 7.46666 8.20002 7.63333 8.03335L10.375 5.29168C10.5417 5.12502 10.8 5.12502 10.9667 5.29168L13.7083 8.03335C13.875 8.20002 14.1333 8.20002 14.3 8.03335L15.375 6.95835C15.5417 6.79168 15.5417 6.53335 15.375 6.36668L10.9667 1.95835C10.8 1.80002 10.5333 1.80002 10.375 1.95835Z" />
@@ -63,7 +71,21 @@ function Bnb2Icon(props: SvgIconProps) {
     </SvgIcon>
   );
 }
+import Growth1Icon from "public/assets/icons/growth1.svg";
+import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
+import EyeIcon from "public/assets/icons/eye.svg";
+import USDTIcon from "public/assets/icons/usdt.svg";
+
 export {
+  USDTIcon,
+  EyeIcon,
+  MoreIcon,
+  BagTickIcon,
+  TickCircleOutlineIcon,
+  TickCircleIcon,
+  FilterIcon,
+  EmojiIcon,
+  Archive2Icon,
   ArrowLeft2Icon,
   Bnb2Icon,
   ArrowDown2Icon,
@@ -105,6 +127,7 @@ export {
   LogoHeadIcon,
   CupIcon,
   ClockIcon,
+  Clock2Icon,
   CloseIcon,
   FacebookIcon,
   LeftIcon,
@@ -114,5 +137,9 @@ export {
   ProfileCircleIcon,
   ArchiveIcon,
   CloseSquareIcon2,
-  InfoCircleIcon
+  InfoCircleIcon,
+  Marketplace1Icon,
+  ShareIcon,
+  Growth1Icon,
+  GoldCup1Icon,
 };

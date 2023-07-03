@@ -1,25 +1,30 @@
 import Image from "next/image";
 import { coin0, coin6 } from "utils/Images";
 import { Typography, Box, Stack } from "@mui/material";
-import { Colors } from "constants/index";
 import { DashboardCard } from "./DashboardCard";
 import { TitleTextAbsolute } from "./TitleTextAbsolute";
-import { ArrowDownIcon, ArrowUpIcon } from "utils/Icons";
 import { DonutDisplay } from "./DonutDisplay";
+import { CompareText } from "./CompareText";
+import { DashboardErrorType, DashboardFlipType } from "libs/types/dashboardTypes";
 
 type FlipPropsType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  flipDashboardStat: any;
+  error: DashboardErrorType;
+  flipDashboardStat: DashboardFlipType;
 };
 
 export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
   return (
     <>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
+        })}
         flexDirection={"column"}
         justifyContent={"space-between"}
         height="22.375rem"
@@ -82,7 +87,15 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         </Box>
       </DashboardCard>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
+        })}
         flexDirection={"column"}
         justifyContent={"space-between"}
         height="22.375rem"
@@ -145,51 +158,36 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
         </Box>
       </DashboardCard>
       <DashboardCard
-        gridColumn={{ md: "auto / span 2", xs: "auto / span 6" }}
+        sx={theme => ({
+          [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+            gridColumn: "auto / span 6"
+          },
+          [theme.breakpoints.up("md").replace("@media", "@container")]: {
+            gridColumn: "auto / span 2"
+          },
+          gridColumn: { xs: "auto / span 6", md: "auto / span 2" } // fallback
+        })}
         flexDirection={"column"}
         justifyContent={"center"}
         height="22.375rem"
         position={"relative"}
+        gap={2}
       >
         <TitleTextAbsolute text="flip total" />
-        <Box
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          flexDirection={"column"}
-          gap={2}
-        >
-          <Image src={coin0} width={80} height={80} alt="coin-img" />
-          {error.haveFlipped ? (
-            <>
-              <Typography variant="h1" fontSize={"3rem"}>
-                {flipDashboardStat.numberFlipToday < 10
-                  ? "0" + flipDashboardStat.numberFlipToday
-                  : flipDashboardStat.numberFlipToday}
-              </Typography>
-              <Typography
-                display={"flex"}
-                alignItems={"center"}
-                gap={1}
-                variant="body2"
-                color={
-                  flipDashboardStat.flipCompareYesterdayPercentage < 0
-                    ? Colors.decrease
-                    : Colors.increase
-                }
-              >
-                {flipDashboardStat.flipCompareYesterdayPercentage < 0 ? (
-                  <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
-                ) : (
-                  <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
-                )}
-                {Math.abs(flipDashboardStat.flipCompareYesterdayPercentage)}%
-              </Typography>
-            </>
-          ) : (
-            <Typography variant="body2">{error.errorMessage}</Typography>
-          )}
-        </Box>
+
+        <Image src={coin0} width={80} height={80} alt="coin-img" />
+        {!error.statData.noData ? (
+          <>
+            <Typography variant="h1" fontSize={"3rem"} lineHeight={"3.8125rem"}>
+              {flipDashboardStat.numberFlipToday < 10
+                ? "0" + flipDashboardStat.numberFlipToday
+                : flipDashboardStat.numberFlipToday}
+            </Typography>
+            <CompareText data={flipDashboardStat.flipCompareYesterdayPercentage} />
+          </>
+        ) : (
+          <Typography variant="body2">{error.statData.errorMessage}</Typography>
+        )}
       </DashboardCard>
     </>
   );

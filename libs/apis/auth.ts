@@ -1,14 +1,18 @@
 import vhIdRequest from "@/utils/vhIdRequest"
-
+const baseURL =
+    process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
+        ? '/deodd'
+        : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
+            ? '/deodd' : ''
 const getUserNonce = async (address: string) => {
     return await vhIdRequest({
-        url: `/users/nonce/fetch?wallet=${address}`,
+        url: baseURL + `/users/nonce/fetch?wallet=${address}`,
         method: 'GET',
     })
 }
 const loginWithWallet = async ({ wallet, signature }: { wallet: string, signature: string }) => {
     return await vhIdRequest({
-        url: `/users/auth?grant_type=wallet_address`,
+        url: baseURL + `/users/auth?grant_type=wallet_address`,
         method: 'POST',
         data: JSON.stringify({
             wallet,
@@ -18,17 +22,17 @@ const loginWithWallet = async ({ wallet, signature }: { wallet: string, signatur
 }
 const signUp = async ({ wallet }: { wallet: string }) => {
     return await vhIdRequest({
-        url: `/users/signup?wallet=${wallet}`,
+        url: baseURL + `/users/signup?wallet=${wallet}`,
         method: 'POST',
         data: {}
     })
 }
 const refreshToken = async () => {
     return await vhIdRequest({
-        url: `/users/auth?grant_type=refresh`,
+        url: baseURL + `/users/auth?grant_type=refresh`,
         method: 'POST',
         data: JSON.stringify({
-            refreshToken: localStorage.getItem('refresh_token'),
+            refreshToken: localStorage.getItem('refresh_token1'),
         })
     })
 }

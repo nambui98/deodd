@@ -1,5 +1,6 @@
 import { Typography, Box } from "@mui/material";
 import { Colors } from "constants/index";
+import { DashboardErrorType, DashboardUserFlipType } from "libs/types/dashboardTypes";
 
 function RowItem({
   times,
@@ -39,11 +40,8 @@ function RowItem({
 }
 
 type FlipPerUserType = {
-  error: {
-    haveFlipped: boolean;
-    errorMessage: string;
-  };
-  userFlipStat: any;
+  error: DashboardErrorType;
+  userFlipStat: DashboardUserFlipType;
 };
 
 export function FlipPerUserTable({
@@ -77,7 +75,7 @@ export function FlipPerUserTable({
         </Typography>
       </Box>
 
-      {error.haveFlipped ? (<Box
+      {!error.flipData.noData ? (<Box
         width={1}
         display={"grid"}
         gridTemplateColumns={"auto 1fr auto auto"}
@@ -105,12 +103,19 @@ export function FlipPerUserTable({
           textAlign={"center"}
           width={1}
           // Center the text when the viewport is bigger. This is a temporary implementation, still thinking of better solution.
-          sx={
-            {
-              paddingBlockEnd: { xs: "2rem", md: 0 }, top: { md: "50%" }, left: { md: "50%" }, transform: { md: "translate(-50%, -100%)" }, position: { md: "absolute" }
-            }
-          }>
-          {error.errorMessage}
+          sx={theme => ({
+            [theme.breakpoints.up("xs").replace("@media", "@container")]: {
+              paddingBlockEnd: "2rem",
+            },
+            [theme.breakpoints.up("md").replace("@media", "@container")]: {
+              paddingBlockEnd: 0,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -100%)",
+              position: "absolute",
+            },
+          })}>
+          {error.flipData.errorMessage}
         </Typography>
       )}
     </Box>

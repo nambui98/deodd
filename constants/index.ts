@@ -1,3 +1,5 @@
+import { EnumNFTNumber } from "libs/types";
+
 export const Colors = {
   primary: "#FC753F",
   primaryDark: "#FEF156",
@@ -29,6 +31,20 @@ export const TIMEOUT_FULLFILL = 65000 //miniseconds
 export const SHARE = {
   title: 'Share the link on social media, let your friends join the game, and see your wallet skyrocket.',
 }
-// const amounts = [0.013, 0.023, 0.043, 0.073, 0.103, 0.133, 0.163, 0.19]
-// export const BASE_URL_REFERRAL = window.origin + "/ref/"
+export const IPS_NOT_SUPORT: { [key: string]: string } = {
+  VN: 'VN',
+}
 
+export const UPSTREAM_MESSAGE = 7;
+export const DOWNSTREAM_MESSAGE = 8;
+
+export const UrlBlockExplorer = process.env.NEXT_PUBLIC_ENVIRONMENT_BLOCKCHAIN === 'MAINNET'
+  ? 'https://bscscan.com'
+  : 'https://testnet.bscscan.com'
+export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
+  [EnumNFTNumber.BRONZE]: 'Bronze NFT Card',
+  [EnumNFTNumber.GOLD]: 'Gold NFT Card',
+  [EnumNFTNumber.DIAMOND]: 'Diamond NFT Card'
+}
+export const DateOpenMainnet = "2023-06-29T09:00:00Z";
+export const DateOpenShop = "2023-06-27T13:00:00Z";
