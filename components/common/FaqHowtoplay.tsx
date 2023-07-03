@@ -102,9 +102,9 @@ function FaqHowtoplay({ }: Props) {
                     }
                 </MyModal>
             </Box >
-            <Stack direction={'row'} mb={{ xs: 10.125, md: 2 }} mt={1} alignItems={'center'} gap={3}>
+            <Stack direction={{ xs: 'column', md: 'row' }} mb={{ xs: 10.125, md: 2 }} mt={2} justifyContent={{ xs: 'flex-start', md: 'center' }} alignItems={{ xs: 'flex-start', md: 'center' }} columnGap={3} rowGap={1}>
                 <Typography variant='caption' flexShrink={0}>As seen on</Typography>
-                <Stack mt={1} direction={'row'} alignItems={'center'} flexWrap={'wrap'} gap={{ xs: 2, md: 3 }}>
+                <Stack direction={'row'} alignItems={'center'} flexWrap={'wrap'} gap={{ xs: 2, md: 3 }}>
                     <Link href={'https://www.benzinga.com/pressreleases/23/05/ab32606858/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
                         target='_blank' rel="noreferrer">
                         <MyImage src={BzImage} height={40} width={40} alt="logo" />
