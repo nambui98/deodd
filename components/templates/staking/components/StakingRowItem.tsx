@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowDown3Icon, BnbIcon, TickCircleIcon, TickCircleOutlineIcon } from "utils/Icons";
-import { Box, styled, Typography, Stack, Accordion, AccordionSummary, AccordionDetails, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { Box, styled, Typography, Stack, Accordion, AccordionSummary, AccordionDetails, FormGroup, FormControlLabel, Checkbox, useTheme } from "@mui/material";
 import { getPathAvatarNFT } from "utils/checkAvatar";
 import Image from "next/image";
 import { EnumNFT, TypeNFT } from "libs/types";
@@ -21,6 +21,7 @@ type StakingRowItemType = {
 }
 
 function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
+  const theme = useTheme();
   return (
     <>
       <Accordion
@@ -47,7 +48,12 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
               marginLeft: 1,
             },
             borderRadius: 1,
-            width: "fit-content"
+            width: "fit-content",
+            [theme.breakpoints.down('md').replace("@media", "@container")]: {
+              px: 1,
+              width: '100%'
+            },
+
           }}
         >
           <Stack sx={{ flexDirection: "row", gap: 1, alignItems: "center" }}>
@@ -58,9 +64,10 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
         <AccordionDetails sx={{
           border: "none",
           marginLeft: 3.5,
-
-          // maxHeight: 200,
-          // overflowY: 'auto',
+          [theme.breakpoints.down('md').replace("@media", "@container")]: {
+            marginLeft: 0,
+            px: 1
+          },
         }}>
           <Stack sx={{
             "& .MuiFormControlLabel-label": {
@@ -77,8 +84,20 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
         </AccordionDetails>
       </Accordion>
 
-      <MainTypography >{NFTCards.percentSharePerNFT}</MainTypography>
-      <Stack direction={"row"} gap={1} >
+      <MainTypography sx={{
+        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+          display: 'none'
+        },
+      }}>
+        {NFTCards.percentSharePerNFT}
+      </MainTypography>
+      <Stack direction={"row"} gap={1}
+        sx={{
+          [theme.breakpoints.down('md').replace("@media", "@container")]: {
+            display: 'none'
+          },
+        }}
+      >
         <MainTypography >{NFTCards.estProfit}</MainTypography>
         <Box component={"span"} color={"secondary.main"}>
           <BnbIcon width={20} />

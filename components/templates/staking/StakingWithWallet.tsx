@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Typography, Stack, Box, styled } from "@mui/material";
+import { Typography, Stack, Box, styled, useTheme, useMediaQuery, Grid } from "@mui/material";
 import { ButtonFourth, ButtonLoading, ButtonMain } from "components/ui/button";
 import { CalculatorIcon, BnbIcon } from "utils/Icons";
 import StakingRowItem from "./components/StakingRowItem";
@@ -12,6 +12,10 @@ import { DeoddService } from "libs/apis";
 import { EnumNFT, TypeDataNFT } from "libs/types";
 import FlowStake from "./components/FlowStake";
 import { Format } from "utils/format";
+import ProfitDetailModal from "./components/ProfitDetailModal";
+import { getPathAvatarNFT } from "utils/checkAvatar";
+import { Colors } from "constants/index";
+import MyImage from "components/ui/image";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -42,15 +46,22 @@ const dummyData = [
 ]
 
 function StakingWithWallet({ currentPool }: { currentPool: any }) {
+  const theme = useTheme();
   const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
+  const [isOpenProfitModal, setIsOpenProfitModal] = useState(false);
+
   const { walletAddress } = useWalletContext();
+
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft, priceToken } = useDeoddNFTContract();
+
   let totalEstProfit = ((stakeOption === 1 ? assets : walletTokens)?.data as any)?.reduce((sum: any, asset: any) => sum + (asset as any).estProfit, 0) ?? 0
+
   return (
-    <>
-      <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
+
+    <Stack gap={1}>
+      <Typography variant="h2" sx={{ fontWeight: 700, mb: 1, lineHeight: "2rem" }}>NFT Staking</Typography>
       <Stack sx={{
         backgroundColor: "background.paper",
         width: 1,
@@ -58,6 +69,10 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
         borderRadius: 2,
         p: 3,
         position: "relative",
+        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+          minHeight: 'auto'
+        },
+
       }}>
         <Typography variant="caption" sx={{
           fontWeight: 400,
@@ -75,6 +90,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           // This is to align the header with the body because scrollbar causes layout shift
           overflow: "scroll",
           //
+
         }}>
           <Stack sx={{ flexDirection: "row", gap: 1, maxHeight: 36 }}>
             <ButtonFourth active={stakeOption === 1} onClick={() => {
@@ -87,8 +103,17 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
               setStakeOption(2)
             }} label={"Wallet"} />
           </Stack>
-          <MainTypography >%Share per NFT</MainTypography>
-          <Stack sx={{ gap: 2 }}>
+          <MainTypography sx={{
+            [theme.breakpoints.down('md').replace("@media", "@container")]: {
+              display: 'none'
+            },
+          }} >%Share per NFT</MainTypography>
+          <Stack sx={{
+            gap: 2,
+            [theme.breakpoints.down('md').replace("@media", "@container")]: {
+              display: 'none'
+            },
+          }}>
             <Stack direction={"row"} gap={1}>
               <MainTypography>Estimated profit</MainTypography>
               <Box component={"span"} sx={{
@@ -118,7 +143,11 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           justifyContent: "space-between",
           columnGap: 5,
           maxHeight: 280,
-          overflow: 'auto'
+          overflow: 'auto',
+          [theme.breakpoints.down('md').replace("@media", "@container")]: {
+            display: 'block',
+            gridTemplateColumns: "none",
+          },
         }}>
           {
             stakeOption === 1 ?
@@ -138,6 +167,9 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           position: "absolute",
           bottom: 24,
           right: 24,
+          [theme.breakpoints.down('md').replace("@media", "@container")]: {
+            display: 'none'
+          },
         }}>
           <Typography variant="caption" sx={{
             fontWeight: 400,
@@ -146,7 +178,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
             textAlign: "right",
             alignSelf: "end",
           }}>
-            All figures are estimate provided for your convenience only <br />
+
+            All figures are estimate provided for your convenience only, with the assumption that the total pool is 1000 BNB.<br />
             By no means represent guaranteed returns.
           </Typography>
           <FlowStake
@@ -159,7 +192,100 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
 
         </Stack>
       </Stack>
-    </>
+      <Stack sx={{
+        backgroundColor: "background.paper",
+        width: 1,
+        borderRadius: 2,
+        p: 3,
+        position: "relative",
+        display: 'none',
+        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+          display: 'flex'
+        },
+
+      }}>
+        <Grid container>
+          <Grid item xs={6}>
+
+            <MainTypography >%Share per NFT</MainTypography>
+            <Stack direction={'row'} mt={1.5} gap={2}>
+              {
+                stakeOption === 1 ?
+                  assets?.data.map((element, index: number) => <Stack key={index} alignItems={'center'}>
+                    <MyImage src={getPathAvatarNFT(element.type)} width={24} height={24} alt={''} />
+                    <Stack sx={{ flexDirection: "row", gap: 1, mt: .5 }}>
+                      <Typography variant="body2">{
+                        Format.formatMoney(element.percentSharePerNFT)
+                      }%</Typography>
+                    </Stack>
+                  </Stack>
+                  )
+                  : walletTokens?.data?.map((element: any, index) => <Stack key={index} alignItems={'center'}>
+                    <MyImage src={getPathAvatarNFT(element.type)} width={24} height={24} alt={''} />
+                    <Stack sx={{ flexDirection: "row", gap: 1, mt: .5 }}>
+                      <Typography variant="body2">{
+                        Format.formatMoney(element.percentSharePerNFT)
+                      }%</Typography>
+                    </Stack>
+                  </Stack>)
+
+              }
+
+            </Stack>
+
+          </Grid>
+          <Grid item xs={6}>
+            <Stack direction={'row'} gap={1}>
+              <MainTypography>Calculated profit</MainTypography>
+              <Box component={"span"} sx={{
+                cursor: "pointer",
+              }}
+                onClick={() => setIsCalculatorOpened(true)}
+              >
+                <CalculatorIcon width={16} />
+              </Box>
+            </Stack>
+            <Stack direction={"row"} mt={2} gap={1}>
+              <MainTypography>
+                {Format.formatMoney(totalEstProfit)}
+              </MainTypography>
+              <Box component={"span"} sx={{
+                color: "secondary.main",
+              }}>
+                <BnbIcon width={20} />
+              </Box>
+              <Typography sx={{ cursor: 'pointer', }} onClick={() => setIsOpenProfitModal(true)} variant="caption" color='secondary.main'>Detail</Typography>
+            </Stack>
+          </Grid>
+        </Grid>
+
+      </Stack>
+      <Stack gap={2} mt={1} sx={{
+        display: 'none',
+        [theme.breakpoints.down('md').replace("@media", "@container")]: {
+          display: 'flex'
+        },
+      }}>
+        <Typography variant="caption" sx={{
+          fontWeight: 400,
+          lineHeight: "1rem",
+          color: "text.disabled",
+        }}>
+          All figures are estimate provided for your convenience only, with the assumption that the total pool is 1000 BNB.<br />
+          By no means represent guaranteed returns.
+        </Typography>
+        <FlowStake
+          stakeOption={stakeOption}
+          nftSelected={nftSelected}
+          handleSetNftSelected={handleClickNFT}
+          refetchGetAssetsBalance={refetchGetAssetsBalance}
+          getBalanceNft={getBalanceNft}
+        />
+
+      </Stack>
+      <ProfitDetailModal nftCards={stakeOption === 1 ?
+        assets : walletTokens} open={isOpenProfitModal} setOpen={setIsOpenProfitModal} />
+    </Stack >
   );
 }
 

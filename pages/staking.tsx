@@ -69,7 +69,7 @@ function StakingPage() {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
   return (
-    <Container sx={{ mt: 10, mb: { md: 10, xs: 8.125 }, mx: "auto", width: walletIsConnected ? 1 : 736 }}>
+    <Container sx={{ mt: 10, mb: { md: 10, xs: 8.125 }, mx: "auto" }}>
       {walletIsConnected ? (isShowPools ? <StakingSuccess pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} /> : <StakingWithWallet currentPool={currentPool} />) : <StakingNoWallet />}
     </Container>
   );

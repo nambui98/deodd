@@ -19,10 +19,7 @@ export type TypeNFT = {
 
 export const useDeoddNFTContract = () => {
     const { walletAddress, contractDeoddNFT } = useWalletContext();
-    const [walletTokens, setWalletTokens] = useState<TypeDataNFT & {
-        estProfit: number,
-        percentSharePerNFT: number
-    }>();
+    const [walletTokens, setWalletTokens] = useState<TypeDataNFT>();
     const [nftSelected, setNftSelected] = useState<TypeNFT | undefined | null>();
     const [reload, setReload] = useState<boolean>(false);
     const { setIsLoading, setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();

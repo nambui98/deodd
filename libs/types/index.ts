@@ -94,7 +94,9 @@ export type TypeDataNFT = {
     total: number | undefined;
     data: {
         type: EnumNFT,
-        list: TypeNFT[]
+        list: TypeNFT[],
+        estProfit?: number,
+        percentSharePerNFT?: number
     }[];
 
 } | undefined;
