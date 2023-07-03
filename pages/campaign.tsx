@@ -12,14 +12,17 @@ export type Campaign = {
     id: number | string,
     href: string,
     label: string,
+    isOpen: boolean,
     image: string,
     imageDetail: string
 }
+
 export const CAMPAIGNS: Campaign[] = [
     {
         id: 4,
         href: 'volume-campaign',
         label: 'Volume of Bets',
+        isOpen: true,
         image: VolumeImage,
         imageDetail: VolumeBannerImage
     },
@@ -28,6 +31,7 @@ export const CAMPAIGNS: Campaign[] = [
         id: 3,
         href: 'testnet-campaign',
         label: 'Testnet Campaign',
+        isOpen: false,
         image: CampaignImage4,
         imageDetail: CampaignImage4
     },
@@ -35,6 +39,7 @@ export const CAMPAIGNS: Campaign[] = [
         id: 1,
         href: 'winlose-streak-campaign',
         label: 'Win/Lose Streak Campaign',
+        isOpen: true,
         image: WinLoseStreakImage,
         imageDetail: WinLoseStreakBannerImage
     },
@@ -42,23 +47,27 @@ export const CAMPAIGNS: Campaign[] = [
         id: 2,
         href: 'referral-campaign',
         label: 'Referral Campaign',
+        isOpen: false,
         image: CampaignImage3,
         imageDetail: ReferralImage
     },
 ]
+
 function Campaign({ }: Props) {
     const [openModal, setOpenModal] = useState(false);
-    const [valueTab, setValueTab] = useState(2);
+    const [valueTab, setValueTab] = useState(1);
+    const campaigns_open = CAMPAIGNS.filter(campaign => campaign.isOpen)
+    const campaigns_ended = CAMPAIGNS.filter(campaign => !campaign.isOpen)
     const listTabs: TypeTab[] = [
         {
             id: 1,
             title: 'Ongoing',
-            value: "(0)",
+            value: `(${campaigns_open.length})`
         },
         {
             id: 2,
             title: 'Ended',
-            value: `(${CAMPAIGNS.length})`
+            value: `(${campaigns_ended.length})`
         },
         {
             id: 3,
@@ -70,15 +79,15 @@ function Campaign({ }: Props) {
 
     const MapTap: { [key: number]: JSX.Element } = {
         1: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
-            {/* {
-                CAMPAIGNS.map((campaign) =>
+            {
+                campaigns_open.map((campaign) =>
                     <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
                 )
-            } */}
+            }
         </Stack>,
         2: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
             {
-                CAMPAIGNS.map((campaign) =>
+                campaigns_ended.map((campaign) =>
                     <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
                 )
             }
