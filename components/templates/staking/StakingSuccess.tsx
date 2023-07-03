@@ -15,6 +15,7 @@ import StakingHistoryTable from "./components/StakingHistoryTable";
 import UnstakeModal from "./components/UnstakeModal";
 import { de } from 'date-fns/locale';
 import { Format } from "utils/format";
+import CoinAnimation from "components/common/CoinAnimation";
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
@@ -196,9 +197,9 @@ type PoolProps = {
 const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPoolExpanded }: PoolProps) => {
   // const [expanded, setExpanded] = useState<boolean>(false);
   const { data: nftStaked, refetch: refetchNftStaked, isLoading: isLoadingGetNFTStaked, isFetching: isFetchGetNFTStaked } = useQuery({
-    queryKey: ["getNFTStaked2"],
-    // enabled: false,
-    queryFn: () => DeoddService.getNFTStaked(pool.id),
+    queryKey: ["getNFTStaked2", poolExpanded?.id],
+    enabled: !!poolExpanded,
+    queryFn: () => DeoddService.getNFTStaked(poolExpanded?.id),
     refetchOnWindowFocus: false,
     select: (data: any) => {
       if (data.status === 200) {
@@ -228,52 +229,56 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
       p: 3,
       position: "relative",
     }}
-      onClick={() => {
-        refetchNftStaked();
-        // setExpanded((prev) => true);
-        setPoolExpanded(pool);
+    >
+      <Stack sx={{ cursor: 'pointer' }} onClick={() => {
+        if (poolExpanded === pool) {
 
+          setPoolExpanded(null);
+        } else {
+          setPoolExpanded(pool);
+        }
       }}
-
-      aria-expanded={poolExpanded?.id === pool.id || false}>
-      <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Stack sx={{ flexDirection: "row", gap: 1, alignSelf: "flex-start" }}>
-          <CupIcon width={24} color={Colors.primaryDark} />
-          <Typography variant="body2">
-            Period <Box component={"span"} color={"text.secondary"}>#{pool.season}</Box>
-          </Typography>
-        </Stack>
-        <Stack sx={{ flexDirection: "row", gap: 5 }}>
-          <Stack sx={{ gap: 1, alignItems: "flex-end" }}>
-            <DisabledTypography>Total Reward Pool</DisabledTypography>
-            <Stack sx={{ flexDirection: "row", gap: 1 }}>
-              <Typography variant="body2">{
-                new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(parseFloat(ethers.utils.formatEther(pool.current_prize ?? 0)))
-              }</Typography>
-              <BnbIcon width={20} color={Colors.primaryDark} />
+        aria-expanded={poolExpanded?.id === pool.id || false}>
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Stack sx={{ flexDirection: "row", gap: 1, alignSelf: "flex-start" }}>
+            <CupIcon width={24} color={Colors.primaryDark} />
+            <Typography variant="body2">
+              Period <Box component={"span"} color={"text.secondary"}>#{pool.season}</Box>
+            </Typography>
+          </Stack>
+          <Stack sx={{ flexDirection: "row", gap: 5 }}>
+            <Stack sx={{ gap: 1, alignItems: "flex-end" }}>
+              <DisabledTypography>Total Reward Pool</DisabledTypography>
+              <Stack sx={{ flexDirection: "row", gap: 1 }}>
+                <Typography variant="body2">{
+                  new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(parseFloat(ethers.utils.formatEther(pool.current_prize ?? 0)))
+                }</Typography>
+                <BnbIcon width={20} color={Colors.primaryDark} />
+              </Stack>
+            </Stack>
+            <Stack sx={{ gap: 1, alignItems: "flex-end" }}>
+              <DisabledTypography>Your Profit</DisabledTypography>
+              <Stack sx={{ flexDirection: "row", gap: 1 }}>
+                <Typography variant="body2">
+                  {
+                    new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(pool.reward ?? 0)
+                  }
+                </Typography>
+                <BnbIcon width={20} color={Colors.primaryDark} />
+              </Stack>
             </Stack>
           </Stack>
-          <Stack sx={{ gap: 1, alignItems: "flex-end" }}>
-            <DisabledTypography>Your Profit</DisabledTypography>
-            <Stack sx={{ flexDirection: "row", gap: 1 }}>
-              <Typography variant="body2">
-                {
-                  new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(pool.reward ?? 0)
-                }
-              </Typography>
-              <BnbIcon width={20} color={Colors.primaryDark} />
-            </Stack>
+        </Stack>
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Stack gap={1}>
+            <DisabledTypography>Start: {Format.formatDateTimeAlt(pool.start_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
+            <DisabledTypography>End: {Format.formatDateTimeAlt(pool.end_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
           </Stack>
+          {/* <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography> */}
         </Stack>
-      </Stack>
-      <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Stack gap={1}>
-          <DisabledTypography>Start: {Format.formatDateTimeAlt(pool.start_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
-          <DisabledTypography>End: {Format.formatDateTimeAlt(pool.end_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
-        </Stack>
-        {/* <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography> */}
-      </Stack>
 
+
+      </Stack>
 
       <Collapse in={poolExpanded?.id === pool.id || false} timeout="auto" unmountOnExit>
         <Divider
@@ -283,8 +288,20 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
           }}
         />
         <Typography variant="body2" mb={2} color={'secondary.main'}>Choose NFT you want to unstake</Typography>
+        <Box sx={{
+          display: isFetchGetNFTStaked ? 'block' : 'none'
+        }}>
 
-        <StakingHistoryTable nfts={nftStaked} idNftSelected={idNftSelected} setIdNftSelected={setIdNftSelected} />
+          <CoinAnimation mx="auto" width={70} height={70} />
+        </Box>
+        <Box
+          sx={{
+            display: !isFetchGetNFTStaked ? 'block' : 'none'
+          }}
+        >
+
+          <StakingHistoryTable nfts={nftStaked} idNftSelected={idNftSelected} setIdNftSelected={setIdNftSelected} />
+        </Box>
       </Collapse>
     </Stack>
 

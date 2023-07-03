@@ -56,7 +56,7 @@ function UnstakeModal({ open, setOpen, currentStage, handleUnStake, isLoadingUnS
         onClick={() => { setOpen(false) }}
       >
 
-        {stage === 1 ? "Cancel" : stage === 2 ? "Comback" : "Confirm"}
+        {stage === 1 ? "Cancel" : stage === 2 ? "Comeback" : "Confirm"}
       </ButtonLoading>
       {stage === 1 && <ButtonLoading
         fullWidth
