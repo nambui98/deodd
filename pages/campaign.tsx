@@ -93,8 +93,7 @@ function Campaign({ }: Props) {
             }
         </Stack>,
         3: <Box width={1}>
-
-            {/* <ClaimReward /> */}
+            <ClaimReward />
         </Box>
     }
     // return <ComingSoon hasCountDown={false} title={"Leaderboard </br> of Testnet's campaign"} subTitle='will be announced at 8 UTC June 30, 2023' />

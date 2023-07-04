@@ -4,6 +4,7 @@ import { Box, styled, Typography, Stack, Accordion, AccordionSummary, AccordionD
 import { getPathAvatarNFT } from "utils/checkAvatar";
 import Image from "next/image";
 import { EnumNFT, TypeNFT } from "libs/types";
+import { Format } from "utils/format";
 
 // CHANGE ME LATER
 type StakingRowItemType = {
@@ -18,14 +19,19 @@ type StakingRowItemType = {
   sharePercent: number;
   estimatedProfit: number;
   nftSelected: TypeNFT | undefined | null;
+  expanded: boolean;
+  handleExpand: VoidFunction
 }
 
-function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
+function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
   const theme = useTheme();
+
   return (
     <>
       <Accordion
         disableGutters
+        expanded={expanded}
+        onChange={() => handleExpand()}
         elevation={0}
         sx={{
           border: "none",
@@ -64,6 +70,9 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
         <AccordionDetails sx={{
           border: "none",
           marginLeft: 3.5,
+          width: 1,
+          maxHeight: 280,
+          overflow: 'auto',
           [theme.breakpoints.down('md').replace("@media", "@container")]: {
             marginLeft: 0,
             px: 1
@@ -89,7 +98,7 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
           display: 'none'
         },
       }}>
-        {NFTCards.percentSharePerNFT}
+        {Format.formatMoney(NFTCards.percentSharePerNFT)}
       </MainTypography>
       <Stack direction={"row"} gap={1}
         sx={{
@@ -98,7 +107,7 @@ function StakingRowItem({ handleClickNFT, nftSelected, NFTCards, sharePercent, e
           },
         }}
       >
-        <MainTypography >{NFTCards.estProfit}</MainTypography>
+        <MainTypography >{Format.formatMoney(NFTCards.estProfit)}</MainTypography>
         <Box component={"span"} color={"secondary.main"}>
           <BnbIcon width={20} />
         </Box>

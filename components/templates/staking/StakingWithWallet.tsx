@@ -52,6 +52,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isOpenProfitModal, setIsOpenProfitModal] = useState(false);
 
+  const [expandedTypeNft, setExpandedTypeNft] = useState<EnumNFT | null>(null)
+
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft } = useDeoddNFTContract();
 
   let totalEstProfit = ((stakeOption === 1 ? assets : walletTokens)?.data as any)?.reduce((sum: any, asset: any) => sum + (asset as any).estProfit, 0) ?? 0
@@ -141,17 +143,29 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           gridTemplateColumns: "3fr 1fr 1fr",
           justifyContent: "space-between",
           columnGap: 5,
-          maxHeight: 280,
-          overflow: 'auto',
           [theme.breakpoints.down('md').replace("@media", "@container")]: {
             display: 'block',
             gridTemplateColumns: "none",
           },
         }}>
           {
-            stakeOption === 1 ?
-              assets?.data.map((element, index: number) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element} estimatedProfit={0} sharePercent={0} />)
-              : walletTokens?.data?.map((element, index) => <StakingRowItem nftSelected={nftSelected} handleClickNFT={handleClickNFT} key={index} NFTCards={element as any} estimatedProfit={0} sharePercent={0} />)
+            (stakeOption === 1 ?
+              assets : walletTokens)?.data.map((element, index: number) => (
+                <StakingRowItem
+                  expanded={expandedTypeNft === element.type}
+                  nftSelected={nftSelected}
+                  handleClickNFT={handleClickNFT}
+                  handleExpand={() => {
+                    if (expandedTypeNft === element.type) {
+                      setExpandedTypeNft(null);
+                    } else {
+                      setExpandedTypeNft(element.type)
+                    }
+                  }}
+                  key={index}
+                  NFTCards={element as any}
+                  estimatedProfit={0}
+                  sharePercent={0} />))
           }
         </Box>
 
@@ -162,10 +176,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
         <Stack sx={{
           alignSelf: "flex-end",
           flexDirection: "row",
+          mt: 'auto',
           gap: 2,
-          position: "absolute",
-          bottom: 24,
-          right: 24,
           [theme.breakpoints.down('md').replace("@media", "@container")]: {
             display: 'none'
           },
@@ -259,7 +271,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
         </Grid>
 
       </Stack>
-      <Stack gap={2} mt={1} sx={{
+      <Stack gap={2} mt={2} sx={{
         display: 'none',
         [theme.breakpoints.down('md').replace("@media", "@container")]: {
           display: 'flex'

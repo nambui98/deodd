@@ -1,4 +1,4 @@
-import { Box, Collapse, Divider, Stack, Typography, styled } from "@mui/material";
+import { Box, Collapse, Divider, Skeleton, Stack, Typography, styled } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Colors } from "constants/index";
@@ -33,6 +33,8 @@ function StakingSuccess({
   const [idNftSelected, setIdNftSelected] = useState<number | null>(null);
   const [poolExpanded, setPoolExpanded] = useState<any>(null);
 
+  const [modeUnstake, setModeUnstake] = useState<boolean>(false);
+
   const queryClient = useQueryClient()
 
   const { writeAsync: unStake } = useContractWrite({
@@ -50,34 +52,37 @@ function StakingSuccess({
     const isAllowUnstake = isBefore(new Date(), new Date(poolExpanded.end_time));
     if (isAllowUnstake) {
       setCurrentStageModal(3)
-      handleUnStake();
+      handleUnstake();
     } else {
       setCurrentStageModal(1)
     }
 
   }
-  const handleUnStake = () => {
-    setIsUnstakeLoading(true);
-    unStake?.({
-      recklesslySetUnpreparedArgs: [idNftSelected],
-    })
-      .then(resWrite => {
-        return resWrite.wait();
+  const handleUnstake = () => {
+    if (currentStageModal === 3) {
+      setIsUnstakeLoading(true);
+      unStake?.({
+        recklesslySetUnpreparedArgs: [idNftSelected],
       })
-      .then((res) => {
-        queryClient.invalidateQueries({ queryKey: ['getNFTStaked2'] });
-        setIsUnstakeLoading(false);
-        setCurrentStageModal(3);
-        setIsUnstakeOpened(true);
+        .then(resWrite => {
+          return resWrite.wait();
+        })
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['getNFTStaked2'] });
+          setIsUnstakeLoading(false);
+          setCurrentStageModal(3);
+          setIsUnstakeOpened(true);
 
-      })
-      .catch(error => {
-        setIsError(true);
-        setIsUnstakeLoading(false);
-        setTitleError(error.reason || 'Something went wrong');
-      })
+        })
+        .catch(error => {
+          setIsError(true);
+          setIsUnstakeLoading(false);
+          setTitleError(error.reason || 'Something went wrong');
+        })
 
-
+    } else {
+      setIsUnstakeOpened(true)
+    }
   }
   return (
     <Stack gap={2}>
@@ -92,7 +97,7 @@ function StakingSuccess({
         }}>
           <ButtonLoading
             loading={isUnstakeLoading}
-            disabled={!idNftSelected}
+            // disabled={!idNftSelected}
             sx={{
               py: 1,
               px: 2,
@@ -106,16 +111,18 @@ function StakingSuccess({
               width: "auto"
             }}
             onClick={() => {
-              if (currentStageModal === 3) {
-                handleUnStake();
-              } else {
-                setIsUnstakeOpened(true)
-              }
+              setModeUnstake((prev) => !prev);
             }}
           >
             Unstake
           </ButtonLoading>
-          <UnstakeModal currentStage={currentStageModal} isLoadingUnStake={isUnstakeLoading} handleUnStake={handleUnStake} open={isUnstakeOpened} setOpen={setIsUnstakeOpened} />
+          <UnstakeModal
+            currentStage={currentStageModal}
+            isLoadingUnStake={isUnstakeLoading}
+            handleUnStake={handleUnstake}
+            open={isUnstakeOpened}
+            setOpen={setIsUnstakeOpened}
+          />
           <ButtonMain
             LinkComponent={Link}
             href="/loyalty"
@@ -171,9 +178,19 @@ function StakingSuccess({
           /> */}
         </Stack>
       </Stack>
-      {pools.map((pool: any) =>
-        <PoolItem pool={pool} key={pool.id} idNftSelected={idNftSelected} poolExpanded={poolExpanded} setPoolExpanded={setPoolExpanded} setIdNftSelected={setIdNftSelected} />
+      {pools?.map((pool: any) =>
+        <PoolItem
+          pool={pool}
+          key={pool.id}
+          idNftSelected={idNftSelected}
+          poolExpanded={poolExpanded}
+          setPoolExpanded={setPoolExpanded}
+          setIdNftSelected={setIdNftSelected}
+          modeUnstake={modeUnstake}
+          handleUnstake={handleUnstake}
+        />
       )}
+
     </Stack>
   );
 }
@@ -191,12 +208,13 @@ type PoolProps = {
   idNftSelected: number | null,
   setIdNftSelected: Function,
   setPoolExpanded: Function,
+  handleUnstake: VoidFunction,
   poolExpanded: any,
+  modeUnstake: boolean
 }
 
-const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPoolExpanded }: PoolProps) => {
-  // const [expanded, setExpanded] = useState<boolean>(false);
-  const { data: nftStaked, refetch: refetchNftStaked, isLoading: isLoadingGetNFTStaked, isFetching: isFetchGetNFTStaked } = useQuery({
+const PoolItem = ({ pool, handleUnstake, modeUnstake, idNftSelected, setIdNftSelected, poolExpanded, setPoolExpanded }: PoolProps) => {
+  const { data: nftStaked, isFetching: isFetchGetNFTStaked } = useQuery({
     queryKey: ["getNFTStaked2", poolExpanded?.id],
     enabled: !!poolExpanded,
     queryFn: () => DeoddService.getNFTStaked(poolExpanded?.id),
@@ -208,18 +226,7 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
         return undefined
       }
     },
-    onError(err) {
-    },
-
   });
-  // useEffect(() => {
-  //   const isAllowUnstake = isBefore(new Date(), new Date("2023-06-29T13:00:00Z"));
-  //   if (isAllowUnstake) {
-  //     setCurrentStageModal(3)
-  //   } else {
-  //     setCurrentStageModal(1)
-  //   }
-  // }, [])
 
   return (
     <Stack key={pool.id} sx={{
@@ -232,7 +239,6 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
     >
       <Stack sx={{ cursor: 'pointer' }} onClick={() => {
         if (poolExpanded === pool) {
-
           setPoolExpanded(null);
         } else {
           setPoolExpanded(pool);
@@ -287,21 +293,39 @@ const PoolItem = ({ pool, idNftSelected, setIdNftSelected, poolExpanded, setPool
             backgroundColor: "secondary.900",
           }}
         />
-        <Typography variant="body2" mb={2} color={'secondary.main'}>Choose NFT you want to unstake</Typography>
-        <Box sx={{
+        {
+          modeUnstake &&
+
+          <Typography variant="body2" mb={2} color={'secondary.main'}>Choose NFT you want to unstake</Typography>
+        }
+        {/* <Box sx={{
           display: isFetchGetNFTStaked ? 'block' : 'none'
         }}>
+          <CoinAnimation mx="auto" width={50} height={50} />
+        </Box> */}
+        {
+          !isFetchGetNFTStaked ?
+            <StakingHistoryTable
+              modeUnstake={modeUnstake}
+              nfts={nftStaked}
+              idNftSelected={idNftSelected}
+              setIdNftSelected={setIdNftSelected}
+            />
+            :
+            <Skeleton variant="rounded" width={'100%'} height={580} />
+        }
+        {
+          modeUnstake &&
+          <Box textAlign={"center"} mt={2}>
+            <ButtonLoading
+              onClick={handleUnstake}
+              disabled={!idNftSelected}
+              sx={{ width: 'auto', textTransform: 'none', py: 1, bgcolor: 'background.default' }}>
+              Unstake
+            </ButtonLoading>
+          </Box>
+        }
 
-          <CoinAnimation mx="auto" width={70} height={70} />
-        </Box>
-        <Box
-          sx={{
-            display: !isFetchGetNFTStaked ? 'block' : 'none'
-          }}
-        >
-
-          <StakingHistoryTable nfts={nftStaked} idNftSelected={idNftSelected} setIdNftSelected={setIdNftSelected} />
-        </Box>
       </Collapse>
     </Stack>
 
