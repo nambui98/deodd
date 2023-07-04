@@ -61,7 +61,7 @@ function useLoyaltyJackpot() {
         }
       }
     },
-    enabled: walletIsConnected,
+    enabled: !!walletIsConnected,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
