@@ -20,8 +20,8 @@ type StakingCalculatorType = {
 }
 
 function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingCalculatorType) {
-  const [duration, setDuration] = useState<number>(1)
-  const [rewardPool, setRewardPoll] = useState<string>(DefaultRewardPool.toString())
+  const [duration, setDuration] = useState<number | null>(null)
+  const [rewardPool, setRewardPoll] = useState<string | null>(null)
   // const { data, refetch: caculateEstProfit } = useQuery({
   //   queryKey: ["caculateEstProfit"],
   //   enabled: !!nftSelected && open,
@@ -109,8 +109,9 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
           <Typography variant="body2">EST. Profit</Typography>
           <Stack sx={{ flexDirection: "row", gap: 1, mb: 3 }}>
             <Typography variant="body2">{
-              nftSelected &&
-              Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, duration))
+              nftSelected && rewardPool && duration ?
+                Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, duration))
+                : 0
             }</Typography>
             <BnbIcon width={20} color={Colors.primaryDark} />
           </Stack>
