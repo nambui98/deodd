@@ -24,8 +24,8 @@ function HolderPool({ }: Props) {
   const { walletTokens } = useDeoddNFTContract();
 
   // Check if user is an nft holder
-  const isNftHolder = useQuery({
-    queryKey: ["isNftHolder", walletAddress, walletTokens],
+  const haveBalanceNFT = useQuery({
+    queryKey: ["haveBalanceNFT", walletAddress, walletTokens],
     queryFn: async (): Promise<boolean> => {
       const promiseResult = await DeoddService.getAssetsBalance(walletAddress);
 
@@ -33,14 +33,10 @@ function HolderPool({ }: Props) {
         const nftQuantity = promiseResult.data.data.nftItemHoldingDTOForUser;
 
         if (
-          (nftQuantity.totalDiamondNFT > 0 ||
-            nftQuantity.totalGoldNFT > 0 ||
-            nftQuantity.totalBronzeNft > 0) && (walletTokens != undefined)
+          nftQuantity.totalDiamondNFT > 0 ||
+          nftQuantity.totalGoldNFT > 0 ||
+          nftQuantity.totalBronzeNft > 0
         ) {
-          if (walletTokens.total == undefined || walletTokens.total === 0) {
-            return false;
-          }
-
           return true;
         } else {
           return false;
@@ -52,6 +48,15 @@ function HolderPool({ }: Props) {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  const haveWalletNFT =
+    walletTokens == undefined
+      ? false
+      : walletTokens.total == undefined
+        ? false
+        : walletTokens?.total > 0
+          ? true
+          : false;
 
   // const {
   //   setIsSuccess,
@@ -181,7 +186,7 @@ function HolderPool({ }: Props) {
           </Typography>
         )}
 
-        {walletIsConnected && isNftHolder.isLoading && (
+        {walletIsConnected && haveBalanceNFT.isLoading && (
           <>
             <Skeleton width={200} />
             <Skeleton width={100} height={50} />
@@ -191,8 +196,9 @@ function HolderPool({ }: Props) {
         {walletIsConnected &&
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
-          !isNftHolder.isLoading &&
-          isNftHolder.data ? (
+          (haveWalletNFT ||
+            !haveBalanceNFT.isLoading &&
+            haveBalanceNFT.data) ? (
           periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
@@ -232,7 +238,9 @@ function HolderPool({ }: Props) {
             </>
           )
         ) : (
-          !isNftHolder.isLoading && walletIsConnected && !periodsInfo.isError && (
+          (haveWalletNFT || !haveBalanceNFT.isLoading) &&
+          walletIsConnected &&
+          !periodsInfo.isError && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only NFT Holders are able to get the reward
