@@ -196,10 +196,10 @@ function HolderPool({ }: Props) {
           periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
-                Your current reward in this period is
+                Your current reward in this period is{" "}
                 <Box component={"span"} color={"text.primary"}>
                   {Format.formatMoney(periodsInfo.data[0].reward, 7)}
-                  <Box component={"span"}>
+                  <Box component={"span"} sx={{ ml: 0.25 }}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
                 </Box>
