@@ -17,6 +17,9 @@ import { getPathAvatarNFT } from "utils/checkAvatar";
 import { Colors } from "constants/index";
 import MyImage from "components/ui/image";
 import StakingNoNFT from "./StakingNoNFT";
+import StakingSuccess from "./StakingSuccess";
+import CoinAnimation from "components/common/CoinAnimation";
+import { Utils } from "@/utils/index";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -51,15 +54,62 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
   const [isOpenProfitModal, setIsOpenProfitModal] = useState(false);
+  const { walletAddress } = useWalletContext();
 
   const [expandedTypeNft, setExpandedTypeNft] = useState<EnumNFT | null>(null)
 
+  const [isShowPools, setIsShowPools] = useState<boolean>(false)
+  const [isLoadingGetNFTStaked2, setIsLoadingGetNFTStaked2] = useState<boolean>(true)
+
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft } = useDeoddNFTContract();
 
+  const { data: nftStaked, isFetching: isFetchGetNFTStaked, isLoading: isLoadingGetNFTStaked } = useQuery({
+    queryKey: ["getNFTStaked"],
+    enabled: !!walletAddress && (currentPool !== null && currentPool?.id !== undefined),
+    queryFn: () => DeoddService.getNFTStaked(currentPool.id),
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      setIsLoadingGetNFTStaked2(false);
+      if (data.length > 0) {
+        setIsShowPools(true)
+      }
+    },
+    onError: () => {
+      setIsLoadingGetNFTStaked2(false);
+    },
+
+    select: (data: any) => {
+      if (data.status === 200) {
+        return data.data.data;
+      } else {
+        return undefined
+      }
+    },
+  });
+  const { data: pools, isFetching: isFetchGetPools, isLoading: isLoadingGetPools } = useQuery({
+    queryKey: ["getPools"],
+    enabled: !!walletAddress,
+    queryFn: () => DeoddService.getPoolsAndRewardsByUser(),
+    refetchOnWindowFocus: false,
+    select: (data: any) => {
+      if (data.status === 200) {
+        return data.data.data;
+      } else {
+        return undefined
+      }
+    },
+  });
   let totalEstProfit = ((stakeOption === 1 ? assets : walletTokens)?.data as any)?.reduce((sum: any, asset: any) => sum + (asset as any).estProfit, 0) ?? 0
+  if (walletAddress === undefined || isLoadingGetNFTStaked2 || (isFetchGetPools) || isFetchGetNFTStaked || isLoadingGetPools || isLoadingGetNFTStaked) {
+    return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
+  }
   if (walletTokens?.total === 0 && assets?.total === 0) {
     return <StakingNoNFT />
   }
+  if (isShowPools && nftStaked && nftStaked.length > 0) {
+    return <StakingSuccess pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
+  }
+
   return (
     <Stack gap={1}>
       <Typography variant="h2" sx={{ fontWeight: 700, mb: 1, lineHeight: "2rem" }}>NFT Staking</Typography>
@@ -126,10 +176,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
               </Box>
             </Stack>
             <Stack direction={"row"} gap={1}>
-              <MainTypography>
-                {/* 1.534 */}
-                {Format.formatMoney(totalEstProfit)}
-              </MainTypography>
+              <MainTypography >{nftSelected ? Format.formatMoney(Utils.calculatorProfit(undefined, nftSelected, 1, 30)) : 0}</MainTypography>
               <Box component={"span"} sx={{
                 color: "secondary.main",
               }}>

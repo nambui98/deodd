@@ -82,7 +82,7 @@ export const useDeoddNFTContract = () => {
             }
             : null
     });
-    const { refetch: getBalanceNft } = useContractRead({
+    const { refetch: getBalanceNft, } = useContractRead({
         address: deoddNFTContract.address,
         abi: deoddNFTContract.abi,
         functionName: 'getWalletTokens',
@@ -95,6 +95,8 @@ export const useDeoddNFTContract = () => {
                 percentSharePerNFT: number
             }));
         },
+        onError: () => {
+        }
     })
     const getInfoTokens = async (tokens: BigNumber[]) => {
         let res = await Promise.all(
@@ -198,6 +200,6 @@ export const useDeoddNFTContract = () => {
         priceToken,
         assets,
         getBalanceNft,
-        refetchGetAssetsBalance
+        refetchGetAssetsBalance,
     }
 }

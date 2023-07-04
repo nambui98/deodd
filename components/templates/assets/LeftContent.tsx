@@ -4,7 +4,7 @@ import { Box, ButtonBase, Collapse, List, ListItemButton, Stack, Typography, sty
 import { useMutation, useQuery } from '@tanstack/react-query'
 import MyModal from 'components/common/Modal'
 import ModalClaimSuccess from 'components/common/ModalError'
-import { ButtonMain } from 'components/ui/button'
+import { ButtonLoading, ButtonMain } from 'components/ui/button'
 import MyImage from 'components/ui/image'
 import { Colors, MINXIMUM_BALANCE_DEPOSIT } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
@@ -16,6 +16,7 @@ import { ArrowDownIcon, ArrowUpIcon, BnbIcon, BnbUsdIcon } from 'utils/Icons'
 import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
 import { ItemHistory } from './ItemHistory'
+import Link from 'next/link'
 
 type Props = {
     // spendingTokens: TypeDataNFT,
@@ -236,6 +237,20 @@ function LeftContent({ handleClickNFT, nftSelected, priceToken }: Props) {
                         showNFT(EnumNFT.BRONZE, assets?.nftItemHoldingDTOForUser?.totalBronzeNFT, assets?.nftItemHoldingDTOForUser?.nftBronze)
                     }
                 </ListCus>
+                {
+                    assets && assets.nftItemHoldingDTOForUser && (assets?.nftItemHoldingDTOForUser?.totalDiamondNFT > 0
+
+                        || assets?.nftItemHoldingDTOForUser?.totalGoldNFT > 0
+                        || assets?.nftItemHoldingDTOForUser?.totalBronzeNFT > 0
+                    ) &&
+                    <Box textAlign={"right"} mt={1} >
+
+                        <ButtonLoading
+                            LinkComponent={Link}
+                            href='/staking'
+                            sx={{ width: 'auto', py: 1, px: 2, fontSize: "0.74rem", textTransform: 'none' }}>Stake</ButtonLoading>
+                    </Box>
+                }
                 {/* <Box textAlign={"end"} >
                     <Box display={"block"} mt={2}>
                         <ButtonMain active={true} title="Claim" disabled={!nftSelected} onClick={() => { handleClaimNFT() }} sx={{
