@@ -47,7 +47,7 @@ function useLoyaltyHolder() {
         throw new Error("No data to fetch");
       }
     },
-    enabled: walletIsConnected && !!periodsInfo.data ? true : false,
+    enabled: !!walletIsConnected && !!periodsInfo.data,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
@@ -69,7 +69,7 @@ function useLoyaltyHolder() {
         throw new Error("No data to fetch");
       }
     },
-    enabled: walletIsConnected && !!periodsInfo.data ? true : false,
+    enabled: !!walletIsConnected && !!periodsInfo.data,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
