@@ -13,6 +13,7 @@ import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
 import { DeoddService } from "libs/apis";
 import { useQuery } from "@tanstack/react-query";
+import { useDeoddNFTContract } from "hooks/useDeoddNFTContract";
 
 type Props = {};
 
@@ -20,10 +21,11 @@ function HolderPool({ }: Props) {
   const { walletIsConnected, walletAddress } = useWalletContext();
   const { periodsInfo, leaderboard, history, setReset, setPeriod } =
     useLoyaltyHolder();
+  const { walletTokens } = useDeoddNFTContract();
 
   // Check if user is an nft holder
   const isNftHolder = useQuery({
-    queryKey: ["isNftHolder"],
+    queryKey: ["isNftHolder", walletAddress, walletTokens],
     queryFn: async (): Promise<boolean> => {
       const promiseResult = await DeoddService.getAssetsBalance(walletAddress);
 
@@ -31,10 +33,14 @@ function HolderPool({ }: Props) {
         const nftQuantity = promiseResult.data.data.nftItemHoldingDTOForUser;
 
         if (
-          nftQuantity.totalDiamondNFT > 0 ||
-          nftQuantity.totalGoldNFT > 0 ||
-          nftQuantity.totalBronzeNft > 0
+          (nftQuantity.totalDiamondNFT > 0 ||
+            nftQuantity.totalGoldNFT > 0 ||
+            nftQuantity.totalBronzeNft > 0) && (walletTokens != undefined)
         ) {
+          if (walletTokens.total == undefined || walletTokens.total === 0) {
+            return false;
+          }
+
           return true;
         } else {
           return false;
