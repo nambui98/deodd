@@ -21,10 +21,11 @@ type StakingRowItemType = {
   estimatedProfit: number;
   nftSelected: TypeNFT | undefined | null;
   expanded: boolean;
-  handleExpand: VoidFunction
+  handleExpand: VoidFunction,
+  rewardPool: string | undefined
 }
 
-function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
+function StakingRowItem({ handleClickNFT, rewardPool, handleExpand, expanded, nftSelected, NFTCards, sharePercent, estimatedProfit }: StakingRowItemType) {
   const theme = useTheme();
 
   return (
@@ -119,7 +120,7 @@ function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, N
           },
         }}
       >
-        <MainTypography >{nftSelected && nftSelected.type === NFTCards.type ? Format.formatMoney(Utils.calculatorProfit(undefined, nftSelected, 1, 30)) : 0}</MainTypography>
+        <MainTypography >{nftSelected && nftSelected.type === NFTCards.type ? Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, 30)) : 0}</MainTypography>
         <Box component={"span"} color={"secondary.main"}>
           <BnbIcon width={20} />
         </Box>
