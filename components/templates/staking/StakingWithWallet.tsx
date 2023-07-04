@@ -103,7 +103,6 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
       }
     },
   });
-  let totalEstProfit = ((stakeOption === 1 ? assets : walletTokens)?.data as any)?.reduce((sum: any, asset: any) => sum + (asset as any).estProfit, 0) ?? 0
   if (walletAddress === undefined || isLoadingGetNFTStaked2 || (isFetchGetPools) || isFetchGetNFTStaked || isLoadingGetPools || isLoadingGetNFTStaked) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
