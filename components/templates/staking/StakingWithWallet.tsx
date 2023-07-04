@@ -116,7 +116,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
             },
           }}>
             <Stack direction={"row"} gap={1}>
-              <MainTypography>Estimated profit</MainTypography>
+              <MainTypography>Calculated profit</MainTypography>
               <Box component={"span"} sx={{
                 cursor: "pointer",
               }}

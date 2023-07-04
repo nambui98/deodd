@@ -5,6 +5,7 @@ import { getPathAvatarNFT } from "utils/checkAvatar";
 import Image from "next/image";
 import { EnumNFT, TypeNFT } from "libs/types";
 import { Format } from "utils/format";
+import { Utils } from "@/utils/index";
 
 // CHANGE ME LATER
 type StakingRowItemType = {
@@ -86,7 +87,18 @@ function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, N
             }
           }} >
             {NFTCards.list.map((detailNFT, index) => (
-              <FormControlLabel onClick={() => handleClickNFT(detailNFT)} key={index} name={`DeODD #${detailNFT.id}`} control={<Checkbox checked={nftSelected?.id === detailNFT.id} icon={<TickCircleOutlineIcon />} checkedIcon={<TickCircleIcon />} />} label={`DeODD #${detailNFT.id}`} />
+              <FormControlLabel
+                onClick={() => handleClickNFT(detailNFT)}
+                key={index}
+                name={`DeODD #${detailNFT.id}`}
+                control={<Checkbox checked={nftSelected?.id === detailNFT.id}
+                  icon={<TickCircleOutlineIcon />}
+                  checkedIcon={<TickCircleIcon />} />}
+                label={<Stack direction={'row'} alignItems={'center'} gap={1}>
+                  <Image src={detailNFT.image} width={24} height={24} alt={'Image nft'} />
+
+                  DeODD #{detailNFT.id}</Stack>}
+              />
             ))}
           </Stack>
 
@@ -98,7 +110,7 @@ function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, N
           display: 'none'
         },
       }}>
-        {Format.formatMoney(NFTCards.percentSharePerNFT)}
+        {Format.formatMoney(NFTCards.percentSharePerNFT)}%
       </MainTypography>
       <Stack direction={"row"} gap={1}
         sx={{
@@ -107,7 +119,7 @@ function StakingRowItem({ handleClickNFT, handleExpand, expanded, nftSelected, N
           },
         }}
       >
-        <MainTypography >{Format.formatMoney(NFTCards.estProfit)}</MainTypography>
+        <MainTypography >{nftSelected && nftSelected.type === NFTCards.type ? Format.formatMoney(Utils.calculatorProfit(undefined, nftSelected, 1, 30)) : 0}</MainTypography>
         <Box component={"span"} color={"secondary.main"}>
           <BnbIcon width={20} />
         </Box>

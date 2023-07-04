@@ -14,8 +14,8 @@ const getPathAvatar = (avatarId: number | undefined) => {
         default: return basePath + '/avatar-yellow.png'
     }
 }
-const calculatorProfit = (nft: TypeNFT, amount?: number, dayStaked?: number) => {
-    return (DefaultRewardPool * SharePerNFT[nft.type as EnumNFT] * (amount ?? 1) * (dayStaked ?? DefaultStaked) / DefaultSeason) / 100;
+const calculatorProfit = (rewardPool: string | undefined, nft: TypeNFT, amount?: number, dayStaked?: number) => {
+    return ((parseFloat(rewardPool ?? DefaultRewardPool.toString())) * SharePerNFT[nft.type as EnumNFT] * (amount ?? 1) * (dayStaked ?? DefaultStaked) / DefaultSeason) / 100;
 }
 export const Utils = {
     getImageNFT: (type: number | string) => {
