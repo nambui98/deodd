@@ -14,7 +14,7 @@ import FlowStake from "./components/FlowStake";
 import { Format } from "utils/format";
 import ProfitDetailModal from "./components/ProfitDetailModal";
 import { getPathAvatarNFT } from "utils/checkAvatar";
-import { Colors, DefaultRewardPool } from "constants/index";
+import { Colors, DefaultRewardPool, DefaultSeason, DefaultStaked } from "constants/index";
 import MyImage from "components/ui/image";
 import StakingNoNFT from "./StakingNoNFT";
 import StakingSuccess from "./StakingSuccess";
@@ -63,6 +63,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
 
 
   const [rewardPool, setRewardPool] = useState<string | undefined>(DefaultRewardPool.toString())
+  const [duration, setDuration] = useState<number | undefined>(DefaultStaked)
 
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft } = useDeoddNFTContract();
 
@@ -179,7 +180,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
               </Box>
             </Stack>
             <Stack direction={"row"} gap={1}>
-              <MainTypography >{nftSelected ? Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, 30)) : 0}</MainTypography>
+              <MainTypography >{nftSelected ? Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, duration)) : 0}</MainTypography>
               <Box component={"span"} sx={{
                 color: "secondary.main",
               }}>
@@ -216,6 +217,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
                   NFTCards={element as any}
                   estimatedProfit={0}
                   rewardPool={rewardPool}
+                  duration={duration}
                   sharePercent={0} />))
           }
         </Box>
@@ -228,6 +230,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
           currentPool={currentPool}
           open={isCalculatorOpened}
           setOpen={setIsCalculatorOpened}
+          duration={duration}
+          setDuration={setDuration}
         />
 
         {/* Footer and Approve Button */}
@@ -315,7 +319,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
               </Box>
             </Stack>
             <Stack direction={"row"} mt={2} gap={1}>
-              <MainTypography >{nftSelected ? Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, 30)) : 0}</MainTypography>
+              <MainTypography >{nftSelected ? Format.formatMoney(Utils.calculatorProfit(rewardPool, nftSelected, 1, duration)) : 0}</MainTypography>
               <Box component={"span"} sx={{
                 color: "secondary.main",
               }}>

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import MyModal from './Modal';
 import { Colors } from 'constants/index';
 import MyImage from 'components/ui/image';
-import { BnbLogoImage, BzImage, DjImage, LogoImage, MwImage, YahooFImage } from 'utils/Images';
+import { ApImage, AsiaTokenFundImage, BenzingaImage, BnbLogoImage, BzImage, DjImage, LogoImage, MwImage, ScoopnixImage, TechSulionImage, YahooFImage } from 'utils/Images';
 import Link from 'next/link';
 
 type Props = {}
@@ -29,7 +29,7 @@ function FaqHowtoplay({ }: Props) {
     return (
         <Container sx={{ mt: 'auto', pt: 3, }} >
             <Divider />
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 10.125, md: 2 }, mt: 2 }}  >
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}  >
                 <Stack width={1} direction={'row'} alignItems={'center'} justifyContent={'space-between'} columnGap={2}
                     rowGap={3}
                     sx={{
@@ -90,28 +90,7 @@ function FaqHowtoplay({ }: Props) {
                             },
                         }}
                     >
-                        <Box>
-                            <Typography variant='caption'>As seen on</Typography>
-                            <Stack mt={1} direction={'row'} alignItems={'center'} columnGap={3}>
-                                <Link href={'https://www.benzinga.com/pressreleases/23/05/ab32606858/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
-                                    target='_blank' rel="noreferrer">
-                                    <MyImage src={BzImage} height={40} width={40} alt="logo" />
-                                </Link>
-                                <Link href={'https://www.digitaljournal.com/pr/news/accesswire/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
-                                    target='_blank' rel="noreferrer">
-                                    <MyImage src={DjImage} height={40} width={48} alt="logo" />
-                                </Link>
-                                <Link href={'https://finance.yahoo.com/news/deodd-launches-testnet-revolutionizing-game-195000055.html'}
-                                    target='_blank' rel="noreferrer">
-                                    <MyImage src={YahooFImage} height={32} width={87} alt="logo" />
-                                </Link>
-                                <Link href={'https://www.marketwatch.com/press-release/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem-2023-05-26'}
-                                    target='_blank' rel="noreferrer">
-                                    <MyImage src={MwImage} height={32} width={59} alt="logo" />
-                                </Link>
-                            </Stack>
 
-                        </Box>
                         <Box display={'block'} width={193} height={24} component={Link} href="https://oracle.binance.com/" target='_blank' rel='noreferrer'>
                             <MyImage src={BnbLogoImage} height={'100%'} width={'100%'} alt="logo" />
                         </Box>
@@ -123,6 +102,47 @@ function FaqHowtoplay({ }: Props) {
                     }
                 </MyModal>
             </Box >
+            <Stack direction={{ xs: 'column', md: 'row' }} mb={{ xs: 10.125, md: 2 }} mt={2} justifyContent={{ xs: 'flex-start', md: 'center' }} alignItems={{ xs: 'flex-start', md: 'center' }} columnGap={3} rowGap={1}>
+                <Typography variant='caption' flexShrink={0}>As seen on</Typography>
+                <Stack direction={'row'} alignItems={'center'} flexWrap={'wrap'} gap={{ xs: 2, md: 3 }}>
+                    <Link href={'https://www.benzinga.com/pressreleases/23/05/ab32606858/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={BzImage} height={40} width={40} alt="logo" />
+                    </Link>
+                    <Link href={'https://www.digitaljournal.com/pr/news/binary-news-network/deodd-announcinnet-launch-ushering-in-a-new-era-of-decentralized-flipcoin-gaming'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={DjImage} height={40} width={48} alt="logo" />
+                    </Link>
+                    <Link href={'https://finance.yahoo.com/news/deodd-launches-testnet-revolutionizing-game-195000055.html'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={YahooFImage} height={32} width={87} alt="logo" />
+                    </Link>
+                    <Link href={'https://www.marketwatch.com/press-release/deodd-launches-testnet-revolutionizing-game-of-chances-gaming-on-the-bnb-chain-ecosystem-2023-05-26'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={MwImage} height={32} width={59} alt="logo" />
+                    </Link>
+                    <Link href={'https://asiatokenfund.com/2023/07/02/deodd-announces-mainnet-launch-ushering-in-a-new-era-of-decentralized-flipcoin-gaming/'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={AsiaTokenFundImage} height={'1.5rem'} width={'4.42106rem'} alt="logo" />
+                    </Link>
+                    <Link href={'https://techbullion.com/deodd-announces-mainnet-launch-ushering-in-a-new-era-of-decentralized-flipcoin-gaming/'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={TechSulionImage} height={'1.5rem'} width={'5.18356rem'} alt="logo" />
+                    </Link>
+                    <Link href={'https://www.scoopnix.com/deodd-announces-mainnet-launch-ushering-in-a-new-era-of-decentralized-flipcoin-gaming/'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={ScoopnixImage} height={'1rem'} width={'7.14631rem'} alt="logo" />
+                    </Link><Link href={'https://apnews.com/press-release/marketersmedia/gaming-9174ded15edd77601e8c760331875eb1'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={ApImage} height={'1.5rem'} width={'1.29375rem'} alt="logo" />
+                    </Link><Link href={'https://www.benzinga.com/pressreleases/23/07/33089276/deodd-announces-mainnet-launch-ushering-in-a-new-era-of-decentralized-flip-coin-gaming'}
+                        target='_blank' rel="noreferrer">
+                        <MyImage src={BenzingaImage} height={'1.5rem'} width={'9.66456rem'} alt="logo" />
+                    </Link>
+                </Stack>
+
+            </Stack>
+
         </Container >
     )
 }

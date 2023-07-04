@@ -18,11 +18,12 @@ type StakingCalculatorType = {
   nftSelected?: TypeNFT | null,
   currentPool: any,
   rewardPool: string | undefined,
-  setRewardPool: (value: string) => void
+  setRewardPool: (value: string) => void,
+  duration: number | undefined,
+  setDuration: (value: number) => void
 }
 
-function StakingCalculator({ open, setOpen, nftSelected, currentPool, rewardPool, setRewardPool }: StakingCalculatorType) {
-  const [duration, setDuration] = useState<number | null>(null)
+function StakingCalculator({ open, setOpen, nftSelected, duration, setDuration, currentPool, rewardPool, setRewardPool }: StakingCalculatorType) {
   // const { data, refetch: caculateEstProfit } = useQuery({
   //   queryKey: ["caculateEstProfit"],
   //   enabled: !!nftSelected && open,
