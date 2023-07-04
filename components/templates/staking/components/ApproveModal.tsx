@@ -3,14 +3,15 @@ import MyModal from "components/common/Modal";
 import { Colors } from "constants/index";
 import { ButtonMain } from "components/ui/button";
 import { Typography } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UnstakeModalType = {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 function ApproveModal({ open, setOpen }: UnstakeModalType) {
-
+  const queryClient = useQueryClient();
   return (
     <MyModal
       open={open}
@@ -32,9 +33,6 @@ function ApproveModal({ open, setOpen }: UnstakeModalType) {
         Now you are an NFT Holder! <br />
         Hope you have some great time with DeODD!
       </Typography>
-      {/* <Typography variant="h3" sx={{ textAlign: "center", fontWeight: 600, lineHeight: "1.375rem", mb: 3 }}>Something went wrong!
-        Please try again
-      </Typography> */}
       <ButtonMain
         active={true}
         title={"Confirm"}
@@ -48,7 +46,11 @@ function ApproveModal({ open, setOpen }: UnstakeModalType) {
           backgroundColor: "primary.300",
           mb: 2,
         }}
-        onClick={() => { setOpen(false) }}
+        onClick={() => {
+          setOpen(false);
+          queryClient.invalidateQueries({ queryKey: ['getNFTStaked'] });
+        }
+        }
       />
     </MyModal>
   );

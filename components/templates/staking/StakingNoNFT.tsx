@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function StakingNoNFT() {
   return (
-    <>
+    <Stack maxWidth={736} mx="auto">
       <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
       <Stack sx={{
         backgroundColor: "background.paper",
@@ -49,12 +49,11 @@ function StakingNoNFT() {
               fontWeight: 400,
               lineHeight: "1rem",
               letterSpacing: "0.04em",
-
             }}
           />
         </Link>
       </Stack>
-    </>
+    </Stack>
   );
 }
 

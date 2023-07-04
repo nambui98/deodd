@@ -16,6 +16,7 @@ import ProfitDetailModal from "./components/ProfitDetailModal";
 import { getPathAvatarNFT } from "utils/checkAvatar";
 import { Colors } from "constants/index";
 import MyImage from "components/ui/image";
+import StakingNoNFT from "./StakingNoNFT";
 
 // CHANGE ME LATER
 const dummyData = [
@@ -49,17 +50,15 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const theme = useTheme();
   const [stakeOption, setStakeOption] = useState(1);
   const [isCalculatorOpened, setIsCalculatorOpened] = useState(false);
-  const [isApproveModalOpened, setIsApproveModalOpened] = useState(false);
   const [isOpenProfitModal, setIsOpenProfitModal] = useState(false);
 
-  const { walletAddress } = useWalletContext();
-
-  const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft, priceToken } = useDeoddNFTContract();
+  const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft } = useDeoddNFTContract();
 
   let totalEstProfit = ((stakeOption === 1 ? assets : walletTokens)?.data as any)?.reduce((sum: any, asset: any) => sum + (asset as any).estProfit, 0) ?? 0
-
+  if (walletTokens?.total === 0 && assets?.total === 0) {
+    return <StakingNoNFT />
+  }
   return (
-
     <Stack gap={1}>
       <Typography variant="h2" sx={{ fontWeight: 700, mb: 1, lineHeight: "2rem" }}>NFT Staking</Typography>
       <Stack sx={{

@@ -198,7 +198,6 @@ export const useDeoddNFTContract = () => {
         priceToken,
         assets,
         getBalanceNft,
-
         refetchGetAssetsBalance
     }
 }

@@ -5,7 +5,7 @@ import { useWalletContext } from "contexts/WalletContext";
 function StakingNoWallet() {
   const { handleConnectWallet, isConnectingWallet } = useWalletContext();
   return (
-    <>
+    <Stack maxWidth={736} mx="auto">
       <Typography variant="h2" sx={{ fontWeight: 700, lineHeight: "2rem", mb: 2 }}>NFT Staking</Typography>
       <Stack alignItems={'center'} mt={5}>
         <Typography variant='h3' fontWeight={600}>Connect wallet for staking</Typography>
@@ -24,7 +24,7 @@ function StakingNoWallet() {
 
       </Stack>
 
-    </>
+    </Stack>
   );
 }
 

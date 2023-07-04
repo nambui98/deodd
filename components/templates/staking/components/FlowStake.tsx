@@ -70,8 +70,6 @@ function FlowStake({ stakeOption, nftSelected, handleSetNftSelected, refetchGetA
             refetchGetAssetsBalance();
             setIsApproved(false);
             setIsLoading(false);
-
-            queryClient.invalidateQueries({ queryKey: ['getNFTStaked'] });
         },
     });
     const handleApprove = () => {
@@ -103,17 +101,13 @@ function FlowStake({ stakeOption, nftSelected, handleSetNftSelected, refetchGetA
                     return resWrite.wait();
                 })
                 .then((res) => {
-
-                    setIsApproveModalOpened(true);
                     setTimeout(() => {
+                        setIsApproveModalOpened(true);
                         handleSetNftSelected(null)
                         getBalanceNft();
                         setIsApproved(false);
                         setIsLoading(false);
-                        queryClient.invalidateQueries({ queryKey: ['getNFTStaked'] });
                     }, 2000);
-
-
                 })
                 .catch(error => {
                     debugger
