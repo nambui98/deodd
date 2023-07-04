@@ -184,7 +184,7 @@ function StakingSuccess({
           poolExpanded={poolExpanded}
           setPoolExpanded={setPoolExpanded}
           setIdNftSelected={setIdNftSelected}
-          modeUnstake={modeUnstake && poolExpanded.id === currentPool.id}
+          modeUnstake={modeUnstake && poolExpanded.is_active === true}
           handleUnstake={handleUnstake}
           handleBeforeUnstake={handleBeforeUnStake}
         />
