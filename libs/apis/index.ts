@@ -121,6 +121,36 @@ const getNFTStaked = async (poolId: string | number) => {
 
     })
 }
+const getReferralDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/referral`,
+        method: 'GET',
+    })
+}
+const getTestnetDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/testail-point`,
+        method: 'GET',
+    })
+}
+const getFlipVolumeDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/volumne`,
+        method: 'GET',
+    })
+}
+const getWinDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/win`,
+        method: 'GET',
+    })
+}
+const getLoseDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/lose`,
+        method: 'GET',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -142,5 +172,10 @@ export const DeoddService = {
     stakeNft,
     getNFTStaked,
     getCurrentPool,
-    getPoolsAndRewardsByUser
+    getPoolsAndRewardsByUser,
+    getReferralDashboard,
+    getTestnetDashboard,
+    getFlipVolumeDashboard,
+    getWinDashboard,
+    getLoseDashboard
 }

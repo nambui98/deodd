@@ -1,8 +1,12 @@
 import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useState } from "react";
-import { ButtonTertiary } from "../../ui/button";
+import { ButtonLoading, ButtonTertiary } from "../../ui/button";
 import { ArrowLeftIcon, BnbIcon } from "utils/Icons";
 import { BnbImage, CoinEmptyImage, MapIcon } from "utils/Images";
+import MyImage from "components/ui/image";
+import { CAMPAIGNS } from "pages/campaign";
+import { DeoddService } from "libs/apis";
+import { useQuery } from "@tanstack/react-query";
 type rewardItem = {
     value: number,
     type: string,
@@ -17,6 +21,25 @@ function createData(
 const ClaimReward: React.FC<any> = () => {
     const [valueSelect, setValueSelect] = useState<string | undefined>('');
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
+
+    const { data } = useQuery({
+        queryKey: ["getBlockList", valueSelect],
+        enabled: !!valueSelect,
+        queryFn: () => CAMPAIGNS.find(c => c.id === valueSelect)?.fetch(),
+        onSuccess(data) {
+            if (data && data.data) {
+            }
+        },
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+
+
     let rows = [
         createData('Win/Lose Streak Campaign', [
             {
@@ -83,7 +106,6 @@ const ClaimReward: React.FC<any> = () => {
                                 </TableRow>
                             ))}
                         </TableBody>
-
                     </Table>
                     {
                         rows.length <= 0 &&
@@ -97,8 +119,8 @@ const ClaimReward: React.FC<any> = () => {
             </Box> :
                 <>
                     <Stack direction={'row'} justifyContent={"space-between"} alignItems={"center"}>
-                        <Typography variant='body2' textTransform={'uppercase'}>
-                            deODD Campaign Claim Portal
+                        <Typography variant='body2' >
+                            DeODD Campaign Claim Portal
                         </Typography>
                         <ButtonBase onClick={() => setIsShowHistory(true)}>
                             <Typography variant='body2' color="secondary.main">
@@ -113,32 +135,29 @@ const ClaimReward: React.FC<any> = () => {
                             onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
                             displayEmpty
                             sx={styleInput}
-                            inputProps={{ 'aria-label': 'Without label' }}
+                            inputProps={{ 'aria-label': 'Select campaign' }}
                         >
                             <MenuItem disabled value={""}>
                                 <Typography color={"secondary.100"}>Select-</Typography>
                             </MenuItem>
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {
+                                CAMPAIGNS.map((c) => <MenuItem key={c.id} value={c.id}>{c.label}</MenuItem>)
+                            }
                         </Select>
-                        <Box py={"103px"}>
+                        <Box py={3}>
                             {
                                 valueSelect ?
                                     <Stack justifyContent={'center'} alignItems={'center'}>
-                                        <Typography>Your reward</Typography>
-                                        <Stack direction={'row'} mt={3}>
-
+                                        <Stack direction={'row'} gap={1} >
                                             <Typography variant="h3" fontSize={"48px"}>2,523</Typography>
-                                            <img width={"40px"} src={BnbImage} alt="" />
+                                            <MyImage width={40} src={BnbImage} alt="" />
                                         </Stack>
                                     </Stack>
                                     :
-
                                     <Typography variant='body2' textAlign={'center'} color={"secondary.200"}> Select campaign to show your reward</Typography>
                             }
                         </Box>
-                        <ButtonTertiary disabled={!valueSelect} sx={{ width: "100%", py: "16px" }}> <Typography variant='button' >CLAIM REWARD</Typography></ButtonTertiary>
+                        <ButtonLoading disabled={!valueSelect} sx={{ textTransform: 'none', py: 2 }}>Claim reward</ButtonLoading>
                     </Box >
                 </>
         }
@@ -146,11 +165,17 @@ const ClaimReward: React.FC<any> = () => {
     </Box >
 }
 const styleInput = {
-    backgroundColor: "background.paper", border: '0px solid', borderColor: 'background.paper', '.MuiOutlinedInput-notchedOutline': {
+    backgroundColor: "background.paper",
+    border: '0px solid',
+    borderColor: 'background.paper',
+    borderRadius: 2,
+    '.MuiOutlinedInput-notchedOutline': {
         border: 'none'
     },
     width: "100%",
     fontSize: 16,
+
+    bgcolor: 'background.default',
     'div': {
         py: "12px",
         fontSize: 16,

@@ -6,6 +6,8 @@ import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
 import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage, VolumeBannerImage, VolumeImage, WinLoseStreakBannerImage, WinLoseStreakImage } from '../utils/Images'
 import ComingSoon from 'components/common/ComingSoon'
+import { DeoddService } from 'libs/apis'
+import { AxiosResponse } from 'axios'
 
 type Props = {}
 export type Campaign = {
@@ -14,7 +16,8 @@ export type Campaign = {
     label: string,
     isOpen: boolean,
     image: string,
-    imageDetail: string
+    imageDetail: string,
+    fetch: () => Promise<AxiosResponse<any, any>>
 }
 
 export const CAMPAIGNS: Campaign[] = [
@@ -24,7 +27,8 @@ export const CAMPAIGNS: Campaign[] = [
         label: 'Volume of Bets',
         isOpen: true,
         image: VolumeImage,
-        imageDetail: VolumeBannerImage
+        imageDetail: VolumeBannerImage,
+        fetch: DeoddService.getFlipVolumeDashboard
     },
     {
 
@@ -33,7 +37,8 @@ export const CAMPAIGNS: Campaign[] = [
         label: 'Testnet Campaign',
         isOpen: false,
         image: CampaignImage4,
-        imageDetail: CampaignImage4
+        imageDetail: CampaignImage4,
+        fetch: DeoddService.getTestnetDashboard
     },
     {
         id: 1,
@@ -41,7 +46,8 @@ export const CAMPAIGNS: Campaign[] = [
         label: 'Win/Lose Streak Campaign',
         isOpen: true,
         image: WinLoseStreakImage,
-        imageDetail: WinLoseStreakBannerImage
+        imageDetail: WinLoseStreakBannerImage,
+        fetch: DeoddService.getWinDashboard
     },
     {
         id: 2,
@@ -49,7 +55,8 @@ export const CAMPAIGNS: Campaign[] = [
         label: 'Referral Campaign',
         isOpen: false,
         image: CampaignImage3,
-        imageDetail: ReferralImage
+        imageDetail: ReferralImage,
+        fetch: DeoddService.getReferralDashboard
     },
 ]
 
