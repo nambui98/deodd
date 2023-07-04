@@ -19,12 +19,14 @@ import CoinAnimation from "components/common/CoinAnimation";
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
-  pools
+  pools,
+  currentPool
 }: {
 
   handleHiddenPools: VoidFunction,
   nftStaked: any,
-  pools: any
+  pools: any,
+  currentPool: any
 }) {
   const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
   const [isUnstakeLoading, setIsUnstakeLoading] = useState(false);
@@ -182,7 +184,7 @@ function StakingSuccess({
           poolExpanded={poolExpanded}
           setPoolExpanded={setPoolExpanded}
           setIdNftSelected={setIdNftSelected}
-          modeUnstake={modeUnstake}
+          modeUnstake={modeUnstake && poolExpanded.id === currentPool.id}
           handleUnstake={handleUnstake}
           handleBeforeUnstake={handleBeforeUnStake}
         />

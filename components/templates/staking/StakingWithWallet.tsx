@@ -111,7 +111,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
     return <StakingNoNFT />
   }
   if (isShowPools && nftStaked && nftStaked.length > 0) {
-    return <StakingSuccess pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
+    return <StakingSuccess currentPool={currentPool} pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
   }
 
   return (
@@ -218,7 +218,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
                   estimatedProfit={0}
                   rewardPool={rewardPool}
                   duration={duration}
-                  sharePercent={0} />))
+                  sharePercent={0}
+                />))
           }
         </Box>
 
@@ -279,7 +280,6 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
       }}>
         <Grid container>
           <Grid item xs={6}>
-
             <MainTypography >%Share per NFT</MainTypography>
             <Stack direction={'row'} mt={1.5} gap={2}>
               {
@@ -301,11 +301,8 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
                       }%</Typography>
                     </Stack>
                   </Stack>)
-
               }
-
             </Stack>
-
           </Grid>
           <Grid item xs={6}>
             <Stack direction={'row'} gap={1}>
