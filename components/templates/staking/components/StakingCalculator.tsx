@@ -76,8 +76,15 @@ function StakingCalculator({ open, setOpen, nftSelected, currentPool }: StakingC
             <BnbIcon width={20} height={20} color={Colors.primaryDark} />
           }
           inputComponent={FormatNumber as any}
-          value={DefaultRewardPool}
-          onChange={(e) => setRewardPoll(e.target.value)}
+          value={rewardPool}
+          inputProps={{
+            maxLength: 21
+          }}
+          onChange={(e) => {
+            if (e.target.value.length <= 20) {
+              setRewardPoll(e.target.value)
+            }
+          }}
           sx={{
             // pointerEvents: 'none',
             backgroundColor: "primary.300",
