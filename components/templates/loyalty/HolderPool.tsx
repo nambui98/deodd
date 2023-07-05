@@ -11,41 +11,22 @@ import { useSiteContext } from "contexts/SiteContext";
 import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
-import { DeoddService } from "libs/apis";
-import { useQuery } from "@tanstack/react-query";
 
 type Props = {};
 
 function HolderPool({ }: Props) {
   const { walletIsConnected, walletAddress } = useWalletContext();
-  const { periodsInfo, leaderboard, history, setReset, setPeriod } =
-    useLoyaltyHolder();
 
-  // Check if user is an nft holder
-  const isNftHolder = useQuery({
-    queryKey: ["isNftHolder"],
-    queryFn: async (): Promise<boolean> => {
-      const promiseResult = await DeoddService.getAssetsBalance(walletAddress);
+  const {
+    periodsInfo,
+    leaderboard,
+    history,
+    setReset,
+    setPeriod,
+    useIsNFTHolder,
+  } = useLoyaltyHolder();
 
-      if (promiseResult.data.data != null) {
-        const nftQuantity = promiseResult.data.data.nftItemHoldingDTOForUser;
-
-        if (
-          nftQuantity.totalDiamondNFT > 0 ||
-          nftQuantity.totalGoldNFT > 0 ||
-          nftQuantity.totalBronzeNft > 0
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        throw new Error("No Data");
-      }
-    },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const isNFTHolder = useIsNFTHolder();
 
   // const {
   //   setIsSuccess,
@@ -175,7 +156,7 @@ function HolderPool({ }: Props) {
           </Typography>
         )}
 
-        {walletIsConnected && isNftHolder.isLoading && (
+        {walletIsConnected && periodsInfo.isLoading && (
           <>
             <Skeleton width={200} />
             <Skeleton width={100} height={50} />
@@ -185,15 +166,14 @@ function HolderPool({ }: Props) {
         {walletIsConnected &&
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
-          !isNftHolder.isLoading &&
-          isNftHolder.data ? (
+          isNFTHolder ? (
           periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
-                Your current reward in this period is
+                Your current reward in this period is{" "}
                 <Box component={"span"} color={"text.primary"}>
                   {Format.formatMoney(periodsInfo.data[0].reward, 7)}
-                  <Box component={"span"}>
+                  <Box component={"span"} sx={{ ml: 0.25 }}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
                 </Box>
@@ -226,7 +206,9 @@ function HolderPool({ }: Props) {
             </>
           )
         ) : (
-          !isNftHolder.isLoading && walletIsConnected && !periodsInfo.isError && (
+          walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only NFT Holders are able to get the reward

@@ -57,7 +57,7 @@ function HolderPoolBoard({
   if (!periodsInfo.isLoading && !periodsInfo.isError) {
     for (let i = 1; i < periodsInfo.data.length; i++) {
       selectOptions.push(
-        `Period #${i < 10 ? "0" : ""}${periodsInfo.data[i].season}`
+        `Period #${periodsInfo.data[i].season < 10 ? "0" : ""}${periodsInfo.data[i].season}`
       );
     }
   }
