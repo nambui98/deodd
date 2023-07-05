@@ -135,20 +135,29 @@ const getTestnetDashboard = async () => {
 }
 const getFlipVolumeDashboard = async () => {
     return await vhIdRequest({
-        url: baseURL + `/dashboard/volumne`,
+        url: baseURL + `/dashboard/volume`,
         method: 'GET',
     })
 }
-const getWinDashboard = async () => {
+const getWinDashboard = async (wallet: string) => {
     return await vhIdRequest({
-        url: baseURL + `/dashboard/streak/win`,
+        url: baseURL + `/dashboard/streak/win?wallet=${wallet}`,
         method: 'GET',
     })
 }
-const getLoseDashboard = async () => {
+const getLoseDashboard = async (wallet: string) => {
     return await vhIdRequest({
-        url: baseURL + `/dashboard/streak/lose`,
+        url: baseURL + `/dashboard/streak/lose?wallet=${wallet}`,
         method: 'GET',
+    })
+}
+const claimCampaign = async (campaignType: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/campaign/claim`,
+        method: 'POST',
+        data: {
+            campaignType
+        }
     })
 }
 export const DeoddService = {
@@ -177,5 +186,6 @@ export const DeoddService = {
     getTestnetDashboard,
     getFlipVolumeDashboard,
     getWinDashboard,
-    getLoseDashboard
+    getLoseDashboard,
+    claimCampaign
 }

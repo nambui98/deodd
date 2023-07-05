@@ -412,7 +412,7 @@ function ContentData({ dataAvailable, dataExpired, link, reload }: Props) {
 
                         <Box mt={5}>
 
-                            <ShareLink link={link} />
+                            <ShareLink link={link} fullWidthButton />
                         </Box>
                     </Box>
                 </Box>

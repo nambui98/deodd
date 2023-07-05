@@ -9,10 +9,11 @@ import { CopyIcon, FacebookIcon, NotiIcon } from 'utils/Icons'
 import HowItWorkModal from './HowItWorkModal'
 import ClipboardJS from 'clipboard';
 type Props = {
-    link: string
+    link: string,
+    fullWidthButton?: boolean
 }
 
-function ShareLink({ link }: Props) {
+function ShareLink({ link, fullWidthButton }: Props) {
     const { setTitleSuccess, setIsSuccess } = useSiteContext();
 
     const buttonRef = useRef(null);
@@ -53,7 +54,7 @@ function ShareLink({ link }: Props) {
                 Copy
             </button>
 
-            <ButtonTertiary sx={{
+            <ButtonTertiary fullWidth={fullWidthButton} sx={{
                 mt: 3, py: '12px',
                 // width: 'auto',
                 color: 'secondary.main',

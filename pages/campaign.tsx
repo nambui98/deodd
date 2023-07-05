@@ -17,7 +17,7 @@ export type Campaign = {
     isOpen: boolean,
     image: string,
     imageDetail: string,
-    fetch: () => Promise<AxiosResponse<any, any>>
+    fetch: (wallet: string) => Promise<AxiosResponse<any, any>>
 }
 
 export const CAMPAIGNS: Campaign[] = [
@@ -28,7 +28,7 @@ export const CAMPAIGNS: Campaign[] = [
         isOpen: true,
         image: VolumeImage,
         imageDetail: VolumeBannerImage,
-        fetch: DeoddService.getFlipVolumeDashboard
+        fetch: DeoddService.getTotalVolume
     },
     {
 
@@ -38,7 +38,7 @@ export const CAMPAIGNS: Campaign[] = [
         isOpen: false,
         image: CampaignImage4,
         imageDetail: CampaignImage4,
-        fetch: DeoddService.getTestnetDashboard
+        fetch: DeoddService.getLeaderboardTestail
     },
     {
         id: 1,
@@ -47,7 +47,7 @@ export const CAMPAIGNS: Campaign[] = [
         isOpen: true,
         image: WinLoseStreakImage,
         imageDetail: WinLoseStreakBannerImage,
-        fetch: DeoddService.getWinDashboard
+        fetch: DeoddService.getWinLoseStreak
     },
     {
         id: 2,
@@ -56,7 +56,7 @@ export const CAMPAIGNS: Campaign[] = [
         isOpen: false,
         image: CampaignImage3,
         imageDetail: ReferralImage,
-        fetch: DeoddService.getReferralDashboard
+        fetch: DeoddService.getLeaderboardReferral
     },
 ]
 

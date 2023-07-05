@@ -1,16 +1,51 @@
-import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useState } from "react";
 import { ButtonLoading, ButtonTertiary } from "../../ui/button";
 import { ArrowLeftIcon, BnbIcon } from "utils/Icons";
 import { BnbImage, CoinEmptyImage, MapIcon } from "utils/Images";
 import MyImage from "components/ui/image";
-import { CAMPAIGNS } from "pages/campaign";
+import Campaign, { CAMPAIGNS } from "pages/campaign";
 import { DeoddService } from "libs/apis";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useWalletContext } from "contexts/WalletContext";
+import { Format } from "utils/format";
+import { AxiosResponse } from "axios";
+import { useSiteContext } from "contexts/SiteContext";
 type rewardItem = {
     value: number,
     type: string,
 }
+export const CAMPAIGNS_FETCH: {
+    id: string,
+    label: string,
+    fetch: (wallet: string) => Promise<AxiosResponse<any, any>>
+}[] = [
+        {
+            id: 'FLIP_VOLUME',
+            label: 'Volume of Bets',
+            fetch: DeoddService.getTotalVolume
+        },
+        // {
+        //     id: 'TESTNET',
+        //     label: 'Testnet Campaign',
+        //     fetch: DeoddService.getLeaderboardTestail
+        // },
+        {
+            id: 'WIN_STREAK',
+            label: 'Win Streak Campaign',
+            fetch: DeoddService.getWinDashboard
+        },
+        {
+            id: 'LOSE_STREAK',
+            label: 'Lose Streak Campaign',
+            fetch: DeoddService.getLoseDashboard
+        },
+        {
+            id: 'TOP_REF',
+            label: 'Referral Campaign',
+            fetch: DeoddService.getLeaderboardReferral
+        },
+    ]
 function createData(
     name: string,
     rewards: rewardItem[] | undefined,
@@ -19,25 +54,41 @@ function createData(
     return { name, rewards, claimTime };
 }
 const ClaimReward: React.FC<any> = () => {
-    const [valueSelect, setValueSelect] = useState<string | undefined>('');
+    const [valueSelect, setValueSelect] = useState<string>('');
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
+    const { walletAddress } = useWalletContext();
+    const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
 
-    const { data } = useQuery({
-        queryKey: ["getBlockList", valueSelect],
+    const { data: dataReward, isFetching } = useQuery({
+        queryKey: ["getCampaignDashboard", valueSelect],
         enabled: !!valueSelect,
-        queryFn: () => CAMPAIGNS.find(c => c.id === valueSelect)?.fetch(),
+        queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress),
         onSuccess(data) {
             if (data && data.data) {
             }
         },
         select: (data: any) => {
             if (data.status === 200) {
-                return data.data;
+                return data.data.data.connectWallet;
             } else {
                 return undefined
             }
         },
     });
+    const { mutateAsync: claim, isLoading: claimLoading } = useMutation({
+        mutationFn: () => {
+            return DeoddService.claimCampaign(valueSelect)
+        },
+        onError(error: any) {
+            setIsError(true)
+            setTitleError(error.response?.data?.meta.error_message)
+        },
+        onSuccess() {
+            setIsSuccess(true)
+            setTitleSuccess("Claim successful");
+        },
+    });
+
 
 
     let rows = [
@@ -67,6 +118,9 @@ const ClaimReward: React.FC<any> = () => {
         createData('Win/Lose Streak Campaign', [], '12/12/2022'),
         createData('Win/Lose Streak Campaign', [], undefined),
     ];
+    const handleClaim = () => {
+
+    }
     return <Box mt={3} p={3} width={544} borderRadius={3} bgcolor={"secondary.300"}>
         {
             isShowHistory ? <Box>
@@ -141,7 +195,7 @@ const ClaimReward: React.FC<any> = () => {
                                 <Typography color={"secondary.100"}>Select-</Typography>
                             </MenuItem>
                             {
-                                CAMPAIGNS.map((c) => <MenuItem key={c.id} value={c.id}>{c.label}</MenuItem>)
+                                CAMPAIGNS_FETCH.map((c) => <MenuItem key={c.id} value={c.id}>{c.label}</MenuItem>)
                             }
                         </Select>
                         <Box py={3}>
@@ -149,7 +203,12 @@ const ClaimReward: React.FC<any> = () => {
                                 valueSelect ?
                                     <Stack justifyContent={'center'} alignItems={'center'}>
                                         <Stack direction={'row'} gap={1} >
-                                            <Typography variant="h3" fontSize={"48px"}>2,523</Typography>
+                                            {
+                                                isFetching ?
+                                                    <Skeleton variant="rounded" width={50} height={56} />
+                                                    :
+                                                    <Typography variant="h3" fontSize={"48px"}>{Format.formatMoney(dataReward?.reward ?? 0)}</Typography>
+                                            }
                                             <MyImage width={40} src={BnbImage} alt="" />
                                         </Stack>
                                     </Stack>
@@ -157,7 +216,14 @@ const ClaimReward: React.FC<any> = () => {
                                     <Typography variant='body2' textAlign={'center'} color={"secondary.200"}> Select campaign to show your reward</Typography>
                             }
                         </Box>
-                        <ButtonLoading disabled={!valueSelect} sx={{ textTransform: 'none', py: 2 }}>Claim reward</ButtonLoading>
+                        <ButtonLoading
+                            loading={claimLoading}
+                            disabled={isFetching || !valueSelect || !dataReward?.reward}
+                            sx={{ textTransform: 'none', py: 2 }}
+                            onClick={() => claim()}
+                        >
+                            Claim reward
+                        </ButtonLoading>
                     </Box >
                 </>
         }
