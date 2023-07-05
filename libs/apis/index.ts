@@ -121,6 +121,45 @@ const getNFTStaked = async (poolId: string | number) => {
 
     })
 }
+const getReferralDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/referral`,
+        method: 'GET',
+    })
+}
+const getTestnetDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/testail-point`,
+        method: 'GET',
+    })
+}
+const getFlipVolumeDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/volume`,
+        method: 'GET',
+    })
+}
+const getWinDashboard = async (wallet: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/win?wallet=${wallet}`,
+        method: 'GET',
+    })
+}
+const getLoseDashboard = async (wallet: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/lose?wallet=${wallet}`,
+        method: 'GET',
+    })
+}
+const claimCampaign = async (campaignType: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/campaign/claim`,
+        method: 'POST',
+        data: {
+            campaignType
+        }
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -142,5 +181,11 @@ export const DeoddService = {
     stakeNft,
     getNFTStaked,
     getCurrentPool,
-    getPoolsAndRewardsByUser
+    getPoolsAndRewardsByUser,
+    getReferralDashboard,
+    getTestnetDashboard,
+    getFlipVolumeDashboard,
+    getWinDashboard,
+    getLoseDashboard,
+    claimCampaign
 }

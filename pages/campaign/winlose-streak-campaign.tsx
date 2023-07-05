@@ -16,31 +16,13 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 import { ButtonFourth } from 'components/ui/button'
 import { GetServerSideProps } from 'next/types'
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    return {
-        redirect: {
-            destination: '/campaign',
-            permanent: false,
-        },
-    }
-    return {
-        props: {
 
-        }
-    }
+
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    const campaign = CAMPAIGNS.find(c => c.href === 'winlose-streak-campaign');
+    return { props: { campaign: { ...campaign, fetch: null } } };
 }
-
-// export async function getStaticProps({ params }: { params: { path: string } }) {
-//     const campaign = CAMPAIGNS.find(c => c.href === 'winlose-streak-campaign');
-//     return {
-//         redirect: {
-//             destination: '/campaign',
-//             permanent: false,
-//         },
-//     }
-//     return { props: { campaign } };
-// }
-function WinloseStreakCampaign({ campaign }: { campaign: Campaign | undefined }) {
+function WinloseStreakCampaign({ campaign }: { campaign: Campaign }) {
 
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
@@ -48,10 +30,13 @@ function WinloseStreakCampaign({ campaign }: { campaign: Campaign | undefined })
     const { walletAddress, walletIsConnected } = useWalletContext();
 
     const [activeTab, setActiveTab] = useState<number>(1);
+
+    const fetch = CAMPAIGNS.find(c => c.id === campaign.id)?.fetch;
     const { data: winloseStreak } = useQuery({
         queryKey: ["getWinloseStreak"],
         refetchInterval: 2000,
-        queryFn: () => DeoddService.getWinLoseStreak(walletAddress),
+        enabled: !!fetch,
+        queryFn: () => fetch?.(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
                 return data.data.data;

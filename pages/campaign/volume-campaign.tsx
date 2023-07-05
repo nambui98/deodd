@@ -16,39 +16,25 @@ import { CoinEmptyImage, LeaderboardImage, Rank1Image, Rank2Image, Rank3Image } 
 import { Format } from 'utils/format'
 import { GetServerSideProps } from 'next/types'
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    return {
-        redirect: {
-            destination: '/campaign',
-            permanent: false,
-        },
-    }
-    return {
-        props: {
 
-        }
-    }
+export async function getStaticProps({ params }: { params: { path: string } }) {
+    const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
+
+    return { props: { campaign: { ...campaign, fetch: null } } };
 }
-// export async function getStaticProps({ params }: { params: { path: string } }) {
-//     const campaign = CAMPAIGNS.find(c => c.href === 'volume-campaign');
-//     return {
-//         redirect: {
-//             destination: '/campaign',
-//             permanent: false,
-//         },
-//     }
-//     return { props: { campaign } };
-// }
-function VolumeCampaign({ campaign }: { campaign: Campaign | undefined }) {
+function VolumeCampaign({ campaign }: { campaign: Campaign }) {
 
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, walletIsConnected } = useWalletContext();
+
+    const fetch = CAMPAIGNS.find(c => c.id === campaign.id)?.fetch;
     const { data: volumes } = useQuery({
         queryKey: ["getVolumes"],
         refetchInterval: 2000,
-        queryFn: () => DeoddService.getTotalVolume(walletAddress),
+        enabled: !!fetch,
+        queryFn: () => fetch?.(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
                 return data.data.data;
