@@ -11,52 +11,22 @@ import { useSiteContext } from "contexts/SiteContext";
 import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
-import { DeoddService } from "libs/apis";
-import { useQuery } from "@tanstack/react-query";
-import { useDeoddNFTContract } from "hooks/useDeoddNFTContract";
 
 type Props = {};
 
 function HolderPool({ }: Props) {
   const { walletIsConnected, walletAddress } = useWalletContext();
-  const { periodsInfo, leaderboard, history, setReset, setPeriod } =
-    useLoyaltyHolder();
-  const { walletTokens } = useDeoddNFTContract();
 
-  // Check if user is an nft holder
-  const haveBalanceNFT = useQuery({
-    queryKey: ["haveBalanceNFT", walletAddress, walletTokens],
-    queryFn: async (): Promise<boolean> => {
-      const promiseResult = await DeoddService.getAssetsBalance(walletAddress);
+  const {
+    periodsInfo,
+    leaderboard,
+    history,
+    setReset,
+    setPeriod,
+    useIsNFTHolder,
+  } = useLoyaltyHolder();
 
-      if (promiseResult.data.data != null) {
-        const nftQuantity = promiseResult.data.data.nftItemHoldingDTOForUser;
-
-        if (
-          nftQuantity.totalDiamondNFT > 0 ||
-          nftQuantity.totalGoldNFT > 0 ||
-          nftQuantity.totalBronzeNft > 0
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        throw new Error("No Data");
-      }
-    },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
-
-  const haveWalletNFT =
-    walletTokens == undefined
-      ? false
-      : walletTokens.total == undefined
-        ? false
-        : walletTokens?.total > 0
-          ? true
-          : false;
+  const isNFTHolder = useIsNFTHolder();
 
   // const {
   //   setIsSuccess,
@@ -186,7 +156,7 @@ function HolderPool({ }: Props) {
           </Typography>
         )}
 
-        {walletIsConnected && haveBalanceNFT.isLoading && (
+        {walletIsConnected && periodsInfo.isLoading && (
           <>
             <Skeleton width={200} />
             <Skeleton width={100} height={50} />
@@ -196,9 +166,7 @@ function HolderPool({ }: Props) {
         {walletIsConnected &&
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
-          (haveWalletNFT ||
-            !haveBalanceNFT.isLoading &&
-            haveBalanceNFT.data) ? (
+          isNFTHolder ? (
           periodsInfo.data[0].reward !== null ? (
             <>
               <Typography variant="body2" color={"text.disabled"}>
@@ -238,8 +206,8 @@ function HolderPool({ }: Props) {
             </>
           )
         ) : (
-          (haveWalletNFT || !haveBalanceNFT.isLoading) &&
           walletIsConnected &&
+          !periodsInfo.isLoading &&
           !periodsInfo.isError && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
