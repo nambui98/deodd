@@ -4,7 +4,7 @@ import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
 import { format, isBefore } from "date-fns";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { nftHolderContract } from "libs/contract";
 import Link from "next/link";
@@ -257,7 +257,7 @@ const PoolItem = ({ pool, handleUnstake, handleBeforeUnstake, modeUnstake, idNft
               <DisabledTypography>Total Reward Pool</DisabledTypography>
               <Stack sx={{ flexDirection: "row", gap: 1 }}>
                 <Typography variant="body2">{
-                  new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(parseFloat(ethers.utils.formatEther(pool.current_prize ?? 0)))
+                  new Intl.NumberFormat("en", { maximumFractionDigits: 8 }).format(parseFloat(ethers.utils.formatEther(BigNumber.from((pool.current_prize ?? 0).toString()))))
                 }</Typography>
                 <BnbIcon width={20} color={Colors.primaryDark} />
               </Stack>
