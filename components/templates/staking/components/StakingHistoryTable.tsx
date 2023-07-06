@@ -69,7 +69,7 @@ function StakingHistoryTable({ modeUnstake, nfts, idNftSelected, setIdNftSelecte
 
                       </Box>
                       <MainTypography>
-                        {Format.formatDateTimeAlt(nft.stake_atz, 'UTC', "dd/MM/yyyy '-' HH:mm:ss")}
+                        {Format.formatDateTimeAlt(nft.stake_time, 'UTC', "dd/MM/yyyy '-' HH:mm:ss")}
                       </MainTypography>
 
                     </Stack>

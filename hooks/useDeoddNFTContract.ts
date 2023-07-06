@@ -30,57 +30,62 @@ export const useDeoddNFTContract = () => {
         queryKey: ["getAssetsBalance2"],
         enabled: !!walletAddress,
         queryFn: () => DeoddService.getAssetsBalance(walletAddress),
-        select: (data) => data.data ?
-            {
-                total: 0,
-                data: [
-                    {
-                        type: EnumNFT.BRONZE,
-                        percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
-                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * data.data.data.nftItemHoldingDTOForUser.totalBronzeNFT * DefaultStaked / DefaultSeason,
-                        list: data.data.data.nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
-                            return {
-                                id: d.token_id ?? '',
-                                type: EnumNFT.BRONZE,
-                                image: d.image_link,
-                                amount: 0
-                            }
-                        })
-                    },
-                    {
-                        type: EnumNFT.GOLD,
+        select: (data) => {
+            if (data.data) {
+                const nftItemHoldingDTOForUser = data.data.data.nftItemHoldingDTOForUser;
+                return {
+                    total: nftItemHoldingDTOForUser.totalBronzeNFT + nftItemHoldingDTOForUser.totalDiamondNFT + nftItemHoldingDTOForUser.totalGoldNFT,
+                    data: [
+                        {
+                            type: EnumNFT.BRONZE,
+                            percentSharePerNFT: SharePerNFT[EnumNFT.BRONZE],
+                            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.BRONZE] * nftItemHoldingDTOForUser.totalBronzeNFT * DefaultStaked / DefaultSeason,
+                            list: nftItemHoldingDTOForUser.nftBronze.map((d: any) => {
+                                return {
+                                    id: d.token_id ?? '',
+                                    type: EnumNFT.BRONZE,
+                                    image: d.image_link,
+                                    amount: 0
+                                }
+                            })
+                        },
+                        {
+                            type: EnumNFT.GOLD,
 
-                        percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
-                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * data.data.data.nftItemHoldingDTOForUser.totalGoldNFT * DefaultStaked / DefaultSeason,
-                        list: data.data.data.nftItemHoldingDTOForUser.nftGold.map((d: any) => {
-                            return {
-                                id: d.token_id ?? '',
-                                type: EnumNFT.GOLD,
-                                image: d.image_link,
-                                amount: 0
-                            }
-                        })
-                    },
+                            percentSharePerNFT: SharePerNFT[EnumNFT.GOLD],
+                            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.GOLD] * nftItemHoldingDTOForUser.totalGoldNFT * DefaultStaked / DefaultSeason,
+                            list: nftItemHoldingDTOForUser.nftGold.map((d: any) => {
+                                return {
+                                    id: d.token_id ?? '',
+                                    type: EnumNFT.GOLD,
+                                    image: d.image_link,
+                                    amount: 0
+                                }
+                            })
+                        },
 
-                    {
-                        type: EnumNFT.DIAMOND,
+                        {
+                            type: EnumNFT.DIAMOND,
 
-                        percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
-                        estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * data.data.data.nftItemHoldingDTOForUser.totalDiamondNFT * DefaultStaked / DefaultSeason,
-                        list: data.data.data.nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
-                            return {
-                                id: d.token_id ?? '',
-                                type: EnumNFT.DIAMOND,
-                                image: d.image_link,
-                                amount: 0
-                            }
-                        })
-                    },
+                            percentSharePerNFT: SharePerNFT[EnumNFT.DIAMOND],
+                            estProfit: DefaultRewardPool * SharePerNFT[EnumNFT.DIAMOND] * nftItemHoldingDTOForUser.totalDiamondNFT * DefaultStaked / DefaultSeason,
+                            list: nftItemHoldingDTOForUser.nftDiamond.map((d: any) => {
+                                return {
+                                    id: d.token_id ?? '',
+                                    type: EnumNFT.DIAMOND,
+                                    image: d.image_link,
+                                    amount: 0
+                                }
+                            })
+                        },
 
 
-                ]
+                    ]
+                }
             }
-            : null
+
+            return null
+        }
     });
     const { refetch: getBalanceNft, } = useContractRead({
         address: deoddNFTContract.address,
@@ -124,6 +129,7 @@ export const useDeoddNFTContract = () => {
 
     const aggregateQuantity = (arr: TypeNFT[]) => {
         let total: number = arr.length;
+        debugger
         let dataBronze: {
             type: EnumNFT,
             estProfit: number,

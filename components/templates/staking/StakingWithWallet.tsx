@@ -106,6 +106,9 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   if (walletAddress === undefined || isLoadingGetNFTStaked2 || (isFetchGetPools) || isFetchGetNFTStaked || isLoadingGetPools || isLoadingGetNFTStaked) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
+  console.log(walletTokens);
+  console.log(assets);
+
   if (walletTokens?.total === 0 && assets?.total === 0) {
     return <StakingNoNFT />
   }
