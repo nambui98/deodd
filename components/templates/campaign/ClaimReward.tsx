@@ -59,17 +59,19 @@ const ClaimReward: React.FC<any> = () => {
     const { walletAddress } = useWalletContext();
     const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
 
-    const { data: dataReward, isFetching } = useQuery({
+    const { data: dataReward, isFetching, refetch: refetchMyInfoCampaign } = useQuery({
         queryKey: ["getCampaignDashboard", valueSelect],
         enabled: !!valueSelect,
         queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress),
-        onSuccess(data) {
-            if (data && data.data) {
-            }
-        },
         select: (data: any) => {
             if (data.status === 200) {
-                return data.data.data.connectWallet;
+                const connectWallet = data.data.data.connectWallet;
+                const result = {
+                    ...connectWallet,
+                    reward: connectWallet.reward || connectWallet.winStreakReward || connectWallet.winStreakReward,
+                    isConnectWalletClaimed: data.data.data.isConnectWalletClaimed
+                }
+                return result;
             } else {
                 return undefined
             }
@@ -84,6 +86,7 @@ const ClaimReward: React.FC<any> = () => {
             setTitleError(error.response?.data?.meta.error_message)
         },
         onSuccess() {
+            refetchMyInfoCampaign();
             setIsSuccess(true)
             setTitleSuccess("Claim successful");
         },
@@ -118,9 +121,7 @@ const ClaimReward: React.FC<any> = () => {
         createData('Win/Lose Streak Campaign', [], '12/12/2022'),
         createData('Win/Lose Streak Campaign', [], undefined),
     ];
-    const handleClaim = () => {
 
-    }
     return <Box mt={3} p={3} width={544} borderRadius={3} bgcolor={"secondary.300"}>
         {
             isShowHistory ? <Box>
@@ -218,11 +219,14 @@ const ClaimReward: React.FC<any> = () => {
                         </Box>
                         <ButtonLoading
                             loading={claimLoading}
-                            disabled={isFetching || !valueSelect || !dataReward?.reward}
+                            disabled={isFetching || !valueSelect || !dataReward?.reward || dataReward?.isConnectWalletClaimed}
                             sx={{ textTransform: 'none', py: 2 }}
                             onClick={() => claim()}
                         >
-                            Claim reward
+                            {
+                                dataReward?.isConnectWalletClaimed ? 'Claimed' : "Claim reward"
+                            }
+
                         </ButtonLoading>
                     </Box >
                 </>
