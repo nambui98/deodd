@@ -128,10 +128,12 @@ function useLoyaltyHolder() {
     const haveWalletNFT =
       walletNFTArray == null ? false : walletNFTArray.length > 0 ? true : false;
 
-    if (haveWalletNFT || haveBalanceNFT.data) {
+    if (haveWalletNFT) {
       return true;
-    } else {
-      return false;
+    }
+
+    if (haveBalanceNFT.isSuccess) {
+      return haveBalanceNFT.data;
     }
   }
 
