@@ -23,10 +23,7 @@ function StakingPage() {
         return undefined
       }
     },
-  });
-
-
-
+  })
 
   if (walletAddress === undefined) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
@@ -35,7 +32,6 @@ function StakingPage() {
     <Container sx={{ mt: 10, mb: { md: 10, xs: 8.125 }, mx: "auto" }}>
       {walletAddress ?
         <StakingWithWallet currentPool={currentPool} />
-
         : <StakingNoWallet />}
     </Container>
   );

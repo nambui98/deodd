@@ -66,6 +66,19 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   const [duration, setDuration] = useState<number | undefined>(DefaultStaked)
 
   const { walletTokens, handleClickNFT, nftSelected, assets, refetchGetAssetsBalance, getBalanceNft } = useDeoddNFTContract();
+  const { data: dataCheckWalletIsJoinStaking } = useQuery({
+    queryKey: ["checkWalletIsJoinStake"],
+    enabled: !!walletAddress,
+    queryFn: () => DeoddService.checkIsWalletJoinStaking(),
+    refetchOnWindowFocus: false,
+    select: (data: any) => {
+      if (data.status === 200) {
+        return data.data.data;
+      } else {
+        return undefined
+      }
+    },
+  });
 
   const { data: nftStaked, isFetching: isFetchGetNFTStaked, isLoading: isLoadingGetNFTStaked } = useQuery({
     queryKey: ["getNFTStaked"],
@@ -106,14 +119,12 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
   if (walletAddress === undefined || isLoadingGetNFTStaked2 || (isFetchGetPools) || isFetchGetNFTStaked || isLoadingGetPools || isLoadingGetNFTStaked) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
-  console.log(walletTokens);
-  console.log(assets);
 
+  if (isShowPools && dataCheckWalletIsJoinStaking.isJoined) {
+    return <StakingSuccess currentPool={currentPool} pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
+  }
   if (walletTokens?.total === 0 && assets?.total === 0) {
     return <StakingNoNFT />
-  }
-  if (isShowPools && nftStaked && nftStaked.length > 0) {
-    return <StakingSuccess currentPool={currentPool} pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
   }
 
   return (

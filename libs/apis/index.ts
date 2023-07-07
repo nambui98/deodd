@@ -160,6 +160,12 @@ const claimCampaign = async (campaignType: string) => {
         }
     })
 }
+const checkIsWalletJoinStaking = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/nft/staking/is-joined`,
+        method: 'GET',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -187,5 +193,6 @@ export const DeoddService = {
     getFlipVolumeDashboard,
     getWinDashboard,
     getLoseDashboard,
-    claimCampaign
+    claimCampaign,
+    checkIsWalletJoinStaking
 }
