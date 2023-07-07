@@ -35,8 +35,7 @@ function UnstakeModal({ open, setOpen, currentStage, handleUnStake, isLoadingUnS
       {stage === 1 && <Typography variant="body2" textAlign={"center"} mb={3}>This current period is still on-going.
         You are not able to receive profit if you unstake right now. <br />
         Please wait till the end of this period to claim reward!</Typography>}
-      {stage === 2 && <Typography variant="body2" textAlign={"center"} mb={3}>Do you sure want to unstake all the NFT?<br />
-        All the profit of this period will be degenerated to 0</Typography>}
+      {stage === 2 && <Typography variant="body2" textAlign={"center"} mb={3}>Do you sure want to unstake this NFT?</Typography>}
       {stage === 3 && <Typography variant="body2" textAlign={"center"} mb={3}>Unstake successfully</Typography>}
 
       <ButtonLoading

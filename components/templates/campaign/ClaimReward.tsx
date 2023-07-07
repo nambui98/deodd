@@ -58,6 +58,20 @@ const ClaimReward: React.FC<any> = () => {
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
     const { walletAddress } = useWalletContext();
     const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
+    const { data: histories, isFetching: isFetchingHistory } = useQuery({
+        queryKey: ["getClaimHistory", isShowHistory],
+        enabled: isShowHistory,
+        queryFn: () => DeoddService.getClaimHistory(),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+    console.log("🚀 ~ file: ClaimReward.tsx:73 ~ histories:", histories)
+
 
     const { data: dataReward, isFetching, refetch: refetchMyInfoCampaign } = useQuery({
         queryKey: ["getCampaignDashboard", valueSelect],
@@ -91,8 +105,6 @@ const ClaimReward: React.FC<any> = () => {
             setTitleSuccess("Claim successful");
         },
     });
-
-
 
     let rows = [
         createData('Win/Lose Streak Campaign', [
@@ -139,7 +151,7 @@ const ClaimReward: React.FC<any> = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.length > 0 && rows.map((row) => (
+                            {histories?.length > 0 && histories.map((row: any) => (
                                 <TableRow
                                     key={row.name}
                                     sx={{
@@ -149,15 +161,18 @@ const ClaimReward: React.FC<any> = () => {
                                     }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {CAMPAIGNS_FETCH.find((cp) => cp.id === row.historyInfo.campaignType)?.label}
                                     </TableCell>
-                                    <TableCell align="right">{row.rewards?.map((reward) =>
-                                        <Stack key={reward.type} mt={1} direction={'row'} justifyContent={"flex-end"}>
-                                            <Typography mr={.5}>{reward.value}</Typography>
-                                            <img width={16} src={MapIcon[reward.type]} alt="" />
-                                        </Stack>
-                                    )}</TableCell>
-                                    <TableCell sx={{ display: "block" }} align="right">{row.claimTime}</TableCell>
+                                    <TableCell align="right">{
+                                        Format.formatMoneyFromBigNumberEther(row.changedBalance)
+                                        // row.rewards?.map((reward) =>
+                                        //     <Stack key={reward.type} mt={1} direction={'row'} justifyContent={"flex-end"}>
+                                        //         <Typography mr={.5}>{reward.value}</Typography>
+                                        //         <img width={16} src={MapIcon[reward.type]} alt="" />
+                                        //     </Stack>
+                                        // )
+                                    } BNB</TableCell>
+                                    <TableCell sx={{ display: "block" }} align="right">{Format.formatDateTimeAlt(row.createdAt, 'UTC', 'dd/MM/yyyy')}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -166,6 +166,13 @@ const checkIsWalletJoinStaking = async () => {
         method: 'GET',
     })
 }
+
+const getClaimHistory = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/campaign/history`,
+        method: 'GET',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -194,5 +201,6 @@ export const DeoddService = {
     getWinDashboard,
     getLoseDashboard,
     claimCampaign,
-    checkIsWalletJoinStaking
+    checkIsWalletJoinStaking,
+    getClaimHistory
 }
