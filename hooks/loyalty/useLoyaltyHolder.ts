@@ -102,7 +102,7 @@ function useLoyaltyHolder() {
           if (
             nftQuantity.totalDiamondNFT > 0 ||
             nftQuantity.totalGoldNFT > 0 ||
-            nftQuantity.totalBronzeNft > 0
+            nftQuantity.totalBronzeNFT > 0
           ) {
             return true;
           } else {
