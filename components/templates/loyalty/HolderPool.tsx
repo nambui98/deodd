@@ -7,15 +7,13 @@ import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
 import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
 import { Format } from "utils/format";
-import { useSiteContext } from "contexts/SiteContext";
-import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
 
 type Props = {};
 
 function HolderPool({ }: Props) {
-  const { walletIsConnected, walletAddress } = useWalletContext();
+  const { walletIsConnected } = useWalletContext();
 
   const {
     periodsInfo,
@@ -27,34 +25,6 @@ function HolderPool({ }: Props) {
   } = useLoyaltyHolder();
 
   const isNFTHolder = useIsNFTHolder();
-
-  // const {
-  //   setIsSuccess,
-  //   setTitleSuccess,
-  //   setIsLoading,
-  //   setIsError,
-  //   setTitleError,
-  // } = useSiteContext();
-
-  // const handleClaim = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await claimNFTReward(walletAddress);
-  //     setIsLoading(false);
-  //     if (res.data.data && res.status === 200) {
-  //       setTitleSuccess("Claimed successfully");
-  //       setIsSuccess(true);
-  //       setReset((prev) => !prev);
-  //     } else {
-  //       setIsError(true);
-  //       setTitleError(res.data.meta.error_message);
-  //     }
-  //   } catch (error) {
-  //     setIsLoading(false);
-  //     setIsError(true);
-  //     setTitleError("Something went wrong! Please try again later");
-  //   }
-  // };
 
   return (
     <Box width={1}>
