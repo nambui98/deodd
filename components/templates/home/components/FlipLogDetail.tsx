@@ -8,7 +8,6 @@ import { Format } from "utils/format";
 export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
   const { gameResult, setStatusGame } = useGameContext();
   const isEven = gameResult?.coinSide === 0 ? (gameResult.isWinner ? true : false) : (gameResult?.isWinner ? false : true)
-  console.log(gameResult);
 
   return (
     <Stack gap={{ xs: 3, md: 5 }} display={isShowing ? 'flex' : 'none'} mt={{ xl: -5, md: -1, xs: 0 }} px={{ xs: 0, lg: 10, xl: 20 }} >
@@ -80,7 +79,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
               the random number assignment -
               &nbsp;
               <Typography component={'span'} fontSize={'inherit'} color="secondary.main">
-                {isEven ? 'Even-Tail' : 'Odd-Tail'}
+                {isEven ? 'Even-Head' : 'Odd-Tail'}
               </Typography>
             </Typography>
             <Box>
