@@ -7,15 +7,13 @@ import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
 import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
 import { Format } from "utils/format";
-import { useSiteContext } from "contexts/SiteContext";
-import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
 
 type Props = {};
 
 function HolderPool({ }: Props) {
-  const { walletIsConnected, walletAddress } = useWalletContext();
+  const { walletIsConnected } = useWalletContext();
 
   const {
     periodsInfo,
@@ -27,34 +25,6 @@ function HolderPool({ }: Props) {
   } = useLoyaltyHolder();
 
   const isNFTHolder = useIsNFTHolder();
-
-  // const {
-  //   setIsSuccess,
-  //   setTitleSuccess,
-  //   setIsLoading,
-  //   setIsError,
-  //   setTitleError,
-  // } = useSiteContext();
-
-  // const handleClaim = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await claimNFTReward(walletAddress);
-  //     setIsLoading(false);
-  //     if (res.data.data && res.status === 200) {
-  //       setTitleSuccess("Claimed successfully");
-  //       setIsSuccess(true);
-  //       setReset((prev) => !prev);
-  //     } else {
-  //       setIsError(true);
-  //       setTitleError(res.data.meta.error_message);
-  //     }
-  //   } catch (error) {
-  //     setIsLoading(false);
-  //     setIsError(true);
-  //     setTitleError("Something went wrong! Please try again later");
-  //   }
-  // };
 
   return (
     <Box width={1}>
@@ -156,18 +126,18 @@ function HolderPool({ }: Props) {
           </Typography>
         )}
 
-        {walletIsConnected && periodsInfo.isLoading && (
-          <>
-            <Skeleton width={200} />
-            <Skeleton width={100} height={50} />
-          </>
-        )}
+        {walletIsConnected &&
+          (periodsInfo.isLoading || isNFTHolder === undefined) && (
+            <>
+              <Skeleton width={200} />
+              <Skeleton width={100} height={50} />
+            </>
+          )}
 
         {walletIsConnected &&
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
-          isNFTHolder ? (
-          periodsInfo.data[0].reward !== null ? (
+          periodsInfo.data[0].reward !== null && (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is{" "}
@@ -181,7 +151,13 @@ function HolderPool({ }: Props) {
 
               <NFTHolderTimer setReset={setReset} periodsInfo={periodsInfo} />
             </>
-          ) : (
+          )}
+
+        {walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          isNFTHolder === true &&
+          periodsInfo.data[0].reward == null && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only nft holders STAKING their nft
@@ -204,11 +180,13 @@ function HolderPool({ }: Props) {
                 />
               </Link>
             </>
-          )
-        ) : (
-          walletIsConnected &&
+          )}
+
+        {walletIsConnected &&
           !periodsInfo.isLoading &&
-          !periodsInfo.isError && (
+          !periodsInfo.isError &&
+          isNFTHolder === false &&
+          periodsInfo.data[0].reward == null && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only NFT Holders are able to get the reward
@@ -230,8 +208,7 @@ function HolderPool({ }: Props) {
                 />
               </Link>
             </>
-          )
-        )}
+          )}
       </Stack>
 
       {walletIsConnected ? (

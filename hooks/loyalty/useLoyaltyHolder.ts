@@ -102,7 +102,7 @@ function useLoyaltyHolder() {
           if (
             nftQuantity.totalDiamondNFT > 0 ||
             nftQuantity.totalGoldNFT > 0 ||
-            nftQuantity.totalBronzeNft > 0
+            nftQuantity.totalBronzeNFT > 0
           ) {
             return true;
           } else {
@@ -128,10 +128,12 @@ function useLoyaltyHolder() {
     const haveWalletNFT =
       walletNFTArray == null ? false : walletNFTArray.length > 0 ? true : false;
 
-    if (haveWalletNFT || haveBalanceNFT.data) {
+    if (haveWalletNFT) {
       return true;
-    } else {
-      return false;
+    }
+
+    if (haveBalanceNFT.isSuccess) {
+      return haveBalanceNFT.data;
     }
   }
 
