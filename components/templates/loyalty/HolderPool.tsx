@@ -126,18 +126,18 @@ function HolderPool({ }: Props) {
           </Typography>
         )}
 
-        {walletIsConnected && periodsInfo.isLoading && (
-          <>
-            <Skeleton width={200} />
-            <Skeleton width={100} height={50} />
-          </>
-        )}
+        {walletIsConnected &&
+          (periodsInfo.isLoading || isNFTHolder === undefined) && (
+            <>
+              <Skeleton width={200} />
+              <Skeleton width={100} height={50} />
+            </>
+          )}
 
         {walletIsConnected &&
           !periodsInfo.isLoading &&
           !periodsInfo.isError &&
-          isNFTHolder ? (
-          periodsInfo.data[0].reward !== null ? (
+          periodsInfo.data[0].reward !== null && (
             <>
               <Typography variant="body2" color={"text.disabled"}>
                 Your current reward in this period is{" "}
@@ -151,7 +151,13 @@ function HolderPool({ }: Props) {
 
               <NFTHolderTimer setReset={setReset} periodsInfo={periodsInfo} />
             </>
-          ) : (
+          )}
+
+        {walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          isNFTHolder === true &&
+          periodsInfo.data[0].reward == null && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only nft holders STAKING their nft
@@ -174,11 +180,13 @@ function HolderPool({ }: Props) {
                 />
               </Link>
             </>
-          )
-        ) : (
-          walletIsConnected &&
+          )}
+
+        {walletIsConnected &&
           !periodsInfo.isLoading &&
-          !periodsInfo.isError && (
+          !periodsInfo.isError &&
+          isNFTHolder === false &&
+          periodsInfo.data[0].reward == null && (
             <>
               <Typography variant="body2" color={"text.disabled"} mb={1}>
                 Only NFT Holders are able to get the reward
@@ -200,8 +208,7 @@ function HolderPool({ }: Props) {
                 />
               </Link>
             </>
-          )
-        )}
+          )}
       </Stack>
 
       {walletIsConnected ? (
