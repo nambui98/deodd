@@ -135,18 +135,31 @@ function Chat({ open }: { open: boolean }) {
         },
     );
 
-    useEffect(() => {
-        if (walletIsConnected) {
-            const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-            sendJsonMessage(message);
-            const ping = setInterval(() => {
+    //interval ping connect socket
+    const pingSocket = useQuery({
+        queryKey: ["pingSocket"],
+        enabled: !!walletAddress,
+        retry: false,
+        queryFn: () => sendPingSocket(),
+        refetchInterval: 50000
+    });
 
-                const message: any = [0, {}];
-                sendJsonMessage(message);
-            }, 50000);
-            return () => clearInterval(ping);
-        }
-    }, [walletIsConnected, sendJsonMessage])
+    const sendPingSocket = () => {
+        const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+        console.log("--------------------- ping socket");
+        return true;
+    }
+    // useEffect(() => {
+    //     if (walletIsConnected) {
+    //         const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+    //         sendJsonMessage(message);
+    //         const ping = setInterval(() => {
+    //             const message: any = [0, {}];
+    //             sendJsonMessage(message);
+    //         }, 50000);
+    //         return () => clearInterval(ping);
+    //     }
+    // }, [walletIsConnected, sendJsonMessage])
 
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
@@ -163,7 +176,6 @@ function Chat({ open }: { open: boolean }) {
     }
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: MessageType) => {
-
         setAnchorOptionMore(event.currentTarget);
         setMessageSelected(user);
     };
@@ -178,6 +190,7 @@ function Chat({ open }: { open: boolean }) {
     const handleScrollToBottom = () => {
         refBottomChat.current?.scrollIntoView({ behavior: "smooth" })
     };
+
     useEffect(() => {
         if (refBottomChat.current && open) {
             setTimeout(() => {
@@ -185,6 +198,7 @@ function Chat({ open }: { open: boolean }) {
             }, 1000);
         }
     }, [refBottomChat, open])
+
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
