@@ -53,7 +53,7 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
                 target="_blank"
                 color="secondary.main">
                 Binance Oracle VRF </Typography>(Verifiable Random Function)
-              , Which is equivalent to
+              , which is equivalent to
               &nbsp;
               <Typography component={'span'} fontSize={'inherit'} color="secondary.main">{Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)}</Typography>
               &nbsp;
