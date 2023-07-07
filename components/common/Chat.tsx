@@ -340,8 +340,7 @@ function Chat({ open }: { open: boolean }) {
         },
     });
     let indexEndedOnSameDay: number | null;
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
+
     return (
         <Box position={'relative'} overflow={'hidden'} >
             <Box bgcolor={'primary.200'} zIndex={1} position={'sticky'} top={0} right={0} left={0}>
@@ -365,11 +364,15 @@ function Chat({ open }: { open: boolean }) {
                             <Box ref={refBottomChat} />
                             {
                                 messages.map((message, index) => {
-                                    console.log(new Date());
+                                    let currentDate = new Date();
+                                    currentDate.setHours(0, 0, 0, 0);
+
                                     let dateMessage = new Date(message.created_at);
                                     dateMessage.setHours(0, 0, 0, 0);
+
                                     let dateMessagePrev: Date = new Date(messages[index - 1]?.created_at ?? message.created_at);
                                     dateMessagePrev.setHours(0, 0, 0, 0);
+
                                     let isToday = false;
                                     const isSameDay = isEqual(dateMessage, dateMessagePrev);
                                     let isYesterday = false;
