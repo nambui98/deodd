@@ -48,11 +48,11 @@ export default function FlipLogDetail({ isShowing }: { isShowing?: boolean }) {
                 fontSize={'inherit'}
                 component={'a'}
                 sx={{ textDecoration: 'underline', textDecorationColor: 'secondary.main', textUnderlineOffset: 2 }}
+                // href={`https://oracle.binance.com/docs/category/vrf/`}
                 href={`${UrlBlockExplorer}/tx/${gameResult?.fulfilled_txn?.replace("\\", '0')}`}
                 target="_blank"
                 color="secondary.main">
-                {Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)}
-              </Typography>
+                Binance Oracle VRF </Typography>(Verifiable Random Function)
               , Which is equivalent to
               &nbsp;
               <Typography component={'span'} fontSize={'inherit'} color="secondary.main">{Convert.convertWalletAddress(gameResult?.vrfRn ?? '0', 4, 5)}</Typography>
