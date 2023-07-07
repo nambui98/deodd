@@ -71,6 +71,11 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
     enabled: !!walletAddress,
     queryFn: () => DeoddService.checkIsWalletJoinStaking(),
     refetchOnWindowFocus: false,
+    onSuccess(data) {
+      if (data.isJoined) {
+        setIsShowPools(true);
+      }
+    },
     select: (data: any) => {
       if (data.status === 200) {
         return data.data.data;
@@ -87,9 +92,9 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
       setIsLoadingGetNFTStaked2(false);
-      if (data.length > 0) {
-        setIsShowPools(true)
-      }
+      // if (data.length > 0) {
+      //   setIsShowPools(true)
+      // }
     },
     onError: () => {
       setIsLoadingGetNFTStaked2(false);
@@ -120,7 +125,7 @@ function StakingWithWallet({ currentPool }: { currentPool: any }) {
     return <Box textAlign="center" mt={10}><CoinAnimation mx='auto' width={100} height={100}></CoinAnimation></Box>
   }
 
-  if (isShowPools && dataCheckWalletIsJoinStaking.isJoined) {
+  if (isShowPools) {
     return <StakingSuccess currentPool={currentPool} pools={pools} nftStaked={nftStaked} handleHiddenPools={() => setIsShowPools(false)} />
   }
   if (walletTokens?.total === 0 && assets?.total === 0) {
