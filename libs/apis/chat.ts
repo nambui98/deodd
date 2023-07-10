@@ -1,5 +1,4 @@
 import vhIdRequest from "@/utils/vhIdRequest"
-import { EnumNFT, EnumNFTTitle } from "libs/types"
 
 const baseURLChat = '/dejaw'
 const sendMessage = async ({ from, to, repliedTo, content }: { from: string, to: string | undefined, repliedTo: string | undefined, content: string }) => {

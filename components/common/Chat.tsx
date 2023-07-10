@@ -138,28 +138,30 @@ function Chat({ open }: { open: boolean }) {
     //interval ping connect socket
     const pingSocket = useQuery({
         queryKey: ["pingSocket"],
-        enabled: !!walletAddress,
+        enabled: !!walletAddress && readyState === ReadyState.OPEN,
         retry: false,
         queryFn: () => sendPingSocket(),
-        refetchInterval: 50000
+        refetchInterval: 55000
+    });
+    const joinChat = useQuery({
+        queryKey: ["joinChat"],
+        enabled: !!walletAddress,
+        retry: false,
+        queryFn: () => sendJoinChat(),
     });
 
     const sendPingSocket = () => {
         const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-        console.log("--------------------- ping socket");
+        sendJsonMessage(message);
         return true;
     }
-    // useEffect(() => {
-    //     if (walletIsConnected) {
-    //         const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-    //         sendJsonMessage(message);
-    //         const ping = setInterval(() => {
-    //             const message: any = [0, {}];
-    //             sendJsonMessage(message);
-    //         }, 50000);
-    //         return () => clearInterval(ping);
-    //     }
-    // }, [walletIsConnected, sendJsonMessage])
+
+    const sendJoinChat = () => {
+        if (readyState === ReadyState.CLOSED) {
+            const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+            sendJsonMessage(message);
+        }
+    }
 
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()

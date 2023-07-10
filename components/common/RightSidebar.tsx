@@ -22,8 +22,6 @@ function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
             sx={{
                 width: {
                     md: DRAWER_WIDTH,
-
-
                 },
                 flexShrink: { sm: 0 }
             }}
@@ -49,7 +47,6 @@ function RightSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
             >
                 {
                     isMediumScreen &&
-
                     <Chat open={open} />
                 }
             </DrawerMobile>
