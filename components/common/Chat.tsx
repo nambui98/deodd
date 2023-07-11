@@ -60,8 +60,8 @@ function Chat({ open }: { open: boolean }) {
     const isNotMainnetOpen = isBefore(new Date(), new Date(DateOpenMainnet))
     const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
     const { refetch: getMessages, isFetching: isFetchingMessages } = useQuery({
-        queryKey: ["getMessages"],
-        enabled: false,
+        queryKey: ["getMessages", walletAddress],
+        enabled: !!walletAddress,
         queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
         onSuccess(data) {
             if (data && data.data) {
@@ -87,32 +87,31 @@ function Chat({ open }: { open: boolean }) {
         },
     });
 
-    //get messages without auth
-    const [isLoadMoreWithoutAuth, setIsLoadMoreWithoutAuth] = useState<boolean>(false)
-    const { refetch: getMessagesWithoutAuth, isFetching: isFetchingMessageWithoutAuth } = useQuery({
-        queryKey: ["getMessagesWithoutAuth"],
-        enabled: false,
-        retry: false,
-        queryFn: () => DeoddService.getMessagesWithoutAuth(isLoadMoreWithoutAuth),
-        onSuccess(data) {
-            if (data && data.data) {
-                setIsLoadMoreWithoutAuth(true);
-                setMessages(data.data)
-            }
-        },
-        onError(err: any) {
-            // setIsLoadMoreWithoutAuth(false);
-            // setIsError(true)
-            // setTitleError(err.response?.data?.meta.error_message)
-        },
-        select: (data: any) => {
-            if (data.status === 200) {
-                return data.data;
-            } else {
-                return undefined
-            }
-        },
-    });
+    const {
+        // refetch: getMessagesWithoutAuth, 
+        isFetching: isFetchingMessageWithoutAuth } = useQuery({
+            queryKey: ["getMessagesWithoutAuth", walletAddress],
+            enabled: walletAddress === undefined || walletAddress === "" || walletAddress === null,
+            retry: false,
+            queryFn: () => DeoddService.getMessagesWithoutAuth(false),
+            onSuccess(data) {
+                if (data && data.data) {
+                    setMessages(data.data)
+                }
+            },
+            onError(err: any) {
+                // setIsLoadMoreWithoutAuth(false);
+                // setIsError(true)
+                // setTitleError(err.response?.data?.meta.error_message)
+            },
+            select: (data: any) => {
+                if (data.status === 200) {
+                    return data.data;
+                } else {
+                    return undefined
+                }
+            },
+        });
     const { sendJsonMessage, readyState } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
         {
             onMessage: async (event) => {
@@ -146,12 +145,21 @@ function Chat({ open }: { open: boolean }) {
     const joinChat = useQuery({
         queryKey: ["joinChat"],
         enabled: !!walletAddress,
-        retry: false,
+        retry: true,
+        // retry
         queryFn: () => sendJoinChat(),
+        onError: async (err: any) => {
+            const response = await DeoddService.refreshToken();
+            const { accessToken } = response.data.data;
+            LocalStorage.setAccessToken(accessToken);
+            // setIsLoadMoreWithoutAuth(false);
+            // setIsError(true)
+            // setTitleError(err.response?.data?.meta.error_message)
+        }
     });
 
     const sendPingSocket = () => {
-        const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+        const message: any = [0, {}];
         sendJsonMessage(message);
         return true;
     }
@@ -159,8 +167,9 @@ function Chat({ open }: { open: boolean }) {
     const sendJoinChat = () => {
         if (readyState === ReadyState.CLOSED) {
             const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-            sendJsonMessage(message);
+            return sendJsonMessage(message);
         }
+        return true;
     }
 
     const getDataFromBlob = async (data: Blob) => {
@@ -224,28 +233,20 @@ function Chat({ open }: { open: boolean }) {
         if (inView) {
             if (walletAddress) {
                 getMessages()
-            } else {
-                getMessagesWithoutAuth();
             }
+            //  else {
+            //     getMessagesWithoutAuth();
+            // }
         }
-    }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
-    useEffect(() => {
-        if (walletAddress) {
-            setMessages([])
-            setLastCreatedAt(null)
-            getMessages()
-        } else {
-            setMessages([])
-            setIsLoadMoreWithoutAuth(false)
-            getMessagesWithoutAuth();
-        }
-    }, [walletAddress, getMessages, getMessagesWithoutAuth])
-
+    }, [inView, walletAddress, getMessages,
+        // getMessagesWithoutAuth
+    ])
 
     //
     const handleReplyUser = () => {
         setReplyUser({ wallet: messageSelected?.from || '', repliedTo: messageSelected?.id || '', username: messageSelected?.userInfo.userName || '' });
     }
+
     // hanlde reporting 
     const report = useMutation({
         mutationFn: (typeReport: string) => {
