@@ -36,7 +36,8 @@ export type GameResultType = {
 	serviceFeePercent: number,
 	vrfRbFeeBNB: number,
 	fulfilled_txn?: string,
-	vrfRn?: string
+	vrfRn?: string,
+	flipId?: string
 } | undefined;
 
 interface GameContextType {
@@ -83,6 +84,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 	const { walletAddress, contractDeodd, refresh, setRefresh } = useWalletContext();
 	const { audioPlayer } = useSiteContext();
 	const [statusGame, setStatusGame] = useState<StatusGame>(StatusGame.FLIP);
+
 	const [gameResult, setGameResult] = useState<GameResultType>({
 		coinSide: undefined,
 		amount: 0,
@@ -96,8 +98,10 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		serviceFeePercent: 0,
 		fulfilled_txn: undefined,
 		vrfRbFeeBNB: 0,
-		vrfRn: undefined
+		vrfRn: undefined,
+		flipId: undefined,
 	});
+
 	const [isFinish, setIsFinish] = useState<boolean>(false);
 	const [openModalPendingTransaction, setOpenModalPendingTransaction] = useState<boolean>(false);
 	const queryClient = useQueryClient();
@@ -117,6 +121,8 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 		onSuccess(data, variables, context) {
 			const flipData = data?.data?.data?.flip;
 			const userData = data?.data?.data?.userProfile;
+
+			debugger
 			setGameResult({
 				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
 				coinSide: flipData?.flip_choice,
@@ -131,8 +137,8 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 				vrfRbFeeBNB: data?.data?.data?.vrfRnFeeBNB,
 				fulfilled_txn: flipData?.fulfilled_txn,
 				vrfRn: data?.data?.data?.vrfRn
-
 			})
+			debugger
 			setStatusGame(StatusGame.FLIP_RESULT);
 			setRefresh(!refresh);
 			setIsFinish(false);
@@ -182,6 +188,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 				if (wallet === walletAddress) {
 					audio.loop = false;
 					audio.load();
+					setGameResult((prev: GameResultType) => ({ ...prev, amount: 0, serviceFeePercent: 0, vrfRbFeeBNB: 0, flipId: fId.toString() }))
 					getResultByFlipId.mutateAsync(fId)
 				}
 			}

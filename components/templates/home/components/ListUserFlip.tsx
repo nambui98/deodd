@@ -2,10 +2,10 @@ import { Avatar, Box, Collapse, List, Stack, Typography } from "@mui/material";
 import {
     useQuery
 } from "@tanstack/react-query";
-import CoinAnimation from "components/common/CoinAnimation";
+import { StatusGame, useGameContext } from "contexts/GameContext";
 import { BigNumber } from "ethers";
 import { DeoddService } from "libs/apis";
-import { Suspense, createRef, lazy } from "react";
+import { createRef } from "react";
 import { ScrollContainer } from 'react-indiana-drag-scroll';
 import { TransitionGroup } from "react-transition-group";
 import { checkAvatar } from "utils/checkAvatar";
@@ -24,13 +24,16 @@ type dataUserRecent = {
 };
 
 function ListUserFlip() {
+    const { gameResult, statusGame } = useGameContext();
+    console.log(statusGame);
+
     const { data: dataRecent } = useQuery({
         queryKey: ["getRecentFlipping"],
         queryFn: DeoddService.getRecentFlipping,
         enabled: !!localStorage,
         suspense: true,
-        select: (data) =>
-            data.data.data.map(
+        select: (data) => {
+            return data.data.data.filter((item: any) => statusGame === StatusGame.FLIPPING ? item.flipId.toString() !== gameResult?.flipId : true).map(
                 (item: {
                     flipId: any;
                     wallet: string;
@@ -56,8 +59,10 @@ function ListUserFlip() {
                     };
                     return data;
                 }
-            ),
-        refetchInterval: 2000,
+            )
+        },
+
+        refetchInterval: statusGame === StatusGame.FLIPPING ? 100 : 2000,
     });
     return (
         <ScrollContainer>
