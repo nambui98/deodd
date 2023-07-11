@@ -1,29 +1,9 @@
-import { Avatar, Box, Collapse, List, Stack, Typography } from "@mui/material";
-import {
-    useQuery
-} from "@tanstack/react-query";
+import { Box } from "@mui/material";
 import CoinAnimation from "components/common/CoinAnimation";
-import { BigNumber } from "ethers";
-import { DeoddService } from "libs/apis";
-import { Suspense, createRef, lazy } from "react";
-import { ScrollContainer } from 'react-indiana-drag-scroll';
-import { TransitionGroup } from "react-transition-group";
-import { checkAvatar } from "utils/checkAvatar";
-import { Convert } from "utils/convert";
-import { Format } from "utils/format";
+import { Suspense, lazy } from "react";
 
 const ListUserFlip = lazy(() => import("./ListUserFlip"));
-type dataUserRecent = {
-    id: number;
-    avatarId: number | undefined;
-    username: string;
-    timeAgo: string;
-    isWin: boolean;
-    amount: string | number;
-    streak: number;
-    wallet: string;
-    nodeRef: any;
-};
+
 export default function FlipHistoriesRecent() {
 
 
