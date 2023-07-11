@@ -12,7 +12,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import {
-  AvatarImage,
   BronzeImage,
   CoinEmptyImage,
   DiamondImage,
@@ -20,20 +19,17 @@ import {
 } from "utils/Images";
 import MyImage from "components/ui/image";
 import Image from "next/image";
-import {
-  LoyaltyHolderLeaderboardType,
-  LoyaltyLoadingType,
-} from "libs/types/loyaltyTypes";
+import { LoyaltyHolderLeaderboardType } from "libs/types/loyaltyTypes";
 import { getPathAvatar } from "utils/checkAvatar";
 import { Convert } from "utils/convert";
 import { useWalletContext } from "contexts/WalletContext";
+import { UseQueryResult } from "@tanstack/react-query";
 
 type PropsType = {
-  leaderboard: LoyaltyHolderLeaderboardType;
-  loading: LoyaltyLoadingType;
+  leaderboard: UseQueryResult<LoyaltyHolderLeaderboardType, unknown>;
 };
 
-function HolderLeaderboard({ leaderboard, loading }: PropsType) {
+function HolderLeaderboard({ leaderboard }: PropsType) {
   const { userInfo, walletAddress } = useWalletContext();
 
   return (
@@ -98,38 +94,40 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
             position: "relative",
           }}
         >
-          {loading.leaderboard && (
+          {leaderboard.isLoading && (
             <Stack height={1} justifyContent={"center"} alignItems={"center"}>
               <CircularProgress size={40} color="secondary" />
             </Stack>
           )}
-          {!loading.leaderboard && leaderboard.leaderboardList.length <= 0 && (
-            <Stack
-              sx={{ inset: 0 }}
-              position={"absolute"}
-              gap={5}
-              justifyContent={"center"}
-              alignItems={"center"}
-              textAlign={"center"}
-            >
-              <MyImage
-                sx={{
-                  width: { xs: 80, md: 144 },
-                  height: { xs: 80, md: 144 },
-                }}
-                src={CoinEmptyImage}
-                alt="Empty Coin Image"
-              />
-              <Typography
-                fontSize={"1rem"}
-                lineHeight={"1.375rem"}
-                fontWeight={600}
-                color={"secondary.100"}
+          {!leaderboard.isLoading &&
+            (leaderboard.isError ||
+              leaderboard.data.leaderboard.length === 0) && (
+              <Stack
+                sx={{ inset: 0 }}
+                position={"absolute"}
+                gap={5}
+                justifyContent={"center"}
+                alignItems={"center"}
+                textAlign={"center"}
               >
-                There is no one here
-              </Typography>
-            </Stack>
-          )}
+                <MyImage
+                  sx={{
+                    width: { xs: 80, md: 144 },
+                    height: { xs: 80, md: 144 },
+                  }}
+                  src={CoinEmptyImage}
+                  alt="Empty Coin Image"
+                />
+                <Typography
+                  fontSize={"1rem"}
+                  lineHeight={"1.375rem"}
+                  fontWeight={600}
+                  color={"secondary.100"}
+                >
+                  {leaderboard.isError ? "No Data" : "There is no one here"}
+                </Typography>
+              </Stack>
+            )}
           <Table aria-label="simple table">
             <colgroup>
               <col width={"12%"} />
@@ -154,15 +152,16 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                 },
               }}
             >
-              {!loading.leaderboard &&
-                leaderboard.leaderboardList.length > 0 &&
-                leaderboard.leaderboardList.map((row) => (
+              {!leaderboard.isLoading &&
+                !leaderboard.isError &&
+                leaderboard.data.leaderboard.length > 0 &&
+                leaderboard.data.leaderboard.map((row) => (
                   <TableRow key={row.rank}>
                     <TableCell component="th" scope="row" sx={{ px: 0 }}>
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
@@ -179,20 +178,22 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                         <Image
                           width={24}
                           height={24}
-                          src={getPathAvatar(row.avatarId)}
+                          src={getPathAvatar(row.avatar_id)}
                           alt="Avatar Image"
                         />
                         <Typography
                           variant="caption"
                           fontWeight={400}
                           color={
-                            row.owner === leaderboard.connectWallet.owner
+                            row.wallet === walletAddress
                               ? "text.secondary"
                               : "text.primary"
                           }
                         >
-                          {`${row.userName ?? ""} (${Convert.convertWalletAddress(
-                            row.owner,
+                          {`${
+                            row.user_name ?? ""
+                          } (${Convert.convertWalletAddress(
+                            row.wallet,
                             5,
                             4
                           )})`}
@@ -206,13 +207,13 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalDiamondNFT}
+                        {row.diamond_holding}
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -222,13 +223,13 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalGoldNFT}
+                        {row.gold_holding}
                       </Typography>
                     </TableCell>
                     <TableCell
@@ -238,13 +239,13 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                       <Typography
                         variant="caption"
                         color={
-                          row.owner === leaderboard.connectWallet.owner
+                          row.wallet === walletAddress
                             ? "text.secondary"
                             : "text.disabled"
                         }
                       >
                         {" "}
-                        {row.totalBronzeNFT}
+                        {row.bronze_holding}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -277,7 +278,11 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
           >
             <TableCell component="th" scope="row" sx={{ px: 0, pl: 1.5 }}>
               <Typography variant="caption">
-                {leaderboard.connectWallet.rank ?? "--"}
+                {leaderboard.isLoading
+                  ? "..."
+                  : leaderboard.isError
+                  ? "--"
+                  : leaderboard.data.currentUser?.rank ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="left" sx={{ px: 0, pl: 0.5 }}>
@@ -289,29 +294,36 @@ function HolderLeaderboard({ leaderboard, loading }: PropsType) {
                   alt="Avatar Image"
                 />
                 <Typography variant="caption" fontWeight={400}>
-                  {userInfo.username ?? ""} ({Convert.convertWalletAddress(walletAddress, 5, 4)})
+                  {userInfo.username ?? ""} (
+                  {Convert.convertWalletAddress(walletAddress, 5, 4)})
                 </Typography>
               </Stack>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
-                {leaderboard.leaderboardList.length > 0
-                  ? leaderboard.connectWallet.totalDiamondNFT ?? 0
-                  : "--"}
+                {leaderboard.isLoading
+                  ? "..."
+                  : leaderboard.isError
+                  ? "--"
+                  : leaderboard.data.currentUser?.diamond_holding ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
-                {leaderboard.leaderboardList.length > 0
-                  ? leaderboard.connectWallet.totalGoldNFT ?? 0
-                  : "--"}
+                {leaderboard.isLoading
+                  ? "..."
+                  : leaderboard.isError
+                  ? "--"
+                  : leaderboard.data.currentUser?.gold_holding ?? "--"}
               </Typography>
             </TableCell>
             <TableCell align="center" sx={{ px: 0, pr: { xs: 2.5, md: 1.5 } }}>
               <Typography variant="caption">
-                {leaderboard.leaderboardList.length > 0
-                  ? leaderboard.connectWallet.totalBronzeNFT ?? 0
-                  : "--"}
+                {leaderboard.isLoading
+                  ? "..."
+                  : leaderboard.isError
+                  ? "--"
+                  : leaderboard.data.currentUser?.bronze_holding ?? "--"}
               </Typography>
             </TableCell>
           </TableRow>

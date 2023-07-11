@@ -1,12 +1,51 @@
-import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useState } from "react";
-import { ButtonTertiary } from "../../ui/button";
+import { ButtonLoading, ButtonTertiary } from "../../ui/button";
 import { ArrowLeftIcon, BnbIcon } from "utils/Icons";
 import { BnbImage, CoinEmptyImage, MapIcon } from "utils/Images";
+import MyImage from "components/ui/image";
+import Campaign, { CAMPAIGNS } from "pages/campaign";
+import { DeoddService } from "libs/apis";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useWalletContext } from "contexts/WalletContext";
+import { Format } from "utils/format";
+import { AxiosResponse } from "axios";
+import { useSiteContext } from "contexts/SiteContext";
 type rewardItem = {
     value: number,
     type: string,
 }
+export const CAMPAIGNS_FETCH: {
+    id: string,
+    label: string,
+    fetch: (wallet: string) => Promise<AxiosResponse<any, any>>
+}[] = [
+        {
+            id: 'FLIP_VOLUME',
+            label: 'Volume of Bets',
+            fetch: DeoddService.getTotalVolume
+        },
+        // {
+        //     id: 'TESTNET',
+        //     label: 'Testnet Campaign',
+        //     fetch: DeoddService.getLeaderboardTestail
+        // },
+        {
+            id: 'WIN_STREAK',
+            label: 'Win Streak Campaign',
+            fetch: DeoddService.getWinDashboard
+        },
+        {
+            id: 'LOSE_STREAK',
+            label: 'Lose Streak Campaign',
+            fetch: DeoddService.getLoseDashboard
+        },
+        {
+            id: 'TOP_REF',
+            label: 'Referral Campaign',
+            fetch: DeoddService.getLeaderboardReferral
+        },
+    ]
 function createData(
     name: string,
     rewards: rewardItem[] | undefined,
@@ -15,8 +54,58 @@ function createData(
     return { name, rewards, claimTime };
 }
 const ClaimReward: React.FC<any> = () => {
-    const [valueSelect, setValueSelect] = useState<string | undefined>('');
+    const [valueSelect, setValueSelect] = useState<string>('');
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
+    const { walletAddress } = useWalletContext();
+    const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
+    const { data: histories, isFetching: isFetchingHistory } = useQuery({
+        queryKey: ["getClaimHistory", isShowHistory],
+        enabled: isShowHistory,
+        queryFn: () => DeoddService.getClaimHistory(),
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+    console.log("🚀 ~ file: ClaimReward.tsx:73 ~ histories:", histories)
+
+
+    const { data: dataReward, isFetching, refetch: refetchMyInfoCampaign } = useQuery({
+        queryKey: ["getCampaignDashboard", valueSelect],
+        enabled: !!valueSelect,
+        queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress),
+        select: (data: any) => {
+            if (data.status === 200) {
+                const connectWallet = data.data.data.connectWallet;
+                const result = {
+                    ...connectWallet,
+                    reward: connectWallet.reward || connectWallet.winStreakReward || connectWallet.winStreakReward,
+                    isConnectWalletClaimed: data.data.data.isConnectWalletClaimed
+                }
+                return result;
+            } else {
+                return undefined
+            }
+        },
+    });
+    const { mutateAsync: claim, isLoading: claimLoading } = useMutation({
+        mutationFn: () => {
+            return DeoddService.claimCampaign(valueSelect)
+        },
+        onError(error: any) {
+            setIsError(true)
+            setTitleError(error.response?.data?.meta.error_message)
+        },
+        onSuccess() {
+            refetchMyInfoCampaign();
+            setIsSuccess(true)
+            setTitleSuccess("Claim successful");
+        },
+    });
+
     let rows = [
         createData('Win/Lose Streak Campaign', [
             {
@@ -44,6 +133,7 @@ const ClaimReward: React.FC<any> = () => {
         createData('Win/Lose Streak Campaign', [], '12/12/2022'),
         createData('Win/Lose Streak Campaign', [], undefined),
     ];
+
     return <Box mt={3} p={3} width={544} borderRadius={3} bgcolor={"secondary.300"}>
         {
             isShowHistory ? <Box>
@@ -61,7 +151,7 @@ const ClaimReward: React.FC<any> = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.length > 0 && rows.map((row) => (
+                            {histories?.length > 0 && histories.map((row: any) => (
                                 <TableRow
                                     key={row.name}
                                     sx={{
@@ -71,19 +161,21 @@ const ClaimReward: React.FC<any> = () => {
                                     }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.name}
+                                        {CAMPAIGNS_FETCH.find((cp) => cp.id === row.historyInfo.campaignType)?.label}
                                     </TableCell>
-                                    <TableCell align="right">{row.rewards?.map((reward) =>
-                                        <Stack key={reward.type} mt={1} direction={'row'} justifyContent={"flex-end"}>
-                                            <Typography mr={.5}>{reward.value}</Typography>
-                                            <img width={16} src={MapIcon[reward.type]} alt="" />
-                                        </Stack>
-                                    )}</TableCell>
-                                    <TableCell sx={{ display: "block" }} align="right">{row.claimTime}</TableCell>
+                                    <TableCell align="right">{
+                                        Format.formatMoneyFromBigNumberEther(row.changedBalance)
+                                        // row.rewards?.map((reward) =>
+                                        //     <Stack key={reward.type} mt={1} direction={'row'} justifyContent={"flex-end"}>
+                                        //         <Typography mr={.5}>{reward.value}</Typography>
+                                        //         <img width={16} src={MapIcon[reward.type]} alt="" />
+                                        //     </Stack>
+                                        // )
+                                    } BNB</TableCell>
+                                    <TableCell sx={{ display: "block" }} align="right">{Format.formatDateTimeAlt(row.createdAt, 'UTC', 'dd/MM/yyyy')}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
-
                     </Table>
                     {
                         rows.length <= 0 &&
@@ -97,8 +189,8 @@ const ClaimReward: React.FC<any> = () => {
             </Box> :
                 <>
                     <Stack direction={'row'} justifyContent={"space-between"} alignItems={"center"}>
-                        <Typography variant='body2' textTransform={'uppercase'}>
-                            deODD Campaign Claim Portal
+                        <Typography variant='body2' >
+                            DeODD Campaign Claim Portal
                         </Typography>
                         <ButtonBase onClick={() => setIsShowHistory(true)}>
                             <Typography variant='body2' color="secondary.main">
@@ -113,32 +205,44 @@ const ClaimReward: React.FC<any> = () => {
                             onChange={(event: SelectChangeEvent) => { setValueSelect(event.target.value) }}
                             displayEmpty
                             sx={styleInput}
-                            inputProps={{ 'aria-label': 'Without label' }}
+                            inputProps={{ 'aria-label': 'Select campaign' }}
                         >
                             <MenuItem disabled value={""}>
                                 <Typography color={"secondary.100"}>Select-</Typography>
                             </MenuItem>
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {
+                                CAMPAIGNS_FETCH.map((c) => <MenuItem key={c.id} value={c.id}>{c.label}</MenuItem>)
+                            }
                         </Select>
-                        <Box py={"103px"}>
+                        <Box py={3}>
                             {
                                 valueSelect ?
                                     <Stack justifyContent={'center'} alignItems={'center'}>
-                                        <Typography>Your reward</Typography>
-                                        <Stack direction={'row'} mt={3}>
-
-                                            <Typography variant="h3" fontSize={"48px"}>2,523</Typography>
-                                            <img width={"40px"} src={BnbImage} alt="" />
+                                        <Stack direction={'row'} gap={1} >
+                                            {
+                                                isFetching ?
+                                                    <Skeleton variant="rounded" width={50} height={56} />
+                                                    :
+                                                    <Typography variant="h3" fontSize={"48px"}>{Format.formatMoney(dataReward?.reward ?? 0)}</Typography>
+                                            }
+                                            <MyImage width={40} src={BnbImage} alt="" />
                                         </Stack>
                                     </Stack>
                                     :
-
                                     <Typography variant='body2' textAlign={'center'} color={"secondary.200"}> Select campaign to show your reward</Typography>
                             }
                         </Box>
-                        <ButtonTertiary disabled={!valueSelect} sx={{ width: "100%", py: "16px" }}> <Typography variant='button' >CLAIM REWARD</Typography></ButtonTertiary>
+                        <ButtonLoading
+                            loading={claimLoading}
+                            disabled={isFetching || !valueSelect || !dataReward?.reward || dataReward?.isConnectWalletClaimed}
+                            sx={{ textTransform: 'none', py: 2 }}
+                            onClick={() => claim()}
+                        >
+                            {
+                                dataReward?.isConnectWalletClaimed ? 'Claimed' : "Claim reward"
+                            }
+
+                        </ButtonLoading>
                     </Box >
                 </>
         }
@@ -146,11 +250,17 @@ const ClaimReward: React.FC<any> = () => {
     </Box >
 }
 const styleInput = {
-    backgroundColor: "background.paper", border: '0px solid', borderColor: 'background.paper', '.MuiOutlinedInput-notchedOutline': {
+    backgroundColor: "background.paper",
+    border: '0px solid',
+    borderColor: 'background.paper',
+    borderRadius: 2,
+    '.MuiOutlinedInput-notchedOutline': {
         border: 'none'
     },
     width: "100%",
     fontSize: 16,
+
+    bgcolor: 'background.default',
     'div': {
         py: "12px",
         fontSize: 16,

@@ -6,59 +6,76 @@ import MyModal from '../components/common/Modal'
 import MyTabs, { TypeTab } from '../components/common/Tabs'
 import { CampaignImage, CampaignImage2, CampaignImage3, CampaignImage4, ReferralImage, VolumeBannerImage, VolumeImage, WinLoseStreakBannerImage, WinLoseStreakImage } from '../utils/Images'
 import ComingSoon from 'components/common/ComingSoon'
+import { DeoddService } from 'libs/apis'
+import { AxiosResponse } from 'axios'
 
 type Props = {}
 export type Campaign = {
     id: number | string,
     href: string,
     label: string,
+    isOpen: boolean,
     image: string,
-    imageDetail: string
+    imageDetail: string,
+    fetch: (wallet: string) => Promise<AxiosResponse<any, any>>
 }
+
 export const CAMPAIGNS: Campaign[] = [
-    // {
-    //     id: 4,
-    //     href: 'volume-campaign',
-    //     label: 'Volume of Bets',
-    //     image: VolumeImage,
-    //     imageDetail: VolumeBannerImage
-    // },
+    {
+        id: 4,
+        href: 'volume-campaign',
+        label: 'Volume of Bets',
+        isOpen: true,
+        image: VolumeImage,
+        imageDetail: VolumeBannerImage,
+        fetch: DeoddService.getTotalVolume
+    },
     {
 
         id: 3,
         href: 'testnet-campaign',
         label: 'Testnet Campaign',
+        isOpen: false,
         image: CampaignImage4,
-        imageDetail: CampaignImage4
+        imageDetail: CampaignImage4,
+        fetch: DeoddService.getLeaderboardTestail
     },
-    // {
-    //     id: 1,
-    //     href: 'winlose-streak-campaign',
-    //     label: 'Win/Lose Streak Campaign',
-    //     image: WinLoseStreakImage,
-    //     imageDetail: WinLoseStreakBannerImage
-    // },
+    {
+        id: 1,
+        href: 'winlose-streak-campaign',
+        label: 'Win/Lose Streak Campaign',
+        isOpen: true,
+        image: WinLoseStreakImage,
+        imageDetail: WinLoseStreakBannerImage,
+        fetch: DeoddService.getWinLoseStreak
+    },
     {
         id: 2,
         href: 'referral-campaign',
         label: 'Referral Campaign',
+        isOpen: false,
         image: CampaignImage3,
-        imageDetail: ReferralImage
+        imageDetail: ReferralImage,
+        fetch: DeoddService.getLeaderboardReferral
     },
 ]
+
 function Campaign({ }: Props) {
     const [openModal, setOpenModal] = useState(false);
     const [valueTab, setValueTab] = useState(2);
+    const campaigns_open = CAMPAIGNS.filter(campaign => campaign.isOpen)
+    const campaigns_ended = CAMPAIGNS.filter(campaign => !campaign.isOpen)
     const listTabs: TypeTab[] = [
         {
             id: 1,
             title: 'Ongoing',
-            value: "(0)",
+
+            // value: `(${campaigns_open.length})`
         },
         {
             id: 2,
             title: 'Ended',
-            value: `(${CAMPAIGNS.length})`
+            value: `(${campaigns_ended.length})`
         },
         {
             id: 3,
@@ -71,20 +88,19 @@ function Campaign({ }: Props) {
     const MapTap: { [key: number]: JSX.Element } = {
         1: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
             {/* {
-                CAMPAIGNS.map((campaign) =>
+                campaigns_open.map((campaign) =>
                     <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
                 )
             } */}
         </Stack>,
         2: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
             {
-                CAMPAIGNS.map((campaign) =>
+                campaigns_ended.map((campaign) =>
                     <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
                 )
             }
         </Stack>,
         3: <Box width={1}>
-
             {/* <ClaimReward /> */}
         </Box>
     }

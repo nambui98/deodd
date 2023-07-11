@@ -19,7 +19,10 @@ import CoinAnimation from 'components/common/CoinAnimation'
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
     const campaign = CAMPAIGNS.find(c => c.href === 'testnet-campaign');
-    return { props: { campaign } };
+    debugger
+    return {
+        props: { campaign: { ...campaign, fetch: null } }
+    }
 }
 function TestnetCampaign({ campaign }: { campaign: Campaign }) {
 
@@ -27,11 +30,13 @@ function TestnetCampaign({ campaign }: { campaign: Campaign }) {
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, walletIsConnected } = useWalletContext();
+
+    const fetch = CAMPAIGNS.find(c => c.id === campaign.id)?.fetch;
     const { data: testails, isLoading } = useQuery({
         queryKey: ["getLeaderboardTestail"],
-        enabled: campaign.href === 'testnet-campaign',
         refetchInterval: 2000,
-        queryFn: () => DeoddService.getLeaderboardTestail(walletAddress),
+        enabled: !!fetch,
+        queryFn: () => fetch?.(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
                 return data.data.data;
@@ -40,6 +45,7 @@ function TestnetCampaign({ campaign }: { campaign: Campaign }) {
             }
         },
     });
+
     const MapRank: { [key: string]: string } = {
         1: Rank1Image,
         2: Rank2Image,

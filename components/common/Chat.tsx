@@ -1,9 +1,9 @@
 import { Utils } from '@/utils/index'
 import { ClickAwayListener } from '@mui/base'
 import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Popper, Stack, Typography } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
-import { DOWNSTREAM_MESSAGE, DateOpenMainnet } from 'constants/index'
+import { DOWNSTREAM_MESSAGE, DateOpenMainnet, JOINED } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import EmojiPicker from 'emoji-picker-react'
@@ -19,7 +19,8 @@ import { Convert } from 'utils/convert'
 import { Format } from 'utils/format'
 import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
-import { isBefore } from 'date-fns'
+import { isAfter, isBefore, isEqual } from 'date-fns'
+import { useRouter } from 'next/router'
 
 export type MessageType = {
     userInfo: {
@@ -59,16 +60,19 @@ function Chat({ open }: { open: boolean }) {
 
     const isNotMainnetOpen = isBefore(new Date(), new Date(DateOpenMainnet))
     const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
-    const { refetch: getMessages, } = useQuery({
-        queryKey: ["getMessages"],
-        enabled: false,
+
+    const queryClient = useQueryClient();
+    const [isPing, setIsPing] = useState(false);
+    const { refetch: getMessages, isFetching: isFetchingMessages } = useQuery({
+        queryKey: ["getMessages", walletAddress],
+        enabled: !!walletAddress,
         queryFn: () => DeoddService.getMessagesWithAuth({ limit: 15, lastCreatedAt: lastCreatedAt }),
         onSuccess(data) {
             if (data && data.data) {
                 if (lastCreatedAt === null) {
                     setMessages([])
                 }
-                if (lastCreatedAt !== data.data[data.data.length - 1]?.created_at) {
+                if (lastCreatedAt !== data.data[data.data.length - 1]?.created_at && data.data.length > 0) {
                     if (lastCreatedAt === null) {
                         setMessages(data.data);
                     } else {
@@ -87,37 +91,49 @@ function Chat({ open }: { open: boolean }) {
         },
     });
 
-    //get messages without auth
-    const [isLoadMoreWithoutAuth, setIsLoadMoreWithoutAuth] = useState<boolean>(false)
-    const { refetch: getMessagesWithoutAuth } = useQuery({
-        queryKey: ["getMessagesWithoutAuth"],
-        enabled: false,
-        retry: false,
-        queryFn: () => DeoddService.getMessagesWithoutAuth(isLoadMoreWithoutAuth),
-        onSuccess(data) {
-            if (data && data.data) {
-                setIsLoadMoreWithoutAuth(true);
-                setMessages(data.data)
-            }
-        },
-        onError(err: any) {
-            // setIsLoadMoreWithoutAuth(false);
-            // setIsError(true)
-            // setTitleError(err.response?.data?.meta.error_message)
-        },
-        select: (data: any) => {
-            if (data.status === 200) {
-                return data.data;
-            } else {
-                return undefined
-            }
-        },
-    });
-    const { sendJsonMessage, readyState } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
+    const {
+        // refetch: getMessagesWithoutAuth, 
+        isFetching: isFetchingMessageWithoutAuth } = useQuery({
+            queryKey: ["getMessagesWithoutAuth", walletAddress],
+            enabled: walletAddress === undefined || walletAddress === "" || walletAddress === null,
+            retry: false,
+            queryFn: () => DeoddService.getMessagesWithoutAuth(false),
+            onSuccess(data) {
+                if (data && data.data) {
+                    setMessages(data.data)
+                }
+            },
+            onError(err: any) {
+                // setIsLoadMoreWithoutAuth(false);
+                // setIsError(true)
+                // setTitleError(err.response?.data?.meta.error_message)
+            },
+            select: (data: any) => {
+                if (data.status === 200) {
+                    return data.data;
+                } else {
+                    return undefined
+                }
+            },
+        });
+    const router = useRouter();
+    const { sendJsonMessage, readyState, } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
         {
             onMessage: async (event) => {
+
+                // debugger
                 const dataMessage = await getDataFromBlob(event.data)
+                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", dataMessage)
+                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", Object.keys(dataMessage ?? {}))
+
                 if (dataMessage !== null) {
+                    if (dataMessage[JOINED]) {
+                        console.log("888888888888888888888888");
+                        debugger
+                        // pingSocket();
+                        setIsPing(true);
+                        // queryClient.getQueryCache().gt
+                    }
                     if (dataMessage[DOWNSTREAM_MESSAGE]) {
                         if (dataMessage[DOWNSTREAM_MESSAGE].data.command === MessageCommand.NEW_MESSAGE) {
                             setIsHasNewMessage(!isScrollBottom);
@@ -130,23 +146,60 @@ function Chat({ open }: { open: boolean }) {
                     }
                 }
             },
+            onOpen(event) {
+            },
+            retryOnError: true,
+            onClose(event) {
+                console.log("🚀 ~ file: Chat.tsx:134 ~ onClose ~ event:", event)
+                setIsPing(false);
+            },
             // reconnectInterval: 5000,
-            shouldReconnect: () => true
+            // shouldReconnect: () => true
         },
     );
 
-    useEffect(() => {
-        if (walletIsConnected) {
-            const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-            sendJsonMessage(message);
-            const ping = setInterval(() => {
-
-                const message: any = [0, {}];
-                sendJsonMessage(message);
-            }, 50000);
-            return () => clearInterval(ping);
+    //interval ping connect socket
+    const { refetch: pingSocket } = useQuery({
+        queryKey: ["pingSocket", walletAddress],
+        enabled: isPing,
+        retry: false,
+        queryFn: () => sendPingSocket(),
+        refetchIntervalInBackground: true,
+        // refetchIntervalInBackground: 55000,
+        refetchInterval: 55000
+    });
+    const joinChat = useQuery({
+        queryKey: ["joinChat", walletAddress],
+        enabled: !!walletAddress && readyState === ReadyState.OPEN,
+        // retry: true,
+        refetchOnWindowFocus: false,
+        queryFn: () => sendJoinChat(),
+        onError: async (err: any) => {
+            debugger
+            // router.reload();
+            // const response = await DeoddService.refreshToken();
+            // const { accessToken } = response.data.data;
+            // LocalStorage.setAccessToken(accessToken);
+            // setIsLoadMoreWithoutAuth(false);
+            // setIsError(true)
+            // setTitleError(err.response?.data?.meta.error_message)
         }
-    }, [walletIsConnected, sendJsonMessage])
+    });
+
+    const sendPingSocket = () => {
+        const message: any = [0, {}];
+        console.log("888888888888888888888888pingSocket");
+
+        sendJsonMessage(message);
+        return true;
+    }
+
+    const sendJoinChat = () => {
+        console.log("🚀 ~ file: Chat.tsx:194 ~ sendJoinChat ~ readyState:", readyState)
+        const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+        sendJsonMessage(message);
+        return true;
+    }
 
     const getDataFromBlob = async (data: Blob) => {
         const text = await new Response(data).text()
@@ -155,7 +208,7 @@ function Chat({ open }: { open: boolean }) {
             let result: { [key: number]: any } = {};
             for (let index = 0; index < parseJson.length; index++) {
                 const element: any = parseJson[index];
-                result[parseInt(element[0])] = element[1]!.data;
+                result[parseInt(element[0])] = element[1]!.data ?? element[1];
             }
             return result;
         }
@@ -163,7 +216,6 @@ function Chat({ open }: { open: boolean }) {
     }
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>, user: MessageType) => {
-
         setAnchorOptionMore(event.currentTarget);
         setMessageSelected(user);
     };
@@ -178,6 +230,7 @@ function Chat({ open }: { open: boolean }) {
     const handleScrollToBottom = () => {
         refBottomChat.current?.scrollIntoView({ behavior: "smooth" })
     };
+
     useEffect(() => {
         if (refBottomChat.current && open) {
             setTimeout(() => {
@@ -185,6 +238,7 @@ function Chat({ open }: { open: boolean }) {
             }, 1000);
         }
     }, [refBottomChat, open])
+
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
@@ -208,28 +262,15 @@ function Chat({ open }: { open: boolean }) {
         if (inView) {
             if (walletAddress) {
                 getMessages()
-            } else {
-                getMessagesWithoutAuth();
             }
         }
-    }, [inView, walletAddress, getMessages, getMessagesWithoutAuth])
-    useEffect(() => {
-        if (walletAddress) {
-            setMessages([])
-            setLastCreatedAt(null)
-            getMessages()
-        } else {
-            setMessages([])
-            setIsLoadMoreWithoutAuth(false)
-            getMessagesWithoutAuth();
-        }
-    }, [walletAddress, getMessages, getMessagesWithoutAuth])
-
+    }, [inView, walletAddress, getMessages])
 
     //
     const handleReplyUser = () => {
         setReplyUser({ wallet: messageSelected?.from || '', repliedTo: messageSelected?.id || '', username: messageSelected?.userInfo.userName || '' });
     }
+
     // hanlde reporting 
     const report = useMutation({
         mutationFn: (typeReport: string) => {
@@ -339,6 +380,7 @@ function Chat({ open }: { open: boolean }) {
             }, 10);
         },
     });
+    let indexEndedOnSameDay: number | null;
 
     return (
         <Box position={'relative'} overflow={'hidden'} >
@@ -362,20 +404,49 @@ function Chat({ open }: { open: boolean }) {
                             p={2} overflow={'auto'} sx={{ transition: open ? '3s opacity' : "", opacity: open ? 1 : 0 }} >
                             <Box ref={refBottomChat} />
                             {
-                                messages.map((message) => {
-                                    return <ChatItem
-                                        handleUndoReport={handleUndoReport}
+                                messages.map((message, index) => {
+                                    let currentDate = new Date();
+                                    currentDate.setHours(0, 0, 0, 0);
+
+                                    let dateMessage = new Date(message.created_at);
+                                    dateMessage.setHours(0, 0, 0, 0);
+
+                                    let dateMessagePrev: Date = new Date(messages[index - 1]?.created_at ?? message.created_at);
+                                    dateMessagePrev.setHours(0, 0, 0, 0);
+
+                                    let isToday = false;
+                                    const isSameDay = isEqual(dateMessage, dateMessagePrev);
+                                    let isYesterday = false;
+                                    if (!isSameDay) {
+                                        indexEndedOnSameDay = index - 1;
+                                        isToday = isEqual(currentDate, dateMessagePrev);
+
+                                        isYesterday = isEqual(currentDate.setDate(currentDate.getDate() - 1), dateMessagePrev);
+                                    }
+                                    return <Stack
                                         key={message.id}
-                                        data={message}
-                                        isReport={message.is_hidden}
-                                        handleClick={(e) => handleClick(e, message)}
-                                        id={message.id}
-                                        isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
-                                    />
+                                        alignItems={'center'}
+                                    >
+                                        <Box width={1}>
+                                            <ChatItem
+                                                handleUndoReport={handleUndoReport}
+                                                data={message}
+                                                isReport={message.is_hidden}
+                                                handleClick={(e) => handleClick(e, message)}
+                                                id={message.id}
+                                                isMy={message.from.toLowerCase() === walletAddress?.toLowerCase()}
+                                            />
+                                        </Box>
+                                        {
+                                            index - 1 === indexEndedOnSameDay && <Box display='inline-block' borderRadius={6} mb={1} px={1} py={.5} bgcolor={"background.paper"}>
+                                                <Typography variant='caption' >{isToday ? 'Today' : isYesterday ? 'Yesterday' : Format.formatDateTimeAlt(dateMessagePrev, 'UTC', 'MMMM dd, yyyy')}</Typography>
+                                            </Box>
+                                        }
+                                    </Stack>
                                 })
                             }
                             {
-                                (isLoadMoreWithoutAuth === true || walletAddress) && messages.length > 8 && <Box mb={2} height={30}>
+                                <Box mb={2} height={30} display={isFetchingMessageWithoutAuth || isFetchingMessages ? 'block' : 'none'}>
                                     <CoinAnimation mx="auto" width={30} height={30} />
                                 </Box>
                             }
@@ -462,7 +533,7 @@ function Chat({ open }: { open: boolean }) {
                     messageSelected={messageSelected!}
                     setIsStartBlock={setIsStartBlock} />
             }
-        </Box>
+        </Box >
     )
 }
 
@@ -876,7 +947,7 @@ const ChatItem = ({ isMy, handleUndoReport, isReport, id, data, handleClick }: {
             <Typography variant='body2' fontWeight={500} >{data.userInfo.userName ?? Convert.convertWalletAddress(data.from, 4, 5)}</Typography>
         </Stack>
         <Stack direction={'row'} alignItems={'baseline'} gap={1} mt={.5}>
-            <Typography variant='body2' fontWeight={400} color={'secondary.700'} lineHeight={'14px'} fontSize={10}>{Format.formatDateTime(data.updated_at, 'HH:mm')}</Typography>
+            <Typography variant='body2' fontWeight={400} color={'secondary.700'} lineHeight={'14px'} fontSize={10}>{Format.formatDateTimeAlt(data.updated_at, 'UTC', 'HH:mm')}</Typography>
             <Stack>
                 {
                     data.replied_content && <Stack sx={{ borderLeft: 1, borderColor: 'secondary.main' }} mb={.5}>

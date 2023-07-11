@@ -33,7 +33,15 @@ const nextConfig = {
       // },
     ]
   },
-  
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.deodd.io',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig

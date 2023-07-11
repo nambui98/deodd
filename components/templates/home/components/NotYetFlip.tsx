@@ -132,6 +132,7 @@ const SideCoin: React.FC<{ isHead?: boolean, isSelected: boolean } & ButtonProps
             color: isSelected ? 'secondary.main' : 'secondary.700',
             flex: '1 1 50%',
             width: '100%',
+            '-webkit-tap-highlight-color': 'transparent',
             py: { sm: 3, xs: 2 },
             '.disabled, .enabled': {
                 position: 'absolute',

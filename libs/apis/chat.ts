@@ -75,9 +75,9 @@ const getBlockList = async ({ page = 1, size = 15 }: { page: number, size: numbe
     return await vhIdRequest({
         url: baseURLChat + `/block-list?page=${page}&size=${size}`,
         method: 'GET',
-
     })
 }
+
 export const ChatApis = {
     getMessagesWithAuth,
     getMessagesWithoutAuth,

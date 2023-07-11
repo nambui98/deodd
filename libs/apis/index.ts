@@ -4,6 +4,7 @@ import { AuthApis } from "./auth"
 import { ChatApis } from "./chat"
 import { getCurrentIp } from "./ip"
 import { ShopApis } from "./shop"
+import { EnumNFT } from "libs/types"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
@@ -80,6 +81,98 @@ const getNFTDetailById = async (id: string | number) => {
         method: 'get',
     })
 }
+const caculateEstProfit = async ({ typeNft, duration }: { typeNft: EnumNFT, duration: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/nft-item/staking/calculate`,
+        method: 'POST',
+        data: {
+            duration,
+            itemType: typeNft
+        }
+    })
+}
+const stakeNft = async (tokenId: string | number) => {
+    return await vhIdRequest({
+        url: baseURL + `/users/nft/stake`,
+        method: 'POST',
+        data: {
+            tokenId: tokenId
+        }
+    })
+}
+const getCurrentPool = () => {
+    return vhIdRequest({
+        url: baseURL + `/nft/staking/current-pool`,
+        method: 'GET',
+
+    })
+}
+const getPoolsAndRewardsByUser = () => {
+    return vhIdRequest({
+        url: baseURL + `/nft/staking/pools`,
+        method: 'GET',
+
+    })
+}
+const getNFTStaked = async (poolId: string | number) => {
+    return await vhIdRequest({
+        url: baseURL + `/nft/staking/nft-staked?poolId=${poolId}`,
+        method: 'GET',
+
+    })
+}
+const getReferralDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/referral`,
+        method: 'GET',
+    })
+}
+const getTestnetDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/testail-point`,
+        method: 'GET',
+    })
+}
+const getFlipVolumeDashboard = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/volume`,
+        method: 'GET',
+    })
+}
+const getWinDashboard = async (wallet: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/win?wallet=${wallet}`,
+        method: 'GET',
+    })
+}
+const getLoseDashboard = async (wallet: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/dashboard/streak/lose?wallet=${wallet}`,
+        method: 'GET',
+    })
+}
+const claimCampaign = async (campaignType: string) => {
+    return await vhIdRequest({
+        url: baseURL + `/campaign/claim`,
+        method: 'POST',
+        data: {
+            campaignType
+        }
+    })
+}
+const checkIsWalletJoinStaking = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/nft/staking/is-joined`,
+        method: 'GET',
+    })
+}
+
+const getClaimHistory = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/campaign/history`,
+        method: 'GET',
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -96,5 +189,18 @@ export const DeoddService = {
     getResultByFlipId,
     getCurrentIp,
     getWinLoseStreak,
-    getTotalVolume
+    getTotalVolume,
+    caculateEstProfit,
+    stakeNft,
+    getNFTStaked,
+    getCurrentPool,
+    getPoolsAndRewardsByUser,
+    getReferralDashboard,
+    getTestnetDashboard,
+    getFlipVolumeDashboard,
+    getWinDashboard,
+    getLoseDashboard,
+    claimCampaign,
+    checkIsWalletJoinStaking,
+    getClaimHistory
 }

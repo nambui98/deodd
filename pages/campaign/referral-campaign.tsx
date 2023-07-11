@@ -20,17 +20,20 @@ import CoinAnimation from 'components/common/CoinAnimation'
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
     const campaign = CAMPAIGNS.find(c => c.href === 'referral-campaign');
-    return { props: { campaign } };
+    return { props: { campaign: { ...campaign, fetch: null } } };
 }
 function ReferralCampaign({ campaign }: { campaign: Campaign }) {
     const theme = useTheme();
     const [openModal, setOpenModal] = useState(false);
     const [openModalWallet, setOpenModalWallet] = useState(false);
     const { walletAddress, walletIsConnected } = useWalletContext();
+
+    const fetch = CAMPAIGNS.find(c => c.id === campaign.id)?.fetch;
     const { data: referral, isLoading } = useQuery({
         queryKey: ["getLeaderboardReferral"],
         refetchInterval: 2000,
-        queryFn: () => DeoddService.getLeaderboardReferral(walletAddress),
+        enabled: !!fetch,
+        queryFn: () => fetch?.(walletAddress),
         select: (data: any) => {
             if (data.status === 200) {
                 return data.data.data;

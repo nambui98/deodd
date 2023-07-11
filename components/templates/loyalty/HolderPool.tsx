@@ -1,49 +1,30 @@
-import { Box, Stack, Typography, Divider } from "@mui/material";
+import { Box, Stack, Typography, Divider, Skeleton } from "@mui/material";
 import { BnbIcon, Growth1Icon } from "utils/Icons";
-import { LoyaltyImage, Loyalty2Image, LeaderboardImage } from "utils/Images";
+import { Loyalty2Image } from "utils/Images";
 import { Colors } from "constants/index";
 import HolderPoolBoard from "./HolderPoolBoard";
 import { useWalletContext } from "contexts/WalletContext";
 import { ButtonMain } from "components/ui/button";
 import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
 import { Format } from "utils/format";
-import { useSiteContext } from "contexts/SiteContext";
-import { claimNFTReward } from "libs/apis/loyaltyAPI";
 import NFTHolderTimer from "./components/NFTHolderTimer";
+import Link from "next/link";
 
 type Props = {};
 
 function HolderPool({ }: Props) {
-  const { walletAddress, walletIsConnected } = useWalletContext();
-  const { leaderboard, setPeriod, periodInfo, loading, history, setReset } =
-    useLoyaltyHolder();
-  const {
-    setIsSuccess,
-    setTitleSuccess,
-    setIsLoading,
-    setIsError,
-    setTitleError,
-  } = useSiteContext();
+  const { walletIsConnected } = useWalletContext();
 
-  const handleClaim = async () => {
-    try {
-      setIsLoading(true);
-      const res = await claimNFTReward(walletAddress);
-      setIsLoading(false);
-      if (res.data.data && res.status === 200) {
-        setTitleSuccess("Claimed successfully");
-        setIsSuccess(true);
-        setReset(prev => !prev);
-      } else {
-        setIsError(true);
-        setTitleError(res.data.meta.error_message);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      setIsError(true);
-      setTitleError("Something went wrong! Please try again later");
-    }
-  };
+  const {
+    periodsInfo,
+    leaderboard,
+    history,
+    setReset,
+    setPeriod,
+    useIsNFTHolder,
+  } = useLoyaltyHolder();
+
+  const isNFTHolder = useIsNFTHolder();
 
   return (
     <Box width={1}>
@@ -69,96 +50,167 @@ function HolderPool({ }: Props) {
           alignItems: "center",
           textAlign: "center",
           mx: { xs: 2, md: 0 },
+          p: 4,
         }}
       >
         {walletIsConnected &&
-          (periodInfo.currentPeriod > 1 && periodInfo.totalReward > 0 ? (
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          (periodsInfo.data[0].season > 1 &&
+            periodsInfo.data.some((period) => period.is_claimed != null) ? (
             <>
               <Typography
                 variant="body2"
-                lineHeight={"1.375rem"}
-                textTransform={"uppercase"}
+                lineHeight={20 / 14}
                 color={"text.disabled"}
+                mb={1}
               >
-                Your total reward is
-                <Box component={"span"} color={"text.secondary"}>
-                  {" "}
-                  {Format.formatMoney(periodInfo.totalReward, 7)} BNB
-                </Box>
-                <br />
-                claim NOW
+                It’s time to claim your reward
               </Typography>
-              <ButtonMain
-                active={true}
-                title="claim reward"
-                sx={{
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
-                  minHeight: 0,
-                  px: 2,
-                  py: 0.5,
-                  mb: 3,
-                  lineHeight: "1.375rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  borderWidth: 2,
-                  ":hover": {
-                    borderWidth: 2,
-                  },
-                }}
-                onClick={handleClaim}
-              />
+              <Link href={"/campaign"}>
+                <ButtonMain
+                  active={true}
+                  title="Claim reward"
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 16 / 12,
+                    fontWeight: 400,
+                    minHeight: 0,
+                    px: 2,
+                    py: 1,
+                    mb: 3,
+                  }}
+                />
+              </Link>
             </>
           ) : (
             ""
           ))}
 
-        <Typography variant="body2">
-          Period{" "}
-          <Box component={"span"} color={"text.secondary"}>
-            #{periodInfo.currentPeriod}
-          </Box>{" "}
-          Started at{" "}
-          {periodInfo.startTime
-            ? Format.formatDateTime(periodInfo.startTime)
-            : ""}
-        </Typography>
+        {periodsInfo.isLoading ? (
+          <Skeleton variant="text" width={200} />
+        ) : (
+          <Typography variant="body2">
+            Period{" "}
+            <Box component={"span"} color={"text.secondary"}>
+              {periodsInfo.isError ? "--" : `#${periodsInfo.data[0].season}`}
+            </Box>{" "}
+            Started at{" "}
+            {periodsInfo.isError
+              ? "--/--/----"
+              : Format.formatDateTimeAlt(periodsInfo.data[0].start_time, "UTC")}
+          </Typography>
+        )}
+
         <Typography variant="body2" color={"text.disabled"}>
           Total NFT Holder Reward
         </Typography>
-        <Stack
-          direction={"row"}
-          columnGap={1}
-          alignItems={"center"}
-          justifyContent={"center"}
-          mb={1.25}
-        >
-          <Typography variant="h3" fontSize={"48px"}>
-            {Format.formatMoney(periodInfo.currentPrize, 4)}
+
+        {periodsInfo.isLoading ? (
+          <Skeleton variant="text" width={250} sx={{ fontSize: 48 }} />
+        ) : (
+          <Typography
+            variant="h1"
+            lineHeight={"3.75rem"}
+            sx={{ overflowWrap: "anywhere", mb: 1.25 }}
+          >
+            {periodsInfo.isError
+              ? "----"
+              : Format.formatMoney(
+                periodsInfo.data[0].current_prize / Math.pow(10, 18),
+                4
+              )}
+            <Box component={"span"} sx={{ ml: 1 }}>
+              <BnbIcon width={40} color={Colors.primaryDark} />
+            </Box>
           </Typography>
-          <BnbIcon width={40} color={Colors.primaryDark} />
-        </Stack>
+        )}
+
         {walletIsConnected &&
-          (periodInfo.currentReward !== null && periodInfo.currentReward >= 0 ? (
+          (periodsInfo.isLoading || isNFTHolder === undefined) && (
+            <>
+              <Skeleton width={200} />
+              <Skeleton width={100} height={50} />
+            </>
+          )}
+
+        {walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          periodsInfo.data[0].reward !== null && (
             <>
               <Typography variant="body2" color={"text.disabled"}>
-                Your current reward in this period is
+                Your current reward in this period is{" "}
                 <Box component={"span"} color={"text.primary"}>
-                  {" "}
-                  {periodInfo.currentReward ? Format.formatMoney(periodInfo.currentReward, 7) : 0}{" "}
-                  <Box component={"span"}>
+                  {Format.formatMoney(periodsInfo.data[0].reward, 7)}
+                  <Box component={"span"} sx={{ ml: 0.25 }}>
                     <BnbIcon width={16} color={Colors.primaryDark} />
                   </Box>
                 </Box>
               </Typography>
-              <NFTHolderTimer setReset={setReset} periodInfo={periodInfo} />
+
+              <NFTHolderTimer setReset={setReset} periodsInfo={periodsInfo} />
             </>
-          ) : (
-            <Typography variant="body2" color={"text.disabled"}>
-              Only NFT holders <br /> are able to get the reward{" "}
-            </Typography>
-          ))}
+          )}
+
+        {walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          isNFTHolder === true &&
+          periodsInfo.data[0].reward == null && (
+            <>
+              <Typography variant="body2" color={"text.disabled"} mb={1}>
+                Only nft holders STAKING their nft
+                <br /> are able to get the reward{" "}
+              </Typography>
+
+              <Link href={"/staking"}>
+                <ButtonMain
+                  active={true}
+                  title={"Stake"}
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 16 / 12,
+                    fontWeight: 400,
+                    minHeight: 0,
+                    px: 2,
+                    py: 1,
+                    backgroundColor: "background.default",
+                  }}
+                />
+              </Link>
+            </>
+          )}
+
+        {walletIsConnected &&
+          !periodsInfo.isLoading &&
+          !periodsInfo.isError &&
+          isNFTHolder === false &&
+          periodsInfo.data[0].reward == null && (
+            <>
+              <Typography variant="body2" color={"text.disabled"} mb={1}>
+                Only NFT Holders are able to get the reward
+              </Typography>
+
+              <Link href={"/shop"}>
+                <ButtonMain
+                  active={true}
+                  title={"Shop now"}
+                  sx={{
+                    fontSize: "0.75rem",
+                    lineHeight: 16 / 12,
+                    fontWeight: 400,
+                    minHeight: 0,
+                    px: 2,
+                    py: 1,
+                    backgroundColor: "background.default",
+                  }}
+                />
+              </Link>
+            </>
+          )}
       </Stack>
+
       {walletIsConnected ? (
         <>
           <Divider
@@ -169,10 +221,10 @@ function HolderPool({ }: Props) {
             }}
           />
           <HolderPoolBoard
+            periodsInfo={periodsInfo}
             leaderboard={leaderboard}
-            setPeriod={setPeriod}
-            loading={loading}
             history={history}
+            setPeriod={setPeriod}
           />
         </>
       ) : null}

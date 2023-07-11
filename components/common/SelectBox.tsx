@@ -51,6 +51,9 @@ const styleInput = {
     borderRadius: 2,
     "& input": {
         cursor: "pointer",
+        "::selection": {
+            background: "transparent"
+        }
     },
     '& .MuiInputBase-root': {
         fontSize: "0.875rem",

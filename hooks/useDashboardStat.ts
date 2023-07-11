@@ -83,7 +83,6 @@ export function useDashboardStat() {
           getFlipDashboardStat(),
           getFlipPerUser(),
         ]);
-        console.log(streakResult, statResult);
         // Streak data - Streak Section
         if (streakResult.status === "fulfilled") {
           // If SUCCESSFULLY fetched data for streak section

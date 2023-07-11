@@ -27,6 +27,7 @@ function ListUserFlip() {
     const { data: dataRecent } = useQuery({
         queryKey: ["getRecentFlipping"],
         queryFn: DeoddService.getRecentFlipping,
+        enabled: !!localStorage,
         suspense: true,
         select: (data) =>
             data.data.data.map(
