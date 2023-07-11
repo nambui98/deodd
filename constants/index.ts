@@ -35,6 +35,7 @@ export const IPS_NOT_SUPORT: { [key: string]: string } = {
   VN: 'VN',
 }
 
+export const JOINED = 2;
 export const UPSTREAM_MESSAGE = 7;
 export const DOWNSTREAM_MESSAGE = 8;
 
