@@ -62,14 +62,15 @@ export const CAMPAIGNS: Campaign[] = [
 
 function Campaign({ }: Props) {
     const [openModal, setOpenModal] = useState(false);
-    const [valueTab, setValueTab] = useState(1);
+    const [valueTab, setValueTab] = useState(2);
     const campaigns_open = CAMPAIGNS.filter(campaign => campaign.isOpen)
     const campaigns_ended = CAMPAIGNS.filter(campaign => !campaign.isOpen)
     const listTabs: TypeTab[] = [
         {
             id: 1,
             title: 'Ongoing',
-            value: `(${campaigns_open.length})`
+
+            // value: `(${campaigns_open.length})`
         },
         {
             id: 2,
@@ -86,11 +87,11 @@ function Campaign({ }: Props) {
 
     const MapTap: { [key: number]: JSX.Element } = {
         1: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
-            {
+            {/* {
                 campaigns_open.map((campaign) =>
                     <CampaignItem key={campaign.id} title={campaign.label} time='24/12/2022' href={campaign.href} image={campaign.image} />
                 )
-            }
+            } */}
         </Stack>,
         2: <Stack mt={3} divider={<Divider sx={{ my: 3, borderColor: '#2A2D3E', mx: 5 }} />}>
             {
@@ -100,7 +101,7 @@ function Campaign({ }: Props) {
             }
         </Stack>,
         3: <Box width={1}>
-            <ClaimReward />
+            {/* <ClaimReward /> */}
         </Box>
     }
     // return <ComingSoon hasCountDown={false} title={"Leaderboard </br> of Testnet's campaign"} subTitle='will be announced at 8 UTC June 30, 2023' />
