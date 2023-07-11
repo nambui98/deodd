@@ -1,9 +1,9 @@
 import { Utils } from '@/utils/index'
 import { ClickAwayListener } from '@mui/base'
 import { Avatar, Box, Button, Divider, IconButton, InputAdornment, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Popover, Popper, Stack, Typography } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
-import { DOWNSTREAM_MESSAGE, DateOpenMainnet } from 'constants/index'
+import { DOWNSTREAM_MESSAGE, DateOpenMainnet, JOINED } from 'constants/index'
 import { useSiteContext } from 'contexts/SiteContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import EmojiPicker from 'emoji-picker-react'
@@ -20,6 +20,7 @@ import { Format } from 'utils/format'
 import BlockState, { enumBlockState } from './BlockState'
 import CoinAnimation from './CoinAnimation'
 import { isAfter, isBefore, isEqual } from 'date-fns'
+import { useRouter } from 'next/router'
 
 export type MessageType = {
     userInfo: {
@@ -59,6 +60,9 @@ function Chat({ open }: { open: boolean }) {
 
     const isNotMainnetOpen = isBefore(new Date(), new Date(DateOpenMainnet))
     const [isHasNewMessage, setIsHasNewMessage] = useState<boolean>(false);
+
+    const queryClient = useQueryClient();
+    const [isPing, setIsPing] = useState(false);
     const { refetch: getMessages, isFetching: isFetchingMessages } = useQuery({
         queryKey: ["getMessages", walletAddress],
         enabled: !!walletAddress,
@@ -112,11 +116,24 @@ function Chat({ open }: { open: boolean }) {
                 }
             },
         });
-    const { sendJsonMessage, readyState } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
+    const router = useRouter();
+    const { sendJsonMessage, readyState, } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
         {
             onMessage: async (event) => {
+
+                // debugger
                 const dataMessage = await getDataFromBlob(event.data)
+                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", dataMessage)
+                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", Object.keys(dataMessage ?? {}))
+
                 if (dataMessage !== null) {
+                    if (dataMessage[JOINED]) {
+                        console.log("888888888888888888888888");
+                        debugger
+                        // pingSocket();
+                        setIsPing(true);
+                        // queryClient.getQueryCache().gt
+                    }
                     if (dataMessage[DOWNSTREAM_MESSAGE]) {
                         if (dataMessage[DOWNSTREAM_MESSAGE].data.command === MessageCommand.NEW_MESSAGE) {
                             setIsHasNewMessage(!isScrollBottom);
@@ -129,29 +146,40 @@ function Chat({ open }: { open: boolean }) {
                     }
                 }
             },
+            onOpen(event) {
+            },
+            retryOnError: true,
+            onClose(event) {
+                console.log("🚀 ~ file: Chat.tsx:134 ~ onClose ~ event:", event)
+                setIsPing(false);
+            },
             // reconnectInterval: 5000,
-            shouldReconnect: () => true
+            // shouldReconnect: () => true
         },
     );
 
     //interval ping connect socket
-    const pingSocket = useQuery({
-        queryKey: ["pingSocket"],
-        enabled: !!walletAddress && readyState === ReadyState.OPEN,
+    const { refetch: pingSocket } = useQuery({
+        queryKey: ["pingSocket", walletAddress],
+        enabled: isPing,
         retry: false,
         queryFn: () => sendPingSocket(),
+        refetchIntervalInBackground: true,
+        // refetchIntervalInBackground: 55000,
         refetchInterval: 55000
     });
     const joinChat = useQuery({
-        queryKey: ["joinChat"],
-        enabled: !!walletAddress,
-        retry: true,
-        // retry
+        queryKey: ["joinChat", walletAddress],
+        enabled: !!walletAddress && readyState === ReadyState.OPEN,
+        // retry: true,
+        refetchOnWindowFocus: false,
         queryFn: () => sendJoinChat(),
         onError: async (err: any) => {
-            const response = await DeoddService.refreshToken();
-            const { accessToken } = response.data.data;
-            LocalStorage.setAccessToken(accessToken);
+            debugger
+            // router.reload();
+            // const response = await DeoddService.refreshToken();
+            // const { accessToken } = response.data.data;
+            // LocalStorage.setAccessToken(accessToken);
             // setIsLoadMoreWithoutAuth(false);
             // setIsError(true)
             // setTitleError(err.response?.data?.meta.error_message)
@@ -160,15 +188,16 @@ function Chat({ open }: { open: boolean }) {
 
     const sendPingSocket = () => {
         const message: any = [0, {}];
+        console.log("888888888888888888888888pingSocket");
+
         sendJsonMessage(message);
         return true;
     }
 
     const sendJoinChat = () => {
-        if (readyState === ReadyState.CLOSED) {
-            const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
-            return sendJsonMessage(message);
-        }
+        console.log("🚀 ~ file: Chat.tsx:194 ~ sendJoinChat ~ readyState:", readyState)
+        const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
+        sendJsonMessage(message);
         return true;
     }
 
@@ -179,7 +208,7 @@ function Chat({ open }: { open: boolean }) {
             let result: { [key: number]: any } = {};
             for (let index = 0; index < parseJson.length; index++) {
                 const element: any = parseJson[index];
-                result[parseInt(element[0])] = element[1]!.data;
+                result[parseInt(element[0])] = element[1]!.data ?? element[1];
             }
             return result;
         }
@@ -234,13 +263,8 @@ function Chat({ open }: { open: boolean }) {
             if (walletAddress) {
                 getMessages()
             }
-            //  else {
-            //     getMessagesWithoutAuth();
-            // }
         }
-    }, [inView, walletAddress, getMessages,
-        // getMessagesWithoutAuth
-    ])
+    }, [inView, walletAddress, getMessages])
 
     //
     const handleReplyUser = () => {
