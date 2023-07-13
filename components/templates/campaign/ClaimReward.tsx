@@ -60,7 +60,7 @@ const ClaimReward: React.FC<any> = () => {
     const [valueSelect, setValueSelect] = useState<string>('');
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
     const [isLoadingClaim, setIsLoadingClaim] = useState<boolean>(false)
-
+    const { handleConnectWallet, isConnectingWallet, walletIsConnected } = useWalletContext();
     const { walletAddress } = useWalletContext();
     const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
     const { data: histories, isFetching: isFetchingHistory } = useQuery({
@@ -199,8 +199,24 @@ const ClaimReward: React.FC<any> = () => {
         createData('Win/Lose Streak Campaign', [], '12/12/2022'),
         createData('Win/Lose Streak Campaign', [], undefined),
     ];
+    if (!walletIsConnected) {
+        return <Box p={3} mt={3} mx="auto" sx={{ display: 'flex', justifyContent: 'center' }} width={{ md: 544 }} borderRadius={3} bgcolor={"secondary.300"}>
+            <ButtonLoading
+                onClick={handleConnectWallet}
+                sx={{
+                    px: 5, py: 2,
+                    mx: 'auto',
+                    borderRadius: 2,
+                    width: 'auto',
+                    textTransform: 'none',
+                }}
+                loading={isConnectingWallet}>
+                <Typography variant='body2' fontSize={16} fontWeight={600} >Connect wallet</Typography>
+            </ButtonLoading>
+        </Box>
 
-    return <Box mt={3} p={3} width={{ md: 544 }} borderRadius={3} bgcolor={"secondary.300"}>
+    }
+    return <Box mt={3} p={3} mx="auto" width={{ md: 544 }} borderRadius={3} bgcolor={"secondary.300"}>
         {
             isShowHistory ? <Box>
                 <ButtonBase onClick={() => setIsShowHistory(false)}>
