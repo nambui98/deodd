@@ -6,8 +6,9 @@ var cache = require('memory-cache');
 type Data = {
     data: any
 }
+// eslint-disable-next-line import/no-anonymous-default-export
 export default async (
-    req: NextApiRequest,
+    _req: NextApiRequest,
     res: NextApiResponse<Data>
 ) => {
     const key = 'priceToken';

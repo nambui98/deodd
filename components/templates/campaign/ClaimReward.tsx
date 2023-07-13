@@ -11,6 +11,9 @@ import { useWalletContext } from "contexts/WalletContext";
 import { Format } from "utils/format";
 import { AxiosResponse } from "axios";
 import { useSiteContext } from "contexts/SiteContext";
+import { useContractRead, useContractWrite } from "wagmi";
+import { claimAllStarContract, claimRefContract } from "libs/contract";
+import { ethers } from "ethers";
 type rewardItem = {
     value: number,
     type: string,
@@ -18,18 +21,18 @@ type rewardItem = {
 export const CAMPAIGNS_FETCH: {
     id: string,
     label: string,
-    fetch: (wallet: string) => Promise<AxiosResponse<any, any>>
+    fetch: (wallet: string, type?: string) => Promise<AxiosResponse<any, any>>
 }[] = [
         {
             id: 'FLIP_VOLUME',
             label: 'Volume of Bets',
             fetch: DeoddService.getTotalVolume
         },
-        // {
-        //     id: 'TESTNET',
-        //     label: 'Testnet Campaign',
-        //     fetch: DeoddService.getLeaderboardTestail
-        // },
+        {
+            id: 'TESTNET',
+            label: 'Testnet Campaign',
+            fetch: DeoddService.getInfoClaimCampaign
+        },
         {
             id: 'WIN_STREAK',
             label: 'Win Streak Campaign',
@@ -43,7 +46,7 @@ export const CAMPAIGNS_FETCH: {
         {
             id: 'TOP_REF',
             label: 'Referral Campaign',
-            fetch: DeoddService.getLeaderboardReferral
+            fetch: DeoddService.getInfoClaimCampaign
         },
     ]
 function createData(
@@ -56,6 +59,8 @@ function createData(
 const ClaimReward: React.FC<any> = () => {
     const [valueSelect, setValueSelect] = useState<string>('');
     const [isShowHistory, setIsShowHistory] = useState<boolean>(false)
+    const [isLoadingClaim, setIsLoadingClaim] = useState<boolean>(false)
+
     const { walletAddress } = useWalletContext();
     const { setIsError, setIsSuccess, setTitleSuccess, setTitleError } = useSiteContext();
     const { data: histories, isFetching: isFetchingHistory } = useQuery({
@@ -70,20 +75,19 @@ const ClaimReward: React.FC<any> = () => {
             }
         },
     });
-    console.log("🚀 ~ file: ClaimReward.tsx:73 ~ histories:", histories)
-
 
     const { data: dataReward, isFetching, refetch: refetchMyInfoCampaign } = useQuery({
         queryKey: ["getCampaignDashboard", valueSelect],
         enabled: !!valueSelect,
-        queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress),
+        queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress, valueSelect),
         select: (data: any) => {
             if (data.status === 200) {
-                const connectWallet = data.data.data.connectWallet;
+                const connectWallet = data.data?.data?.connectWallet;
                 const result = {
                     ...connectWallet,
-                    reward: connectWallet.reward || connectWallet.winStreakReward || connectWallet.winStreakReward,
-                    isConnectWalletClaimed: data.data.data.isConnectWalletClaimed
+                    reward: connectWallet?.reward || connectWallet?.winStreakReward || connectWallet?.winStreakReward || data.data.amount,
+                    isConnectWalletClaimed: data.data?.data?.isConnectWalletClaimed ?? false,
+                    proof: data.data?.proof
                 }
                 return result;
             } else {
@@ -105,6 +109,68 @@ const ClaimReward: React.FC<any> = () => {
             setTitleSuccess("Claim successful");
         },
     });
+    console.log(ethers.utils.parseUnits('0.1'));
+    const handleClaim = () => {
+        setIsLoadingClaim(true)
+        if (valueSelect === 'TESTNET') {
+            claimAllStar?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                })
+                .catch(error => {
+                    setIsLoadingClaim(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Something went wrong');
+                })
+
+        }
+        else if (valueSelect === "TOP_REF") {
+            claimRef?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                })
+                .catch(error => {
+                    setIsLoadingClaim(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Something went wrong');
+                })
+        } else {
+            claim()
+        }
+    }
+
+    const { writeAsync: claimAllStar, isLoading: isLoadingStar } = useContractWrite({
+        address: claimAllStarContract.address,
+        mode: 'recklesslyUnprepared',
+        abi: claimAllStarContract.abi,
+        functionName: 'claim',
+        onError(error: any, variables, context) {
+            setIsError(true)
+            debugger
+            setTitleError(error.reason || 'Something wend wrong.');
+        },
+        args: [walletAddress, ethers.utils.parseUnits(dataReward?.reward ?? '0'), dataReward?.proof ?? '']
+    })
+    const { writeAsync: claimRef, isLoading: isLoadingRef } = useContractWrite({
+        address: claimRefContract.address,
+        mode: 'recklesslyUnprepared',
+        abi: claimRefContract.abi,
+        functionName: 'claim',
+
+        args: [walletAddress, ethers.utils.parseUnits(dataReward?.reward ?? '0'), dataReward?.proof ?? '']
+    })
+
+    const { refetch, data: dataClaimable } = useContractRead({
+        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : undefined,
+        abi: claimRefContract.abi,
+        functionName: 'claimable',
+        args: [walletAddress],
+        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "TESTNET"),
+    })
 
     let rows = [
         createData('Win/Lose Streak Campaign', [
@@ -134,7 +200,7 @@ const ClaimReward: React.FC<any> = () => {
         createData('Win/Lose Streak Campaign', [], undefined),
     ];
 
-    return <Box mt={3} p={3} width={544} borderRadius={3} bgcolor={"secondary.300"}>
+    return <Box mt={3} p={3} width={{ md: 544 }} borderRadius={3} bgcolor={"secondary.300"}>
         {
             isShowHistory ? <Box>
                 <ButtonBase onClick={() => setIsShowHistory(false)}>
@@ -233,13 +299,16 @@ const ClaimReward: React.FC<any> = () => {
                             }
                         </Box>
                         <ButtonLoading
-                            loading={claimLoading}
-                            disabled={isFetching || !valueSelect || !dataReward?.reward || dataReward?.isConnectWalletClaimed}
+                            loading={claimLoading || isLoadingClaim}
+                            disabled={isFetching || !valueSelect || dataClaimable === false || !dataReward?.reward || dataReward?.isConnectWalletClaimed || parseFloat(dataReward?.reward ?? 0) <= 0}
                             sx={{ textTransform: 'none', py: 2 }}
-                            onClick={() => claim()}
+                            onClick={() => handleClaim()}
                         >
                             {
-                                dataReward?.isConnectWalletClaimed ? 'Claimed' : "Claim reward"
+                                (dataReward?.isConnectWalletClaimed
+                                    ||
+                                    (dataClaimable === false && parseFloat(dataReward?.reward) > 0)
+                                ) ? 'Claimed' : "Claim reward"
                             }
 
                         </ButtonLoading>
