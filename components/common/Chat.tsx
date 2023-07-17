@@ -140,11 +140,19 @@ function Chat({ open }: { open: boolean }) {
             },
             onOpen(event) {
             },
+            onReconnectStop: () => {
+                debugger
+            },
             retryOnError: true,
             onClose(event) {
                 console.log("🚀 ~ file: Chat.tsx:134 ~ onClose ~ event:", event)
-                setIsPing(false);
-                router.reload();
+                console.log(isPing);
+                if (isPing) {
+                    setIsPing(false);
+                    debugger
+                    router.reload();
+
+                }
             },
             // reconnectInterval: 5000,
             // shouldReconnect: () => true
@@ -154,13 +162,22 @@ function Chat({ open }: { open: boolean }) {
     //interval ping connect socket
     const { refetch: pingSocket } = useQuery({
         queryKey: ["pingSocket", walletAddress],
-        enabled: isPing,
+        enabled: isPing && !!walletAddress,
         retry: false,
+        refetchOnWindowFocus: false,
         queryFn: () => sendPingSocket(),
+        // cacheTime: 3000,
         refetchIntervalInBackground: true,
         // refetchIntervalInBackground: 55000,
         refetchInterval: 55000
     });
+    useEffect(() => {
+
+        return () => {
+            setIsPing(false);
+        }
+    }, [])
+
     const joinChat = useQuery({
         queryKey: ["joinChat", walletAddress],
         enabled: !!walletAddress && readyState === ReadyState.OPEN,
@@ -180,14 +197,15 @@ function Chat({ open }: { open: boolean }) {
     });
 
     const sendPingSocket = () => {
+        debugger
         const message: any = [0, {}];
-        console.log("888888888888888888888888pingSocket");
-
+        console.log("888888888888888888888888pingSocket")
         sendJsonMessage(message);
         return true;
     }
 
     const sendJoinChat = () => {
+        setIsPing(false)
         console.log("🚀 ~ file: Chat.tsx:194 ~ sendJoinChat ~ readyState:", readyState)
         const message: any = [2, { "accessToken": LocalStorage.getAccessToken() }];
         sendJsonMessage(message);
