@@ -152,7 +152,8 @@ function Chat({ open }: { open: boolean }) {
             onClose(event) {
                 console.log("🚀 ~ file: Chat.tsx:134 ~ onClose ~ event:", event)
                 setIsPing(false);
-                router.reload();
+                // debugger
+                // router.reload();
             },
             // reconnectInterval: 5000,
             // shouldReconnect: () => true
