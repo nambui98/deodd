@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import SelectBox from "components/common/SelectBox";
+import { LoyaltySelectBox } from "components/common/SelectBox";
 import { TypeTab, MyTabs2 } from "components/common/Tabs";
 import React, { useState } from "react";
 import { Clock2Icon, ClockIcon, CupIcon } from "utils/Icons";
@@ -81,7 +81,7 @@ function JackpotPoolBoard({
         })}
       >
         <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-        <SelectBox selectOptions={selectOptions} setValue={setSeason} />
+        <LoyaltySelectBox selectOptions={selectOptions} setValue={setSeason} selectTarget="jackpot" />
       </Stack>
 
       {valueTab === 1 ? (
