@@ -124,6 +124,7 @@ const ClaimReward: React.FC<any> = () => {
                     return resWrite.wait();
                 })
                 .then((res) => {
+                    refetchClaimAble();
                 })
                 .catch(error => {
                     setIsLoadingClaim(false);
@@ -140,6 +141,8 @@ const ClaimReward: React.FC<any> = () => {
                     return resWrite.wait();
                 })
                 .then((res) => {
+
+                    refetchClaimAble();
                 })
                 .catch(error => {
                     setIsLoadingClaim(false);
@@ -147,7 +150,6 @@ const ClaimReward: React.FC<any> = () => {
                     setTitleError(error.reason || 'Something went wrong');
                 }).finally(() => {
                     setIsLoadingClaim(false);
-                    refetchMyInfoCampaign()
                 })
         } else if (valueSelect === "NFT_AIRDROP") {
             claimNFTDROP?.()
@@ -155,6 +157,7 @@ const ClaimReward: React.FC<any> = () => {
                     return resWrite.wait();
                 })
                 .then((res) => {
+                    refetchClaimAble();
                 })
                 .catch(error => {
                     setIsLoadingClaim(false);
@@ -162,7 +165,6 @@ const ClaimReward: React.FC<any> = () => {
                     setTitleError(error.reason || 'Something went wrong');
                 }).finally(() => {
                     setIsLoadingClaim(false);
-                    refetchMyInfoCampaign()
                 })
         } else {
             claim()
@@ -201,7 +203,7 @@ const ClaimReward: React.FC<any> = () => {
         args: [walletAddress, ethers.utils.parseUnits(dataReward?.reward ?? '0'), dataReward?.proof ?? '']
     })
 
-    const { refetch, data: dataClaimable } = useContractRead({
+    const { refetch: refetchClaimAble, data: dataClaimable } = useContractRead({
         address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : undefined,
         abi: claimRefContract.abi,
         functionName: 'claimable',
