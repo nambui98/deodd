@@ -30,7 +30,7 @@ export const CAMPAIGNS_FETCH: {
         },
         {
             id: 'TESTNET',
-            label: 'Testnet Campaign',
+            label: 'DeDD Testnet All-Stars',
             fetch: DeoddService.getInfoClaimCampaign
         },
         {
@@ -45,12 +45,12 @@ export const CAMPAIGNS_FETCH: {
         },
         {
             id: 'TOP_REF',
-            label: 'Referral Campaign',
+            label: 'DeODD Testnet Referral',
             fetch: DeoddService.getInfoClaimCampaign
         },
         {
             id: 'NFT_AIRDROP',
-            label: 'NFT Airdrop Campaign',
+            label: 'DeODD Airdrop NFT',
             fetch: DeoddService.getInfoClaimCampaign
         },
     ]
@@ -147,6 +147,7 @@ const ClaimReward: React.FC<any> = () => {
                     setTitleError(error.reason || 'Something went wrong');
                 }).finally(() => {
                     setIsLoadingClaim(false);
+                    refetchMyInfoCampaign()
                 })
         } else if (valueSelect === "NFT_AIRDROP") {
             claimNFTDROP?.()
@@ -161,6 +162,7 @@ const ClaimReward: React.FC<any> = () => {
                     setTitleError(error.reason || 'Something went wrong');
                 }).finally(() => {
                     setIsLoadingClaim(false);
+                    refetchMyInfoCampaign()
                 })
         } else {
             claim()
