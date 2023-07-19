@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next/types"
 import allStar from '../../../../data/merkle-allstar.json'
 import ref from '../../../../data/merkle-ref.json'
+import nft from '../../../../data/merkle-nft.json'
 import { BigNumber, ethers } from "ethers"
 type ResType = {
     data: any
@@ -24,13 +25,23 @@ export default function handler(
         } | undefined;
         ;
         if (type === 'TESTNET') {
-            myData = (allStar as any).merkledata.claimdata[wallet.toLowerCase()]
+            myData = (allStar as any).merkleData.claimData[wallet.toLowerCase()]
+            if (myData) {
+                myData.amount = ethers.utils.formatEther(BigNumber.from(myData?.amount));
+            }
         } else if (type === 'TOP_REF') {
-            myData = (ref as any).merkledata.claimdata[wallet.toLowerCase()]
+            myData = (ref as any).merkleData.claimData[wallet.toLowerCase()]
+            if (myData) {
+                myData.amount = ethers.utils.formatEther(BigNumber.from(myData?.amount));
+            }
+        } else if (type === 'NFT_AIRDROP') {
+            myData = (nft as any).merkleData.claimData[wallet.toLowerCase()]
+            if (myData) {
+                myData.amount = parseFloat(myData?.amount ?? '0').toString();
+            }
         }
         return res.status(200).json({
             ...myData,
-            amount: ethers.utils.formatEther(BigNumber.from(myData?.amount))
         })
 
 

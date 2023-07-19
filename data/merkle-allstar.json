@@ -1,8 +1,8 @@
 {
-    "merkledata": {
+    "merkleData": {
         "merkleRoot": "0x7e1c99ef4925fc5d74fc4607526ae2acf7c2a2128e7737e234995d003f25a95a",
-        "totalamount": "7525000000000000000",
-        "claimdata": {
+        "totalAmount": "7525000000000000000",
+        "claimData": {
             "0xafe8f807d93c16db3af886490dcf297c13a8ef93": {
                 "amount": "2500000000000000000",
                 "proof": [

@@ -2,7 +2,7 @@ import { Box, ButtonBase, MenuItem, Paper, Select, SelectChangeEvent, Skeleton, 
 import { useState } from "react";
 import { ButtonLoading, ButtonTertiary } from "../../ui/button";
 import { ArrowLeftIcon, BnbIcon } from "utils/Icons";
-import { BnbImage, CoinEmptyImage, MapIcon } from "utils/Images";
+import { BnbImage, Bronze2Image, BronzeImage, CoinEmptyImage, MapIcon } from "utils/Images";
 import MyImage from "components/ui/image";
 import Campaign, { CAMPAIGNS } from "pages/campaign";
 import { DeoddService } from "libs/apis";
@@ -12,8 +12,8 @@ import { Format } from "utils/format";
 import { AxiosResponse } from "axios";
 import { useSiteContext } from "contexts/SiteContext";
 import { useContractRead, useContractWrite } from "wagmi";
-import { claimAllStarContract, claimRefContract } from "libs/contract";
-import { ethers } from "ethers";
+import { claimAllStarContract, claimNFT, claimRefContract } from "libs/contract";
+import { BigNumber, ethers } from "ethers";
 type rewardItem = {
     value: number,
     type: string,
@@ -46,6 +46,11 @@ export const CAMPAIGNS_FETCH: {
         {
             id: 'TOP_REF',
             label: 'Referral Campaign',
+            fetch: DeoddService.getInfoClaimCampaign
+        },
+        {
+            id: 'NFT_AIRDROP',
+            label: 'NFT Airdrop Campaign',
             fetch: DeoddService.getInfoClaimCampaign
         },
     ]
@@ -82,6 +87,7 @@ const ClaimReward: React.FC<any> = () => {
         queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress, valueSelect),
         select: (data: any) => {
             if (data.status === 200) {
+                debugger
                 const connectWallet = data.data?.data?.connectWallet;
                 const result = {
                     ...connectWallet,
@@ -123,6 +129,8 @@ const ClaimReward: React.FC<any> = () => {
                     setIsLoadingClaim(false);
                     setIsError(true);
                     setTitleError(error.reason || 'Something went wrong');
+                }).finally(() => {
+                    setIsLoadingClaim(false);
                 })
 
         }
@@ -137,12 +145,39 @@ const ClaimReward: React.FC<any> = () => {
                     setIsLoadingClaim(false);
                     setIsError(true);
                     setTitleError(error.reason || 'Something went wrong');
+                }).finally(() => {
+                    setIsLoadingClaim(false);
+                })
+        } else if (valueSelect === "NFT_AIRDROP") {
+            claimNFTDROP?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                })
+                .catch(error => {
+                    setIsLoadingClaim(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Something went wrong');
+                }).finally(() => {
+                    setIsLoadingClaim(false);
                 })
         } else {
             claim()
         }
     }
-
+    const { writeAsync: claimNFTDROP, isLoading: isLoadingNFTDROP } = useContractWrite({
+        address: claimNFT.address,
+        mode: 'recklesslyUnprepared',
+        abi: claimNFT.abi,
+        functionName: 'claim',
+        onError(error: any, variables, context) {
+            debugger
+            setIsError(true)
+            setTitleError(error.reason || 'Something wend wrong.');
+        },
+        args: [walletAddress, valueSelect === "NFT_AIRDROP" ? BigNumber.from(dataReward?.reward ?? '0') : 0, dataReward?.proof ?? '']
+    })
     const { writeAsync: claimAllStar, isLoading: isLoadingStar } = useContractWrite({
         address: claimAllStarContract.address,
         mode: 'recklesslyUnprepared',
@@ -165,11 +200,11 @@ const ClaimReward: React.FC<any> = () => {
     })
 
     const { refetch, data: dataClaimable } = useContractRead({
-        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : undefined,
+        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : undefined,
         abi: claimRefContract.abi,
         functionName: 'claimable',
         args: [walletAddress],
-        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "TESTNET"),
+        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "TESTNET" || valueSelect === "NFT_AIRDROP"),
     })
 
     let rows = [
@@ -307,7 +342,13 @@ const ClaimReward: React.FC<any> = () => {
                                                     :
                                                     <Typography variant="h3" fontSize={"48px"}>{Format.formatMoney(dataReward?.reward ?? 0)}</Typography>
                                             }
-                                            <MyImage width={40} src={BnbImage} alt="" />
+                                            {
+                                                valueSelect !== "NFT_AIRDROP" ?
+
+                                                    <MyImage width={40} src={BnbImage} alt="" />
+                                                    :
+                                                    <MyImage width={40} src={BronzeImage} alt="" />
+                                            }
                                         </Stack>
                                     </Stack>
                                     :
