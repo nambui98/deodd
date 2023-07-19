@@ -30,7 +30,7 @@ export const CAMPAIGNS_FETCH: {
         },
         {
             id: 'TESTNET',
-            label: 'DeDD Testnet All-Stars',
+            label: 'DeODD Testnet All-Stars',
             fetch: DeoddService.getInfoClaimCampaign
         },
         {
