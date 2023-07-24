@@ -98,6 +98,8 @@ function StakingSuccess({
   }
   const handleClaim = () => {
     claimStaking.mutate();
+
+    queryClient.invalidateQueries({ queryKey: ['getPools'] });
   }
   return (
     <Stack gap={2}>
@@ -171,12 +173,13 @@ function StakingSuccess({
           <ButtonLoading
             // active={true}
             loading={claimStaking.isLoading}
-            disabled={!poolExpanded || poolExpanded.is_claimed}
+            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0}
             onClick={handleClaim}
             sx={{
               py: 1,
               px: 2,
               width: 'auto',
+              textTransform: 'none',
               fontSize: "0.75rem",
               fontWeight: 400,
               lineHeight: "1rem",
@@ -193,7 +196,11 @@ function StakingSuccess({
           >
 
             <Stack sx={{ flexDirection: "row", gap: 1 }}>
-              Claim
+              {
+                poolExpanded?.is_claimed ?
+                  'Claimed' : 'Claim'
+              }
+
               <BnbIcon width={16} color={Colors.primaryDark} />
             </Stack>
 
