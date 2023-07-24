@@ -1,5 +1,5 @@
 import { Box, Collapse, Divider, Skeleton, Stack, Typography, styled } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
@@ -30,10 +30,12 @@ function StakingSuccess({
 }) {
   const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
   const [isUnstakeLoading, setIsUnstakeLoading] = useState(false);
-  const { setIsError, setTitleError } = useSiteContext();
+  const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
   const [currentStageModal, setCurrentStageModal] = useState<number>(1);
   const [idNftSelected, setIdNftSelected] = useState<number | null>(null);
   const [poolExpanded, setPoolExpanded] = useState<any>(null);
+  console.log(poolExpanded);
+  console.log("🚀 ~ file: StakingSuccess.tsx:38 ~ poolExpanded:", poolExpanded)
 
   const [modeUnstake, setModeUnstake] = useState<boolean>(false);
 
@@ -49,7 +51,21 @@ function StakingSuccess({
       setTitleError(error.message || 'Something wend wrong.');
     },
   })
-
+  // hanlde claim
+  const claimStaking = useMutation({
+    mutationKey: [poolExpanded?.id],
+    mutationFn: () => {
+      return DeoddService.claimStaking({ poolId: poolExpanded?.id })
+    },
+    onError(error: any, variables, context) {
+      setIsError(true)
+      setTitleError(error.response.data.meta.error_message)
+    },
+    onSuccess(data, variables, context) {
+      setTitleSuccess('Claim successfully')
+      setIsSuccess(true);
+    },
+  });
   const handleBeforeUnStake = () => {
     if (currentStageModal === 3) {
       setIsUnstakeLoading(true);
@@ -79,8 +95,9 @@ function StakingSuccess({
         setIsUnstakeLoading(false);
         setTitleError(error.reason || 'Something went wrong');
       })
-
-
+  }
+  const handleClaim = () => {
+    claimStaking.mutate();
   }
   return (
     <Stack gap={2}>
@@ -151,15 +168,15 @@ function StakingSuccess({
 
             }}
           />
-          {/* <ButtonMain
-            active={true}
-            title={<Stack sx={{ flexDirection: "row", gap: 1 }}>
-              Claim
-              <BnbIcon width={16} color={Colors.primaryDark} />
-            </Stack>}
+          <ButtonLoading
+            // active={true}
+            loading={claimStaking.isLoading}
+            disabled={!poolExpanded || poolExpanded.is_claimed}
+            onClick={handleClaim}
             sx={{
               py: 1,
               px: 2,
+              width: 'auto',
               fontSize: "0.75rem",
               fontWeight: 400,
               lineHeight: "1rem",
@@ -173,8 +190,16 @@ function StakingSuccess({
                 }
               }
             }}
-          /> */}
+          >
+
+            <Stack sx={{ flexDirection: "row", gap: 1 }}>
+              Claim
+              <BnbIcon width={16} color={Colors.primaryDark} />
+            </Stack>
+
+          </ButtonLoading>
         </Stack>
+
       </Stack>
       {pools?.map((pool: any) =>
         <PoolItem

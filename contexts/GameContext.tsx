@@ -186,6 +186,8 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 					fId
 				}: FlipResultType = (args[6] as any).args;
 				if (wallet === walletAddress) {
+
+					debugger
 					audio.loop = false;
 					audio.load();
 					setGameResult((prev: GameResultType) => ({ ...prev, amount: 0, serviceFeePercent: 0, vrfRbFeeBNB: 0, flipId: fId.toString() }))
