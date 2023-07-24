@@ -3,7 +3,7 @@ import { Box, Drawer as DrawerMobile, Divider, List, ListItem, ListItemButton, L
 import { Drawer } from 'components/ui/drawer';
 import { Colors, DRAWER_WIDTH } from 'constants/index';
 import { CampaignIcon, CoinFlipIcon, DashboardIcon, FlipIcon, HomeIcon, LoyaltyIcon, Ref2EarnIcon, ShopIcon, StrongBox2Icon } from 'utils/Icons';
-import { LotteryImage, MoneyBagImage } from 'utils/Images';
+import { BlogImage, LotteryImage, MoneyBagImage } from 'utils/Images';
 import { Contact } from './Contact';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -132,7 +132,19 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         id: 13,
         isOnlyComponent: true,
         child: <Divider sx={{ mx: 3, mt: 1 }} />
-    }
+    },
+    {
+        id: 14,
+        icon: <MyImage src={BlogImage} width={32} height={32} alt="" />,
+        title: '',
+        path: 'https://blog.deodd.io/',
+        highLightText: false,
+        // disabledHover: true,
+        child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+            <Typography variant='h3' fontWeight={600} color={'primary.main'}>Blog</Typography>
+        </Stack>,
+        isLink: true
+    },
 ]
 
 
