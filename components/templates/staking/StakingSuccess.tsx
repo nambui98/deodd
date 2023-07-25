@@ -68,6 +68,7 @@ function StakingSuccess({
     onSuccess(data, variables, context) {
       setTitleSuccess('Claim successfully')
       setIsSuccess(true);
+      queryClient.invalidateQueries({ queryKey: ['getPools'] });
     },
   });
   const handleBeforeUnStake = () => {
@@ -101,7 +102,6 @@ function StakingSuccess({
   }
   const handleClaim = () => {
     claimStaking.mutate();
-    queryClient.invalidateQueries({ queryKey: ['getPools'] });
   }
 
   useEffect(() => {
