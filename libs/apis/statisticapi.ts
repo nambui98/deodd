@@ -5,23 +5,23 @@ const baseURL =
     ? '/deodd'
     : process.env.NEXT_PUBLIC_ENVIRONMENT === 'PRODUCTION'
       ? '/deodd' : ''
-export const getTopStreakToday = async () => {
+export const getTopStreakToday = async (timeStatus: 'TODAY' | 'UNTIL_NOW') => {
   return vhIdRequest({
-    url: baseURL + `/topstreak/today`,
+    url: baseURL + `/topstreak/today?time=${timeStatus}`,
     method: "get",
   });
 };
 
-export const getFlipPerUser = async () => {
+export const getFlipPerUser = async (timeStatus: 'TODAY' | 'UNTIL_NOW') => {
   return vhIdRequest({
-    url: baseURL + `/dashboard/flipperuser`,
+    url: baseURL + `/dashboard/flipperuser?time=${timeStatus}`,
     method: "get",
   });
 };
 
-export const getFlipDashboardStat = async () => {
+export const getFlipDashboardStat = async (timeStatus: 'TODAY' | 'UNTIL_NOW') => {
   return vhIdRequest({
-    url: baseURL + `/dashboard/flip`,
+    url: baseURL + `/dashboard/flip?time=${timeStatus}`,
     method: "get",
   });
 };

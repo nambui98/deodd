@@ -34,6 +34,7 @@ type StatisticType = {
 
 export function useDashboardStat() {
   const { setIsLoading } = useSiteContext();
+  const [timeStatus, setTimeStatus] = useState<'UNTIL_NOW' | 'TODAY'>('UNTIL_NOW')
   const [statistic, setStatistic] = useState<StatisticType>({
     error: {
       streakData: {
@@ -79,9 +80,9 @@ export function useDashboardStat() {
     async function getData() {
       try {
         const [streakResult, statResult, flipResult] = await Promise.allSettled([
-          getTopStreakToday(),
-          getFlipDashboardStat(),
-          getFlipPerUser(),
+          getTopStreakToday(timeStatus),
+          getFlipDashboardStat(timeStatus),
+          getFlipPerUser(timeStatus),
         ]);
         // Streak data - Streak Section
         if (streakResult.status === "fulfilled") {
@@ -229,7 +230,7 @@ export function useDashboardStat() {
 
     setIsLoading(true);
     getData();
-  }, [setIsLoading]);
+  }, [setIsLoading, timeStatus]);
 
-  return { ...statistic };
+  return { ...statistic, timeStatus, setTimeStatus };
 }
