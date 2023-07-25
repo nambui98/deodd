@@ -8,7 +8,7 @@ import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { nftHolderContract } from "libs/contract";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BnbIcon, CupIcon } from "utils/Icons";
 import { useContractWrite } from "wagmi";
 import StakingHistoryTable from "./components/StakingHistoryTable";
@@ -16,6 +16,7 @@ import UnstakeModal from "./components/UnstakeModal";
 import { de } from 'date-fns/locale';
 import { Format } from "utils/format";
 import CoinAnimation from "components/common/CoinAnimation";
+import { useInView } from "react-intersection-observer";
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
@@ -40,6 +41,9 @@ function StakingSuccess({
   const [modeUnstake, setModeUnstake] = useState<boolean>(false);
 
   const queryClient = useQueryClient()
+
+  const [refEndedPool, inView] = useInView();
+  const [offset, setOffset] = useState<number>(0);
 
   const { writeAsync: unStake } = useContractWrite({
     address: nftHolderContract.address,
@@ -73,7 +77,6 @@ function StakingSuccess({
     } else {
       setIsUnstakeOpened(true)
     }
-
   }
   const handleUnstake = () => {
     setIsUnstakeLoading(true);
@@ -98,9 +101,16 @@ function StakingSuccess({
   }
   const handleClaim = () => {
     claimStaking.mutate();
-
     queryClient.invalidateQueries({ queryKey: ['getPools'] });
   }
+
+  useEffect(() => {
+    if (inView) {
+      setOffset((prev) => prev + 10)
+    }
+  }, [inView])
+
+
   return (
     <Stack gap={2}>
       <Stack sx={{
@@ -173,7 +183,7 @@ function StakingSuccess({
           <ButtonLoading
             // active={true}
             loading={claimStaking.isLoading}
-            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0}
+            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0 || poolExpanded.id === currentPool.id}
             onClick={handleClaim}
             sx={{
               py: 1,
@@ -208,7 +218,7 @@ function StakingSuccess({
         </Stack>
 
       </Stack>
-      {pools?.map((pool: any) =>
+      {pools?.slice(0, offset).map((pool: any) =>
         <PoolItem
           pool={pool}
           key={pool.id}
@@ -221,6 +231,8 @@ function StakingSuccess({
           handleBeforeUnstake={handleBeforeUnStake}
         />
       )}
+
+      <Box ref={refEndedPool} />
 
     </Stack>
   );
@@ -335,16 +347,19 @@ const PoolItem = ({ pool, handleUnstake, handleBeforeUnstake, modeUnstake, idNft
         }}>
           <CoinAnimation mx="auto" width={50} height={50} />
         </Box> */}
+
         {
-          !isFetchGetNFTStaked ?
-            <StakingHistoryTable
-              modeUnstake={modeUnstake}
-              nfts={nftStaked}
-              idNftSelected={idNftSelected}
-              setIdNftSelected={setIdNftSelected}
-            />
-            :
-            <Skeleton variant="rounded" width={'100%'} height={580} />
+          poolExpanded?.id === pool.id && (
+            !isFetchGetNFTStaked ?
+              <StakingHistoryTable
+                modeUnstake={modeUnstake}
+                nfts={nftStaked}
+                idNftSelected={idNftSelected}
+                setIdNftSelected={setIdNftSelected}
+              />
+              :
+              <Skeleton variant="rounded" width={'100%'} height={80} />
+          )
         }
         {
           modeUnstake &&
