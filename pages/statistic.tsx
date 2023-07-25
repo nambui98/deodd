@@ -13,7 +13,9 @@ export default function Statistic() {
     <Container sx={{ mt: 2, mb: { md: 10, xs: 8.125 } }}>
       <Stack direction={'row'} justifyContent={'space-between'}>
         <Typography variant="h2" mb={3} fontWeight={{ md: 500, xs: 700 }}>
-          Today stat
+          {
+            timeStatus === "TODAY" ? 'Today stat' : 'Until now stat'
+          }
         </Typography>
 
         <Select
