@@ -25,26 +25,26 @@ export const CAMPAIGNS_FETCH: {
     label: string,
     fetch: (wallet: string, type?: string) => Promise<AxiosResponse<any, any>>
 }[] = [
-        {
-            id: 'FLIP_VOLUME',
-            label: 'Volume of Bets',
-            fetch: DeoddService.getTotalVolume
-        },
+        // {
+        //     id: 'FLIP_VOLUME',
+        //     label: 'Volume of Bets',
+        //     fetch: DeoddService.getTotalVolume
+        // },
         {
             id: 'TESTNET',
             label: 'DeODD Testnet All-Stars',
             fetch: DeoddService.getInfoClaimCampaign
         },
-        {
-            id: 'WIN_STREAK',
-            label: 'Win Streak Campaign',
-            fetch: DeoddService.getWinDashboard
-        },
-        {
-            id: 'LOSE_STREAK',
-            label: 'Lose Streak Campaign',
-            fetch: DeoddService.getLoseDashboard
-        },
+        // {
+        //     id: 'WIN_STREAK',
+        //     label: 'Win Streak Campaign',
+        //     fetch: DeoddService.getWinDashboard
+        // },
+        // {
+        //     id: 'LOSE_STREAK',
+        //     label: 'Lose Streak Campaign',
+        //     fetch: DeoddService.getLoseDashboard
+        // },
         {
             id: 'TOP_REF',
             label: 'DeODD Testnet Referral',
