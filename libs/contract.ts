@@ -26,3 +26,4 @@ export const nftHolderContract = { address: address.nftHolder, abi: nftHolderAbi
 export const claimAllStarContract = { address: address.claimAllStar, abi: claimAbi.abi }
 export const claimRefContract = { address: address.claimRef, abi: claimAbi.abi }
 export const claimNFT = { address: address.claimNFT, abi: claimNFTAbi.abi }
+export const claimBugBuster = { address: address.claimBugBuster, abi: claimAbi.abi }
