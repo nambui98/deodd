@@ -178,11 +178,21 @@ const getInfoClaimCampaign = async (walletAddress: string, type?: string) => {
     return axios.get(
         `/api/campaign/claim/${walletAddress}/${type}`)
 }
+const claimStaking = async (data: { poolId: string }) => {
+    return await vhIdRequest({
+        url: baseURL + `/staking/claim`,
+        method: 'POST',
+        data: JSON.stringify(
+            data
+        )
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    claimStaking,
     getInfoClaimCampaign,
     getNFTDetailById,
     getUserTestail,

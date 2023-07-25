@@ -62,7 +62,8 @@ function ListUserFlip() {
             )
         },
 
-        refetchInterval: statusGame === StatusGame.FLIPPING ? 100 : 2000,
+        refetchInterval: 2000
+        // refetchInterval: statusGame === StatusGame.FLIPPING ? 100 : 2000,
     });
     return (
         <ScrollContainer>
