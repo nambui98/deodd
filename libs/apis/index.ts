@@ -5,6 +5,7 @@ import { ChatApis } from "./chat"
 import { getCurrentIp } from "./ip"
 import { ShopApis } from "./shop"
 import { EnumNFT } from "libs/types"
+import axios from "axios"
 
 const baseURL =
     process.env.NEXT_PUBLIC_ENVIRONMENT === 'DEV'
@@ -173,11 +174,16 @@ const getClaimHistory = async () => {
         method: 'GET',
     })
 }
+const getInfoClaimCampaign = async (walletAddress: string, type?: string) => {
+    return axios.get(
+        `/api/campaign/claim/${walletAddress}/${type}`)
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getInfoClaimCampaign,
     getNFTDetailById,
     getUserTestail,
     saveInfoUser,

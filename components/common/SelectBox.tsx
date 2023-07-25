@@ -2,13 +2,14 @@ import { Autocomplete, TextField, Box } from '@mui/material'
 import React, { useState } from 'react'
 import { Colors } from 'constants/index';
 
-type Props = {
+type LoyaltySelectBoxProps = {
     selectOptions: string[];
     setValue: (value: number) => void;
+    selectTarget: 'jackpot' | 'nftholder';
 }
 
-function SelectBox({ selectOptions, setValue }: Props) {
-    const [valueSelect, setValueSelect] = useState<number>(0);
+export function LoyaltySelectBox({ selectOptions, setValue, selectTarget }: LoyaltySelectBoxProps) {
+    const [selectedValue, setSelectedValue] = useState<number>(0);
     const [open, setOpen] = useState(false); // Have to use controlled state so that the TextField close even when click on itself, not only on arrow button.
     return (
         <Autocomplete
@@ -18,7 +19,7 @@ function SelectBox({ selectOptions, setValue }: Props) {
                 <Box ref={params.InputProps.ref} onClick={() => { setOpen(!open) }}>
                     <TextField {...params} inputProps={{ ...params.inputProps, readOnly: true }} />
                 </Box>}
-            value={selectOptions[valueSelect]}
+            value={selectOptions[selectedValue]}
             disableClearable
             size='small'
             ListboxProps={{
@@ -32,8 +33,12 @@ function SelectBox({ selectOptions, setValue }: Props) {
             onChange={(e) => {
                 if (e.target instanceof HTMLLIElement) {
                     if (e.target.dataset.optionIndex) {
-                        setValue(+e.target.dataset.optionIndex);
-                        setValueSelect(+e.target.dataset.optionIndex);
+                        if (selectTarget === 'jackpot') {
+                            setValue(+e.target.innerText.replace(/\D/g, ''));
+                        } else if (selectTarget === 'nftholder') {
+                            setValue(+e.target.dataset.optionIndex);
+                        }
+                        setSelectedValue(+e.target.dataset.optionIndex);
                     }
                 }
             }}
@@ -41,6 +46,7 @@ function SelectBox({ selectOptions, setValue }: Props) {
         />
     )
 }
+
 const styleInput = {
     backgroundColor: "background.paper",
     '.MuiOutlinedInput-notchedOutline': {
@@ -65,4 +71,3 @@ const styleInput = {
         fill: Colors.secondary,
     },
 }
-export default SelectBox;

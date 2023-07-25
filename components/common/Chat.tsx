@@ -120,19 +120,11 @@ function Chat({ open }: { open: boolean }) {
     const { sendJsonMessage, readyState, } = useWebSocket(process.env.NEXT_PUBLIC_URL_WEBSOCKET ?? '',
         {
             onMessage: async (event) => {
-
-                // debugger
                 const dataMessage = await getDataFromBlob(event.data)
-                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", dataMessage)
-                console.log("🚀 ~ file: Chat.tsx:121 ~ onMessage: ~ dataMessage:", Object.keys(dataMessage ?? {}))
 
                 if (dataMessage !== null) {
                     if (dataMessage[JOINED]) {
-                        console.log("888888888888888888888888");
-                        debugger
-                        // pingSocket();
                         setIsPing(true);
-                        // queryClient.getQueryCache().gt
                     }
                     if (dataMessage[DOWNSTREAM_MESSAGE]) {
                         if (dataMessage[DOWNSTREAM_MESSAGE].data.command === MessageCommand.NEW_MESSAGE) {

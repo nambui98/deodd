@@ -1,0 +1,12 @@
+{
+    "merkleData": {
+        "merkleRoot": "0xc7c99a1084e6cdce81a750d5831c02734a62e722d5ae19ca818ddcc5728ad040",
+        "totalAmount": "500000000000000000",
+        "claimData": {
+            "0x6b5e821001e3d106748e7f65b124a220e44f505e": {
+                "amount": "500000000000000000",
+                "proof": []
+            }
+        }
+    }
+}
