@@ -19,7 +19,7 @@ const Banner = (props: Props) => {
             backgroundPosition: 'bottom',
             borderRadius: 4,
             backgroundRepeat: 'no-repeat',
-            height: '25.9375rem',
+            height: '20.9375rem',
             overflow: 'hidden',
             ':after': {
                 content: '""',
@@ -69,41 +69,50 @@ const Banner = (props: Props) => {
                     </Button>
                 </Stack>
             </Stack>
-            <Stack mt={-5} alignItems={'center'}>
-                <Typography variant='h5' fontWeight={700}>Total Jackpot</Typography>
-                <Stack direction={'row'} alignItems={'center'} gap={1}>
-                    <Typography fontSize={32} color="secondary.main" fontWeight={700}>14.042</Typography>
-                    <USDTIcon fill={Colors.secondaryDark} height={30} width={30} />
+            <Stack mt={4} direction={'row'}>
+                <Stack alignItems={'center'} flex={1}>
+                    <Typography variant='h5' fontWeight={700}>Total Jackpot</Typography>
+                    <Stack direction={'row'} alignItems={'center'} gap={1}>
+                        <Typography fontSize={32} color="secondary.main" fontWeight={700}>14.042</Typography>
+                        <USDTIcon fill={Colors.secondaryDark} height={30} width={30} />
+                    </Stack>
+                    <Typography mt={1} fontSize={14} component={'span'} fontWeight={500}>
+                        <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
+                            7,000 USDT
+                        </Typography>
+                        (fixed) +
+                        <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
+                            xxxx USDT
+                        </Typography>
+                        (bonus, estimated)
+                    </Typography>
+                    <Typography mt={1.5} fontWeight={700}>Next draw in:</Typography>
+                    <Box mt={1}>
+                        <Countdown endDate={'2023-07-25T13:00:00Z'} sxNumber={{ color: 'white' }} sxTitle={{ mt: 1, color: 'white' }} />
+                    </Box>
+
                 </Stack>
-                <Typography mt={1} fontSize={14} component={'span'} fontWeight={500}>
-                    <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                        7,000 USDT
-                    </Typography>
-                    (fixed) +
-                    <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                        xxxx USDT
-                    </Typography>
-                    (bonus, estimated)
-                </Typography>
-                <Typography mt={1.5} fontWeight={700}>Next draw in:</Typography>
-                <Box mt={1}>
-                    <Countdown endDate={'2023-07-25T13:00:00Z'} sxNumber={{ color: 'white' }} sxTitle={{ mt: 1, color: 'white' }} />
-                </Box>
-                <ButtonLoading fullWidth={false} sx={{
-                    width: 'auto',
-                    mt: 3,
-                    px: 5,
-                    py: 2,
-                    backgroundColor: 'background.default'
-                }}>Buy ticket</ButtonLoading>
-                <Typography fontSize={14} fontWeight={400} mt={2}>Time left to buy: 03:24:52</Typography>
-                <Typography component={'span'} fontSize={14} fontWeight={400} mt={3}>
+                <Stack flex={1} alignItems={'center'} gap={3}>
+                    <Box>
+                        <ButtonLoading fullWidth={false} sx={{
+                            width: 'auto',
+                            mt: 3,
+                            px: 5,
+                            py: 2,
+                            textTransform: 'none',
+                            backgroundColor: 'background.default'
+                        }}>Connect Wallet to Buy Ticket</ButtonLoading>
 
-                    <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx</Typography>
-                    tickets have been sold. Don&apos;t miss your chance!
-                </Typography>
+                    </Box>
+                    <Typography fontSize={14} fontWeight={400} >Time left to buy: 03:24:52</Typography>
+                    <Typography component={'span'} fontSize={14} fontWeight={400} >
+
+                        <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx </Typography>
+                        tickets have been sold. Don&apos;t miss your chance!
+                    </Typography>
+                </Stack>
+
             </Stack>
-
         </Box >
     )
 }
