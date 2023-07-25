@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
-import { format, isBefore } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { nftHolderContract } from "libs/contract";
@@ -183,7 +183,7 @@ function StakingSuccess({
           <ButtonLoading
             // active={true}
             loading={claimStaking.isLoading}
-            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0 || poolExpanded.id === currentPool.id}
+            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0 || (isAfter(new Date(), new Date(poolExpanded.start_time)) && isBefore(new Date(), new Date(poolExpanded.end_time)))}
             onClick={handleClaim}
             sx={{
               py: 1,
@@ -324,7 +324,10 @@ const PoolItem = ({ pool, handleUnstake, handleBeforeUnstake, modeUnstake, idNft
             <DisabledTypography>Start: {Format.formatDateTimeAlt(pool.start_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
             <DisabledTypography>End: {Format.formatDateTimeAlt(pool.end_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
           </Stack>
-          {/* <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography> */}
+          {
+            pool.is_claimed &&
+            <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography>
+          }
         </Stack>
 
 
