@@ -244,11 +244,11 @@ const ClaimReward: React.FC<any> = () => {
     })
 
     const { refetch: refetchClaimAble, data: dataClaimable } = useContractRead({
-        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : undefined,
+        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : valueSelect === "BUG_BUSTER" ? claimBugBuster.address : undefined,
         abi: claimRefContract.abi,
         functionName: 'claimable',
         args: [walletAddress],
-        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "TESTNET" || valueSelect === "NFT_AIRDROP"),
+        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "BUG_BUSTER" || valueSelect === "TESTNET" || valueSelect === "NFT_AIRDROP"),
     })
 
     let rows = [

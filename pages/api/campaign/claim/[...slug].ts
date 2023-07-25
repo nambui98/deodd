@@ -43,7 +43,7 @@ export default function handler(
         } else if (type === 'BUG_BUSTER') {
             myData = (bugbuster as any).merkleData.claimData[wallet.toLowerCase()]
             if (myData) {
-                myData.amount = parseFloat(myData?.amount ?? '0').toString();
+                myData.amount = ethers.utils.formatEther(BigNumber.from(myData?.amount));
             }
         }
         return res.status(200).json({
