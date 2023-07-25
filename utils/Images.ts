@@ -58,6 +58,7 @@ export const BannerMainnetImage = "/assets/images/mainnet-banner.png";
 export const BannerMainnetMobileImage = "/assets/images/mainnet-banner-mobile.png";
 export const BannerShopOpenImage = "/assets/images/shop-banner.png";
 export const BannerShopOpenMobileImage = "/assets/images/shop-banner-mobile.png";
+export const BannerLotteryImage = "/assets/images/lotterybanner.png";
 
 export const BlogImage = "/assets/images/blog.png";
 

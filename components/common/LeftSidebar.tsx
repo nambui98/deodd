@@ -119,7 +119,7 @@ const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
         title: '',
         path: '/lottery',
-        coming: true,
+        // coming: true,
         highLightText: false,
         disabledHover: true,
         child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
