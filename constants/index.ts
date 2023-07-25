@@ -50,6 +50,10 @@ export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
 export const DateOpenMainnet = "2023-06-29T09:00:00Z";
 export const DateOpenShop = "2023-06-27T13:00:00Z";
 
+export const DateClaimCampaign: { start: string, end: string } = {
+  start: "2023-07-25T10:00:00Z",
+  end: "2023-07-27T10:00:00Z"
+};
 export const DefaultRewardPool: number = 1000;
 export const DefaultStaked: number = 30;
 export const DefaultSeason: number = 30;
