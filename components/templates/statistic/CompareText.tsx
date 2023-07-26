@@ -5,9 +5,10 @@ import { TypographyProps } from "@mui/material";
 
 type CompareTextProps = {
   data: number | null,
+  timeStatus: 'TODAY' | 'UNTIL_NOW'
 } & TypographyProps
 
-export function CompareText({ data, ...props }: CompareTextProps) {
+export function CompareText({ data, timeStatus, ...props }: CompareTextProps) {
   console.log(data);
 
   return (
@@ -26,12 +27,16 @@ export function CompareText({ data, ...props }: CompareTextProps) {
       }
       {...props}
     >
-      {data !== null ? data < 0 ? (
-        <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
-      ) : (
-        <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
-      ) : "No flip data yesterday"}
+      {
+        timeStatus !== "UNTIL_NOW" &&
+        (data !== null ? data < 0 ? (
+          <ArrowDownIcon fill={Colors.decrease} width={16} height={16} />
+        ) : (
+          <ArrowUpIcon fill={Colors.increase} width={16} height={16} />
+        ) : "No flip data yesterday")
 
+
+      }
       {data !== null ? Math.abs(data) + "%" : ""}
     </Typography>
   );
