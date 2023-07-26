@@ -8,6 +8,8 @@ import { TitleTextAbsolute } from "./TitleTextAbsolute";
 import { FlipPerUserTable } from "./FlipPerUserTable";
 import { CompareText } from "./CompareText";
 import { DashboardErrorType, DashboardFlipType, DashboardUserFlipType } from "libs/types/dashboardTypes";
+import { Format } from "utils/format";
+import { BigNumber, ethers } from "ethers";
 
 type TotalPropsType = {
   error: DashboardErrorType;
@@ -42,7 +44,7 @@ export function TotalSection({
         {!error.flipData.noData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-              {+(flipDashboardStat.feeTotal / Math.pow(10, 18)).toFixed(3)}{" "}
+              {+(Format.formatMoney(ethers.utils.formatEther(BigNumber.from(flipDashboardStat.feeTotal.toString())), 3))}{" "}
               <Typography
                 component={"span"}
                 variant="h2"
@@ -99,7 +101,7 @@ export function TotalSection({
         {!error.flipData.noData ? (
           <Box>
             <Typography mt={4} variant="h1" fontSize={"3rem"} lineHeight={1.265}>
-              {+(flipDashboardStat.amountToday / Math.pow(10, 18)).toFixed(3)}{" "}
+              {+(Format.formatMoney(ethers.utils.formatEther(BigNumber.from(flipDashboardStat.amountToday.toString())), 3))}{" "}
               <Typography
                 component={"span"}
                 variant="h2"
