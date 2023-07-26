@@ -13,12 +13,14 @@ type TotalPropsType = {
   error: DashboardErrorType;
   userFlipStat: DashboardUserFlipType;
   flipDashboardStat: DashboardFlipType;
+  timeStatus: 'TODAY' | 'UNTIL_NOW'
 };
 
 export function TotalSection({
   flipDashboardStat,
   error,
   userFlipStat,
+  timeStatus
 }: TotalPropsType) {
   return (
     <>
@@ -50,7 +52,7 @@ export function TotalSection({
                 bnb
               </Typography>
             </Typography>
-            <CompareText data={flipDashboardStat.feeTotalCompareYesterdayPercentage} mt={2} />
+            <CompareText timeStatus={timeStatus} data={flipDashboardStat.feeTotalCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
           <Typography variant="body2">{error.flipData.errorMessage}</Typography>
@@ -107,7 +109,7 @@ export function TotalSection({
                 bnb
               </Typography>
             </Typography>
-            <CompareText data={flipDashboardStat.amountCompareYesterdayPercentage} mt={2} />
+            <CompareText timeStatus={timeStatus} data={flipDashboardStat.amountCompareYesterdayPercentage} mt={2} />
           </Box>
         ) : (
           <Typography variant="body2">{error.flipData.errorMessage}</Typography>

@@ -54,10 +54,12 @@ export default function Statistic() {
       >
         <StreakSection error={error} streak={streak} />
         <FlipResultSection
+          timeStatus={timeStatus}
           error={error}
           flipDashboardStat={flipDashboardStat}
         />
         <TotalSection
+          timeStatus={timeStatus}
           error={error}
           flipDashboardStat={flipDashboardStat}
           userFlipStat={userFlipStat}
