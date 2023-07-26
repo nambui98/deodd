@@ -4,7 +4,7 @@ import { CampaignImage } from '../../utils/Images';
 import { DotIcon } from '../../utils/Icons';
 
 export type TypeTab = {
-    id: number,
+    id: any,
     title: string,
     value?: string,
     isNoti?: boolean,
@@ -12,12 +12,12 @@ export type TypeTab = {
 };
 type Props = {
     listTabs: TypeTab[],
-    value: number,
+    value: any,
     setValue: Function
 }
 
 function MyTabs({ value, setValue, listTabs }: Props) {
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (event: React.SyntheticEvent, newValue: any) => {
         setValue(newValue);
     };
     return (
