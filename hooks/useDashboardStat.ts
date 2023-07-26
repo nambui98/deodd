@@ -77,6 +77,46 @@ export function useDashboardStat() {
   });
 
   useEffect(() => {
+    setStatistic({
+      error: {
+        streakData: {
+          noData: true,
+          errorMessage: "",
+        },
+        statData: {
+          noData: true,
+          errorMessage: "",
+        },
+        flipData: {
+          noData: true,
+          errorMessage: "",
+        },
+      },
+      streak: {
+        winStreak: 0,
+        lossStreak: 0,
+        username: "",
+        winWallet: "",
+      },
+      flipDashboardStat: {
+        tailResult: 0,
+        headResult: 0,
+        tailResultPercentage: 0,
+        headResultPercentage: 0,
+        tailChoice: 0,
+        headChoice: 0,
+        tailChoicePercentage: 0,
+        headChoicePercentage: 0,
+        numberFlipToday: 0,
+        flipCompareYesterdayPercentage: 0,
+        feeTotal: 0,
+        feeTotalCompareYesterdayPercentage: 0,
+        amountToday: 0,
+        amountCompareYesterdayPercentage: 0,
+        flipWinPercentage: 0,
+      },
+      userFlipStat: [],
+    });
     async function getData() {
       try {
         const [streakResult, statResult, flipResult] = await Promise.allSettled([

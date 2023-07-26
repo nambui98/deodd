@@ -8,6 +8,8 @@ type CompareTextProps = {
 } & TypographyProps
 
 export function CompareText({ data, ...props }: CompareTextProps) {
+  console.log(data);
+
   return (
     <Typography
       display={"flex"}
