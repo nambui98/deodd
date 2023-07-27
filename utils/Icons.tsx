@@ -79,8 +79,14 @@ import Growth1Icon from "public/assets/icons/growth1.svg";
 import GoldCup1Icon from "public/assets/icons/gold-cup1.svg";
 import EyeIcon from "public/assets/icons/eye.svg";
 import USDTIcon from "public/assets/icons/usdt.svg";
+import MinusIcon from "public/assets/icons/minus-square.svg";
+import PlusIcon from "public/assets/icons/add-square.svg";
+import DeleteIcon from "public/assets/icons/trash.svg";
 
 export {
+  MinusIcon,
+  PlusIcon,
+  DeleteIcon,
   USDTIcon,
   EyeIcon,
   MoreIcon,
