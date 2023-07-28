@@ -2,15 +2,17 @@ import { Box, Button, Skeleton, Stack, Table, TableBody, TableCell, TableContain
 import MyImage from 'components/ui/image'
 import { USDTIcon } from 'utils/Icons'
 import { getPathAvatar } from 'utils/checkAvatar'
-import Ticket from './Ticket'
+import Ticket from './components/Ticket'
 import { ButtonLoading } from 'components/ui/button'
 import { CoinEmptyImage } from 'utils/Images'
 import { useWalletContext } from 'contexts/WalletContext'
+import { useLotteryContext } from 'contexts/LotteryContext'
 
 type Props = {}
 
 const Claim = (props: Props) => {
-    const { walletAddress, walletIsConnected } = useWalletContext();
+    const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { setOpenModalBuyTicket } = useLotteryContext();
 
     return (
         <Box mt={3}>
@@ -42,16 +44,21 @@ const Claim = (props: Props) => {
                     {
                         walletAddress !== undefined ? (
                             !walletIsConnected ?
-                                <ButtonLoading fullWidth={false} sx={{
-                                    width: 'auto',
-                                    px: 5,
-                                    py: 2,
-                                    textTransform: 'none',
-                                    backgroundColor: 'background.default'
-                                }}>Connect Wallet to Buy Ticket</ButtonLoading>
+                                <ButtonLoading
+                                    onClick={handleConnectWallet}
+                                    fullWidth={false}
+                                    sx={{
+                                        width: 'auto',
+                                        px: 5,
+                                        py: 2,
+                                        textTransform: 'none',
+                                        backgroundColor: 'background.default'
+                                    }}>
+                                    Connect Wallet to Buy Ticket
+                                </ButtonLoading>
                                 :
                                 <ButtonLoading
-
+                                    onClick={() => setOpenModalBuyTicket(true)}
                                     fullWidth={false}
                                     sx={{
                                         width: 'auto',

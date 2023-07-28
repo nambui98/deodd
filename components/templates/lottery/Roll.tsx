@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Button, Skeleton, Stack, StackProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import Countdown from 'components/common/CountDown'
 import { ButtonLoading, ButtonTertiary } from 'components/ui/button'
 import MyImage from 'components/ui/image'
@@ -9,9 +9,9 @@ import { useWalletContext } from 'contexts/WalletContext'
 import { isAfter, isBefore } from 'date-fns'
 import React from 'react'
 import { USDTIcon } from 'utils/Icons'
-import { BannerLotteryImage, CoinEmptyImage } from 'utils/Images'
+import { BannerLotteryImage, BannerLotteryMobileImage, CoinEmptyImage } from 'utils/Images'
 import { Format } from 'utils/format'
-import Ticket from './Ticket'
+import Ticket from './components/Ticket'
 import GenerateText from './GenerateText'
 import CountDownNumber from './CountDownNumber'
 import Lottie from 'lottie-react'
@@ -22,23 +22,23 @@ import ModalBuyTicket from './ModalBuyTicket'
 type Props = {}
 
 const Roll = (props: Props) => {
-    const { isRollComing, isRollEnd, dateSpin, isRolling, isWinPrize, openModalBuyTicket, setOpenModalBuyTicket } = useLotteryContext();
-    const { walletIsConnected, walletAddress } = useWalletContext();
+    const { isRollComing, isRollEnd, dateSpin, isRolling, isWinPrize, setOpenModalBuyTicket } = useLotteryContext();
+    const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
 
     return (
         <>
             <Box sx={{
                 position: 'relative',
-                backgroundImage: `url(${BannerLotteryImage})`,
+                backgroundImage: { xs: `url(${BannerLotteryMobileImage})`, md: `url(${BannerLotteryImage})` },
                 backgroundSize: 'cover',
                 backgroundPosition: 'bottom',
                 borderRadius: 4,
                 backgroundRepeat: 'no-repeat',
-                height: '20.9375rem',
+                // height: '20.9375rem',
                 overflow: 'hidden',
                 ':after': {
                     content: '""',
-                    background: 'radial-gradient(50% 50.00% at 50% 50.00%, #FEF156 0%, rgba(254, 241, 86, 0.00) 100%)',
+                    background: { xs: 'none', md: 'radial-gradient(50% 50.00% at 50% 50.00%, #FEF156 0%, rgba(254, 241, 86, 0.00) 100%)' },
                     filter: 'blur(20px)',
                     position: 'absolute',
                     right: 0,
@@ -47,38 +47,14 @@ const Roll = (props: Props) => {
                     height: '2.5rem'
                 }
             }}>
-                <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} px={2.26} mt={3}>
-                    <Typography fontSize={16} component={'span'} fontWeight={600}>Lottery <Typography component={'span'} fontWeight={600} color='secondary.main'>#20231212</Typography> </Typography>
-                    <Stack direction={'row'} gap={2}>
-                        <Button variant='text' sx={{
-                            p: 0.75,
-                            textTransform: 'none',
-                            backgroundColor: 'secondary.900',
-                            color: 'white',
-                            border: '1px solid',
-                            borderColor: 'transparent',
-                            '&:hover': {
-                                border: '1px solid',
-                                borderColor: 'secondary.900'
-                            }
-                        }}>
-                            Rule
-                        </Button>
-                        <Button variant='text' sx={{
-                            p: 0.75,
-                            textTransform: 'none',
-                            backgroundColor: 'secondary.900',
-                            color: 'white',
-                            border: '1px solid',
-                            borderColor: 'transparent',
-                            '&:hover': {
-                                border: '1px solid',
-                                borderColor: 'secondary.900'
-                            }
-                        }}>
-                            Provably Fair
-                        </Button>
-                    </Stack>
+                <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} px={2.26} mt={{ xs: 2, md: 3 }}>
+                    <Typography
+                        fontSize={16}
+                        component={'span'}
+                        fontWeight={600}>
+                        Lottery{" "}
+                        <Typography component={'span'} fontWeight={600} color='secondary.main'>#20231212</Typography> </Typography>
+                    <RuleAndProvablyFair />
                 </Stack>
                 {
                     isRollEnd ?
@@ -103,14 +79,21 @@ const Roll = (props: Props) => {
                             </Stack>
                         </Stack>
                         :
-                        <Stack mt={isRolling ? 4 : isRollComing ? -3 : 3} direction={'row'}>
+                        <Stack
+                            mt={isRolling ? 4 : isRollComing ? -3 : 3}
+                            direction={'row'}
+                            flexDirection={{ xs: 'column', md: 'row' }}
+                        >
                             <Stack alignItems={'center'} flex={1}>
-                                <Typography variant='h5' fontWeight={700}>Total Jackpot</Typography>
-                                <Stack direction={'row'} alignItems={'center'} gap={1}>
-                                    <Typography fontSize={32} color="secondary.main" fontWeight={700}>14.042</Typography>
-                                    <USDTIcon fill={Colors.secondaryDark} height={30} width={30} />
+                                <Typography variant='h5' fontSize={24} fontWeight={700}>Total Jackpot</Typography>
+                                <Stack direction={'row'} alignItems={'center'} gap={1} mt={{ xs: 2, md: 0 }}>
+                                    <Typography fontSize={40} color="secondary.main" fontWeight={700}>14.042</Typography>
+                                    <Box width={{ xs: 40, md: 30 }} height={{ xs: 40, md: 30 }}>
+
+                                        <USDTIcon fill={Colors.secondaryDark} height={"100%"} width={"100%"} />
+                                    </Box>
                                 </Stack>
-                                <Typography mt={1} fontSize={14} component={'span'} fontWeight={500}>
+                                <Typography display={{ xs: 'none', md: 'block' }} mt={1} fontSize={14} component={'span'} fontWeight={500}>
                                     <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
                                         7,000 USDT
                                     </Typography>
@@ -123,12 +106,12 @@ const Roll = (props: Props) => {
                                 {
                                     !isRolling &&
                                     <>
-                                        <Typography mt={1.5} fontWeight={700}>Next draw in:</Typography>
-                                        <Box mt={1}>
+                                        <Typography mt={1.5} fontWeight={700} fontSize={16}>Next draw in:</Typography>
+                                        <Box mt={1} mb={{ xs: 0, md: 5 }} >
                                             {
                                                 dateSpin !== null ?
                                                     (
-                                                        <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white' }} sxTitle={{ mt: 1, color: 'white' }} />
+                                                        <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white', fontSize: 24 }} sxTitle={{ mt: 1, color: 'white', fontSize: 14 }} />
                                                     )
                                                     :
                                                     <Skeleton variant="rounded" width={210} height={68} />
@@ -156,47 +139,59 @@ const Roll = (props: Props) => {
 
                             {
                                 !isRollComing && !isRolling &&
-                                <Stack flex={1} alignItems={'center'} gap={3}>
+                                <Stack flex={1} alignItems={'center'} gap={{ xs: 2, md: 3 }}>
                                     <Box mt={3} >
                                         {
                                             walletAddress !== undefined ? (
                                                 !walletIsConnected ?
-                                                    <ButtonLoading fullWidth={false} sx={{
-                                                        width: 'auto',
-                                                        px: 5,
-                                                        py: 2,
-                                                        textTransform: 'none',
-                                                        backgroundColor: 'background.default'
-                                                    }}>Connect Wallet to Buy Ticket</ButtonLoading>
+                                                    <ButtonLoading
+                                                        onClick={handleConnectWallet}
+                                                        fullWidth={false}
+                                                        sx={{
+                                                            width: 'auto',
+                                                            px: 5,
+                                                            py: 2,
+                                                            textTransform: 'none',
+                                                            backgroundColor: 'background.default'
+                                                        }}>
+                                                        Connect Wallet to Buy Ticket
+                                                    </ButtonLoading>
                                                     :
-                                                    <ButtonLoading fullWidth={false} sx={{
-                                                        width: 'auto',
-                                                        px: 5,
-                                                        py: 2,
-                                                        textTransform: 'none',
-                                                        backgroundColor: 'background.default'
-                                                    }}>Buy Ticket</ButtonLoading>
+                                                    <ButtonLoading
+                                                        onClick={() => setOpenModalBuyTicket(true)}
+                                                        fullWidth={false}
+                                                        sx={{
+                                                            width: 'auto',
+                                                            px: 5,
+                                                            py: 2,
+                                                            textTransform: { xs: 'uppercase', md: 'none' },
+                                                            backgroundColor: 'background.default'
+                                                        }}>
+                                                        Buy Ticket
+                                                    </ButtonLoading>
 
                                             ) :
                                                 <Skeleton variant="rounded" width={160} height={60} />
                                         }
                                     </Box>
                                     <Typography fontSize={14} fontWeight={400} >Time left to buy: 03:24:52</Typography>
-                                    <Typography component={'span'} fontSize={14} fontWeight={400} >
+                                    <Typography display={{ xs: 'none', md: 'inline' }} textAlign={'center'} component={'span'} fontSize={14} fontWeight={400} >
 
                                         <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx </Typography>
                                         tickets have been sold. Don&apos;t miss your chance!
                                     </Typography>
+
                                 </Stack>
                             }
 
+                            <RuleAndProvablyFair display={{ xs: 'flex', md: 'none' }} mt={3} mb={2} mx="auto" />
                         </Stack>
 
 
                 }
 
 
-            </Box>
+            </Box >
             {
                 isRolling &&
                 <>
@@ -380,21 +375,26 @@ const Roll = (props: Props) => {
                             {
                                 walletAddress !== undefined ? (
                                     !walletIsConnected ?
-                                        <ButtonLoading fullWidth={false} sx={{
-                                            width: 'auto',
-                                            px: 5,
-                                            py: 2,
-                                            textTransform: 'none',
-                                            backgroundColor: 'background.default'
-                                        }}>Connect Wallet to Buy Ticket</ButtonLoading>
+                                        <ButtonLoading fullWidth={false}
+                                            onClick={handleConnectWallet}
+                                            sx={{
+                                                width: 'auto',
+                                                px: 5,
+                                                py: 2,
+                                                textTransform: 'none',
+                                                backgroundColor: 'background.default'
+                                            }}>Connect Wallet to Buy Ticket</ButtonLoading>
                                         :
-                                        <ButtonLoading fullWidth={false} sx={{
-                                            width: 'auto',
-                                            px: 5,
-                                            py: 2,
-                                            textTransform: 'none',
-                                            backgroundColor: 'background.default'
-                                        }}>Buy Ticket</ButtonLoading>
+                                        <ButtonLoading
+                                            onClick={() => setOpenModalBuyTicket(true)}
+                                            fullWidth={false}
+                                            sx={{
+                                                width: 'auto',
+                                                px: 5,
+                                                py: 2,
+                                                textTransform: 'none',
+                                                backgroundColor: 'background.default'
+                                            }}>Buy Ticket</ButtonLoading>
 
                                 ) :
                                     <Skeleton variant="rounded" width={160} height={60} />
@@ -465,3 +465,44 @@ const Roll = (props: Props) => {
 }
 
 export default Roll;
+const RuleAndProvablyFair = (props: StackProps) => {
+    return (
+        <Stack display={{ xs: 'none', md: 'flex' }} direction={'row'} gap={2}{...props}>
+            <Button variant='text' sx={{
+                p: 1,
+                px: 1.5,
+                fontSize: 14,
+                fontWeight: 400,
+                textTransform: 'none',
+                backgroundColor: 'secondary.900',
+                color: 'white',
+                border: '1px solid',
+                borderColor: 'transparent',
+                lineHeight: '20px',
+                '&:hover': {
+                    border: '1px solid',
+                    borderColor: 'secondary.900'
+                }
+            }}>
+                Rule
+            </Button>
+            <Button variant='text' sx={{
+                p: 1,
+                px: 1.5,
+                lineHeight: '20px',
+                fontWeight: 400,
+                textTransform: 'none',
+                backgroundColor: 'secondary.900',
+                color: 'white',
+                border: '1px solid',
+                borderColor: 'transparent',
+                '&:hover': {
+                    border: '1px solid',
+                    borderColor: 'secondary.900'
+                }
+            }}>
+                Provably Fair
+            </Button>
+        </Stack>
+    )
+}

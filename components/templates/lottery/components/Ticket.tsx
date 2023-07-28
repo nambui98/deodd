@@ -1,6 +1,6 @@
 import { Stack, StackProps } from '@mui/material'
 import React from 'react'
-import TicketNumber from './TicketNumber'
+import TicketNumber from '../TicketNumber'
 import { SubtractImage } from 'utils/Images'
 
 type Props = {

@@ -59,3 +59,5 @@ export const SharePerNFT: Record<EnumNFT, number> = {
   [EnumNFT.GOLD]: 0.032,
   [EnumNFT.DIAMOND]: 0.106
 };
+
+export const DefaultPriceTicket = 0.5;

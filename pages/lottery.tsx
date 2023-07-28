@@ -9,13 +9,13 @@ type Props = {}
 
 function Lottery({ }: Props) {
     return (
-        <Container sx={{ mb: 10, p: { xs: 0, md: 3 } }}>
+        <Container sx={{ mt: 5 }}>
             <Stack gap={5}>
                 <LotteryProvider>
                     <Roll />
+                    <BuyTickets />
+                    <HowToPlay />
                 </LotteryProvider>
-                <BuyTickets />
-                <HowToPlay />
             </Stack>
         </Container>
     )

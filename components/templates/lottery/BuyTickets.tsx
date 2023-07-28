@@ -47,8 +47,12 @@ const BuyTickets = (props: Props) => {
 
     return (
         <Box>
-            <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
-            <Stack direction={'row'} alignItems={'center'} gap={2} mt={3}>
+
+            <Box overflow={'auto'}>
+
+                <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
+            </Box>
+            <Stack direction={'row'} flexWrap={'wrap'} alignItems={'center'} gap={2} mt={3}>
                 <Typography fontSize={14} fontWeight={500}>Lottery ID</Typography>
                 <Box>
                     <Select
@@ -79,6 +83,8 @@ const BuyTickets = (props: Props) => {
                         </MenuItem>
                     </Select>
                 </Box>
+
+                <Typography flex={{ xs: 1, md: 0 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography>
             </Stack>
             {mapComponentTab[valueTab]}
         </Box>

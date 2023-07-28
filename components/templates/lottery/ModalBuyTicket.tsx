@@ -1,13 +1,15 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import MyModal from 'components/common/Modal';
 import { ButtonLoading } from 'components/ui/button';
-import { Colors } from 'constants/index';
+import { Colors, DefaultPriceTicket } from 'constants/index';
 import { useLotteryContext } from 'contexts/LotteryContext';
 import React, { useState } from 'react'
 import TicketNumber from './TicketNumber';
-import Ticket from './Ticket';
+import Ticket from './components/Ticket';
 import { DeleteIcon, MinusIcon, PlusIcon } from 'utils/Icons';
 import { Utils } from '@/utils/index';
+import { SubtractImage } from 'utils/Images';
+import { Format } from 'utils/format';
 
 type Props = {}
 
@@ -15,16 +17,15 @@ const ModalBuyTicket = (props: Props) => {
     const { openModalBuyTicket, setOpenModalBuyTicket } = useLotteryContext();
     const initTicketNumber = [null, null, null, null, null, null];
     const initTicketObject = {
-        ticket: initTicketNumber, amount: 1
+        ticket: initTicketNumber, amount: 0
     }
     const [listTicketNumber, setListTicketNumber] = useState<{ ticket: (number | null)[], amount: number }[]>([initTicketObject]);
     const [ticketNumberTemp, setTicketNumberTemp] = useState<(number | null)[]>(initTicketNumber);
     const [indexCurrentTicketInList, setIndexCurrentTicketInList] = useState<number>(0);
+    const [indexTicketEdit, setIndexTicketEdit] = useState<number>();
+    const [openModalActionBuy, setOpenModalActionBuy] = useState<boolean>(false);
 
-    const [indexNumberSelected, setIndexNumberSelected] = useState<{
-        indexNumber: number,
-        indexTicket: number
-    }>();
+
     const handleClickBasicNumber = (number: number) => {
         setTicketNumberTemp(prev => {
             const basicNumbers = [...prev.slice(0, 5)];
@@ -51,12 +52,7 @@ const ModalBuyTicket = (props: Props) => {
             return [...prev.slice(0, 5), number]
         })
     }
-    const handleClickMyNumber = (indexNumber: number, indexTicket: number) => {
-        setIndexNumberSelected({
-            indexNumber,
-            indexTicket
-        });
-    }
+
     const handleSubmitTicketTemp = () => {
         const ticketAdd: {
             ticket: (number | null)[],
@@ -98,190 +94,270 @@ const ModalBuyTicket = (props: Props) => {
         })
         setIndexCurrentTicketInList((prev) => prev - 1 > 0 ? prev - 1 : 0)
     }
+
+
     const handleRandomTicket = () => {
-        const ticketRandom = initTicketNumber.map((_, index) => Utils.getRandomNumberInRange(1, index === 5 ? 10 : 25))
-        setTicketNumberTemp(ticketRandom)
+        let list: number[] = [];
+        while (list.length < 5) {
+            list = [...Array.from(new Set([...list, Utils.getRandomNumberInRange(1, 25)]))];
+        }
+        list.push(Utils.getRandomNumberInRange(1, 10));
+        setTicketNumberTemp(list)
     }
+
+    const handleStartEdit = (indexTicket: number) => {
+        if (indexTicket === indexTicketEdit) {
+            setIndexTicketEdit(undefined);
+            setTicketNumberTemp(initTicketNumber)
+        } else {
+            setIndexTicketEdit(indexTicket);
+            setTicketNumberTemp(listTicketNumber[indexTicket].ticket);
+        }
+    }
+
+    const handleSaveTicketEdit = () => {
+        setListTicketNumber(prev => {
+            prev[indexTicketEdit!].ticket = ticketNumberTemp;
+            return [...prev]
+        })
+    }
+
+    const handleClearTemp = () => {
+        setTicketNumberTemp(initTicketNumber);
+    }
+
+    const totalAmountTicket = listTicketNumber.reduce((total, ticket) => total + ticket.amount, 0);
     return (
-        <MyModal open={openModalBuyTicket} sx={{ width: "min(100vw - 16px, 928px)", maxHeight: "min(100vh - 140px, 1010px)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalBuyTicket}>
-            <Typography textAlign={'center'} mb={2} variant='h5' fontWeight={700}>Buy Lottery Ticket</Typography>
-            <Stack direction={'row'} mt={3} divider={<Divider flexItem orientation='vertical' sx={{ mx: 1 }} />}>
-                <Stack flexBasis={"60%"} maxHeight={"min(100vh - 16px, 700px)"} >
-                    <Stack overflow={'auto'} pb={3} pr={3}>
-
-                        <Stack maxWidth={336} >
-                            <Stack direction={'row'} justifyContent={'space-between'}>
+        <>
+            <MyModal open={openModalBuyTicket} sx={{ width: "min(100vw - 16px, 928px)", maxHeight: "min(100vh - 140px, 1010px)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalBuyTicket}>
+                <Typography textAlign={'center'} mb={2} variant='h5' fontWeight={700}>Buy Lottery Ticket</Typography>
+                <Stack direction={'row'} mt={3} divider={<Divider flexItem orientation='vertical' sx={{ mx: 1 }} />}>
+                    <Stack flexBasis={"60%"} maxHeight={"min(100vh - 16px, 700px)"} >
+                        <Stack overflow={'auto'} pb={3} pr={3}>
+                            <Stack direction={'row'} >
                                 <Typography fontSize={16} fontWeight={600}>Select 5 basic numbers</Typography>
-
-                                <Typography sx={{ cursor: 'pointer' }} onClick={handleRandomTicket} fontSize={16} fontWeight={600} color={'secondary.main'}>Random</Typography>
+                                <Typography ml="auto" sx={{ cursor: 'pointer', px: 2 }} onClick={handleRandomTicket} fontSize={16} fontWeight={600} color={'secondary.main'}>Random</Typography>
+                                <Typography sx={{ cursor: 'pointer', px: 2 }} onClick={handleClearTemp} fontSize={16} fontWeight={600} color={ticketNumberTemp.some(number => number === null) ? 'secondary.100' : 'secondary.main'}>Clear</Typography>
                             </Stack>
-                            <Stack
-                                mt={2}
-                                direction={'row'}
-                                flexWrap={'wrap'}
-                                columnGap={3}
-                                rowGap={2}
-                                sx={styleTicket}
-                            >
+                            <Stack maxWidth={336} >
 
-                                {
-                                    [...Array(25)].map((_, index) => {
-                                        const number = index + 1;
-                                        const checkNumberActive = ticketNumberTemp.slice(0, 5).some(numberTicket => numberTicket === number)
-                                        return (
-                                            <Box
-                                                onClick={() => handleClickBasicNumber(number)}
-                                                flexShrink={0}
-                                                key={number}
-                                                className={checkNumberActive ? "" : "inActive"}
-                                                sx={{ cursor: 'pointer' }}
-                                            >
-                                                <TicketNumber size={48} number={index < 9 ? '0' + number : number} />
-                                            </Box>
+                                <Stack
+                                    mt={2}
+                                    direction={'row'}
+                                    flexWrap={'wrap'}
+                                    columnGap={3}
+                                    rowGap={2}
+                                    sx={styleTicket}
+                                >
 
+                                    {
+                                        [...Array(25)].map((_, index) => {
+                                            const number = index + 1;
+                                            const checkNumberActive = ticketNumberTemp.slice(0, 5).some(numberTicket => numberTicket === number)
+                                            return (
+                                                <Box
+                                                    onClick={() => handleClickBasicNumber(number)}
+                                                    flexShrink={0}
+                                                    key={number}
+                                                    className={checkNumberActive ? "" : "inActive"}
+                                                    sx={{ cursor: 'pointer' }}
+                                                >
+                                                    <TicketNumber size={48} number={index < 9 ? '0' + number : number} />
+                                                </Box>
+
+                                            )
+                                        }
                                         )
                                     }
-                                    )
-                                }
-                            </Stack>
-                            <Typography mt={3} fontSize={16} fontWeight={600}>Select 1 Jackpot number</Typography>
-                            <Stack
-                                mt={2}
-                                direction={'row'}
-                                flexWrap={'wrap'}
-                                columnGap={3}
-                                rowGap={2}
-                                sx={styleTicket}>
-                                {
-                                    [...Array(10)].map((_, index) => {
-                                        let number = index + 1;
-                                        let checkNumberActive = ticketNumberTemp[5] === number;
-                                        return (
-                                            <Box
-                                                key={number + 'jackpot'}
-                                                flexShrink={0}
-                                                sx={{ cursor: 'pointer' }}
-                                                onClick={() => handleClickJackpotNumber(number)}
-                                                className={checkNumberActive ? "activeJackpot" : "inActive"}
+                                </Stack>
+                                <Typography mt={3} fontSize={16} fontWeight={600}>Select 1 Jackpot number</Typography>
+                                <Stack
+                                    mt={2}
+                                    direction={'row'}
+                                    flexWrap={'wrap'}
+                                    columnGap={3}
+                                    rowGap={2}
+                                    sx={styleTicket}>
+                                    {
+                                        [...Array(10)].map((_, index) => {
+                                            let number = index + 1;
+                                            let checkNumberActive = ticketNumberTemp[5] === number;
+                                            return (
+                                                <Box
+                                                    key={number + 'jackpot'}
+                                                    flexShrink={0}
+                                                    sx={{ cursor: 'pointer' }}
+                                                    onClick={() => handleClickJackpotNumber(number)}
+                                                    className={checkNumberActive ? "activeJackpot" : "inActive"}
 
-                                            >
-                                                <TicketNumber size={48} number={index < 9 ? '0' + number : number} />
-                                            </Box>
+                                                >
+                                                    <TicketNumber size={48} number={index < 9 ? '0' + number : number} />
+                                                </Box>
 
+                                            )
+                                        }
                                         )
                                     }
-                                    )
-                                }
 
-                            </Stack>
-                            <ButtonLoading
-                                disabled={ticketNumberTemp.some(number => number === null)}
-                                onClick={handleSubmitTicketTemp}
-                                sx={{
-                                    mt: 3,
-                                    width: 'auto',
-                                    mx: 'auto',
-                                    textTransform: 'none',
-                                    py: 1,
-                                    lineHeight: '20px',
-                                    px: 1.5,
-                                    borderRadius: 2,
-                                    bgcolor: 'white',
-                                    borderColor: 'white',
-                                    color: 'primary.300',
-                                    '&:disabled': {
-                                        backgroundColor: 'secondary.900',
+                                </Stack>
+                                <ButtonLoading
+                                    disabled={ticketNumberTemp.some(number => number === null)}
+                                    onClick={indexTicketEdit !== undefined ? handleSaveTicketEdit : handleSubmitTicketTemp}
+                                    sx={{
+                                        mt: 3,
+                                        width: 'auto',
+                                        mx: 'auto',
+                                        textTransform: 'none',
+                                        py: 1,
+                                        lineHeight: '20px',
+                                        px: 1.5,
+                                        borderRadius: 2,
+                                        bgcolor: 'white',
+                                        borderColor: 'white',
                                         color: 'primary.300',
+                                        '&:disabled': {
+                                            backgroundColor: 'secondary.900',
+                                            color: 'primary.300',
+                                        }
+                                    }}>
+                                    {
+                                        indexTicketEdit !== undefined ? 'Save change' : 'Submit numbers'
                                     }
-                                }}>
-                                Submit numbers
-                            </ButtonLoading>
-                        </Stack>
-                        <Stack direction={'row'} gap={2}>
-                            <Stack maxWidth={336} width={1}>
 
-                                <Typography mt={3} fontSize={16} fontWeight={600}>Your selected Numbers</Typography>
+                                </ButtonLoading>
                             </Stack>
+                            <Stack direction={'row'} mt={3} gap={0}>
+                                <Stack maxWidth={376} width={1}>
 
-                            <Typography mt={3} fontSize={16} fontWeight={600}>Ticket(s)</Typography>
-                        </Stack>
-                        <Stack mt={2} direction={'row'} flexWrap={'wrap'} columnGap={3} rowGap={2}>
-                            {
-                                listTicketNumber.map((row, indexTicket) => {
-                                    return (
-                                        <Stack
-                                            key={indexTicket}
-                                            direction={'row'}
-                                            alignItems={'center'}
-                                            gap={3}
-                                        >
+                                    <Typography fontSize={16} fontWeight={600}>Your selected Numbers</Typography>
+                                </Stack>
+
+                                <Typography fontSize={16} fontWeight={600}>Ticket(s)</Typography>
+                            </Stack>
+                            <Stack mt={2} direction={'row'} flexWrap={'wrap'} columnGap={3} rowGap={1}>
+                                {
+                                    listTicketNumber.map((row, indexTicket) => {
+                                        return (
                                             <Stack
-                                                maxWidth={336}
+                                                key={indexTicket}
                                                 direction={'row'}
-                                                gap={2}
-                                                className='activeLastNumber'
-                                                sx={styleTicket}
+                                                alignItems={'center'}
+                                                gap={3}
                                             >
-                                                {
-                                                    row.ticket.map((number, indexNumber) => {
-                                                        return (
-                                                            <Box
-                                                                sx={{ cursor: 'pointer' }}
-                                                                key={indexNumber}
-                                                                onClick={() => handleClickMyNumber(indexNumber, indexTicket)}
-                                                                className={number !== null ? "" : "inActive"}>
-                                                                <TicketNumber size={40} number={number ? number < 10 ? '0' + number : number : ''} />
-                                                            </Box>
-                                                        )
-                                                    })}
-                                            </Stack>
-                                            <Stack flex={1} gap={2} direction={'row'} alignItems={'center'}>
-                                                <Stack bgcolor={'primary.300'} p={2} direction={'row'} alignItems={'center'}>
-                                                    <Box onClick={() => handleMinusAmountTicket(indexTicket)} width={24} height={24} sx={{ cursor: 'pointer' }}>
-                                                        <MinusIcon />
-                                                    </Box>
-                                                    <Typography width={70} textAlign={"center"} flex={1} fontSize={16} fontWeight={600} color="secondary.700" lineHeight={1}>
-                                                        {row.amount}
-                                                    </Typography>
-                                                    <Box onClick={() => handlePlusAmountTicket(indexTicket)} width={24} height={24} sx={{ cursor: 'pointer' }}>
-                                                        <PlusIcon />
+                                                <Stack
+                                                    maxWidth={376}
+                                                    direction={'row'}
+                                                    onClick={() => row.ticket.every((number) => number !== null) ? handleStartEdit(indexTicket) : {}}
+                                                    gap={2}
+                                                    className='activeLastNumber'
+                                                    sx={{
+                                                        ...styleTicket,
+                                                        px: 2,
+                                                        py: 1,
+                                                        cursor: indexTicket === indexTicketEdit ? 'pointer' : 'inherit',
+                                                        backgroundImage: indexTicket === indexTicketEdit ? `url(${SubtractImage})` : 'none',
+                                                        backgroundRepeat: 'no-repeat',
+                                                        backgroundPosition: 'center',
+                                                        backgroundSize: '100%',
+
+                                                    }}
+                                                >
+                                                    {
+                                                        row.ticket.map((number, indexNumber) => {
+                                                            return (
+                                                                <Box
+                                                                    // sx={{ cursor: 'pointer' }}
+                                                                    key={indexNumber}
+                                                                    className={number !== null ? "" : "inActive"}>
+                                                                    <TicketNumber size={40} number={number ? number < 10 ? '0' + number : number : ''} />
+                                                                </Box>
+                                                            )
+                                                        })}
+                                                </Stack>
+                                                <Stack flex={1} gap={2} direction={'row'} alignItems={'center'}>
+                                                    <Stack
+                                                        bgcolor={'primary.300'}
+                                                        p={2}
+                                                        direction={'row'}
+                                                        alignItems={'center'}
+                                                        borderRadius={2}
+                                                        sx={{
+                                                            color: "secondary.700",
+                                                            transition: '.3s all',
+                                                            svg: {
+                                                                stroke: '#677286',
+                                                                transition: '.3s all',
+                                                            },
+                                                            '&:hover': {
+                                                                backgroundColor: 'primary.100',
+                                                                color: 'white',
+                                                                svg: {
+                                                                    stroke: 'white'
+                                                                }
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Box onClick={() => handleMinusAmountTicket(indexTicket)} width={24} height={24} sx={{ cursor: 'pointer' }}>
+                                                            <MinusIcon />
+                                                        </Box>
+                                                        <Typography width={50} textAlign={"center"} flex={1} fontSize={16} fontWeight={600} lineHeight={1}>
+                                                            {row.amount}
+                                                        </Typography>
+                                                        <Box onClick={() => handlePlusAmountTicket(indexTicket)} width={24} height={24} sx={{ cursor: 'pointer' }}>
+                                                            <PlusIcon />
+                                                        </Box>
+                                                    </Stack>
+                                                    <Box sx={{ cursor: 'pointer' }} onClick={() => handleRemoveTicket(indexTicket)} width={24} height={24}>
+                                                        <DeleteIcon />
                                                     </Box>
                                                 </Stack>
-                                                <Box sx={{ cursor: 'pointer' }} onClick={() => handleRemoveTicket(indexTicket)} width={24} height={24}>
-                                                    <DeleteIcon />
-                                                </Box>
-                                            </Stack>
 
-                                        </Stack>
-                                    )
-                                })
-                            }
+                                            </Stack>
+                                        )
+                                    })
+                                }
+                            </Stack>
                         </Stack>
                     </Stack>
-                </Stack>
 
-                <Stack flexBasis={'40%'} pl={3}>
-                    <Stack direction={'row'}>
-                        <Typography fontSize={16} variant='body1' fontWeight={600}>0 ticket</Typography>
-                        <Typography fontSize={16} variant='body1' fontWeight={600} color="secondary.100" flex={1} textAlign={'right'}>0.5 USDT/ticket</Typography>
+                    <Stack flexBasis={'40%'} pl={2}>
+                        <Stack direction={'row'}>
+                            <Typography fontSize={16} variant='body1' fontWeight={600}>{totalAmountTicket} ticket</Typography>
+                            <Typography fontSize={16} variant='body1' fontWeight={600} color="secondary.100" flex={1} textAlign={'right'}>{DefaultPriceTicket} USDT/ticket</Typography>
+                        </Stack>
+                        <Stack mt={3} direction={'row'}>
+                            <Typography fontSize={16} fontWeight={600}>Total cost</Typography>
+                            <Typography fontSize={16} fontWeight={600} flex={1} textAlign={'right'}>{Format.formatMoney(totalAmountTicket * DefaultPriceTicket)} USDT</Typography>
+                        </Stack>
+                        <ButtonLoading
+                            disabled={totalAmountTicket <= 0}
+                            onClick={() => {
+                                setOpenModalBuyTicket(false);
+                                setOpenModalActionBuy(true);
+                            }}
+                            sx={{
+                                mt: 3,
+                                textTransform: 'none',
+                                py: 2,
+                                '&:disabled': {
+                                    backgroundColor: 'secondary.900',
+                                    color: 'primary.300',
+                                }
+                            }}>
+                            Check out
+                        </ButtonLoading>
                     </Stack>
-                    <Stack mt={3} direction={'row'}>
-                        <Typography fontSize={16} fontWeight={600}>Total cost</Typography>
-                        <Typography fontSize={16} fontWeight={600} flex={1} textAlign={'right'}>0.5 USDT</Typography>
-                    </Stack>
-                    <ButtonLoading sx={{
-                        mt: 3,
-                        textTransform: 'none',
-                        py: 2,
-                        '&:disabled': {
-                            backgroundColor: 'secondary.900',
-                            color: 'primary.300',
-                        }
-                    }}>Check out</ButtonLoading>
                 </Stack>
-            </Stack>
-        </MyModal >
+            </MyModal >
+            <MyModal open={openModalActionBuy} sx={{ width: "min(100vw - 1rem, 352px)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalActionBuy}>
+                <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>Buy Lottery Ticket</Typography>
+                <Typography textAlign={'center'} mb={3} fontWeight={400} variant='body2'>Time to buy ticket has run out! <br />It&apos;s almost time for the prize draw</Typography>
+                <ButtonLoading>
+                    Confirm
+                </ButtonLoading>
+            </MyModal>
 
+        </>
     )
 }
 

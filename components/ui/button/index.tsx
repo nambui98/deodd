@@ -52,6 +52,7 @@ export const ButtonLoading: React.FC<LoadingButtonProps> = ({ sx, ...props }) =>
       width: '100%',
       borderRadius: 2, py: 2, border: '1px solid', color: 'secondary.main',
       lineHeight: 1,
+      textTransform: 'none',
       '&:hover': {
         backgroundColor: { md: "secondary.main", xs: 'transparent' },
         border: { md: '1px solid', xs: '1px solid' },

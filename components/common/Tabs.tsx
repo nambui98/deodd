@@ -114,6 +114,11 @@ const style2 = {
         transition: "300ms border",
         border: "1px solid transparent",
     },
+    '.MuiTabs-scroller': {
+
+        overflow: 'auto !important'
+    },
+
     '.MuiTabs-indicator': {
         display: "none",
     },

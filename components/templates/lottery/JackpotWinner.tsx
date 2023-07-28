@@ -2,7 +2,7 @@ import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableH
 import React from 'react'
 import { USDTIcon } from 'utils/Icons'
 import { SubtractImage } from 'utils/Images'
-import Ticket from './Ticket'
+import Ticket from './components/Ticket'
 import MyImage from 'components/ui/image'
 import { getPathAvatar } from 'utils/checkAvatar'
 
