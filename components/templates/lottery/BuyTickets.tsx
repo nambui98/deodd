@@ -84,7 +84,7 @@ const BuyTickets = (props: Props) => {
                     </Select>
                 </Box>
 
-                <Typography flex={{ xs: 1, md: 0 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography>
+                <Typography flex={{ xs: 1, md: 1 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography>
             </Stack>
             {mapComponentTab[valueTab]}
         </Box>

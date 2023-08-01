@@ -4,6 +4,7 @@ import React from 'react'
 import { getPathAvatar } from 'utils/checkAvatar'
 import Ticket from './Ticket'
 import { USDTIcon } from 'utils/Icons'
+import { ButtonLoading } from 'components/ui/button'
 
 type Props = {}
 
@@ -58,8 +59,37 @@ export const ResultTicketInfo = (props: Props) => {
                     <Typography variant='caption' component={'p'}>{'NamNam'}</Typography>
                     <Typography variant='caption' color="secondary.100">(3535***3534)</Typography>
                 </Box>
+                <Stack ml="auto">
+                    <Typography ml={3} color="secondary.100" variant='body2'>
+                        Matches{" "}
+                        <Typography component={'span'} variant='body2' color="white">--</Typography>
+                    </Typography>
+                    <Stack gap={.5} direction={'row'} alignItems={'center'}>
+                        <Typography variant='body2' color="secondary.100">
+                            Prize{" "}
+                            <Typography sx={{ verticalAlign: '' }} component={'span'} variant='body2' color="white">0.51345
+                            </Typography>
+                        </Typography>
+                        <USDTIcon fill="#50ae94" width={16} height={16} />
+                    </Stack>
+                </Stack>
             </Stack>
+            <Ticket mt={1} gap={1} numbers={[12, 33, 11, 23, 4, 6]} />
         </Stack>
     )
 }
 
+export const TicketClaimInfo = () => {
+    return (
+        <Stack gap={2}>
+            <MyTicketInfo />
+            <Box sx={{ alignSelf: 'flex-end' }}>
+                <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
+                    Claimed
+                </ButtonLoading>
+
+
+            </Box>
+        </Stack>
+    )
+}

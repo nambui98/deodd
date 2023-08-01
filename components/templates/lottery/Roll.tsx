@@ -1,23 +1,18 @@
-import { LoadingButton } from '@mui/lab'
+import Confetti from "@/public/assets/animations/animation_lkkmw52n.json"
 import { Box, Button, Skeleton, Stack, StackProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import Countdown from 'components/common/CountDown'
-import { ButtonLoading, ButtonTertiary } from 'components/ui/button'
+import { ButtonLoading } from 'components/ui/button'
 import MyImage from 'components/ui/image'
-import { Colors, MinusBeforeSpin } from 'constants/index'
+import { Colors } from 'constants/index'
 import { useLotteryContext } from 'contexts/LotteryContext'
 import { useWalletContext } from 'contexts/WalletContext'
-import { isAfter, isBefore } from 'date-fns'
-import React from 'react'
+import Lottie from 'lottie-react'
 import { USDTIcon } from 'utils/Icons'
 import { BannerLotteryImage, BannerLotteryMobileImage, CoinEmptyImage } from 'utils/Images'
-import { Format } from 'utils/format'
-import Ticket from './components/Ticket'
-import GenerateText from './GenerateText'
 import CountDownNumber from './CountDownNumber'
-import Lottie from 'lottie-react'
-import Confetti from "@/public/assets/animations/animation_lkkmw52n.json";
-import MyModal from 'components/common/Modal'
-import ModalBuyTicket from './ModalBuyTicket'
+import GenerateText from './GenerateText'
+import Ticket from './components/Ticket'
+import ModalBuyConfirm from "./components/ModalBuyConfirm"
 
 type Props = {}
 
@@ -459,7 +454,6 @@ const Roll = (props: Props) => {
 
 
             }
-            <ModalBuyTicket />
         </>
     )
 }

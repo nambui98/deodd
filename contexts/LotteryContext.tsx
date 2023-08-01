@@ -10,6 +10,12 @@ interface LotteryContextType {
 	isWinPrize: boolean;
 	openModalBuyTicket: boolean;
 	setOpenModalBuyTicket: Dispatch<SetStateAction<boolean>>;
+	openModalBuyRunOut: boolean;
+	setOpenModalBuyRunOut: Dispatch<SetStateAction<boolean>>;
+	openModalApprove: boolean;
+	setOpenModalApprove: Dispatch<SetStateAction<boolean>>;
+	openModalBuySuccess: boolean;
+	setOpenModalBuySuccess: Dispatch<SetStateAction<boolean>>;
 }
 
 const LotteryContext = createContext<LotteryContextType>({
@@ -19,7 +25,16 @@ const LotteryContext = createContext<LotteryContextType>({
 	isRollEnd: false,
 	isWinPrize: false,
 	openModalBuyTicket: false,
-	setOpenModalBuyTicket: () => { }
+	setOpenModalBuyTicket: () => { },
+
+	openModalBuyRunOut: false,
+	setOpenModalBuyRunOut: () => { },
+
+	openModalApprove: false,
+	setOpenModalApprove: () => { },
+
+	openModalBuySuccess: false,
+	setOpenModalBuySuccess: () => { }
 })
 
 export const useLotteryContext = () => useContext(LotteryContext);
@@ -30,7 +45,10 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	const [isRolling, setIsRolling] = useState<boolean>(false);
 	const [isRollEnd, setIsRollEnd] = useState<boolean>(false);
 	const [isWinPrize, setIsWinPrize] = useState<boolean>(false);
-	const [openModalBuyTicket, setOpenModalBuyTicket] = useState<boolean>(true);
+	const [openModalBuyTicket, setOpenModalBuyTicket] = useState<boolean>(false);
+	const [openModalBuyRunOut, setOpenModalBuyRunOut] = useState<boolean>(false);
+	const [openModalApprove, setOpenModalApprove] = useState<boolean>(false);
+	const [openModalBuySuccess, setOpenModalBuySuccess] = useState<boolean>(false);
 
 	let dateSpin = new Date();
 	dateSpin.setHours(17);
@@ -40,7 +58,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		dateSpin.setDate(dateSpin.getDate() + 1);
 	}
 
-	dateSpin = new Date("2023-07-27T03:20:00Z");
+	// dateSpin = new Date("2023-07-27T03:20:00Z");
 
 
 	useEffect(() => {
@@ -66,9 +84,15 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 				isRollEnd,
 				isWinPrize,
 				openModalBuyTicket,
-				setOpenModalBuyTicket
+				setOpenModalBuyTicket,
+				openModalApprove,
+				setOpenModalApprove,
+				openModalBuyRunOut,
+				setOpenModalBuyRunOut,
+				openModalBuySuccess,
+				setOpenModalBuySuccess
 			}
 		)
-	}, [isRollComing, isWinPrize, isRollEnd, dateSpin, isRolling, openModalBuyTicket, setOpenModalBuyTicket])
+	}, [isRollComing, isWinPrize, isRollEnd, dateSpin, isRolling, openModalBuyTicket, openModalBuyRunOut, openModalApprove, openModalBuySuccess, setOpenModalBuyTicket])
 	return <LotteryContext.Provider value={value}>{children}</LotteryContext.Provider>
 }

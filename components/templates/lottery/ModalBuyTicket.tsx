@@ -1,20 +1,22 @@
-import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Utils } from '@/utils/index';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import MyModal from 'components/common/Modal';
 import { ButtonLoading } from 'components/ui/button';
 import { Colors, DefaultPriceTicket } from 'constants/index';
 import { useLotteryContext } from 'contexts/LotteryContext';
-import React, { useState } from 'react'
-import TicketNumber from './TicketNumber';
-import Ticket from './components/Ticket';
-import { DeleteIcon, MinusIcon, PlusIcon } from 'utils/Icons';
-import { Utils } from '@/utils/index';
+import { useEffect, useState } from 'react';
+import { DeleteIcon, MinusIcon, PlusIcon, USDTIcon } from 'utils/Icons';
 import { SubtractImage } from 'utils/Images';
 import { Format } from 'utils/format';
+import TicketNumber from './TicketNumber';
+import ModalBuyConfirm from './components/ModalBuyConfirm';
+import ModalApprove from './components/ModalApprove';
 
 type Props = {}
 
 const ModalBuyTicket = (props: Props) => {
-    const { openModalBuyTicket, setOpenModalBuyTicket } = useLotteryContext();
+    const { openModalBuyTicket, setOpenModalBuyTicket, openModalApprove, setOpenModalApprove, openModalBuySuccess, setOpenModalBuySuccess } = useLotteryContext();
+
     const initTicketNumber = [null, null, null, null, null, null];
     const initTicketObject = {
         ticket: initTicketNumber, amount: 0
@@ -23,7 +25,19 @@ const ModalBuyTicket = (props: Props) => {
     const [ticketNumberTemp, setTicketNumberTemp] = useState<(number | null)[]>(initTicketNumber);
     const [indexCurrentTicketInList, setIndexCurrentTicketInList] = useState<number>(0);
     const [indexTicketEdit, setIndexTicketEdit] = useState<number>();
-    const [openModalActionBuy, setOpenModalActionBuy] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (openModalBuyTicket) {
+            setTicketNumberTemp(initTicketNumber);
+            setIndexCurrentTicketInList(0);
+            setListTicketNumber([initTicketObject]);
+            setIndexTicketEdit(undefined);
+
+
+        }
+
+
+    }, [openModalBuyTicket])
 
 
     const handleClickBasicNumber = (number: number) => {
@@ -92,6 +106,11 @@ const ModalBuyTicket = (props: Props) => {
             tickets.splice(indexTicket, 1);
             return [...tickets];
         })
+        if (indexTicket === indexTicketEdit) {
+
+            setIndexTicketEdit(undefined);
+            setTicketNumberTemp(initTicketNumber);
+        }
         setIndexCurrentTicketInList((prev) => prev - 1 > 0 ? prev - 1 : 0)
     }
 
@@ -129,11 +148,11 @@ const ModalBuyTicket = (props: Props) => {
     const totalAmountTicket = listTicketNumber.reduce((total, ticket) => total + ticket.amount, 0);
     return (
         <>
-            <MyModal open={openModalBuyTicket} sx={{ width: "min(100vw - 16px, 928px)", maxHeight: "min(100vh - 140px, 1010px)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalBuyTicket}>
+            <MyModal open={openModalBuyTicket} sx={{ width: "min(100vw - 16px, 928px)", px: 0 }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalBuyTicket}>
                 <Typography textAlign={'center'} mb={2} variant='h5' fontWeight={700}>Buy Lottery Ticket</Typography>
-                <Stack direction={'row'} mt={3} divider={<Divider flexItem orientation='vertical' sx={{ mx: 1 }} />}>
-                    <Stack flexBasis={"60%"} maxHeight={"min(100vh - 16px, 700px)"} >
-                        <Stack overflow={'auto'} pb={3} pr={3}>
+                <Stack direction={{ xs: 'column', md: 'row' }} px={2} maxHeight={{ xs: "min(100vh - 16px, 100vh - 260px)", md: "auto" }} overflow={{ xs: "auto", md: 'hidden' }} mt={3} divider={<Divider flexItem orientation='vertical' sx={{ mx: 1 }} />}>
+                    <Stack flexBasis={{ xs: 1, md: "60%" }} maxHeight={{ xs: "auto", md: "min(100vh - 16px, 700px)" }} >
+                        <Stack overflow={'auto'} pb={3} pr={{ xs: 0, md: 3 }}>
                             <Stack direction={'row'} >
                                 <Typography fontSize={16} fontWeight={600}>Select 5 basic numbers</Typography>
                                 <Typography ml="auto" sx={{ cursor: 'pointer', px: 2 }} onClick={handleRandomTicket} fontSize={16} fontWeight={600} color={'secondary.main'}>Random</Typography>
@@ -232,23 +251,31 @@ const ModalBuyTicket = (props: Props) => {
                                     <Typography fontSize={16} fontWeight={600}>Your selected Numbers</Typography>
                                 </Stack>
 
-                                <Typography fontSize={16} fontWeight={600}>Ticket(s)</Typography>
+                                <Typography display={{ xs: 'none', md: 'block' }} fontSize={16} fontWeight={600}>Ticket(s)</Typography>
+
                             </Stack>
-                            <Stack mt={2} direction={'row'} flexWrap={'wrap'} columnGap={3} rowGap={1}>
+                            <Stack mt={2} direction={'row'}
+
+                                // mx={-2}
+                                flexWrap={'wrap'} columnGap={3} rowGap={1}>
                                 {
                                     listTicketNumber.map((row, indexTicket) => {
                                         return (
                                             <Stack
                                                 key={indexTicket}
-                                                direction={'row'}
+                                                direction={{ xs: "column", md: 'row' }}
                                                 alignItems={'center'}
-                                                gap={3}
+                                                columnGap={3}
+                                                rowGap={0}
+
+                                            // flexWrap={'wrap'}
                                             >
                                                 <Stack
                                                     maxWidth={376}
                                                     direction={'row'}
                                                     onClick={() => row.ticket.every((number) => number !== null) ? handleStartEdit(indexTicket) : {}}
                                                     gap={2}
+
                                                     className='activeLastNumber'
                                                     sx={{
                                                         ...styleTicket,
@@ -274,10 +301,12 @@ const ModalBuyTicket = (props: Props) => {
                                                             )
                                                         })}
                                                 </Stack>
-                                                <Stack flex={1} gap={2} direction={'row'} alignItems={'center'}>
+
+                                                <Stack flex={1} gap={2} pr={{ xs: 0, md: 0 }} alignSelf={{ xs: 'flex-end', md: 'auto' }} direction={'row'} alignItems={'center'}>
+                                                    <Typography display={{ xs: 'block', md: 'none' }} fontSize={16}>Ticket (s)</Typography>
                                                     <Stack
                                                         bgcolor={'primary.300'}
-                                                        p={2}
+                                                        p={{ xs: 1, md: 2 }}
                                                         direction={'row'}
                                                         alignItems={'center'}
                                                         borderRadius={2}
@@ -320,7 +349,7 @@ const ModalBuyTicket = (props: Props) => {
                         </Stack>
                     </Stack>
 
-                    <Stack flexBasis={'40%'} pl={2}>
+                    <Stack flexBasis={'40%'} pl={2} pr={{ xs: 2, md: 0 }}>
                         <Stack direction={'row'}>
                             <Typography fontSize={16} variant='body1' fontWeight={600}>{totalAmountTicket} ticket</Typography>
                             <Typography fontSize={16} variant='body1' fontWeight={600} color="secondary.100" flex={1} textAlign={'right'}>{DefaultPriceTicket} USDT/ticket</Typography>
@@ -332,8 +361,8 @@ const ModalBuyTicket = (props: Props) => {
                         <ButtonLoading
                             disabled={totalAmountTicket <= 0}
                             onClick={() => {
-                                setOpenModalBuyTicket(false);
-                                setOpenModalActionBuy(true);
+                                // setOpenModalBuyTicket(false);
+                                setOpenModalApprove(true);
                             }}
                             sx={{
                                 mt: 3,
@@ -349,13 +378,24 @@ const ModalBuyTicket = (props: Props) => {
                     </Stack>
                 </Stack>
             </MyModal >
-            <MyModal open={openModalActionBuy} sx={{ width: "min(100vw - 1rem, 352px)" }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalActionBuy}>
+            <MyModal open={openModalBuySuccess} sx={{
+                maxWidth: 352,
+                width: 1,
+                boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.15)"
+            }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={setOpenModalBuySuccess}>
                 <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>Buy Lottery Ticket</Typography>
-                <Typography textAlign={'center'} mb={3} fontWeight={400} variant='body2'>Time to buy ticket has run out! <br />It&apos;s almost time for the prize draw</Typography>
-                <ButtonLoading>
+                <Typography fontSize={14} fontWeight={400} textAlign={'center'} mb={5.5}>You have success buy x{totalAmountTicket} {totalAmountTicket > 1 ? 'Tickets' : 'Ticket'}</Typography>
+                <ButtonLoading onClick={() => { setOpenModalBuySuccess(false) }}>
                     Confirm
                 </ButtonLoading>
             </MyModal>
+            <ModalApprove totalAmountTicket={totalAmountTicket} listTicket={listTicketNumber} refresh={() => {
+                // setTicketNumberTemp(initTicketNumber);
+                // setIndexCurrentTicketInList(0);
+                // setListTicketNumber([initTicketObject]);
+                // setIndexTicketEdit(undefined);
+
+            }} />
 
         </>
     )

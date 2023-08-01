@@ -32,14 +32,14 @@ const HowToPlay = (props: Props) => {
         <Box>
             <Divider />
             <Typography variant='h5' fontWeight={700} mt={3}>How to play</Typography>
-            <Grid container pt={3} columnSpacing={4} direction={'row'}>
-                <Grid item xs={4}>
+            <Grid container pt={3} columnSpacing={4} rowSpacing={5} direction={'row'}>
+                <Grid item xs={12} md={4}>
                     <Item image={TicketImage} title={'1. Buy a ticket'} description={'Buy ticket and pick 5 Numbers out of 25 1 Jackpot number out of 10'} />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                     <Item image={BingoImage} title={'2. Wait for the Draw'} description={'Wait for the draw at 15:00 UTC +0 every Money, Wednesday, and Friday'} />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                     <Item image={LuckyImage} title={'3. Check the results'} description={'Compare results and claim rewards'} />
                 </Grid>
             </Grid>
@@ -55,8 +55,8 @@ const Item = ({ image, title, description }: { image: string, title: string, des
         <Stack direction={'row'} gap={2}>
             <MyImage src={image} width={80} minWidth={80} minHeight={80} height={80} alt="" />
             <Box>
-                <Typography variant='h5' fontWeight={700}>{title}</Typography>
-                <Typography mt={1} variant='body2' fontWeight={400}>{description}</Typography>
+                <Typography fontSize={{ xs: 16, md: 24 }} fontWeight={700}>{title}</Typography>
+                <Typography mt={1} variant='body2' color="secondary.100" fontWeight={400}>{description}</Typography>
             </Box>
         </Stack>
     )

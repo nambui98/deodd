@@ -4,6 +4,10 @@ import HowToPlay from '@/templates/lottery/HowToPlay'
 import { Container, Stack } from '@mui/material'
 import { LotteryProvider } from 'contexts/LotteryContext'
 import React from 'react'
+import ModalApprove from '@/templates/lottery/components/ModalApprove'
+import ModalBuyRunOut from '@/templates/lottery/components/ModalBuyRunOut'
+import ModalBuyTicket from '@/templates/lottery/ModalBuyTicket'
+import ModalBuyConfirm from '@/templates/lottery/components/ModalBuyConfirm'
 
 type Props = {}
 
@@ -15,6 +19,8 @@ function Lottery({ }: Props) {
                     <Roll />
                     <BuyTickets />
                     <HowToPlay />
+                    <ModalBuyRunOut />
+                    <ModalBuyTicket />
                 </LotteryProvider>
             </Stack>
         </Container>

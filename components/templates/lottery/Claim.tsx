@@ -1,4 +1,4 @@
-import { Box, Button, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import MyImage from 'components/ui/image'
 import { USDTIcon } from 'utils/Icons'
 import { getPathAvatar } from 'utils/checkAvatar'
@@ -7,6 +7,8 @@ import { ButtonLoading } from 'components/ui/button'
 import { CoinEmptyImage } from 'utils/Images'
 import { useWalletContext } from 'contexts/WalletContext'
 import { useLotteryContext } from 'contexts/LotteryContext'
+import { TableClaim } from './components/Table/Table'
+import { MyTicketInfo, TicketClaimInfo } from './components/TicketInfo'
 
 type Props = {}
 
@@ -75,95 +77,21 @@ const Claim = (props: Props) => {
                     }
                 </Box>
             </Stack>
+            <Box mt={3}>
+                <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
+                    <TicketClaimInfo />
+                    <TicketClaimInfo />
+                    <TicketClaimInfo />
+                    <TicketClaimInfo />
+                </Stack>
+                <Box display={{ xs: 'none', md: 'block' }}>
 
-            <TableContainer sx={{ mt: 2, backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-                            <TableCell >Lottery ID</TableCell>
-                            <TableCell >Numbers</TableCell>
-                            <TableCell >Matches</TableCell>
-                            <TableCell >Prize</TableCell>
-                            <TableCell align='right'>
-                                <Box>
-                                    <ButtonLoading fullWidth={false} sx={{ px: 2, py: 1, textTransform: 'none', width: 'auto' }}>Claim all reward</ButtonLoading>
-                                </Box>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow
-                            sx={{
-                                'td, th': { border: 0, py: 1 }, 'th': {
-                                    display: 'block'
-                                }
-                            }}
-                        >
-                            <TableCell  >
-                                Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                            </TableCell>
-
-                            <TableCell
-                            >
-                                <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                            </TableCell>
-                            <TableCell>
-                                4
-                            </TableCell>
-                            <TableCell align="left" >
-                                <Stack direction={'row'} gap={1} >
-                                    <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                </Stack>
-                            </TableCell>
-
-                            <TableCell align='right'>
-                                <Box>
-
-                                    <ButtonLoading fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>Claim</ButtonLoading>
-                                </Box>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow
-                            sx={{
-                                'td, th': { border: 0, py: 1 }, 'th': {
-                                    display: 'block'
-                                }
-                            }}
-                        >
-                            <TableCell  >
-                                Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                            </TableCell>
-
-                            <TableCell
-                            >
-                                <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                            </TableCell>
-                            <TableCell>
-                                4
-                            </TableCell>
-                            <TableCell align="left" >
-                                <Stack direction={'row'} gap={1} >
-                                    <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                </Stack>
-                            </TableCell>
-
-                            <TableCell align='right'>
-                                <Box>
-
-                                    <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
-                                        Claimed
-                                    </ButtonLoading>
-                                </Box>
-                            </TableCell>
-                        </TableRow>
-
-
-                    </TableBody>
-                </Table>
+                    <TableClaim />
+                </Box>
                 <Box textAlign={'center'}>
                     <Button variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
                 </Box>
-            </TableContainer>
+            </Box>
 
         </Box>
     )

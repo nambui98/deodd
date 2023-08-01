@@ -6,7 +6,7 @@ import Ticket from './components/Ticket'
 import { useWalletContext } from 'contexts/WalletContext'
 import { ButtonLoading } from 'components/ui/button'
 import { useLotteryContext } from 'contexts/LotteryContext'
-import { TableMyTickets } from './components/Table/TableMyTickets'
+import { TableMyTickets } from './components/Table/Table'
 import { MyTicketInfo } from './components/TicketInfo'
 
 type Props = {}
@@ -63,6 +63,9 @@ const MyTicket = (props: Props) => {
                 <Box display={{ xs: 'none', md: 'block' }}>
 
                     <TableMyTickets />
+                </Box>
+                <Box textAlign={'center'}>
+                    <Button variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
                 </Box>
             </Box>
         </>
