@@ -16,6 +16,9 @@ interface LotteryContextType {
 	setOpenModalApprove: Dispatch<SetStateAction<boolean>>;
 	openModalBuySuccess: boolean;
 	setOpenModalBuySuccess: Dispatch<SetStateAction<boolean>>;
+
+	openModalProvablyFair: boolean;
+	setOpenModalProvablyFair: Dispatch<SetStateAction<boolean>>;
 }
 
 const LotteryContext = createContext<LotteryContextType>({
@@ -34,7 +37,10 @@ const LotteryContext = createContext<LotteryContextType>({
 	setOpenModalApprove: () => { },
 
 	openModalBuySuccess: false,
-	setOpenModalBuySuccess: () => { }
+	setOpenModalBuySuccess: () => { },
+
+	openModalProvablyFair: false,
+	setOpenModalProvablyFair: () => { },
 })
 
 export const useLotteryContext = () => useContext(LotteryContext);
@@ -49,6 +55,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	const [openModalBuyRunOut, setOpenModalBuyRunOut] = useState<boolean>(false);
 	const [openModalApprove, setOpenModalApprove] = useState<boolean>(false);
 	const [openModalBuySuccess, setOpenModalBuySuccess] = useState<boolean>(false);
+	const [openModalProvablyFair, setOpenModalProvablyFair] = useState<boolean>(false);
 
 	let dateSpin = new Date();
 	dateSpin.setHours(17);
@@ -90,7 +97,9 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 				openModalBuyRunOut,
 				setOpenModalBuyRunOut,
 				openModalBuySuccess,
-				setOpenModalBuySuccess
+				setOpenModalBuySuccess,
+				openModalProvablyFair,
+				setOpenModalProvablyFair
 			}
 		)
 	}, [isRollComing, isWinPrize, isRollEnd, dateSpin, isRolling, openModalBuyTicket, openModalBuyRunOut, openModalApprove, openModalBuySuccess, setOpenModalBuyTicket])
