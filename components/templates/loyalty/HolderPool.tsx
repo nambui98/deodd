@@ -68,7 +68,7 @@ function HolderPool({ }: Props) {
               >
                 It’s time to claim your reward
               </Typography>
-              <Link href={"/campaign"}>
+              <Link href={"/staking"}>
                 <ButtonMain
                   active={true}
                   title="Claim reward"
