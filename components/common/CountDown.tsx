@@ -2,12 +2,12 @@ import React from 'react';
 import { Stack, Typography, useMediaQuery } from '@mui/material';
 
 interface IProps {
-    endDate: string
-    sxTitle?: any
-    sxSubTitle?: any
+    endDate: string,
+    sxTitle?: any,
+    sxNumber?: any,
 }
 
-const Countdown: React.FC<IProps> = ({ endDate, sxTitle, sxSubTitle }) => {
+const Countdown: React.FC<IProps> = ({ endDate, sxTitle, sxNumber }) => {
 
     const end = Date.parse(endDate);
     const _second = 1000;
@@ -45,17 +45,21 @@ const Countdown: React.FC<IProps> = ({ endDate, sxTitle, sxSubTitle }) => {
     }, []);
     return (
         <Stack direction={'row'}  >
-            {[
+            {(parseFloat(dayText) > 0 ? [
                 { count: dayText, title: 'd ' },
                 { count: hrText, title: 'h ' },
                 { count: minText, title: 'm ' },
                 { count: secText, title: 's ' },
-            ].map(({ count, title }) => (
+            ] : [
+                { count: hrText, title: 'hour ' },
+                { count: minText, title: 'min ' },
+                { count: secText, title: 'sec ' },
+            ]).map(({ count, title }: { count: string, title: string }) => (
                 <Stack key={title} width={70} alignItems={'center'}>
-                    <Typography fontSize={32} fontWeight={700} color={'secondary.main'}>
+                    <Typography fontSize={32} fontWeight={700} color={'secondary.main'} sx={{ ...sxNumber }}>
                         {count}
                     </Typography>
-                    <Typography width={10} color={'dark.60'}>
+                    <Typography color={'dark.60'} sx={{ ...sxTitle }}>
                         {title}
                     </Typography>
                 </Stack>

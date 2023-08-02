@@ -348,6 +348,7 @@ export const darkTheme = createTheme({
 							backgroundColor: 'transparent',
 							boxShadow: 'none',
 							border: 'none',
+							textTransform: 'none',
 							'&:hover': {
 
 								border: 'none',
@@ -382,6 +383,16 @@ export const darkTheme = createTheme({
 				},
 			},
 		},
+		MuiPopover: {
+			styleOverrides: {
+				root: {
+					'& .MuiPaper-root': {
+
+						backgroundImage: 'none'
+					}
+				}
+			}
+		}
 	},
 	breakpoints: {
 		values: {

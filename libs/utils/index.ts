@@ -17,6 +17,9 @@ const getPathAvatar = (avatarId: number | undefined) => {
 const calculatorProfit = (rewardPool: string | undefined, nft: TypeNFT, amount?: number, dayStaked?: number) => {
     return ((parseFloat(rewardPool ?? DefaultRewardPool.toString())) * SharePerNFT[nft.type as EnumNFT] * (amount ?? 1) * (dayStaked ?? DefaultStaked) / DefaultSeason) / 100;
 }
+const getRandomNumberInRange = (min: number, max: number): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 export const Utils = {
     getImageNFT: (type: number | string) => {
         return MapIconNFT[type];
@@ -56,5 +59,6 @@ export const Utils = {
         },
     }),
     getPathAvatar,
-    calculatorProfit
+    calculatorProfit,
+    getRandomNumberInRange
 }
