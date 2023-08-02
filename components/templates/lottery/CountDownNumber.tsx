@@ -6,11 +6,7 @@ type Props = {
 }
 
 const CountDownNumber = ({ number }: Props) => {
-
-
-
     const [numberLeft, setNumberLeft] = useState<number>(number)
-
     useEffect(() => {
         const interval = setInterval(() => {
             setNumberLeft((prev) => prev === 0 ? 0 : prev - 1);
@@ -21,7 +17,7 @@ const CountDownNumber = ({ number }: Props) => {
     }, [])
 
     return (
-        numberLeft
+        <span>{numberLeft}</span>
     )
 }
 
