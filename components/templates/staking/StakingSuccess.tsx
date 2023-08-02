@@ -1,14 +1,14 @@
 import { Box, Collapse, Divider, Skeleton, Stack, Typography, styled } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ButtonLoading, ButtonMain } from "components/ui/button";
 import { Colors } from "constants/index";
 import { useSiteContext } from "contexts/SiteContext";
-import { format, isBefore } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { BigNumber, ethers } from "ethers";
 import { DeoddService } from "libs/apis";
 import { nftHolderContract } from "libs/contract";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BnbIcon, CupIcon } from "utils/Icons";
 import { useContractWrite } from "wagmi";
 import StakingHistoryTable from "./components/StakingHistoryTable";
@@ -16,6 +16,7 @@ import UnstakeModal from "./components/UnstakeModal";
 import { de } from 'date-fns/locale';
 import { Format } from "utils/format";
 import CoinAnimation from "components/common/CoinAnimation";
+import { useInView } from "react-intersection-observer";
 function StakingSuccess({
   handleHiddenPools,
   nftStaked,
@@ -30,14 +31,19 @@ function StakingSuccess({
 }) {
   const [isUnstakeOpened, setIsUnstakeOpened] = useState(false);
   const [isUnstakeLoading, setIsUnstakeLoading] = useState(false);
-  const { setIsError, setTitleError } = useSiteContext();
+  const { setIsError, setTitleError, setIsSuccess, setTitleSuccess } = useSiteContext();
   const [currentStageModal, setCurrentStageModal] = useState<number>(1);
   const [idNftSelected, setIdNftSelected] = useState<number | null>(null);
   const [poolExpanded, setPoolExpanded] = useState<any>(null);
+  console.log(poolExpanded);
+  console.log("🚀 ~ file: StakingSuccess.tsx:38 ~ poolExpanded:", poolExpanded)
 
   const [modeUnstake, setModeUnstake] = useState<boolean>(false);
 
   const queryClient = useQueryClient()
+
+  const [refEndedPool, inView] = useInView();
+  const [offset, setOffset] = useState<number>(0);
 
   const { writeAsync: unStake } = useContractWrite({
     address: nftHolderContract.address,
@@ -49,7 +55,22 @@ function StakingSuccess({
       setTitleError(error.message || 'Something wend wrong.');
     },
   })
-
+  // hanlde claim
+  const claimStaking = useMutation({
+    mutationKey: [poolExpanded?.id],
+    mutationFn: () => {
+      return DeoddService.claimStaking({ poolId: poolExpanded?.id })
+    },
+    onError(error: any, variables, context) {
+      setIsError(true)
+      setTitleError(error.response.data.meta.error_message)
+    },
+    onSuccess(data, variables, context) {
+      setTitleSuccess('Claim successfully')
+      setIsSuccess(true);
+      queryClient.invalidateQueries({ queryKey: ['getPools'] });
+    },
+  });
   const handleBeforeUnStake = () => {
     if (currentStageModal === 3) {
       setIsUnstakeLoading(true);
@@ -57,7 +78,6 @@ function StakingSuccess({
     } else {
       setIsUnstakeOpened(true)
     }
-
   }
   const handleUnstake = () => {
     setIsUnstakeLoading(true);
@@ -79,9 +99,18 @@ function StakingSuccess({
         setIsUnstakeLoading(false);
         setTitleError(error.reason || 'Something went wrong');
       })
-
-
   }
+  const handleClaim = () => {
+    claimStaking.mutate();
+  }
+
+  useEffect(() => {
+    if (inView) {
+      setOffset((prev) => prev + 10)
+    }
+  }, [inView])
+
+
   return (
     <Stack gap={2}>
       <Stack sx={{
@@ -151,15 +180,16 @@ function StakingSuccess({
 
             }}
           />
-          {/* <ButtonMain
-            active={true}
-            title={<Stack sx={{ flexDirection: "row", gap: 1 }}>
-              Claim
-              <BnbIcon width={16} color={Colors.primaryDark} />
-            </Stack>}
+          <ButtonLoading
+            // active={true}
+            loading={claimStaking.isLoading}
+            disabled={!poolExpanded || poolExpanded.is_claimed || poolExpanded.reward <= 0 || (isAfter(new Date(), new Date(poolExpanded.start_time)) && isBefore(new Date(), new Date(poolExpanded.end_time)))}
+            onClick={handleClaim}
             sx={{
               py: 1,
               px: 2,
+              width: 'auto',
+              textTransform: 'none',
               fontSize: "0.75rem",
               fontWeight: 400,
               lineHeight: "1rem",
@@ -173,10 +203,22 @@ function StakingSuccess({
                 }
               }
             }}
-          /> */}
+          >
+
+            <Stack sx={{ flexDirection: "row", gap: 1 }}>
+              {
+                poolExpanded?.is_claimed ?
+                  'Claimed' : 'Claim'
+              }
+
+              <BnbIcon width={16} color={Colors.primaryDark} />
+            </Stack>
+
+          </ButtonLoading>
         </Stack>
+
       </Stack>
-      {pools?.map((pool: any) =>
+      {pools?.slice(0, offset).map((pool: any) =>
         <PoolItem
           pool={pool}
           key={pool.id}
@@ -189,6 +231,8 @@ function StakingSuccess({
           handleBeforeUnstake={handleBeforeUnStake}
         />
       )}
+
+      <Box ref={refEndedPool} />
 
     </Stack>
   );
@@ -280,7 +324,10 @@ const PoolItem = ({ pool, handleUnstake, handleBeforeUnstake, modeUnstake, idNft
             <DisabledTypography>Start: {Format.formatDateTimeAlt(pool.start_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
             <DisabledTypography>End: {Format.formatDateTimeAlt(pool.end_time, "UTC", 'HH:mm zzz dd/MM/yyyy')}</DisabledTypography>
           </Stack>
-          {/* <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography> */}
+          {
+            pool.is_claimed &&
+            <DisabledTypography sx={{ color: "#26BC7F", alignSelf: "flex-end" }}>Claimed</DisabledTypography>
+          }
         </Stack>
 
 
@@ -303,16 +350,19 @@ const PoolItem = ({ pool, handleUnstake, handleBeforeUnstake, modeUnstake, idNft
         }}>
           <CoinAnimation mx="auto" width={50} height={50} />
         </Box> */}
+
         {
-          !isFetchGetNFTStaked ?
-            <StakingHistoryTable
-              modeUnstake={modeUnstake}
-              nfts={nftStaked}
-              idNftSelected={idNftSelected}
-              setIdNftSelected={setIdNftSelected}
-            />
-            :
-            <Skeleton variant="rounded" width={'100%'} height={580} />
+          poolExpanded?.id === pool.id && (
+            !isFetchGetNFTStaked ?
+              <StakingHistoryTable
+                modeUnstake={modeUnstake}
+                nfts={nftStaked}
+                idNftSelected={idNftSelected}
+                setIdNftSelected={setIdNftSelected}
+              />
+              :
+              <Skeleton variant="rounded" width={'100%'} height={80} />
+          )
         }
         {
           modeUnstake &&

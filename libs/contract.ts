@@ -4,6 +4,8 @@ import deoddNFTAbi from '../abi/DeoddNFT.json';
 import dusdAbi from '../abi/DeoddUSD.json';
 import lotteryAbi from '../abi/Lottery.json';
 import nftHolderAbi from '../abi/NFTHolder.json';
+import claimAbi from '../abi/Claim.json';
+import claimNFTAbi from '../abi/ClaimDeoddNFT.json';
 import { CONTRACT_DEV } from "./contract/dev";
 import { CONTRACT_PROD } from "./contract/prod";
 import { erc20ABI } from 'wagmi';
@@ -23,3 +25,6 @@ export const deoddNFTContract = { address: address.deoddNFT, abi: deoddNFTAbi.ab
 export const dusdContract = { address: address.dusd, abi: dusdAbi.abi }
 export const nftHolderContract = { address: address.nftHolder, abi: nftHolderAbi.abi }
 export const lotteryContract = { address: address.lottery, abi: lotteryAbi.abi }
+export const claimAllStarContract = { address: address.claimAllStar, abi: claimAbi.abi }
+export const claimRefContract = { address: address.claimRef, abi: claimAbi.abi }
+export const claimNFT = { address: address.claimNFT, abi: claimNFTAbi.abi }
