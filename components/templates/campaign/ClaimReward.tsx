@@ -12,8 +12,10 @@ import { Format } from "utils/format";
 import { AxiosResponse } from "axios";
 import { useSiteContext } from "contexts/SiteContext";
 import { useContractRead, useContractWrite } from "wagmi";
-import { claimAllStarContract, claimNFT, claimRefContract } from "libs/contract";
+import { claimAllStarContract, claimBugBuster, claimNFT, claimRefContract } from "libs/contract";
 import { BigNumber, ethers } from "ethers";
+import { DateClaimCampaign } from "constants/index";
+import { isAfter, isBefore } from "date-fns";
 type rewardItem = {
     value: number,
     type: string,
@@ -23,29 +25,34 @@ export const CAMPAIGNS_FETCH: {
     label: string,
     fetch: (wallet: string, type?: string) => Promise<AxiosResponse<any, any>>
 }[] = [
-        {
-            id: 'FLIP_VOLUME',
-            label: 'Volume of Bets',
-            fetch: DeoddService.getTotalVolume
-        },
+        // {
+        //     id: 'FLIP_VOLUME',
+        //     label: 'Volume of Bets',
+        //     fetch: DeoddService.getTotalVolume
+        // },
         {
             id: 'TESTNET',
             label: 'DeODD Testnet All-Stars',
             fetch: DeoddService.getInfoClaimCampaign
         },
-        {
-            id: 'WIN_STREAK',
-            label: 'Win Streak Campaign',
-            fetch: DeoddService.getWinDashboard
-        },
-        {
-            id: 'LOSE_STREAK',
-            label: 'Lose Streak Campaign',
-            fetch: DeoddService.getLoseDashboard
-        },
+        // {
+        //     id: 'WIN_STREAK',
+        //     label: 'Win Streak Campaign',
+        //     fetch: DeoddService.getWinDashboard
+        // },
+        // {
+        //     id: 'LOSE_STREAK',
+        //     label: 'Lose Streak Campaign',
+        //     fetch: DeoddService.getLoseDashboard
+        // },
         {
             id: 'TOP_REF',
             label: 'DeODD Testnet Referral',
+            fetch: DeoddService.getInfoClaimCampaign
+        },
+        {
+            id: 'BUG_BUSTER',
+            label: 'DeODD Bug Buster',
             fetch: DeoddService.getInfoClaimCampaign
         },
         {
@@ -81,10 +88,16 @@ const ClaimReward: React.FC<any> = () => {
         },
     });
 
+    const isClosed = isAfter(new Date(), new Date(DateClaimCampaign.end));
+    const isUnOpened = isBefore(new Date(), new Date(DateClaimCampaign.start));
+
+    console.log(isAfter(new Date(), new Date(DateClaimCampaign.start)));
+
     const { data: dataReward, isFetching, refetch: refetchMyInfoCampaign } = useQuery({
         queryKey: ["getCampaignDashboard", valueSelect],
         enabled: !!valueSelect,
         queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress, valueSelect),
+        refetchOnWindowFocus: false,
         select: (data: any) => {
             if (data.status === 200) {
                 debugger
@@ -166,6 +179,21 @@ const ClaimReward: React.FC<any> = () => {
                 }).finally(() => {
                     setIsLoadingClaim(false);
                 })
+        } if (valueSelect === "BUG_BUSTER") {
+            handleClaimBugBuster?.()
+                .then(resWrite => {
+                    return resWrite.wait();
+                })
+                .then((res) => {
+                    refetchClaimAble();
+                })
+                .catch(error => {
+                    setIsLoadingClaim(false);
+                    setIsError(true);
+                    setTitleError(error.reason || 'Something went wrong');
+                }).finally(() => {
+                    setIsLoadingClaim(false);
+                })
         } else {
             claim()
         }
@@ -181,6 +209,18 @@ const ClaimReward: React.FC<any> = () => {
             setTitleError(error.reason || 'Something wend wrong.');
         },
         args: [walletAddress, valueSelect === "NFT_AIRDROP" ? BigNumber.from(dataReward?.reward ?? '0') : 0, dataReward?.proof ?? '']
+    })
+    const { writeAsync: handleClaimBugBuster, isLoading: isLoadingBugbuster } = useContractWrite({
+        address: claimBugBuster.address,
+        mode: 'recklesslyUnprepared',
+        abi: claimBugBuster.abi,
+        functionName: 'claim',
+        onError(error: any, variables, context) {
+            debugger
+            setIsError(true)
+            setTitleError(error.reason || 'Something wend wrong.');
+        },
+        args: [walletAddress, ethers.utils.parseUnits(dataReward?.reward ?? '0'), dataReward?.proof ?? '']
     })
     const { writeAsync: claimAllStar, isLoading: isLoadingStar } = useContractWrite({
         address: claimAllStarContract.address,
@@ -204,11 +244,11 @@ const ClaimReward: React.FC<any> = () => {
     })
 
     const { refetch: refetchClaimAble, data: dataClaimable } = useContractRead({
-        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : undefined,
+        address: valueSelect === "TESTNET" ? claimAllStarContract.address : valueSelect === "TOP_REF" ? claimRefContract.address : valueSelect === "NFT_AIRDROP" ? claimNFT.address : valueSelect === "BUG_BUSTER" ? claimBugBuster.address : undefined,
         abi: claimRefContract.abi,
         functionName: 'claimable',
         args: [walletAddress],
-        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "TESTNET" || valueSelect === "NFT_AIRDROP"),
+        enabled: !!walletAddress && (valueSelect === "TOP_REF" || valueSelect === "BUG_BUSTER" || valueSelect === "TESTNET" || valueSelect === "NFT_AIRDROP"),
     })
 
     let rows = [
@@ -359,20 +399,43 @@ const ClaimReward: React.FC<any> = () => {
                                     <Typography variant='body2' textAlign={'center'} color={"secondary.200"}> Select campaign to show your reward</Typography>
                             }
                         </Box>
-                        <ButtonLoading
-                            loading={claimLoading || isLoadingClaim}
-                            disabled={isFetching || !valueSelect || dataClaimable === false || !dataReward?.reward || dataReward?.isConnectWalletClaimed || parseFloat(dataReward?.reward ?? 0) <= 0}
-                            sx={{ textTransform: 'none', py: 2 }}
-                            onClick={() => handleClaim()}
-                        >
-                            {
-                                (dataReward?.isConnectWalletClaimed
-                                    ||
-                                    (dataClaimable === false && parseFloat(dataReward?.reward) > 0)
-                                ) ? 'Claimed' : "Claim reward"
-                            }
+                        {
+                            isUnOpened &&
+                            <ButtonLoading
+                                disabled
+                                sx={{ textTransform: 'none', py: 2 }}
+                            >
+                                Unopened
+                            </ButtonLoading>
+                        }
+                        {
+                            isClosed && <Stack gap={2}>
+                                <ButtonLoading
+                                    disabled
+                                    sx={{ textTransform: 'none', py: 2 }}
+                                >
+                                    Expired
+                                </ButtonLoading>
+                                <Typography variant="caption" textAlign={'center'} color="error.300">You are no longer able to receive this reward since the claim time has expired</Typography>
+                            </Stack>
+                        }
+                        {
+                            isClosed === false && isUnOpened === false &&
+                            <ButtonLoading
+                                loading={claimLoading || isLoadingClaim}
+                                disabled={isFetching || !valueSelect || dataClaimable === false || !dataReward?.reward || dataReward?.isConnectWalletClaimed || parseFloat(dataReward?.reward ?? 0) <= 0}
+                                sx={{ textTransform: 'none', py: 2 }}
+                                onClick={() => handleClaim()}
+                            >
+                                {
+                                    (dataReward?.isConnectWalletClaimed
+                                        ||
+                                        (dataClaimable === false && parseFloat(dataReward?.reward) > 0)
+                                    ) ? 'Claimed' : "Claim reward"
+                                }
+                            </ButtonLoading>
+                        }
 
-                        </ButtonLoading>
                     </Box >
                 </>
         }

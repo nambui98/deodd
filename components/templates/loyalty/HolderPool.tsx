@@ -9,6 +9,7 @@ import useLoyaltyHolder from "hooks/loyalty/useLoyaltyHolder";
 import { Format } from "utils/format";
 import NFTHolderTimer from "./components/NFTHolderTimer";
 import Link from "next/link";
+import { BigNumber, ethers } from "ethers";
 
 type Props = {};
 
@@ -117,7 +118,8 @@ function HolderPool({ }: Props) {
             {periodsInfo.isError
               ? "----"
               : Format.formatMoney(
-                periodsInfo.data[0].current_prize / Math.pow(10, 18),
+
+                ethers.utils.formatEther(BigNumber.from(periodsInfo.data[0].current_prize.toString())),
                 4
               )}
             <Box component={"span"} sx={{ ml: 1 }}>
