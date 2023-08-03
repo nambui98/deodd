@@ -4,11 +4,13 @@ import { ButtonLoading } from 'components/ui/button';
 import { Colors } from 'constants/index';
 import { useWalletContext } from 'contexts/WalletContext';
 
-import React, { useState } from 'react'
-import MyTicket from './MyTicket';
+import React, { Suspense, lazy, useState } from 'react'
 import Result from './Result';
 import JackpotWinner from './JackpotWinner';
 import Claim from './Claim';
+import CoinAnimation from 'components/common/CoinAnimation';
+
+const MyTicket = lazy(() => import("./MyTicket"));
 
 type Props = {}
 enum TabEnum {
@@ -86,7 +88,11 @@ const BuyTickets = (props: Props) => {
 
                 <Typography flex={{ xs: 1, md: 1 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography>
             </Stack>
-            {mapComponentTab[valueTab]}
+
+            <Suspense fallback={<CoinAnimation mx="auto" width={50} height={50} />}>
+
+                {mapComponentTab[valueTab]}
+            </Suspense>
         </Box>
     )
 }

@@ -1,4 +1,5 @@
 import { Box, Grid, InputAdornment, Stack, TextField, Typography } from '@mui/material'
+import { useQueryClient } from '@tanstack/react-query'
 import FormatNumber from 'components/common/FormatNumber'
 import MyModal from 'components/common/Modal'
 import Price from 'components/common/Price'
@@ -30,6 +31,7 @@ const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
     const price = totalAmountTicket * DefaultPriceTicket;
     const [balanceUSDT, setBalanceUSDT] = useState<string | number>(0);
 
+    const queryClient = useQueryClient();
     const argsPassBuyTicket = [
         listTicket.reduce((resultTicket, currentticket) => [...resultTicket, ...currentticket.ticket], [] as (number | null)[]).filter(number => number !== null).map(number => {
             return BigNumber.from(number)
@@ -51,8 +53,9 @@ const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
         abi: lotteryContract.abi,
         functionName: 'buyTickets',
         args: argsPassBuyTicket,
-        onMutate: () => {
+        onSuccess(data, variables, context) {
         },
+
     })
 
     const { writeAsync: approve } = useContractWrite({
@@ -125,6 +128,7 @@ const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
                     setOpenModalBuyTicket(false);
                     getAllowance();
                     refresh();
+                    queryClient.invalidateQueries({ queryKey: ['getMyTicket'] });
                 })
                 .catch((error) => {
                     setIsLoading(false);

@@ -5,10 +5,13 @@ import { USDTIcon } from 'utils/Icons'
 import MyImage from 'components/ui/image'
 import { getPathAvatar } from 'utils/checkAvatar'
 import { ButtonLoading } from 'components/ui/button'
+import { TicketType } from '../../MyTicket'
 
-type Props = {}
+type Props = {
+    data: TicketType[] | undefined
+}
 
-export const TableMyTickets = (props: Props) => {
+export const TableMyTickets = ({ data }: Props) => {
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -23,143 +26,47 @@ export const TableMyTickets = (props: Props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
+                    {
+                        data?.map(ticket => {
+                            return (
+                                <TableRow
+                                    key={ticket.draw_id}
+                                    sx={{
+                                        'td, th': { border: 0, py: 1 }, 'th': {
+                                            display: 'block'
+                                        }
+                                    }}
+                                >
+                                    <TableCell width={160} >
+                                        Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#{ticket.draw_id}</Typography>
+                                    </TableCell>
+                                    <TableCell
+                                        align="right"
+                                    >
+                                        <Ticket numbers={ticket.series} />
+                                    </TableCell>
+                                    <TableCell>
+                                        {ticket.quantity}
+                                    </TableCell>
 
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
+                                    <TableCell >
+                                        {ticket.matches}
+                                    </TableCell>
 
-                        <TableCell >
-                            --
-                        </TableCell>
-
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Typography variant='body2'>Claimed</Typography>
-                        </TableCell>
-                    </TableRow>
-
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-
-                        <TableCell >
-                            --
-                        </TableCell>
-
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Typography variant='body2'>Claimed</Typography>
-                        </TableCell>
-                    </TableRow>
-
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-
-                        <TableCell >
-                            --
-                        </TableCell>
-
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Typography variant='body2'>Claimed</Typography>
-                        </TableCell>
-                    </TableRow>
-
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-
-                        <TableCell >
-                            --
-                        </TableCell>
-
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Typography variant='body2'>Claimed</Typography>
-                        </TableCell>
-                    </TableRow>
+                                    <TableCell align="right" >
+                                        <Stack direction={'row'} gap={1} >
+                                            <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                        </Stack>
+                                    </TableCell>
+                                    <TableCell align="right" >
+                                        <Typography variant='body2'>Claim</Typography>
+                                    </TableCell>
+                                </TableRow>
 
 
+                            )
+                        })
+                    }
                 </TableBody>
             </Table>
 
