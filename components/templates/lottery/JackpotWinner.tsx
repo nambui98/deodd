@@ -23,10 +23,10 @@ const JackpotWinner = (props: Props) => {
             <Typography variant='h5' fontWeight={700} mt={5}>Jackpot Winner</Typography>
             <Box mt={3}>
                 <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
-                    <ResultTicketInfo />
-                    <ResultTicketInfo />
-                    <ResultTicketInfo />
-                    <ResultTicketInfo />
+                    <ResultTicketInfo data={undefined} />
+                    <ResultTicketInfo data={undefined} />
+                    <ResultTicketInfo data={undefined} />
+                    <ResultTicketInfo data={undefined} />
                 </Stack>
                 <Box display={{ xs: 'none', md: 'block' }}>
 
