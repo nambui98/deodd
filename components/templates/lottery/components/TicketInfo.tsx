@@ -5,35 +5,36 @@ import { getPathAvatar } from 'utils/checkAvatar'
 import Ticket from './Ticket'
 import { USDTIcon } from 'utils/Icons'
 import { ButtonLoading } from 'components/ui/button'
+import { TicketType } from '../MyTicket'
 
-type Props = {}
+type Props = {
+    data: TicketType | undefined
+}
 
-export const MyTicketInfo = (props: Props) => {
+export const MyTicketInfo = ({ data }: Props) => {
     return (
         <Stack>
             <Stack direction={'row'} gap={2} alignItems={'center'}>
                 <Typography variant='body2'>
                     Lottery{" "}
-                    <Typography component={'span'} variant='body2' color="secondary.main">#151223</Typography>
+                    <Typography component={'span'} variant='body2' color="secondary.main">#{data?.draw_id}</Typography>
                 </Typography>
                 <Typography ml="auto" color="secondary.100" variant='body2'>
                     Ticket{" "}
-                    <Typography component={'span'} variant='body2' color="white">4</Typography>
+                    <Typography component={'span'} variant='body2' color="white">{data?.quantity}</Typography>
                 </Typography>
                 <Typography ml={3} color="secondary.100" variant='body2'>
                     Matches{" "}
-                    <Typography component={'span'} variant='body2' color="white">--</Typography>
+                    <Typography component={'span'} variant='body2' color="white">{data?.matches}</Typography>
                 </Typography>
             </Stack>
             <Ticket mt={1} gap={1} numbers={[12, 33, 11, 23, 4, 6]} />
             <Stack direction={'row'} mt={2} gap={2} alignItems={'center'}>
                 <Stack gap={.5} direction={'row'} alignItems={'center'}>
-
                     <Typography variant='body2' color="secondary.100">
                         Prize{" "}
-
-                        <Typography sx={{ verticalAlign: '' }} component={'span'} variant='body2' color="white">0.51345
-
+                        <Typography sx={{ verticalAlign: '' }} component={'span'} variant='body2' color="white">
+                            --
                         </Typography>
                     </Typography>
 
@@ -42,7 +43,7 @@ export const MyTicketInfo = (props: Props) => {
                 </Stack>
                 <Typography ml="auto" color="secondary.100" variant='body2'>
                     Status{" "}
-                    <Typography ml={.5} component={'span'} variant='body2' color="white">Claimed</Typography>
+                    <Typography ml={.5} component={'span'} variant='body2' color="white">Claim</Typography>
                 </Typography>
             </Stack>
 
@@ -82,7 +83,7 @@ export const ResultTicketInfo = (props: Props) => {
 export const TicketClaimInfo = () => {
     return (
         <Stack gap={2}>
-            <MyTicketInfo />
+            <MyTicketInfo data={undefined} />
             <Box sx={{ alignSelf: 'flex-end' }}>
                 <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
                     Claimed

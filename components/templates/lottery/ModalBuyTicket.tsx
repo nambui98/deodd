@@ -85,20 +85,19 @@ const ModalBuyTicket = (props: Props) => {
     }
 
     const handleMinusAmountTicket = (indexTicket: number) => {
-        setListTicketNumber((prevList) => {
-            let ticketChange = prevList[indexTicket];
-            ticketChange.amount = ticketChange.amount - 1 > 0 ? ticketChange.amount - 1 : 0;
-            prevList[indexTicket] = ticketChange;
-            return [...prevList];
-        })
+        const prevList = [...listTicketNumber];
+        let ticketChange = prevList[indexTicket];
+        ticketChange.amount = ticketChange.amount - 1 > 0 ? ticketChange.amount - 1 : 0;
+        prevList[indexTicket] = ticketChange;
+
+        setListTicketNumber(prevList)
     }
     const handlePlusAmountTicket = (indexTicket: number) => {
-        setListTicketNumber((prevList) => {
-            let ticketChange = prevList[indexTicket];
-            ticketChange.amount = ticketChange.amount + 1;
-            prevList[indexTicket] = ticketChange;
-            return [...prevList];
-        })
+        const prevList = [...listTicketNumber];
+        let ticketChange = prevList[indexTicket];
+        ticketChange.amount += 1;
+        prevList[indexTicket] = ticketChange;
+        setListTicketNumber(prevList)
     }
     const handleRemoveTicket = (indexTicket: number) => {
         setListTicketNumber((prevList) => {
@@ -116,11 +115,12 @@ const ModalBuyTicket = (props: Props) => {
 
 
     const handleRandomTicket = () => {
-        let list: number[] = [];
+        let list: (number | null)[] = [];
         while (list.length < 5) {
             list = [...Array.from(new Set([...list, Utils.getRandomNumberInRange(1, 25)]))];
         }
-        list.push(Utils.getRandomNumberInRange(1, 10));
+        // list.push(Utils.getRandomNumberInRange(1, 10));
+        list.push(null);
         setTicketNumberTemp(list)
     }
 

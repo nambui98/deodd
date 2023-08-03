@@ -187,6 +187,17 @@ const claimStaking = async (data: { poolId: string }) => {
         )
     })
 }
+
+const getMyTicket = async ({ limit, offset }: { limit: number, offset: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/tickets`,
+        method: 'POST',
+        data: {
+            limit,
+            offset
+        }
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
@@ -218,5 +229,6 @@ export const DeoddService = {
     getLoseDashboard,
     claimCampaign,
     checkIsWalletJoinStaking,
-    getClaimHistory
+    getClaimHistory,
+    getMyTicket
 }

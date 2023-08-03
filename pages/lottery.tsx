@@ -8,6 +8,7 @@ import ModalApprove from '@/templates/lottery/components/ModalApprove'
 import ModalBuyRunOut from '@/templates/lottery/components/ModalBuyRunOut'
 import ModalBuyTicket from '@/templates/lottery/ModalBuyTicket'
 import ModalBuyConfirm from '@/templates/lottery/components/ModalBuyConfirm'
+import ModalProvablyFair from '@/templates/lottery/components/ModalProvablyFair'
 
 type Props = {}
 
@@ -21,6 +22,7 @@ function Lottery({ }: Props) {
                     <HowToPlay />
                     <ModalBuyRunOut />
                     <ModalBuyTicket />
+                    <ModalProvablyFair />
                 </LotteryProvider>
             </Stack>
         </Container>
