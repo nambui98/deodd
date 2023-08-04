@@ -6,6 +6,10 @@ import MyImage from 'components/ui/image'
 import { getPathAvatar } from 'utils/checkAvatar'
 import { ButtonLoading } from 'components/ui/button'
 import { TicketType } from '../../MyTicket'
+import { WinnerType } from '../../Result'
+import { Convert } from 'utils/convert'
+import { BigNumber, ethers } from 'ethers'
+import { Format } from 'utils/format'
 
 type Props = {
     data: TicketType[] | undefined
@@ -38,7 +42,7 @@ export const TableMyTickets = ({ data }: Props) => {
                                     }}
                                 >
                                     <TableCell width={160} >
-                                        Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#{ticket.draw_id}</Typography>
+                                        Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#{ticket.lottery_id}</Typography>
                                     </TableCell>
                                     <TableCell
                                         align="right"
@@ -55,11 +59,12 @@ export const TableMyTickets = ({ data }: Props) => {
 
                                     <TableCell align="right" >
                                         <Stack direction={'row'} gap={1} >
-                                            <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                            <Box>{ticket.prize}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="right" >
-                                        <Typography variant='body2'>Claim</Typography>
+                                        <Typography variant='body2'>{ticket?.claimed ? 'Claimed' : 'Claim'}</Typography>
                                     </TableCell>
                                 </TableRow>
 
@@ -75,7 +80,7 @@ export const TableMyTickets = ({ data }: Props) => {
 
     )
 }
-export const TableResultRoll = () => {
+export const TableResultRoll = ({ data }: { data: WinnerType[] }) => {
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -88,68 +93,42 @@ export const TableResultRoll = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            <Stack direction={'row'} gap={2} alignItems={'center'}>
-                                <MyImage width={40} height={40} src={getPathAvatar(1)} alt="" />
-                                <Box>
+                    {
+                        data.map((row, index) =>
+                            <TableRow
+                                key={index + "winnerList"}
+                                sx={{
+                                    'td, th': { border: 0, py: 1 }, 'th': {
+                                        display: 'block'
+                                    }
+                                }}
+                            >
+                                <TableCell width={160} >
+                                    <Stack direction={'row'} gap={2} alignItems={'center'}>
+                                        <MyImage width={40} height={40} src={getPathAvatar(row.avatar_id ?? 0)} alt="" />
+                                        <Box>
+                                            <Typography variant='caption' component={'p'}>{row.user_name}</Typography>
+                                            <Typography variant='caption' color="secondary.100">({Convert.convertWalletAddress(row.wallet, 4, 4)})</Typography>
+                                        </Box>
+                                    </Stack>
+                                </TableCell>
+                                <TableCell
+                                    align="right"
+                                >
+                                    <Ticket numbers={row.series} />
+                                </TableCell>
+                                <TableCell>
+                                    {row.matches}
+                                </TableCell>
+                                <TableCell align="right" >
+                                    <Stack direction={'row'} gap={1} >
+                                        <Box>{Format.formatMoney(ethers.utils.formatEther(BigNumber.from(row.prize.toString())))}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                    </Stack>
+                                </TableCell>
+                            </TableRow>
 
-                                    <Typography variant='caption' component={'p'}>{'NamNam'}</Typography>
-                                    <Typography variant='caption' color="secondary.100">(3535***3534)</Typography>
-                                </Box>
-                            </Stack>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            <Stack direction={'row'} gap={2} alignItems={'center'}>
-                                <MyImage width={40} height={40} src={getPathAvatar(1)} alt="" />
-                                <Box>
-
-                                    <Typography variant='caption' component={'p'}>{'NamNam'}</Typography>
-                                    <Typography variant='caption'>(3535***3534)</Typography>
-                                </Box>
-                            </Stack>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
+                        )
+                    }
                 </TableBody>
             </Table>
 

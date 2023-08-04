@@ -115,7 +115,7 @@ const Roll = (props: Props) => {
                                     </>
                                 }
                                 {
-                                    isRollComing && <Box mt={2}>
+                                    isRollComing && <Box mb={4} height={20}>
                                         <GenerateText />
                                     </Box>
                                 }

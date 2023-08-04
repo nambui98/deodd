@@ -1,5 +1,7 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AudioPlay, SiteContextType } from "../libs/types";
+import { useQuery } from "@tanstack/react-query";
+import { DeoddService } from "libs/apis";
 
 export const SiteContext = createContext<SiteContextType>({
     isLoading: false,
@@ -17,7 +19,13 @@ export const SiteContext = createContext<SiteContextType>({
     turnOffAudio: () => { },
     isGoldenHour: false,
     setIsGoldenHour: () => { },
-
+    currentLottery: {
+        bonus: 0,
+        draw_id: 0,
+        res: null,
+        initial_jackpot: 0,
+        lottery_id: null
+    }
 })
 
 export const useSiteContext = () => useContext(SiteContext);
@@ -96,6 +104,20 @@ export const SiteProvider = ({ children }: IProps) => {
 
         // }
     }, [audioPlay, audioWin, audioLost])
+
+    const { data: currentLottery } = useQuery({
+        queryKey: ["getCurrentLottery"],
+        refetchOnWindowFocus: false,
+        queryFn: DeoddService.getCurrentLottery,
+        select: (data: any) => {
+            if (data.status === 200) {
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const value: SiteContextType = useMemo(() => {
         return {
@@ -114,6 +136,7 @@ export const SiteProvider = ({ children }: IProps) => {
             turnOffAudio,
             isGoldenHour,
             setIsGoldenHour,
+            currentLottery
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -126,6 +149,7 @@ export const SiteProvider = ({ children }: IProps) => {
         audioPlayer,
         isGoldenHour,
         setIsGoldenHour,
+        currentLottery
         // isTurnOffAudio
     ])
     return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>

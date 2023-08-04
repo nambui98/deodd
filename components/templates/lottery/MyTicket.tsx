@@ -1,8 +1,5 @@
 import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import React, { useState } from 'react'
-import { USDTIcon } from 'utils/Icons'
-import { SubtractImage } from 'utils/Images'
-import Ticket from './components/Ticket'
 import { useWalletContext } from 'contexts/WalletContext'
 import { ButtonLoading } from 'components/ui/button'
 import { useLotteryContext } from 'contexts/LotteryContext'
@@ -11,7 +8,9 @@ import { MyTicketInfo } from './components/TicketInfo'
 import { DeoddService } from 'libs/apis'
 import { useQuery } from '@tanstack/react-query'
 
-type Props = {}
+type Props = {
+    drawId: string | null
+}
 export type TicketType = {
     wallet: string,
     draw_id: number,
@@ -20,20 +19,24 @@ export type TicketType = {
     quantity: number,
     series: number[],
     ticket_price: string,
+    lottery_id: number | null,
+    claimed: boolean,
+    prize: number
 
 }
-const MyTicket = (props: Props) => {
+const MyTicket = ({ drawId }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { setOpenModalBuyTicket } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
+    const [myTickets, setMyTickets] = useState<TicketType[]>([])
 
-    const { isFetching, isLoading, status, data: myTickets } = useQuery({
-        queryKey: ["getMyTicket", walletAddress, limit],
+    useQuery({
+        queryKey: ["getMyTicket", walletAddress, limit, drawId],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
-        suspense: true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0 }),
+        // suspense: myTickets.length > 0 ? false : true,
+        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 1, drawId }),
         select: (data: any) => {
             let result: TicketType[] = [];
             if (data.status === 200) {
@@ -42,6 +45,9 @@ const MyTicket = (props: Props) => {
                 result = [];
             }
             return result;
+        },
+        onSuccess(data) {
+            setMyTickets(data)
         },
     });
     console.log(myTickets)

@@ -4,14 +4,26 @@ import { ButtonLoading } from 'components/ui/button';
 import { Colors } from 'constants/index';
 import { useWalletContext } from 'contexts/WalletContext';
 
-import React, { Suspense, lazy, useState } from 'react'
-import Result from './Result';
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import JackpotWinner from './JackpotWinner';
 import Claim from './Claim';
 import CoinAnimation from 'components/common/CoinAnimation';
 
-const MyTicket = lazy(() => import("./MyTicket"));
+// const MyTicket = lazy(() => import("./MyTicket"));
 
+import dynamic from 'next/dynamic'
+import { DeoddService } from 'libs/apis';
+import { useQuery } from '@tanstack/react-query';
+import { JackpotType } from 'libs/types';
+import { useSiteContext } from 'contexts/SiteContext';
+import { useInView } from 'react-intersection-observer';
+
+const MyTicket = dynamic(() =>
+    import('./MyTicket')
+)
+const Result = lazy(() =>
+    import('./Result')
+)
 type Props = {}
 enum TabEnum {
     MY_TICKET,
@@ -21,7 +33,16 @@ enum TabEnum {
 }
 const BuyTickets = (props: Props) => {
     const [valueTab, setValueTab] = useState<TabEnum>(TabEnum.MY_TICKET);
-    const [lotteryId, setLotteryId] = useState<string>('123')
+    const { currentLottery } = useSiteContext();
+    const [drawId, setDrawId] = useState<string | null>(currentLottery?.draw_id.toString());
+    const [page, setPage] = useState<number>(1)
+    const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
+    useEffect(() => {
+        if (currentLottery) {
+            setDrawId(currentLottery.draw_id.toString())
+        }
+    }, [currentLottery])
+
     const listTabs: TypeTab[] = [
         {
             id: TabEnum.MY_TICKET,
@@ -40,12 +61,48 @@ const BuyTickets = (props: Props) => {
             title: "Claim",
         },
     ];
+    const { data: resListJackPot } = useQuery({
+        queryKey: ["getListJackpot", page],
+        // refetchOnWindowFocus: false,
+        queryFn: () => DeoddService.getListJackpot({ page: page, size: 10 }),
+        select: (data) => {
+            let result: JackpotType[] = [];
+            if (data.status === 200) {
+                result = data.data.data;
+            } else {
+                result = [];
+            }
+            return result;
+        },
+        onSuccess(data) {
+            if (data && data.length > 0) {
+                setListJackpot((prev) => [...prev, ...data]);
+            }
+        },
+
+    });
+    // useEffect(() => {
+    //     if (resListJackPot && resListJackPot.length > 0) {
+    //         setListJackpot([...listJackpot, ...resListJackPot]);
+    //     }
+    // }, [listJackpot, resListJackPot])
+
+    const [bottomRef, inView] = useInView();
+    useEffect(() => {
+        if (inView) {
+            if (listJackpot.length > 0) {
+                setPage((prev) => prev + 1);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inView])
     const mapComponentTab: Record<TabEnum, React.ReactNode> = {
-        [TabEnum.MY_TICKET]: <MyTicket />,
+        [TabEnum.MY_TICKET]: <MyTicket drawId={drawId} />,
         [TabEnum.RESULT]: <Result />,
         [TabEnum.JACKPOT]: <JackpotWinner />,
         [TabEnum.CLAIM]: <Claim />,
     }
+
 
     return (
         <Box>
@@ -58,35 +115,34 @@ const BuyTickets = (props: Props) => {
                 <Typography fontSize={14} fontWeight={500}>Lottery ID</Typography>
                 <Box>
                     <Select
-                        value={lotteryId}
-                        // variant='outlined'
+                        value={drawId ?? ''}
                         placeholder='Select-'
-                        onChange={(event: SelectChangeEvent) => { setLotteryId(event.target.value) }}
+                        onChange={(event: SelectChangeEvent) => { setDrawId(event.target.value) }}
                         displayEmpty
                         sx={styleInput}
                         inputProps={{ 'aria-label': 'Select campaign' }}
+                        MenuProps={{ slotProps: { paper: { sx: { maxHeight: 250 } } } }}
                     >
                         <MenuItem value={"all"}>
                             <Typography color={"secondary.100"}>All</Typography>
                         </MenuItem>
-                        <MenuItem value={"123"}>
-                            <Typography color={'white'} fontWeight={500} component={'span'} fontSize={14}>Lottery{" "}
-                                <Typography color={"secondary.main"} fontWeight={500} component={'span'} fontSize={'inherit'}>
-                                    #20231212
-                                </Typography>
-                            </Typography>
-                        </MenuItem>
-                        <MenuItem value={"1234"}>
-                            <Typography color={'white'} fontWeight={500} component={'span'} fontSize={14}>Lottery{" "}
-                                <Typography color={"secondary.main"} fontWeight={500} component={'span'} fontSize={'inherit'}>
-                                    #202312124
-                                </Typography>
-                            </Typography>
-                        </MenuItem>
+                        {
+                            listJackpot.map((jackpot, index) =>
+                                <MenuItem value={jackpot.draw_id.toString()} key={index}>
+                                    <Typography color={'white'} fontWeight={500} component={'span'} fontSize={14}>Lottery{" "}
+                                        <Typography color={"secondary.main"} fontWeight={500} component={'span'} fontSize={'inherit'}>
+                                            #{jackpot.lottery_id}
+                                        </Typography>
+                                    </Typography>
+                                </MenuItem>
+
+                            )
+                        }
+                        <Box ref={bottomRef} />
                     </Select>
                 </Box>
 
-                <Typography flex={{ xs: 1, md: 1 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography>
+                {/* <Typography flex={{ xs: 1, md: 1 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography> */}
             </Stack>
 
             <Suspense fallback={<CoinAnimation mx="auto" width={50} height={50} />}>

@@ -188,14 +188,44 @@ const claimStaking = async (data: { poolId: string }) => {
     })
 }
 
-const getMyTicket = async ({ limit, offset }: { limit: number, offset: number }) => {
+const getMyTicket = async ({ limit, offset, drawId }: { limit: number, offset: number, drawId: string | null }) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/tickets`,
         method: 'POST',
         data: {
             limit,
-            offset
+            offset,
+            drawId
         }
+    })
+}
+
+const getCurrentLottery = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/current`,
+        method: 'GET',
+    })
+}
+
+const getWinnerList = async ({ page, size }: { page: number, size: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/results`,
+        method: 'GET',
+        params: {
+            page, size
+        }
+
+    })
+}
+
+const getListJackpot = async ({ page, size }: { page: number, size: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lotteries`,
+        method: 'GET',
+        params: {
+            page, size
+        }
+
     })
 }
 export const DeoddService = {
@@ -203,6 +233,8 @@ export const DeoddService = {
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getListJackpot,
+    getWinnerList,
     claimStaking,
     getInfoClaimCampaign,
     getNFTDetailById,
@@ -230,5 +262,6 @@ export const DeoddService = {
     claimCampaign,
     checkIsWalletJoinStaking,
     getClaimHistory,
-    getMyTicket
+    getMyTicket,
+    getCurrentLottery
 }
