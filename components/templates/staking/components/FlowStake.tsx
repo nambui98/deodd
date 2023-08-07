@@ -110,7 +110,7 @@ function FlowStake({ stakeOption, nftSelected, handleSetNftSelected, refetchGetA
                     }, 2000);
                 })
                 .catch(error => {
-                    debugger
+                    // debugger
                     setIsLoading(false);
                     setIsError(true);
                     setTitleError(error.reason || 'Something went wrong');

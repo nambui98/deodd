@@ -13,12 +13,37 @@ import CountDownNumber from './CountDownNumber'
 import GenerateText from './GenerateText'
 import Ticket from './components/Ticket'
 import ModalBuyConfirm from "./components/ModalBuyConfirm"
+import { Format } from "utils/format"
+import { useSiteContext } from "contexts/SiteContext"
+import { BigNumber, ethers, utils } from "ethers"
 
 type Props = {}
 
 const Roll = (props: Props) => {
-    const { isRollComing, isRollEnd, dateSpin, isRolling, isWinPrize, setOpenModalBuyTicket } = useLotteryContext();
+    const { isRollComing, isRollEnd, timeRemaining, isRolling, isWinPrize, setOpenModalBuyTicket } = useLotteryContext();
+    const { currentLottery } = useSiteContext();
     const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+
+    let timeLeftToBuy: { hours: string | number, minutes: string | number, seconds: string | number } = {
+        hours: '0',
+        minutes: '0',
+        seconds: '0'
+    };
+
+    let formattedTimeRemaining: { hours: string | number, minutes: string | number, seconds: string | number } = {
+        hours: '0',
+        minutes: '0',
+        seconds: '0'
+    };
+
+    if (timeRemaining !== null) {
+        timeLeftToBuy = Format.formatTimeCountDown(timeRemaining - 10 * 1000 * 60);
+        formattedTimeRemaining = Format.formatTimeCountDown(timeRemaining);
+
+    }
 
     return (
         <>
@@ -48,12 +73,12 @@ const Roll = (props: Props) => {
                         component={'span'}
                         fontWeight={600}>
                         Lottery{" "}
-                        <Typography component={'span'} fontWeight={600} color='secondary.main'>#20231212</Typography> </Typography>
+                        <Typography component={'span'} fontWeight={600} color='secondary.main'>#{currentLottery?.lottery_id}</Typography> </Typography>
                     <RuleAndProvablyFair />
                 </Stack>
                 {
                     isRollEnd ?
-                        <Stack alignItems={'center'} mt={2}>
+                        <Stack alignItems={'center'} mt={2} mb={10}>
                             <Typography variant='h5' fontWeight={700}>
                                 Thank you for joining the draw of Lottery{" "}
                                 <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#202312312</Typography>
@@ -82,7 +107,14 @@ const Roll = (props: Props) => {
                             <Stack alignItems={'center'} flex={1}>
                                 <Typography variant='h5' fontSize={24} fontWeight={700}>Total Jackpot</Typography>
                                 <Stack direction={'row'} alignItems={'center'} gap={1} mt={{ xs: 2, md: 0 }}>
-                                    <Typography fontSize={40} color="secondary.main" fontWeight={700}>14.042</Typography>
+                                    {
+                                        currentLottery ?
+
+                                            <Typography fontSize={40} color="secondary.main" fontWeight={700}>{currentLottery.initial_jackpot}</Typography>
+                                            // <Typography fontSize={40} color="secondary.main" fontWeight={700}>{Format.formatMoney(utils.formatEther(BigNumber.from(utils.parseEther(parseFloat(currentLottery?.initial_jackpot.toString()).toString()))))}</Typography>
+                                            :
+                                            <Skeleton variant="rounded" width={50} height={30} />
+                                    }
                                     <Box width={{ xs: 40, md: 30 }} height={{ xs: 40, md: 30 }}>
 
                                         <USDTIcon fill={Colors.secondaryDark} height={"100%"} width={"100%"} />
@@ -90,11 +122,12 @@ const Roll = (props: Props) => {
                                 </Stack>
                                 <Typography display={{ xs: 'none', md: 'block' }} mt={1} fontSize={14} component={'span'} fontWeight={500}>
                                     <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                                        7,000 USDT
+                                        {/* 7,000 USDT */}
+                                        {currentLottery?.initial_jackpot} USDT
                                     </Typography>
                                     (fixed) +
                                     <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                                        xxxx USDT
+                                        {currentLottery?.bonus} USDT
                                     </Typography>
                                     (bonus, estimated)
                                 </Typography>
@@ -104,9 +137,36 @@ const Roll = (props: Props) => {
                                         <Typography mt={1.5} fontWeight={700} fontSize={16}>Next draw in:</Typography>
                                         <Box mt={1} mb={{ xs: 0, md: 5 }} >
                                             {
-                                                dateSpin !== null ?
+                                                timeRemaining !== null ?
                                                     (
-                                                        <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white', fontSize: 24 }} sxTitle={{ mt: 1, color: 'white', fontSize: 14 }} />
+                                                        <Stack direction={'row'}>
+
+                                                            {/* <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white', fontSize: 24 }} sxTitle={{ mt: 1, color: 'white', fontSize: 14 }} /> */}
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.hours}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    hours
+                                                                </Typography>
+                                                            </Stack>
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.minutes}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    min
+                                                                </Typography>
+                                                            </Stack>
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.seconds}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    sec
+                                                                </Typography>
+                                                            </Stack>
+                                                        </Stack>
                                                     )
                                                     :
                                                     <Skeleton variant="rounded" width={210} height={68} />
@@ -122,7 +182,7 @@ const Roll = (props: Props) => {
                             </Stack>
                             {
                                 isRolling &&
-                                <Stack width={1} flex={1} alignItems={'flex-start'} >
+                                <Stack width={1} flex={1} alignItems={'flex-start'} mb={10} >
                                     <Stack gap={2} maxWidth={376} width={1} alignItems={'center'}>
                                         <Typography variant='h5' textTransform={'uppercase'} fontWeight={700}>Winning numbers</Typography>
                                         <Box width={1}>
@@ -169,7 +229,9 @@ const Roll = (props: Props) => {
                                                 <Skeleton variant="rounded" width={160} height={60} />
                                         }
                                     </Box>
-                                    <Typography fontSize={14} fontWeight={400} >Time left to buy: 03:24:52</Typography>
+                                    <Typography fontSize={14} fontWeight={400} >Time left to buy: {" "}
+                                        {timeLeftToBuy.hours + ":" + timeLeftToBuy.minutes + ":" + timeLeftToBuy.seconds}
+                                    </Typography>
                                     <Typography display={{ xs: 'none', md: 'inline' }} textAlign={'center'} component={'span'} fontSize={14} fontWeight={400} >
 
                                         <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx </Typography>

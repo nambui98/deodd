@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWalletContext } from 'contexts/WalletContext'
 import { ButtonLoading } from 'components/ui/button'
 import { useLotteryContext } from 'contexts/LotteryContext'
@@ -30,6 +30,12 @@ const MyTicket = ({ drawId }: Props) => {
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
+    useEffect(() => {
+        if (drawId) {
+            setLimit(STEP_LIMIT);
+
+        }
+    }, [drawId])
 
     useQuery({
         queryKey: ["getMyTicket", walletAddress, limit, drawId],

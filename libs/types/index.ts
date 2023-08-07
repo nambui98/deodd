@@ -19,7 +19,7 @@ export type JackpotType = {
     bonus: number,
     draw_id: number,
     res: any,
-    initial_jackpot: number,
+    initial_jackpot: string,
     lottery_id: number | null
 }
 export type SiteContextType = {
@@ -39,7 +39,7 @@ export type SiteContextType = {
     turnOffAudio: VoidFunction;
     isGoldenHour: boolean;
     setIsGoldenHour: (value: boolean) => void;
-    currentLottery: JackpotType
+    currentLottery: JackpotType | undefined
 }
 
 

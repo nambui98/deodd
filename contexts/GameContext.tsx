@@ -122,7 +122,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 			const flipData = data?.data?.data?.flip;
 			const userData = data?.data?.data?.userProfile;
 
-			debugger
+			// debugger
 			setGameResult({
 				amount: parseFloat(ethers.utils.formatEther((flipData?.amount ?? 0).toString())),
 				coinSide: flipData?.flip_choice,
@@ -138,7 +138,7 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 				fulfilled_txn: flipData?.fulfilled_txn,
 				vrfRn: data?.data?.data?.vrfRn
 			})
-			debugger
+			// debugger
 			setStatusGame(StatusGame.FLIP_RESULT);
 			setRefresh(!refresh);
 			setIsFinish(false);
@@ -187,11 +187,11 @@ export const GameProvider: React.FC<IProps> = ({ children }) => {
 				}: FlipResultType = (args[6] as any).args;
 				if (wallet === walletAddress) {
 
-					debugger
+					// debugger
 					audio.loop = false;
 					audio.load();
 					setGameResult((prev: GameResultType) => ({ ...prev, amount: 0, serviceFeePercent: 0, vrfRbFeeBNB: 0, flipId: fId.toString() }))
-					debugger
+					// debugger
 					getResultByFlipId.mutateAsync(fId)
 				}
 			}

@@ -207,17 +207,26 @@ const getCurrentLottery = async () => {
     })
 }
 
-const getWinnerList = async ({ page, size }: { page: number, size: number }) => {
+const getWinnerList = async ({ page, size, drawId }: { page: number, size: number, drawId: string | null }) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/results`,
         method: 'GET',
         params: {
-            page, size
+            page, size, drawId
         }
 
     })
 }
+const getJackpotWinner = async ({ page, size, drawId }: { page: number, size: number, drawId: string | null }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/jackpot/winners`,
+        method: 'GET',
+        params: {
+            page, size, drawId
+        }
 
+    })
+}
 const getListJackpot = async ({ page, size }: { page: number, size: number }) => {
     return await vhIdRequest({
         url: baseURL + `/lotteries`,
@@ -233,6 +242,7 @@ export const DeoddService = {
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getJackpotWinner,
     getListJackpot,
     getWinnerList,
     claimStaking,

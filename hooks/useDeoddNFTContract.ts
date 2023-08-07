@@ -129,7 +129,7 @@ export const useDeoddNFTContract = () => {
 
     const aggregateQuantity = (arr: TypeNFT[]) => {
         let total: number = arr.length;
-        debugger
+        // debugger
         let dataBronze: {
             type: EnumNFT,
             estProfit: number,

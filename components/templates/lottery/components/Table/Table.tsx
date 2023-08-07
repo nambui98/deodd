@@ -136,7 +136,7 @@ export const TableResultRoll = ({ data }: { data: WinnerType[] }) => {
 
     )
 }
-export const TableJackpotWinners = () => {
+export const TableJackpotWinners = ({ data }: { data: WinnerType[] }) => {
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -150,76 +150,48 @@ export const TableJackpotWinners = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
+                    {
+                        data.map((row, index) =>
+                            <TableRow
+                                key={index}
+                                sx={{
+                                    'td, th': { border: 0, py: 1 }, 'th': {
+                                        display: 'block'
+                                    }
+                                }}
+                            >
+                                <TableCell width={160} >
+                                    Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#{row.lottery_id}</Typography>
+                                </TableCell>
 
-                        <TableCell width={160} >
-                            <Stack direction={'row'} gap={2} alignItems={'center'}>
-                                <MyImage width={40} height={40} src={getPathAvatar(1)} alt="" />
-                                <Box>
+                                <TableCell width={160} >
+                                    <Stack direction={'row'} gap={2} alignItems={'center'}>
+                                        <MyImage width={40} height={40} src={getPathAvatar(row.avatar_id ?? 0)} alt="" />
+                                        <Box>
 
-                                    <Typography variant='caption' component={'p'}>{'NamNam'}</Typography>
-                                    <Typography variant='caption'>(3535***3534)</Typography>
-                                </Box>
-                            </Stack>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
-                    <TableRow
-                        sx={{
-                            'td, th': { border: 0, py: 1 }, 'th': {
-                                display: 'block'
-                            }
-                        }}
-                    >
-                        <TableCell width={160} >
-                            Lottery <Typography variant='body2' fontWeight={'inherit'} color={'secondary.main'} component={'span'}>#151223</Typography>
-                        </TableCell>
+                                            <Typography variant='caption' component={'p'}>{row.user_name}</Typography>
+                                            <Typography variant='caption'>({Convert.convertWalletAddress(row.wallet, 4, 4)})</Typography>
+                                        </Box>
+                                    </Stack>
+                                </TableCell>
+                                <TableCell
+                                    align="right"
+                                >
+                                    <Ticket numbers={row.series} />
+                                </TableCell>
+                                <TableCell>
+                                    {row.matches}
+                                </TableCell>
+                                <TableCell align="right" >
+                                    <Stack direction={'row'} gap={1} >
+                                        <Box>{Format.formatMoney(ethers.utils.formatEther(BigNumber.from(row.prize.toString())))}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                    </Stack>
+                                </TableCell>
+                            </TableRow>
 
-                        <TableCell width={160} >
-                            <Stack direction={'row'} gap={2} alignItems={'center'}>
-                                <MyImage width={40} height={40} src={getPathAvatar(1)} alt="" />
-                                <Box>
+                        )
+                    }
 
-                                    <Typography variant='caption' component={'p'}>{'NamNam'}</Typography>
-                                    <Typography variant='caption'>(3535***3534)</Typography>
-                                </Box>
-                            </Stack>
-                        </TableCell>
-                        <TableCell
-                            align="right"
-                        >
-                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                        </TableCell>
-                        <TableCell>
-                            4
-                        </TableCell>
-                        <TableCell align="right" >
-                            <Stack direction={'row'} gap={1} >
-                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                            </Stack>
-                        </TableCell>
-                    </TableRow>
                 </TableBody>
             </Table>
         </TableContainer>

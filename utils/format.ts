@@ -56,4 +56,14 @@ export const Format = {
             return formatInTimeZone(date, timezone, type)
         }
     },
+    formatTimeCountDown: (timestamp: number) => {
+        let hours = Math.floor(timestamp / (1000 * 60 * 60));
+        let minutes = Math.floor((timestamp % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((timestamp % (1000 * 60)) / 1000);
+        return {
+            hours: hours < 10 ? '0' + hours : hours,
+            minutes: minutes < 10 ? '0' + minutes : minutes,
+            seconds: seconds < 10 ? "0" + seconds : seconds
+        }
+    }
 }

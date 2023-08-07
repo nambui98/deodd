@@ -87,7 +87,7 @@ const ClaimReward: React.FC<any> = () => {
         queryFn: () => CAMPAIGNS_FETCH.find(c => c.id === valueSelect)?.fetch(walletAddress, valueSelect),
         select: (data: any) => {
             if (data.status === 200) {
-                debugger
+                // debugger
                 const connectWallet = data.data?.data?.connectWallet;
                 const result = {
                     ...connectWallet,
@@ -176,7 +176,7 @@ const ClaimReward: React.FC<any> = () => {
         abi: claimNFT.abi,
         functionName: 'claim',
         onError(error: any, variables, context) {
-            debugger
+            // debugger
             setIsError(true)
             setTitleError(error.reason || 'Something wend wrong.');
         },
@@ -189,7 +189,7 @@ const ClaimReward: React.FC<any> = () => {
         functionName: 'claim',
         onError(error: any, variables, context) {
             setIsError(true)
-            debugger
+            // debugger
             setTitleError(error.reason || 'Something wend wrong.');
         },
         args: [walletAddress, ethers.utils.parseUnits(dataReward?.reward ?? '0'), dataReward?.proof ?? '']

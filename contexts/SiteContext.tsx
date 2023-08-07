@@ -23,7 +23,7 @@ export const SiteContext = createContext<SiteContextType>({
         bonus: 0,
         draw_id: 0,
         res: null,
-        initial_jackpot: 0,
+        initial_jackpot: '0',
         lottery_id: null
     }
 })
@@ -111,6 +111,7 @@ export const SiteProvider = ({ children }: IProps) => {
         queryFn: DeoddService.getCurrentLottery,
         select: (data: any) => {
             if (data.status === 200) {
+
                 return data.data.data;
             } else {
                 return undefined

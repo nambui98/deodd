@@ -10,7 +10,9 @@ import { ResultTicketInfo } from './components/TicketInfo'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { DeoddService } from 'libs/apis'
 
-type Props = {}
+type Props = {
+    drawId: string | null
+}
 export type WinnerType = {
     wallet: string,
     series: number[],
@@ -21,16 +23,16 @@ export type WinnerType = {
     avatar_id: number | null
 }
 
-const Result = (props: Props) => {
+const Result = ({ drawId }: Props) => {
     const theme = useTheme();
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [page, setPage] = useState<number>(1)
     const [winnerList, setWinnerList] = useState<WinnerType[]>([]);
     const { data: res } = useQuery({
-        queryKey: ["getWinnerList", page],
+        queryKey: ["getWinnerList", page, drawId],
         // suspense: winnerList.length > 0 ? false : true,
         refetchOnWindowFocus: false,
-        queryFn: () => DeoddService.getWinnerList({ page: page, size: 2 }),
+        queryFn: () => DeoddService.getWinnerList({ page: page, size: 10, drawId }),
         onSuccess(data) {
             if (data && data.length > 0) {
                 setWinnerList(prev => [...prev, ...data])
@@ -45,6 +47,12 @@ const Result = (props: Props) => {
         },
     });
 
+    useEffect(() => {
+        if (drawId) {
+            setPage(1);
+            setWinnerList([])
+        }
+    }, [drawId])
 
     return (
         <Box mt={3}>

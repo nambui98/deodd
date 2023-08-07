@@ -34,7 +34,7 @@ enum TabEnum {
 const BuyTickets = (props: Props) => {
     const [valueTab, setValueTab] = useState<TabEnum>(TabEnum.MY_TICKET);
     const { currentLottery } = useSiteContext();
-    const [drawId, setDrawId] = useState<string | null>(currentLottery?.draw_id.toString());
+    const [drawId, setDrawId] = useState<string | null>(currentLottery?.draw_id.toString() ?? null);
     const [page, setPage] = useState<number>(1)
     const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
     useEffect(() => {
@@ -76,7 +76,11 @@ const BuyTickets = (props: Props) => {
         },
         onSuccess(data) {
             if (data && data.length > 0) {
-                setListJackpot((prev) => [...prev, ...data]);
+                if (listJackpot.length > 0 && listJackpot[listJackpot.length - 1].draw_id !== data[data.length - 1].draw_id) {
+                    setListJackpot((prev) => [...prev, ...data]);
+                } else {
+                    setListJackpot(data);
+                }
             }
         },
 
@@ -98,8 +102,8 @@ const BuyTickets = (props: Props) => {
     }, [inView])
     const mapComponentTab: Record<TabEnum, React.ReactNode> = {
         [TabEnum.MY_TICKET]: <MyTicket drawId={drawId} />,
-        [TabEnum.RESULT]: <Result />,
-        [TabEnum.JACKPOT]: <JackpotWinner />,
+        [TabEnum.RESULT]: <Result drawId={drawId} />,
+        [TabEnum.JACKPOT]: <JackpotWinner drawId={drawId} />,
         [TabEnum.CLAIM]: <Claim />,
     }
 

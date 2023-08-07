@@ -141,7 +141,7 @@ function Chat({ open }: { open: boolean }) {
             onOpen(event) {
             },
             onReconnectStop: () => {
-                debugger
+                // debugger
             },
             retryOnError: true,
             onClose(event) {
@@ -149,7 +149,7 @@ function Chat({ open }: { open: boolean }) {
                 console.log(isPing);
                 if (isPing) {
                     setIsPing(false);
-                    debugger
+                    // debugger
                     router.reload();
 
                 }
@@ -185,7 +185,7 @@ function Chat({ open }: { open: boolean }) {
         refetchOnWindowFocus: false,
         queryFn: () => sendJoinChat(),
         onError: async (err: any) => {
-            debugger
+            // debugger
             // router.reload();
             // const response = await DeoddService.refreshToken();
             // const { accessToken } = response.data.data;
@@ -197,7 +197,7 @@ function Chat({ open }: { open: boolean }) {
     });
 
     const sendPingSocket = () => {
-        debugger
+        // debugger
         const message: any = [0, {}];
         console.log("888888888888888888888888pingSocket")
         sendJsonMessage(message);
