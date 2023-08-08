@@ -10,6 +10,7 @@ import { WinnerType } from '../../Result'
 import { Convert } from 'utils/convert'
 import { BigNumber, ethers } from 'ethers'
 import { Format } from 'utils/format'
+import { useLotteryContext } from 'contexts/LotteryContext'
 
 type Props = {
     data: TicketType[] | undefined
@@ -81,6 +82,7 @@ export const TableMyTickets = ({ data }: Props) => {
     )
 }
 export const TableResultRoll = ({ data }: { data: WinnerType[] }) => {
+    const { openModalProvablyFair, setOpenModalProvablyFair } = useLotteryContext();
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -115,7 +117,10 @@ export const TableResultRoll = ({ data }: { data: WinnerType[] }) => {
                                 <TableCell
                                     align="right"
                                 >
-                                    <Ticket numbers={row.series} />
+                                    <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: row.series })}>
+
+                                        <Ticket numbers={row.series} />
+                                    </Box>
                                 </TableCell>
                                 <TableCell>
                                     {row.matches}

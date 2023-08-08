@@ -192,10 +192,13 @@ const getMyTicket = async ({ limit, offset, drawId }: { limit: number, offset: n
     return await vhIdRequest({
         url: baseURL + `/lottery/tickets`,
         method: 'POST',
-        data: {
+        data: drawId !== 'all' ? {
             limit,
             offset,
             drawId
+        } : {
+            limit,
+            offset,
         }
     })
 }
@@ -211,9 +214,9 @@ const getWinnerList = async ({ page, size, drawId }: { page: number, size: numbe
     return await vhIdRequest({
         url: baseURL + `/lottery/results`,
         method: 'GET',
-        params: {
+        params: drawId !== "all" ? {
             page, size, drawId
-        }
+        } : { page, size }
 
     })
 }
@@ -221,9 +224,10 @@ const getJackpotWinner = async ({ page, size, drawId }: { page: number, size: nu
     return await vhIdRequest({
         url: baseURL + `/lottery/jackpot/winners`,
         method: 'GET',
-        params: {
+
+        params: drawId !== "all" ? {
             page, size, drawId
-        }
+        } : { page, size }
 
     })
 }
@@ -237,11 +241,23 @@ const getListJackpot = async ({ page, size }: { page: number, size: number }) =>
 
     })
 }
+
+const getLotteryResultByDrawId = async ({ drawId }: { drawId: string | null }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/result`,
+        method: 'GET',
+        params: {
+            drawId
+        }
+
+    })
+}
 export const DeoddService = {
     ...ReferralApis,
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getLotteryResultByDrawId,
     getJackpotWinner,
     getListJackpot,
     getWinnerList,

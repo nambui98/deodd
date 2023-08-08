@@ -10,12 +10,14 @@ import { ResultTicketInfo } from './components/TicketInfo'
 import { WinnerType } from './Result'
 import { useQuery } from '@tanstack/react-query'
 import { DeoddService } from 'libs/apis'
+import { useLotteryContext } from 'contexts/LotteryContext'
 
 type Props = { drawId: string | null }
 
 const JackpotWinner = ({ drawId }: Props) => {
     const theme = useTheme();
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const { dataLotteryBuyDrawId } = useLotteryContext();
     const [page, setPage] = useState<number>(1)
     const [winnerList, setWinnerList] = useState<WinnerType[]>([]);
     const { data: res } = useQuery({
@@ -48,7 +50,7 @@ const JackpotWinner = ({ drawId }: Props) => {
         <Box mt={3}>
             <Box maxWidth={763} mx='auto'>
                 <Typography variant='h5' textAlign={'center'} mb={1} fontWeight={700} textTransform={'uppercase'} display={{ xs: 'block', md: 'none' }}>Lucky  number</Typography>
-                <Ticket numbers={[44, 55, 66, 77, 88, 99]} size={isMediumScreen ? 40 : 60} maxHeight={96} py={{ xs: 1, md: 2 }} px={{ xs: 2, md: 5 }} gap={{ xs: 1, md: 3 }} text={<Typography display={{ xs: 'none', md: 'block' }} variant='h5' fontWeight={700} textTransform={'uppercase'}>Lucky <br /> number</Typography>} />
+                <Ticket numbers={dataLotteryBuyDrawId?.res ?? [null, null, null, null, null, null]} size={isMediumScreen ? 40 : 60} maxHeight={96} py={{ xs: 1, md: 2 }} px={{ xs: 2, md: 5 }} gap={{ xs: 1, md: 3 }} text={<Typography display={{ xs: 'none', md: 'block' }} variant='h5' fontWeight={700} textTransform={'uppercase'}>Lucky <br /> number</Typography>} />
             </Box>
             <Typography variant='h5' fontWeight={700} mt={5}>Jackpot Winner</Typography>
             <Box mt={3}>

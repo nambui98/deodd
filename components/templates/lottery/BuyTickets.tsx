@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { JackpotType } from 'libs/types';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useInView } from 'react-intersection-observer';
+import { useLotteryContext } from 'contexts/LotteryContext';
 
 const MyTicket = dynamic(() =>
     import('./MyTicket')
@@ -32,14 +33,15 @@ enum TabEnum {
     CLAIM
 }
 const BuyTickets = (props: Props) => {
+    const { drawIdValue, setDrawIdValue } = useLotteryContext();
     const [valueTab, setValueTab] = useState<TabEnum>(TabEnum.MY_TICKET);
+
     const { currentLottery } = useSiteContext();
-    const [drawId, setDrawId] = useState<string | null>(currentLottery?.draw_id.toString() ?? null);
     const [page, setPage] = useState<number>(1)
     const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
     useEffect(() => {
         if (currentLottery) {
-            setDrawId(currentLottery.draw_id.toString())
+            setDrawIdValue(currentLottery.draw_id.toString())
         }
     }, [currentLottery])
 
@@ -101,9 +103,9 @@ const BuyTickets = (props: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inView])
     const mapComponentTab: Record<TabEnum, React.ReactNode> = {
-        [TabEnum.MY_TICKET]: <MyTicket drawId={drawId} />,
-        [TabEnum.RESULT]: <Result drawId={drawId} />,
-        [TabEnum.JACKPOT]: <JackpotWinner drawId={drawId} />,
+        [TabEnum.MY_TICKET]: <MyTicket drawId={drawIdValue} />,
+        [TabEnum.RESULT]: <Result drawId={drawIdValue} />,
+        [TabEnum.JACKPOT]: <JackpotWinner drawId={drawIdValue} />,
         [TabEnum.CLAIM]: <Claim />,
     }
 
@@ -119,9 +121,9 @@ const BuyTickets = (props: Props) => {
                 <Typography fontSize={14} fontWeight={500}>Lottery ID</Typography>
                 <Box>
                     <Select
-                        value={drawId ?? ''}
+                        value={drawIdValue ?? ''}
                         placeholder='Select-'
-                        onChange={(event: SelectChangeEvent) => { setDrawId(event.target.value) }}
+                        onChange={(event: SelectChangeEvent) => { setDrawIdValue(event.target.value) }}
                         displayEmpty
                         sx={styleInput}
                         inputProps={{ 'aria-label': 'Select campaign' }}

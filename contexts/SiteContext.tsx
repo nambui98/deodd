@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { AudioPlay, SiteContextType } from "../libs/types";
+import { AudioPlay, JackpotType, SiteContextType } from "../libs/types";
 import { useQuery } from "@tanstack/react-query";
 import { DeoddService } from "libs/apis";
 
@@ -19,13 +19,17 @@ export const SiteContext = createContext<SiteContextType>({
     turnOffAudio: () => { },
     isGoldenHour: false,
     setIsGoldenHour: () => { },
+
+    isEndRoll: false,
+    setIsEndRoll: () => { },
     currentLottery: {
         bonus: 0,
         draw_id: 0,
         res: null,
         initial_jackpot: '0',
         lottery_id: null
-    }
+    },
+    prevLottery: undefined
 })
 
 export const useSiteContext = () => useContext(SiteContext);
@@ -44,6 +48,9 @@ export const SiteProvider = ({ children }: IProps) => {
     const [audioWin, setAudioWin] = useState<HTMLAudioElement | undefined>();
     const [isTurnOffAudio, setIsTurnOffAudio] = useState<boolean>(false);
     const [isGoldenHour, setIsGoldenHour] = useState<boolean>(false);
+    const [isEndRoll, setIsEndRoll] = useState<boolean>(false);
+    const [prevLottery, setPrevLottery] = useState<JackpotType | undefined>(undefined);
+
     useEffect(() => {
         setAudioPlay(new Audio("/assets/roll.mp3"))
         setAudioWin(new Audio("/assets/win.mp3"))
@@ -105,20 +112,27 @@ export const SiteProvider = ({ children }: IProps) => {
         // }
     }, [audioPlay, audioWin, audioLost])
 
-    const { data: currentLottery } = useQuery({
+    const { data: currentLottery, refetch } = useQuery({
         queryKey: ["getCurrentLottery"],
         refetchOnWindowFocus: false,
         queryFn: DeoddService.getCurrentLottery,
         select: (data: any) => {
             if (data.status === 200) {
-
                 return data.data.data;
             } else {
                 return undefined
             }
         },
-
     });
+    useEffect(() => {
+        if (isEndRoll) {
+            setPrevLottery(currentLottery);
+            refetch();
+        } else {
+            setPrevLottery(undefined);
+        }
+    }, [isEndRoll])
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const value: SiteContextType = useMemo(() => {
         return {
@@ -137,7 +151,10 @@ export const SiteProvider = ({ children }: IProps) => {
             turnOffAudio,
             isGoldenHour,
             setIsGoldenHour,
-            currentLottery
+            currentLottery,
+            prevLottery,
+            isEndRoll,
+            setIsEndRoll
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [

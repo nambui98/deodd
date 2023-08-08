@@ -56,7 +56,7 @@ const MyTicket = ({ drawId }: Props) => {
             setMyTickets(data)
         },
     });
-    console.log(myTickets)
+    // console.log(myTickets)
     // if (isLoading) {
     //     return
     // }

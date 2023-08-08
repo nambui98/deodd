@@ -16,11 +16,13 @@ export enum AudioPlay {
     STOP
 }
 export type JackpotType = {
-    bonus: number,
+    bonus?: number,
     draw_id: number,
     res: any,
-    initial_jackpot: string,
-    lottery_id: number | null
+    random_values?: any[] | undefined,
+    initial_jackpot?: string,
+    lottery_id: number | null,
+    txn?: string
 }
 export type SiteContextType = {
     isLoading: boolean,
@@ -39,7 +41,11 @@ export type SiteContextType = {
     turnOffAudio: VoidFunction;
     isGoldenHour: boolean;
     setIsGoldenHour: (value: boolean) => void;
-    currentLottery: JackpotType | undefined
+
+    isEndRoll: boolean,
+    setIsEndRoll: (value: boolean) => void,
+    currentLottery: JackpotType | undefined,
+    prevLottery: JackpotType | undefined
 }
 
 
