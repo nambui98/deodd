@@ -3,7 +3,7 @@ import { Box, Button, Skeleton, Stack, StackProps, Table, TableBody, TableCell, 
 import Countdown from 'components/common/CountDown'
 import { ButtonLoading } from 'components/ui/button'
 import MyImage from 'components/ui/image'
-import { Colors } from 'constants/index'
+import { Colors, MinusBeforeSpin } from 'constants/index'
 import { useLotteryContext } from 'contexts/LotteryContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import Lottie from 'lottie-react'
@@ -39,7 +39,7 @@ const Roll = (props: Props) => {
     };
 
     if (timeRemaining !== null) {
-        timeLeftToBuy = Format.formatTimeCountDown(timeRemaining - 10 * 1000 * 60);
+        timeLeftToBuy = Format.formatTimeCountDown(timeRemaining - MinusBeforeSpin * 1000 * 60);
         formattedTimeRemaining = Format.formatTimeCountDown(timeRemaining);
 
     }

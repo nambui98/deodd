@@ -133,92 +133,32 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			}
 		},
 	});
-	let currentDate = new Date();
-	let dateSpin = utcToZonedTime(currentDate, 'UTC');
-	dateSpin.setHours(15);
-	dateSpin.setMinutes(0);
-	dateSpin.setSeconds(0);
-	// if (isAfter(currentDate, dateSpin)) {
-	// 	if (currentDate.getDay() >= 6 && currentDate.getDay() <= 1) {
-	// 		dateSpin.setDate()
-	// 	}
-	// 	dateSpin.setDate(dateSpin.getDate() + 1);
-	// }
-
 	const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-	// const [targetTime, setTargetTime] = useState<Date | null>(null);
 
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		const now = new Date("2023-08-10T15:00:01Z");
-
-	// 		const dayOfWeek = now.getUTCDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
-	// 		const hour = now.getUTCHours();
-
-	// 		// if ((dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5) && hour < 15) { // Countdown only before 3 PM UTC
-	// 		// 	const targetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 15, 0, 0, 0));
-	// 		// 	const remaining = targetTime.getTime() - now.getTime();
-	// 		// 	const dateComing = new Date();
-	// 		// 	dateComing.setMinutes(dateComing.getMinutes() + MinusBeforeSpin);
-	// 		// 	setTimeRemaining(remaining);
-	// 		// 	// setTargetTime(targetTime);
-	// 		// 	if (targetTime) {
-	// 		// 		const timeIsComing = isBefore(targetTime, dateComing) && isBefore(new Date(), targetTime);
-	// 		// 		setIsRollComing(timeIsComing);
-	// 		// 	}
-	// 		// } else {
-	// 		// 	setTimeRemaining(null);
-	// 		// }
-	// 		if ((dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5) && hour < 15) { // Monday, Wednesday, Friday before 15:00 UTC
-	// 			const targetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 15, 0, 0, 0));
-	// 			const remaining = targetTime.getTime() - now.getTime();
-
-	// 			if (remaining > 0) {
-	// 				setTimeRemaining(remaining);
-	// 			} else {
-	// 				const nextTargetDay = (dayOfWeek === 1) ? 3 : (dayOfWeek === 3) ? 5 : 1; // Calculate next target day
-	// 				const nextTargetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + (nextTargetDay + (nextTargetDay <= dayOfWeek ? 7 : 0) - dayOfWeek), 15, 0, 0, 0));
-	// 				const timeSinceLastTarget = now.getTime() - targetTime.getTime();
-	// 				const timeUntilNextTarget = nextTargetTime.getTime() - now.getTime();
-
-	// 				setTimeRemaining(timeUntilNextTarget - timeSinceLastTarget);
-	// 			}
-	// 		} else {
-	// 			setTimeRemaining(null);
-	// 		}
-	// 	}, 1000);
-
-	// 	return () => clearInterval(interval);
-	// }, []);
-
-	// const currentTime = new Date("2023-08-07T15:00:01Z");
 	useEffect(() => {
 		const interval = setInterval(() => {
-			// const currentTime = new Date("2023-08-09T15:16:01Z");
+			// const currentTime = new Date("2023-08-09T16:00:59Z");
 			const currentTime = new Date();
 
 			const nextSpinDate = getNextSpinDate(currentTime);
 			const timeRemaining = calculateCountdown(currentTime, nextSpinDate);
+			setTimeRemaining(timeRemaining);
+
 			const dateComing = new Date(currentTime);
 			dateComing.setMinutes(dateComing.getMinutes() + MinusBeforeSpin);
-			setTimeRemaining(timeRemaining);
 			const timeIsComing = isBefore(nextSpinDate, dateComing) && timeRemaining > 0;
 			setIsRollComing(timeIsComing);
 
 			const timeIsRolling = new Date(currentTime);
 			timeIsRolling.setMinutes(timeIsRolling.getMinutes() - 1)
-			// timeIsRolling.setSeconds(0);
 			const checkTimeIsRolling = isAfter(nextSpinDate, timeIsRolling) && timeRemaining <= 0;
 			setIsRolling(checkTimeIsRolling)
 
 			const timeIsRollEnd = new Date(currentTime);
 			timeIsRollEnd.setMinutes(timeIsRollEnd.getMinutes() - 2)
-			// timeIsRollEnd.setSeconds(0);
 			const checkTimeIsRollEnd = isAfter(nextSpinDate, timeIsRollEnd) && !checkTimeIsRolling && timeRemaining <= 0;
 			setIsRollEnd(checkTimeIsRollEnd);
 			setIsEndRoll(checkTimeIsRollEnd);
-			// debugger
-
 		}, 1000);
 
 		return () => {
@@ -226,7 +166,6 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		};
 	}, []);
 	function calculateCountdown(currentDate: Date, spinDate: Date): number {
-		// debugger
 		return differenceInMilliseconds(spinDate, currentDate);
 	}
 	const mapDayToTargetDay: Record<number, number> = {
@@ -263,15 +202,17 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		// 	nextSpinDate = addDays(nextSpinDate, mapDayToTargetDay[nextSpinDate.getUTCDay()]);
 		// }
 		let minutesTarget = 0;
-		if (nextSpinDate.getMinutes() <= 16) {
+		console.log(nextSpinDate.getMinutes());
+		if (nextSpinDate.getMinutes() <= 1) {
+			minutesTarget = 0;
+		} else if (nextSpinDate.getMinutes() <= 16) {
 			minutesTarget = 15;
 		} else if (nextSpinDate.getMinutes() <= 31) {
 			minutesTarget = 30;
 		} else if (nextSpinDate.getMinutes() <= 46) {
 			minutesTarget = 45;
-		} else if (nextSpinDate.getMinutes() <= 61) {
-			minutesTarget = 60;
 		}
+		// debugger
 		// return new Date(nextSpinDate);
 		return new Date(nextSpinDate.getFullYear(), nextSpinDate.getMonth(), nextSpinDate.getDate(), nextSpinDate.getHours(), minutesTarget, 0, 0);
 	}

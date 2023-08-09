@@ -49,7 +49,7 @@ export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
 }
 export const DateOpenMainnet = "2023-06-29T09:00:00Z";
 export const DateOpenShop = "2023-06-27T13:00:00Z";
-export const MinusBeforeSpin = 10;
+export const MinusBeforeSpin = 5;
 
 export const DefaultRewardPool: number = 1000;
 export const DefaultStaked: number = 30;
