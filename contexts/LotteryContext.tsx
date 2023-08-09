@@ -211,8 +211,11 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			minutesTarget = 30;
 		} else if (nextSpinDate.getMinutes() <= 46) {
 			minutesTarget = 45;
+		} else if (nextSpinDate.getMinutes() < 60) {
+			minutesTarget = 0;
+			nextSpinDate.setHours(nextSpinDate.getHours() + 1)
 		}
-		// debugger
+		debugger
 		// return new Date(nextSpinDate);
 		return new Date(nextSpinDate.getFullYear(), nextSpinDate.getMonth(), nextSpinDate.getDate(), nextSpinDate.getHours(), minutesTarget, 0, 0);
 	}
