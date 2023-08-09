@@ -215,7 +215,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			minutesTarget = 0;
 			nextSpinDate.setHours(nextSpinDate.getHours() + 1)
 		}
-		debugger
+		// debugger
 		// return new Date(nextSpinDate);
 		return new Date(nextSpinDate.getFullYear(), nextSpinDate.getMonth(), nextSpinDate.getDate(), nextSpinDate.getHours(), minutesTarget, 0, 0);
 	}

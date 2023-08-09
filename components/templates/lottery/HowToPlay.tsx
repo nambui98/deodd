@@ -1,12 +1,13 @@
 import { Box, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, styled, tableCellClasses } from '@mui/material'
 import { MyTabs2, TypeTab } from 'components/common/Tabs'
 import MyImage from 'components/ui/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BingoImage, LuckyImage, TicketImage } from 'utils/Images'
 import { Format } from 'utils/format'
 import Ticket from './components/Ticket'
 import { DotIcon } from 'utils/Icons'
 import { Colors } from 'constants/index'
+import { useRouter } from 'next/router'
 
 type Props = {}
 enum TabEnum {
@@ -15,6 +16,7 @@ enum TabEnum {
     PROVABLY_FAIR
 }
 const HowToPlay = (props: Props) => {
+    const router = useRouter();
     const [valueTab, setValueTab] = useState<TabEnum>(TabEnum.RULES);
     const listTabs: TypeTab[] = [
         {
@@ -27,6 +29,19 @@ const HowToPlay = (props: Props) => {
         },
 
     ];
+    useEffect(() => {
+        if (router.asPath) {
+            let valueFromParam = router.asPath.split("#")?.[1];
+            if (valueFromParam === "rule") {
+                setValueTab(TabEnum.RULES);
+            } else if (valueFromParam === "provablyfair") {
+                setValueTab(TabEnum.PROVABLY_FAIR)
+            }
+        }
+        console.log(router);
+
+    }, [router.asPath])
+
     return (
         <Box>
             <Divider />
@@ -43,7 +58,8 @@ const HowToPlay = (props: Props) => {
                 </Grid>
             </Grid>
             <Divider sx={{ my: 3 }} />
-
+            <Box id="rule" component={'div'}></Box>
+            <Box id="provablyfair" component={'div'}></Box>
             <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
             {
                 valueTab === TabEnum.RULES && <Rules />
@@ -72,6 +88,8 @@ const Rules = () => {
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: (theme.palette.secondary as any)[800],
             color: theme.palette.common.white,
+
+            fontSize: 14,
             border: '1px solid #48505F'
         },
         [`&.${tableCellClasses.body}`]: {
@@ -87,7 +105,7 @@ const Rules = () => {
 
     return (
 
-        <Box mt={8}>
+        <Box mt={8} >
             <Typography variant='body2' color={'white'} fontWeight={500} lineHeight={'20px'}>How to Play</Typography>
             <Typography variant='body2' color={'secondary.100'} fontWeight={400} lineHeight={'20px'}>
                 Players buy tickets in which select five white balls, numbered from 1 to 25, and one gold Jpotball, numbered from 1 to 10. You can choose numbers manually or automatically. To win the prizes, players must match numbers in their tickets comparing to Lucky Numbers which were picked randomly based on VRF mechanism.
@@ -112,7 +130,7 @@ const Rules = () => {
                 <Table sx={{ maxWidth: 832 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell>Name of prize</StyledTableCell>
+                            <StyledTableCell component="th" scope="row" width={"150px"}>Name of prize</StyledTableCell>
                             <StyledTableCell>Matches</StyledTableCell>
                             <StyledTableCell>Prize (in USDT)</StyledTableCell>
                         </TableRow>
@@ -266,7 +284,7 @@ const Rules = () => {
 }
 const ProvablyFair = () => {
     return (
-        <Box mt={3}>
+        <Box mt={3} >
             <Typography mb={3} variant='body2' color={'secondary.100'} fontWeight={400} lineHeight={'20px'}>
                 Lottery DeODD 625 is provably fair which means you can examine the results using and following data generated from VRF. Each drawn will be in 5+1 balls rule, with five unique regular balls taken from 25 numbers and a jackpot ball taken from 10 numbers.
             </Typography>
