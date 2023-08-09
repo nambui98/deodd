@@ -42,7 +42,7 @@ const MyTicket = ({ drawId }: Props) => {
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 1, drawId }),
+        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId }),
         select: (data: any) => {
             let result: TicketType[] = [];
             if (data.status === 200) {

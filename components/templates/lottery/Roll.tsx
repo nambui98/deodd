@@ -18,6 +18,8 @@ import { useSiteContext } from "contexts/SiteContext"
 import { BigNumber, ethers, utils } from "ethers"
 import TicketAnimationOdometer from "./components/TicketAnimationOdometer"
 import EndRoll from "./components/EndRoll"
+import { useRouter } from "next/router"
+import Link from "next/link"
 
 type Props = {}
 
@@ -343,41 +345,51 @@ const Roll = (props: Props) => {
 
 export default Roll;
 const RuleAndProvablyFair = (props: StackProps) => {
+    const router = useRouter();
+    const handleScrollToElement = (id: string) => {
+        const element = document.getElementById(id);
+        router.push('#' + id, undefined, { scroll: false })
+        element!.scrollIntoView({ behavior: "smooth" })
+    }
     return (
         <Stack display={{ xs: 'none', md: 'flex' }} direction={'row'} gap={2}{...props}>
-            <Button variant='text' sx={{
-                p: 1,
-                px: 1.5,
-                fontSize: 14,
-                fontWeight: 400,
-                textTransform: 'none',
-                backgroundColor: 'secondary.900',
-                color: 'white',
-                border: '1px solid',
-                borderColor: 'transparent',
-                lineHeight: '20px',
-                '&:hover': {
+            <Button
+                onClick={() => handleScrollToElement('rule')}
+                variant='text' sx={{
+                    p: 1,
+                    px: 1.5,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    textTransform: 'none',
+                    backgroundColor: 'secondary.900',
+                    color: 'white',
                     border: '1px solid',
-                    borderColor: 'secondary.900'
-                }
-            }}>
+                    borderColor: 'transparent',
+                    lineHeight: '20px',
+                    '&:hover': {
+                        border: '1px solid',
+                        borderColor: 'secondary.900'
+                    }
+                }}>
                 Rule
             </Button>
-            <Button variant='text' sx={{
-                p: 1,
-                px: 1.5,
-                lineHeight: '20px',
-                fontWeight: 400,
-                textTransform: 'none',
-                backgroundColor: 'secondary.900',
-                color: 'white',
-                border: '1px solid',
-                borderColor: 'transparent',
-                '&:hover': {
+            <Button variant='text'
+                onClick={() => handleScrollToElement('provablyfair')}
+                sx={{
+                    p: 1,
+                    px: 1.5,
+                    lineHeight: '20px',
+                    fontWeight: 400,
+                    textTransform: 'none',
+                    backgroundColor: 'secondary.900',
+                    color: 'white',
                     border: '1px solid',
-                    borderColor: 'secondary.900'
-                }
-            }}>
+                    borderColor: 'transparent',
+                    '&:hover': {
+                        border: '1px solid',
+                        borderColor: 'secondary.900'
+                    }
+                }}>
                 Provably Fair
             </Button>
         </Stack>
