@@ -22,7 +22,8 @@ export type JackpotType = {
     random_values?: any[] | undefined,
     initial_jackpot?: string,
     lottery_id: number | null,
-    txn?: string
+    txn?: string,
+    total_tickets?: number
 }
 export type SiteContextType = {
     isLoading: boolean,

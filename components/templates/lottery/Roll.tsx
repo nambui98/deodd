@@ -235,7 +235,7 @@ const Roll = (props: Props) => {
                                     </Typography>
                                     <Typography display={{ xs: 'none', md: 'inline' }} textAlign={'center'} component={'span'} fontSize={14} fontWeight={400} >
 
-                                        <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx </Typography>
+                                        <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">{currentLottery?.total_tickets} </Typography>
                                         tickets have been sold. Don&apos;t miss your chance!
                                     </Typography>
 
