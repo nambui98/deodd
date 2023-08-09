@@ -297,7 +297,7 @@ const ProvablyFair = () => {
                     3.
                 </Typography>
                 <Typography variant='body2' color={'secondary.100'} fontWeight={400} lineHeight={'20px'}>
-                    The DeODD Management System receives the result from modulus operator and determines whether the result and the user's ticket numbers are matched or not.
+                    The DeODD Management System receives the result from modulus operator and determines whether the result and the user&apos;s ticket numbers are matched or not.
                 </Typography>
             </Stack>
             <Stack direction={'row'} pl={1} gap={1}>
