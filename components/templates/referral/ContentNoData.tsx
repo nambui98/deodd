@@ -34,7 +34,7 @@ function ContentNoData({ ckReferral, link, success, dataReferralSuccess }: Props
     useEffect(() => {
         if (buttonRef && buttonRef.current && link) {
             console.log();
-            debugger
+            // debugger
             const clipboard = new ClipboardJS(buttonRef!.current!, {
                 text: () => link
             })

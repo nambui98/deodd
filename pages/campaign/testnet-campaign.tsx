@@ -19,7 +19,7 @@ import CoinAnimation from 'components/common/CoinAnimation'
 
 export async function getStaticProps({ params }: { params: { path: string } }) {
     const campaign = CAMPAIGNS.find(c => c.href === 'testnet-campaign');
-    debugger
+    // debugger
     return {
         props: { campaign: { ...campaign, fetch: null } }
     }

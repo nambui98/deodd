@@ -4,7 +4,7 @@ import TicketNumber from '../TicketNumber'
 import { SubtractImage } from 'utils/Images'
 
 type Props = {
-    numbers: string[] | number[],
+    numbers: (string | number | null)[],
     size?: number,
     text?: React.ReactNode
 } & StackProps
@@ -45,7 +45,7 @@ const Ticket = ({ numbers, size, text, sx, ...props }: Props) => {
             {text}
             {
                 numbers.map((number, index) =>
-                    <TicketNumber key={number} size={size} number={number} />
+                    <TicketNumber key={number + "" + index} size={size} number={number ?? ''} />
                 )
             }
         </Stack >

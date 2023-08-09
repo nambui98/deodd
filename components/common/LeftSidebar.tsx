@@ -34,118 +34,6 @@ type TypeSideBarItem = {
     isActive?: boolean,
     isLink?: boolean
 }
-const SIDE_BAR_LEFT: TypeSideBarItem[] = [
-    {
-        id: 1,
-        icon: <HomeIcon />,
-        title: 'Home',
-        path: '/',
-        isLink: true,
-    },
-    {
-        id: 2,
-        icon: <CoinFlipIcon />,
-        title: 'Coin Flip',
-        path: '/',
-        highLightText: true,
-        isLink: true,
-    },
-    {
-        id: 3,
-        icon: <MyImage src={MoneyBagImage} width={40} height={40} alt="" />,
-        title: '',
-        path: '/',
-        highLight: true,
-        disabledHover: true,
-        child: <GoldenHour />,
-        isLink: true
-    },
-    {
-        id: 4,
-        icon: <DashboardIcon />,
-        title: 'Dashboard',
-        path: '/statistic',
-        isLink: true,
-    },
-    // {
-    //     id: 5,
-    //     icon: <FlipIcon />,
-    //     title: 'Flip',
-    //     path: '/',
-    //     isLink: true
-    // },
-    {
-        id: 6,
-        icon: <Ref2EarnIcon />,
-        title: 'Ref 2 Earn',
-        path: '/referral',
-        isLink: true
-    },
-    {
-        id: 7,
-        icon: <CampaignIcon />,
-        title: 'Campaign',
-        path: '/campaign',
-        isLink: true
-    },
-    {
-        id: 8,
-        icon: <LoyaltyIcon />,
-        title: 'Loyalty',
-        path: '/loyalty',
-        isLink: true
-    },
-    {
-        id: 9,
-        icon: <ShopIcon />,
-        title: 'Shop',
-        path: '/shop',
-        isLink: true
-    },
-    {
-        id: 10,
-        icon: <StrongBox2Icon />,
-        title: 'Staking',
-        path: '/staking',
-        isLink: true
-    },
-    {
-        id: 11,
-        isOnlyComponent: true,
-        child: <Divider sx={{ mx: 3, mt: 3 }} />
-    },
-    {
-        id: 12,
-        icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
-        title: '',
-        path: '/lottery',
-        // coming: true,
-        highLightText: false,
-        disabledHover: true,
-        child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-            <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery</Typography>
-
-        </Stack>,
-        isLink: true
-    },
-    {
-        id: 13,
-        isOnlyComponent: true,
-        child: <Divider sx={{ mx: 3, mt: 1 }} />
-    },
-    {
-        id: 14,
-        icon: <MyImage src={BlogImage} width={32} height={32} alt="" />,
-        title: '',
-        path: 'https://blog.deodd.io/',
-        highLightText: false,
-        // disabledHover: true,
-        child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-            <Typography variant='h3' fontWeight={600} color={'primary.main'}>Blog</Typography>
-        </Stack>,
-        isLink: true
-    },
-]
 
 
 const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean) => {
@@ -195,11 +83,122 @@ const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean
 }
 
 function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
+    const { isGoldenHour, currentLottery } = useSiteContext();
+    const SIDE_BAR_LEFT: TypeSideBarItem[] = [
+        {
+            id: 1,
+            icon: <HomeIcon />,
+            title: 'Home',
+            path: '/',
+            isLink: true,
+        },
+        {
+            id: 2,
+            icon: <CoinFlipIcon />,
+            title: 'Coin Flip',
+            path: '/',
+            highLightText: true,
+            isLink: true,
+        },
+        {
+            id: 3,
+            icon: <MyImage src={MoneyBagImage} width={40} height={40} alt="" />,
+            title: '',
+            path: '/',
+            highLight: true,
+            disabledHover: true,
+            child: <GoldenHour />,
+            isLink: true
+        },
+        {
+            id: 4,
+            icon: <DashboardIcon />,
+            title: 'Dashboard',
+            path: '/statistic',
+            isLink: true,
+        },
+        // {
+        //     id: 5,
+        //     icon: <FlipIcon />,
+        //     title: 'Flip',
+        //     path: '/',
+        //     isLink: true
+        // },
+        {
+            id: 6,
+            icon: <Ref2EarnIcon />,
+            title: 'Ref 2 Earn',
+            path: '/referral',
+            isLink: true
+        },
+        {
+            id: 7,
+            icon: <CampaignIcon />,
+            title: 'Campaign',
+            path: '/campaign',
+            isLink: true
+        },
+        {
+            id: 8,
+            icon: <LoyaltyIcon />,
+            title: 'Loyalty',
+            path: '/loyalty',
+            isLink: true
+        },
+        {
+            id: 9,
+            icon: <ShopIcon />,
+            title: 'Shop',
+            path: '/shop',
+            isLink: true
+        },
+        {
+            id: 10,
+            icon: <StrongBox2Icon />,
+            title: 'Staking',
+            path: '/staking',
+            isLink: true
+        },
+        {
+            id: 11,
+            isOnlyComponent: true,
+            child: <Divider sx={{ mx: 3, mt: 3 }} />
+        },
+        {
+            id: 12,
+            icon: <MyImage src={LotteryImage} width={32} height={32} alt="" />,
+            title: '',
+            path: '/lottery',
+            // coming: true,
+            highLightText: false,
+            disabledHover: true,
+            child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+                <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery DeODD {currentLottery?.lottery_id}</Typography>
+            </Stack>,
+            isLink: true
+        },
+        {
+            id: 13,
+            isOnlyComponent: true,
+            child: <Divider sx={{ mx: 3, mt: 1 }} />
+        },
+        {
+            id: 14,
+            icon: <MyImage src={BlogImage} width={32} height={32} alt="" />,
+            title: '',
+            path: 'https://blog.deodd.io/',
+            highLightText: false,
+            // disabledHover: true,
+            child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
+                <Typography variant='h3' fontWeight={600} color={'primary.main'}>Blog</Typography>
+            </Stack>,
+            isLink: true
+        },
+    ]
     const [idActive, setIdActive] = useState<number | undefined>();
     const route = useRouter();
     const idCurrentActive: number | undefined = useMemo(() => SIDE_BAR_LEFT.find(menu => menu.path === route.pathname)?.id, [route.pathname])
     const container = window !== undefined ? () => window().document.body : undefined;
-    const { isGoldenHour } = useSiteContext();
     useEffect(() => {
         if (idCurrentActive) {
             setIdActive(idCurrentActive);
@@ -216,6 +215,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
             handleDrawerToggle();
         }
     }
+
 
 
     const drawer = (
@@ -267,6 +267,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
                                                     lineHeight={item.highLightText ? "1.375rem" : "1.25rem"}
                                                 >
                                                     {item.title}
+
                                                 </Typography>
                                             }
                                             sx={{ opacity: open ? 1 : 0, margin: 0 }}

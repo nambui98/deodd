@@ -188,14 +188,68 @@ const claimStaking = async (data: { poolId: string }) => {
     })
 }
 
-const getMyTicket = async ({ limit, offset }: { limit: number, offset: number }) => {
+const getMyTicket = async ({ limit, offset, drawId }: { limit: number, offset: number, drawId: string | null }) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/tickets`,
         method: 'POST',
-        data: {
+        data: drawId !== 'all' ? {
             limit,
-            offset
+            offset,
+            drawId
+        } : {
+            limit,
+            offset,
         }
+    })
+}
+
+const getCurrentLottery = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/current`,
+        method: 'GET',
+    })
+}
+
+const getWinnerList = async ({ page, size, drawId }: { page: number, size: number, drawId: string | null }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/results`,
+        method: 'GET',
+        params: drawId !== "all" ? {
+            page, size, drawId
+        } : { page, size }
+
+    })
+}
+const getJackpotWinner = async ({ page, size, drawId }: { page: number, size: number, drawId: string | null }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/jackpot/winners`,
+        method: 'GET',
+
+        params: drawId !== "all" ? {
+            page, size, drawId
+        } : { page, size }
+
+    })
+}
+const getListJackpot = async ({ page, size }: { page: number, size: number }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lotteries`,
+        method: 'GET',
+        params: {
+            page, size
+        }
+
+    })
+}
+
+const getLotteryResultByDrawId = async ({ drawId }: { drawId: string | null }) => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/result`,
+        method: 'GET',
+        params: {
+            drawId
+        }
+
     })
 }
 export const DeoddService = {
@@ -203,6 +257,10 @@ export const DeoddService = {
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getLotteryResultByDrawId,
+    getJackpotWinner,
+    getListJackpot,
+    getWinnerList,
     claimStaking,
     getInfoClaimCampaign,
     getNFTDetailById,
@@ -230,5 +288,6 @@ export const DeoddService = {
     claimCampaign,
     checkIsWalletJoinStaking,
     getClaimHistory,
-    getMyTicket
+    getMyTicket,
+    getCurrentLottery
 }

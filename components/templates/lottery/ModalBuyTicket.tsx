@@ -47,7 +47,7 @@ const ModalBuyTicket = (props: Props) => {
             const isExits = basicNumbers.some((value) => value === number);
             let newTicketNumberTempBasic = [...basicNumbers];
 
-            debugger
+            // debugger
             if (isExits) {
                 newTicketNumberTempBasic = basicNumbers.map((ticketNumber) => ticketNumber === number ? null : ticketNumber);
             } else if (basicNumbersNotNull.length < 5) {

@@ -21,7 +21,7 @@ const GenerateText = (props: Props) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setRandomNum(Utils.getRandomNumberInRange(0, texts.length));
+            setRandomNum(Utils.getRandomNumberInRange(0, texts.length - 1));
         }, 2000)
         return () => {
             clearInterval(interval);

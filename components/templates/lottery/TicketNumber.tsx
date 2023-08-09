@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
 
-const TicketNumber = ({ number, size = 40 }: { number: string | number, size?: number }) => {
+const TicketNumber = ({ number, size = 40 }: { number: string | number | null, size?: number }) => {
     return (
         <Box sx={{ width: size, height: size, position: 'relative', borderRadius: 99, overflow: 'hidden' }}>
             <Box sx={{ inset: 0, position: 'absolute', background: '#F5F5FA', borderRadius: "100%" }} />

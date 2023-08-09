@@ -3,7 +3,7 @@ import { Box, Button, Skeleton, Stack, StackProps, Table, TableBody, TableCell, 
 import Countdown from 'components/common/CountDown'
 import { ButtonLoading } from 'components/ui/button'
 import MyImage from 'components/ui/image'
-import { Colors } from 'constants/index'
+import { Colors, MinusBeforeSpin } from 'constants/index'
 import { useLotteryContext } from 'contexts/LotteryContext'
 import { useWalletContext } from 'contexts/WalletContext'
 import Lottie from 'lottie-react'
@@ -13,12 +13,36 @@ import CountDownNumber from './CountDownNumber'
 import GenerateText from './GenerateText'
 import Ticket from './components/Ticket'
 import ModalBuyConfirm from "./components/ModalBuyConfirm"
+import { Format } from "utils/format"
+import { useSiteContext } from "contexts/SiteContext"
+import { BigNumber, ethers, utils } from "ethers"
+import TicketAnimationOdometer from "./components/TicketAnimationOdometer"
+import EndRoll from "./components/EndRoll"
 
 type Props = {}
 
 const Roll = (props: Props) => {
-    const { isRollComing, isRollEnd, dateSpin, isRolling, isWinPrize, setOpenModalBuyTicket } = useLotteryContext();
+    const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, setOpenModalBuyTicket, myTicketsCurrentLottery } = useLotteryContext();
+    const { currentLottery, prevLottery } = useSiteContext();
     const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
+
+    let timeLeftToBuy: { hours: string | number, minutes: string | number, seconds: string | number } = {
+        hours: '0',
+        minutes: '0',
+        seconds: '0'
+    };
+
+    let formattedTimeRemaining: { hours: string | number, minutes: string | number, seconds: string | number } = {
+        hours: '0',
+        minutes: '0',
+        seconds: '0'
+    };
+
+    if (timeRemaining !== null) {
+        timeLeftToBuy = Format.formatTimeCountDown(timeRemaining - MinusBeforeSpin * 1000 * 60);
+        formattedTimeRemaining = Format.formatTimeCountDown(timeRemaining);
+
+    }
 
     return (
         <>
@@ -48,19 +72,19 @@ const Roll = (props: Props) => {
                         component={'span'}
                         fontWeight={600}>
                         Lottery{" "}
-                        <Typography component={'span'} fontWeight={600} color='secondary.main'>#20231212</Typography> </Typography>
+                        <Typography component={'span'} fontWeight={600} color='secondary.main'>#{currentLottery?.lottery_id}</Typography> </Typography>
                     <RuleAndProvablyFair />
                 </Stack>
                 {
                     isRollEnd ?
-                        <Stack alignItems={'center'} mt={2}>
+                        <Stack alignItems={'center'} mt={2} mb={10}>
                             <Typography variant='h5' fontWeight={700}>
                                 Thank you for joining the draw of Lottery{" "}
-                                <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#202312312</Typography>
+                                <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#{prevLottery?.lottery_id}</Typography>
                             </Typography>
                             <Typography fontSize={16} fontWeight={600} mt={2}>
                                 The system is getting to buy the tickets for Lottery{" "}
-                                <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#202312312</Typography>
+                                <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#{currentLottery?.lottery_id}</Typography>
                             </Typography>
                             <Typography fontSize={16} fontWeight={600} mt={5}>
                                 Get ready for the upcoming exciting draw !
@@ -82,7 +106,12 @@ const Roll = (props: Props) => {
                             <Stack alignItems={'center'} flex={1}>
                                 <Typography variant='h5' fontSize={24} fontWeight={700}>Total Jackpot</Typography>
                                 <Stack direction={'row'} alignItems={'center'} gap={1} mt={{ xs: 2, md: 0 }}>
-                                    <Typography fontSize={40} color="secondary.main" fontWeight={700}>14.042</Typography>
+                                    {
+                                        currentLottery ?
+                                            <Typography fontSize={40} color="secondary.main" fontWeight={700}>{Format.formatMoney(utils.formatEther(BigNumber.from((currentLottery?.initial_jackpot ?? 0).toString())))}</Typography>
+                                            :
+                                            <Skeleton variant="rounded" width={50} height={30} />
+                                    }
                                     <Box width={{ xs: 40, md: 30 }} height={{ xs: 40, md: 30 }}>
 
                                         <USDTIcon fill={Colors.secondaryDark} height={"100%"} width={"100%"} />
@@ -90,11 +119,14 @@ const Roll = (props: Props) => {
                                 </Stack>
                                 <Typography display={{ xs: 'none', md: 'block' }} mt={1} fontSize={14} component={'span'} fontWeight={500}>
                                     <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                                        7,000 USDT
+                                        {/* 7,000 USDT */}
+                                        {Format.formatMoney(utils.formatEther(currentLottery?.initial_jackpot ?? 0))} USDT
                                     </Typography>
-                                    (fixed) +
+                                    (fixed) + {" "}
                                     <Typography fontSize={'inherit'} component={'span'} fontWeight={500} color='secondary.main'>
-                                        xxxx USDT
+                                        {/* {currentLottery?.bonus} USDT */}
+                                        {Format.formatMoney(utils.formatEther(currentLottery?.bonus ?? 0))} USDT
+
                                     </Typography>
                                     (bonus, estimated)
                                 </Typography>
@@ -104,9 +136,36 @@ const Roll = (props: Props) => {
                                         <Typography mt={1.5} fontWeight={700} fontSize={16}>Next draw in:</Typography>
                                         <Box mt={1} mb={{ xs: 0, md: 5 }} >
                                             {
-                                                dateSpin !== null ?
+                                                timeRemaining !== null ?
                                                     (
-                                                        <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white', fontSize: 24 }} sxTitle={{ mt: 1, color: 'white', fontSize: 14 }} />
+                                                        <Stack direction={'row'}>
+
+                                                            {/* <Countdown endDate={dateSpin?.toISOString()} sxNumber={{ color: 'white', fontSize: 24 }} sxTitle={{ mt: 1, color: 'white', fontSize: 14 }} /> */}
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.hours}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    hours
+                                                                </Typography>
+                                                            </Stack>
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.minutes}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    min
+                                                                </Typography>
+                                                            </Stack>
+                                                            <Stack width={70} alignItems={'center'}>
+                                                                <Typography fontSize={24} fontWeight={700} color={'white'}>
+                                                                    {formattedTimeRemaining.seconds}
+                                                                </Typography>
+                                                                <Typography color={'white'} mt={1} fontSize={14}>
+                                                                    sec
+                                                                </Typography>
+                                                            </Stack>
+                                                        </Stack>
                                                     )
                                                     :
                                                     <Skeleton variant="rounded" width={210} height={68} />
@@ -115,18 +174,18 @@ const Roll = (props: Props) => {
                                     </>
                                 }
                                 {
-                                    isRollComing && <Box mt={2}>
+                                    isRollComing && <Box mb={4} height={20}>
                                         <GenerateText />
                                     </Box>
                                 }
                             </Stack>
                             {
                                 isRolling &&
-                                <Stack width={1} flex={1} alignItems={'flex-start'} >
+                                <Stack width={1} flex={1} alignItems={'flex-start'} mb={10} >
                                     <Stack gap={2} maxWidth={376} width={1} alignItems={'center'}>
                                         <Typography variant='h5' textTransform={'uppercase'} fontWeight={700}>Winning numbers</Typography>
                                         <Box width={1}>
-                                            <Ticket numbers={[22, 33, 11, 11, 22, 33]} mx="auto" py={1} px={2} />
+                                            <TicketAnimationOdometer numbersInit={resultRoll?.res} mx="auto" py={1} px={2} />
                                         </Box>
                                     </Stack>
                                 </Stack>
@@ -169,7 +228,9 @@ const Roll = (props: Props) => {
                                                 <Skeleton variant="rounded" width={160} height={60} />
                                         }
                                     </Box>
-                                    <Typography fontSize={14} fontWeight={400} >Time left to buy: 03:24:52</Typography>
+                                    <Typography fontSize={14} fontWeight={400} >Time left to buy: {" "}
+                                        {timeLeftToBuy.hours + ":" + timeLeftToBuy.minutes + ":" + timeLeftToBuy.seconds}
+                                    </Typography>
                                     <Typography display={{ xs: 'none', md: 'inline' }} textAlign={'center'} component={'span'} fontSize={14} fontWeight={400} >
 
                                         <Typography component={'span'} fontSize={'inherit'} fontWeight={'inherit'} color="secondary.main">xxxx </Typography>
@@ -191,269 +252,91 @@ const Roll = (props: Props) => {
                 isRolling &&
                 <>
                     <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
-                    <Stack
-                        sx={{ inset: 0 }}
-                        gap={5}
-                        height={1}
-                        width={1}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        textAlign={"center"}
-                    >
-                        <MyImage
-                            sx={{
-                                width: { xs: 80, md: 144 },
-                                height: { xs: 80, md: 144 },
-                            }}
-                            src={CoinEmptyImage}
-                            alt="Empty Coin Image"
-                        />
-                        <Typography
-                            variant='body1'
-                            fontWeight={600}
-                            color={"secondary.100"}
-                        >
-                            You do not own any lottery tickets. Get one for the upcoming draw <br /> and who knows, luck might be on your side.
-                        </Typography>
-                    </Stack>
-                    <Box mt={3} px={20}>
-                        <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
-                                        <TableCell >Numbers</TableCell>
-                                        <TableCell >Ticket</TableCell>
-                                        <TableCell >Matches</TableCell>
-                                        <TableCell >Prize</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow
-                                        sx={{
-                                            'td, th': { border: 0, py: 1 }, 'th': {
-                                                display: 'block'
+                    {
+                        myTicketsCurrentLottery && myTicketsCurrentLottery?.length > 0 ?
+                            <Box mt={3} px={20}>
+                                <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow sx={{ 'td, th': { border: 0, py: 1 } }}>
+                                                <TableCell >Numbers</TableCell>
+                                                <TableCell >Ticket</TableCell>
+                                                <TableCell >Matches</TableCell>
+                                                <TableCell >Prize</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {
+                                                myTicketsCurrentLottery.map(row =>
+                                                    <TableRow
+                                                        key={row.draw_id}
+                                                        sx={{
+                                                            'td, th': { border: 0, py: 1 }, 'th': {
+                                                                display: 'block'
+                                                            }
+                                                        }}
+                                                    >
+                                                        <TableCell
+                                                            align="right"
+                                                        >
+
+                                                            <Ticket numbers={row.series} />
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {row.quantity}
+                                                        </TableCell>
+
+                                                        <TableCell >
+                                                            {row.matches}
+                                                        </TableCell>
+
+                                                        <TableCell align="right" >
+                                                            <Stack direction={'row'} gap={1} >
+                                                                <Box>{Format.formatMoney(ethers.utils.formatEther(BigNumber.from(row.prize.toString())))}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                                            </Stack>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
                                             }
-                                        }}
-                                    >
-                                        <TableCell
-                                            align="right"
-                                        // width={'100%'}
-                                        >
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
 
-                                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                                        </TableCell>
-                                        <TableCell>
-                                            4
-                                        </TableCell>
+                            </Box>
 
-                                        <TableCell >
-                                            --
-                                        </TableCell>
-
-                                        <TableCell align="right" >
-                                            <Stack direction={'row'} gap={1} >
-                                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                            </Stack>
-                                        </TableCell>
-
-                                    </TableRow>
-                                    <TableRow
-                                        sx={{
-                                            'td, th': { border: 0, py: 1 }, 'th': {
-                                                display: 'block'
-                                            }
-                                        }}
-                                    >
-                                        <TableCell
-                                            align="right"
-                                        >
-                                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                                        </TableCell>
-                                        <TableCell>
-                                            4
-                                        </TableCell>
-                                        <TableCell >
-                                            --
-                                        </TableCell>
-                                        <TableCell align="right" >
-                                            <Stack direction={'row'} >
-                                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                            </Stack>
-                                        </TableCell>
-
-                                    </TableRow><TableRow
-                                        sx={{
-                                            'td, th': { border: 0, py: 1 }, 'th': {
-                                                display: 'block'
-                                            }
-                                        }}
-                                    >
-
-                                        <TableCell
-                                            align="right"
-                                        >
-                                            <Ticket numbers={[99, 44, 55, 66, 77, 11]} />
-                                        </TableCell>
-                                        <TableCell>
-                                            4
-                                        </TableCell>
-
-                                        <TableCell >
-                                            --
-                                        </TableCell>
-
-                                        <TableCell align="right" >
-                                            <Stack direction={'row'} >
-                                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                            </Stack>
-                                        </TableCell>
-
-                                    </TableRow><TableRow
-                                        sx={{
-                                            'td, th': { border: 0, py: 1 }, 'th': {
-                                                display: 'block'
-                                            }
-                                        }}
-                                    >
-                                        <TableCell
-                                            align="right"
-                                        // width={'100%'}
-                                        >
-                                            <Ticket numbers={[22, 33, 11, 45, 66, 77]} />
-                                        </TableCell>
-                                        <TableCell>
-                                            4
-                                        </TableCell>
-
-                                        <TableCell >
-                                            --
-                                        </TableCell>
-
-                                        <TableCell align="right" >
-                                            <Stack direction={'row'} >
-                                                <Box>--</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
-                                            </Stack>
-                                        </TableCell>
-
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-
-                    </Box>
-                </>
-
-
-            }
-            {
-                isRollEnd && !isWinPrize &&
-                <>
-                    <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
-                    <Stack
-                        sx={{ inset: 0 }}
-                        mb={6}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        textAlign={"center"}
-                    >
-                        <Typography
-                            variant='body1'
-                            fontWeight={600}
-                            color={"secondary.100"}
-                        >
-                            Give it a shot and try your luck with Lottery
-                            <Typography component={'span'} fontSize={"inherit"} fontWeight={'inherit'}>
-                                #123123213
-                            </Typography>
-                        </Typography>
-                        <Box mt={3} >
-                            {
-                                walletAddress !== undefined ? (
-                                    !walletIsConnected ?
-                                        <ButtonLoading fullWidth={false}
-                                            onClick={handleConnectWallet}
-                                            sx={{
-                                                width: 'auto',
-                                                px: 5,
-                                                py: 2,
-                                                textTransform: 'none',
-                                                backgroundColor: 'background.default'
-                                            }}>Connect Wallet to Buy Ticket</ButtonLoading>
-                                        :
-                                        <ButtonLoading
-                                            onClick={() => setOpenModalBuyTicket(true)}
-                                            fullWidth={false}
-                                            sx={{
-                                                width: 'auto',
-                                                px: 5,
-                                                py: 2,
-                                                textTransform: 'none',
-                                                backgroundColor: 'background.default'
-                                            }}>Buy Ticket</ButtonLoading>
-
-                                ) :
-                                    <Skeleton variant="rounded" width={160} height={60} />
-                            }
-                        </Box>
-
-                    </Stack>
-                </>
-
-
-            }
-            {
-                isWinPrize &&
-                <Stack>
-                    <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
-                    <Stack position={'relative'} height={270} justifyContent={'center'} alignItems={'center'}>
-                        <Box position={'absolute'} sx={{ inset: 0 }} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                            <Lottie animationData={Confetti} loop={true} style={{ height: 900 }} />
-                        </Box>
-                        <Stack
-                            sx={{ inset: 0 }}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                            textAlign={"center"}
-                        >
-                            <Typography
-                                variant='h5'
-                                fontWeight={700}
+                            :
+                            <Stack
+                                sx={{ inset: 0 }}
+                                gap={5}
+                                height={1}
+                                width={1}
+                                justifyContent={"center"}
+                                alignItems={"center"}
+                                textAlign={"center"}
                             >
-                                Congrats! You won the Prize(s) on Lottery {' '}
-                                <Typography component={'span'} color="secondary.main" fontSize={"inherit"} fontWeight={'inherit'}>
-                                    #123123213
+                                <MyImage
+                                    sx={{
+                                        width: { xs: 80, md: 144 },
+                                        height: { xs: 80, md: 144 },
+                                    }}
+                                    src={CoinEmptyImage}
+                                    alt="Empty Coin Image"
+                                />
+                                <Typography
+                                    variant='body1'
+                                    fontWeight={600}
+                                    color={"secondary.100"}
+                                >
+                                    You do not own any lottery tickets. Get one for the upcoming draw <br /> and who knows, luck might be on your side.
                                 </Typography>
-                            </Typography>
-                            <Typography mt={2} variant='body2' fontWeight={400} >The system is calculating the prize value. It will be ready for you to claim in the next 30 minutes</Typography>
-                            <Stack direction={'row'} mt={3} gap={2} >
-                                <ButtonLoading fullWidth={false} sx={{
-                                    width: 'auto',
-                                    px: 5,
-                                    py: 2,
-                                    textTransform: 'none',
-                                    backgroundColor: 'background.default'
-                                }}>
-                                    Go to Claim
-                                </ButtonLoading>
-
-                                <ButtonLoading fullWidth={false} sx={{
-                                    width: 'auto',
-                                    px: 5,
-                                    py: 2,
-                                    textTransform: 'none',
-                                    backgroundColor: 'background.default'
-                                }}>
-                                    Buy ticket for next drawn
-                                </ButtonLoading>
                             </Stack>
 
-                        </Stack>
-
-                    </Stack>
-                </Stack>
+                    }
+                </>
 
 
             }
+            <EndRoll />
         </>
     )
 }
