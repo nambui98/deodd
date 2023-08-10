@@ -116,7 +116,7 @@ const Roll = (props: Props) => {
                                     }
                                     <Box width={{ xs: 40, md: 30 }} height={{ xs: 40, md: 30 }}>
 
-                                        <USDTIcon fill={Colors.secondaryDark} height={"100%"} width={"100%"} />
+                                        <USDTIcon fill="#50ae94" height={"100%"} width={"100%"} />
                                     </Box>
                                 </Stack>
                                 <Typography display={{ xs: 'none', md: 'block' }} mt={1} fontSize={14} component={'span'} fontWeight={500}>
