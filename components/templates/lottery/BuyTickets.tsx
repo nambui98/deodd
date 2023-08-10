@@ -112,12 +112,10 @@ const BuyTickets = (props: Props) => {
 
     return (
         <Box>
-
             <Box overflow={'auto'}>
-
                 <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
             </Box>
-            <Stack direction={'row'} flexWrap={'wrap'} alignItems={'center'} gap={2} mt={3}>
+            <Stack direction={'row'} display={valueTab === TabEnum.JACKPOT ? 'none' : 'flex'} flexWrap={'wrap'} alignItems={'center'} gap={2} mt={3}>
                 <Typography fontSize={14} fontWeight={500}>Lottery ID</Typography>
                 <Box>
                     <Select
