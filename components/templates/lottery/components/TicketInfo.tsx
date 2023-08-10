@@ -45,7 +45,8 @@ export const MyTicketInfo = ({ data }: Props) => {
                     <Typography variant='body2' color="secondary.100">
                         Prize{" "}
                         <Typography sx={{ verticalAlign: '' }} component={'span'} variant='body2' color="white">
-                            {data?.prize}
+
+                            {Format.formatMoney(ethers.utils.formatEther(BigNumber.from(data?.prize.toString())))}
                         </Typography>
                     </Typography>
 

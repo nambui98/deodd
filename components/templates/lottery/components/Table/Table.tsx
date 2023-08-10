@@ -21,6 +21,10 @@ export const TableMyTickets = ({ data }: Props) => {
 
     const { setOpenModalProvablyFair } = useLotteryContext();
     const { currentLottery } = useSiteContext();
+    console.log(currentLottery);
+    console.log(data);
+
+
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -73,7 +77,9 @@ export const TableMyTickets = ({ data }: Props) => {
 
                                     <TableCell align="right" >
                                         <Stack direction={'row'} gap={1} >
-                                            <Box>{ticket.prize}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
+                                            {/* <Box>{ticket.prize}</Box> <USDTIcon fill="#50ae94" width={24} height={24} /> */}
+
+                                            <Box>{Format.formatMoney(ethers.utils.formatEther(BigNumber.from(ticket.prize.toString())))}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="right" >
@@ -94,7 +100,7 @@ export const TableMyTickets = ({ data }: Props) => {
     )
 }
 export const TableResultRoll = ({ data }: { data: WinnerType[] }) => {
-    const { openModalProvablyFair, setOpenModalProvablyFair } = useLotteryContext();
+    const { setOpenModalProvablyFair } = useLotteryContext();
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
