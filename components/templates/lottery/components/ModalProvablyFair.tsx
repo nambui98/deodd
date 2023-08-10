@@ -25,7 +25,7 @@ const ModalProvablyFair = (props: Props) => {
         randomValues.push({ key: randomValue, valueIsExits: checkValueExits, value: converterValue });
       }
       if (countNotExits === 5) {
-        randomValues.push({ key: list[index + 1], valueIsExits: false, value: parseFloat(list[index + 1].slice(-2)) % 10 + 1 });
+        randomValues.push({ key: list[index], valueIsExits: false, value: parseFloat(list[index].slice(-2)) % 10 + 1 });
         return;
       }
     });
@@ -69,7 +69,7 @@ const ModalProvablyFair = (props: Props) => {
       maxWidth: 736,
       width: 1,
       overflow: 'auto',
-      maxHeight: "100vh",
+      maxHeight: { xs: "calc(100vh - 100px)", md: "100vh" },
       boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.15)"
     }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={() => setOpenModalProvablyFair({ open: false, ticketSelected: [null, null, null, null, null, null] })}>
       <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>Provably Fair Ticket Detail</Typography>

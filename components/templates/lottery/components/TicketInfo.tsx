@@ -10,12 +10,16 @@ import { WinnerType } from '../Result'
 import { Convert } from 'utils/convert'
 import { BigNumber, ethers } from 'ethers'
 import { Format } from 'utils/format'
+import { useLotteryContext } from 'contexts/LotteryContext'
+import { useSiteContext } from 'contexts/SiteContext'
 
 type Props = {
     data: TicketType | undefined
 }
 
 export const MyTicketInfo = ({ data }: Props) => {
+    const { setOpenModalProvablyFair } = useLotteryContext();
+    const { currentLottery } = useSiteContext();
     return (
         <Stack>
             <Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -32,7 +36,10 @@ export const MyTicketInfo = ({ data }: Props) => {
                     <Typography component={'span'} variant='body2' color="white">{data?.matches}</Typography>
                 </Typography>
             </Stack>
-            <Ticket mt={1} gap={1} numbers={[12, 33, 11, 23, 4, 6]} />
+            <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: data?.series! })}>
+                <Ticket mt={1} gap={1} numbers={data?.series!} />
+            </Box>
+
             <Stack direction={'row'} mt={2} gap={2} alignItems={'center'}>
                 <Stack gap={.5} direction={'row'} alignItems={'center'}>
                     <Typography variant='body2' color="secondary.100">
@@ -47,7 +54,7 @@ export const MyTicketInfo = ({ data }: Props) => {
                 </Stack>
                 <Typography ml="auto" color="secondary.100" variant='body2'>
                     Status{" "}
-                    <Typography ml={.5} component={'span'} variant='body2' color="white">{data?.claimed ? 'Claimed' : 'Claim'}</Typography>
+                    <Typography ml={.5} component={'span'} variant='body2' color="white">{data?.draw_id === currentLottery?.draw_id ? 'Wait for draw' : data?.claimed ? 'Claimed' : 'Slipped'}</Typography>
                 </Typography>
             </Stack>
 
@@ -58,6 +65,8 @@ type ResultTicketProps = {
     data: WinnerType
 }
 export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
+
+    const { setOpenModalProvablyFair } = useLotteryContext();
     return (
         <Stack>
             <Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -83,7 +92,10 @@ export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
                     </Stack>
                 </Stack>
             </Stack>
-            <Ticket mt={1} gap={1} numbers={[12, 33, 11, 23, 4, 6]} />
+
+            <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: data.series })}>
+                <Ticket mt={1} gap={1} numbers={data.series} />
+            </Box>
         </Stack>
     )
 }

@@ -53,23 +53,29 @@ const JackpotWinner = ({ drawId }: Props) => {
                 <Ticket numbers={dataLotteryBuyDrawId?.res ?? [null, null, null, null, null, null]} size={isMediumScreen ? 40 : 60} maxHeight={96} py={{ xs: 1, md: 2 }} px={{ xs: 2, md: 5 }} gap={{ xs: 1, md: 3 }} text={<Typography display={{ xs: 'none', md: 'block' }} variant='h5' fontWeight={700} textTransform={'uppercase'}>Lucky <br /> number</Typography>} />
             </Box>
             <Typography variant='h5' fontWeight={700} mt={5}>Jackpot Winner</Typography>
-            <Box mt={3}>
-                <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
-                    {
-                        winnerList?.map((winner, index) =>
-                            <ResultTicketInfo key={index} data={winner} />
-                        )
-                    }
-                </Stack>
-                <Box display={{ xs: 'none', md: 'block' }}>
+            {
+                winnerList.length <= 0 ?
 
-                    <TableJackpotWinners data={winnerList} />
+                    <Typography variant='body2' fontWeight={700} mt={3} color="secondary.100" textAlign={'center'}>Have no winner yet!</Typography>
+                    : <Box mt={3}>
+                        <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
+                            {
+                                winnerList?.map((winner, index) =>
+                                    <ResultTicketInfo key={index} data={winner} />
+                                )
+                            }
+                        </Stack>
+                        <Box display={{ xs: 'none', md: 'block' }}>
 
-                </Box>
-                <Box textAlign={'center'}>
-                    <Button variant='text' sx={{ color: 'secondary.main' }} onClick={() => setPage(prevPage => prevPage += 1)} >View more</Button>
-                </Box>
-            </Box>
+                            <TableJackpotWinners data={winnerList} />
+
+                        </Box>
+                        <Box textAlign={'center'}>
+                            <Button variant='text' sx={{ color: 'secondary.main' }} onClick={() => setPage(prevPage => prevPage += 1)} >View more</Button>
+                        </Box>
+                    </Box>
+
+            }
         </Box>
     )
 }

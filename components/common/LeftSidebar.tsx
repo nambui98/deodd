@@ -173,7 +173,7 @@ function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
             highLightText: false,
             disabledHover: true,
             child: <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-                <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery DeODD {currentLottery?.lottery_id}</Typography>
+                <Typography variant='h3' fontWeight={600} color={'primary.main'}>Lottery DeODD 625</Typography>
             </Stack>,
             isLink: true
         },

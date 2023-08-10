@@ -24,7 +24,7 @@ import Link from "next/link"
 type Props = {}
 
 const Roll = (props: Props) => {
-    const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, setOpenModalBuyTicket, myTicketsCurrentLottery } = useLotteryContext();
+    const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, timeRemainingEndRoll, setOpenModalBuyTicket, myTicketsCurrentLottery } = useLotteryContext();
     const { currentLottery, prevLottery } = useSiteContext();
     const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
 
@@ -96,7 +96,7 @@ const Roll = (props: Props) => {
                                     Next Lottery in{" "}
                                 </Typography>
 
-                                <Typography fontSize={16} fontWeight={600} color={'secondary.main'} width={60}><CountDownNumber number={60} /></Typography>
+                                <Typography fontSize={16} fontWeight={600} color={'secondary.main'} width={60}>{Math.floor(((timeRemainingEndRoll ?? 0) % (1000 * 60)) / 1000)}</Typography>
                             </Stack>
                         </Stack>
                         :
@@ -177,7 +177,9 @@ const Roll = (props: Props) => {
                                 }
                                 {
                                     isRollComing && <Box mb={4} height={20}>
-                                        <GenerateText />
+                                        {/* <GenerateText /> */}
+
+                                        <Typography variant='body2' color={"secondary.main"} fontWeight={500}>The suspense is unbearable as we eagerly await the DeODD 625&apos;s lucky user.</Typography>
                                     </Box>
                                 }
                             </Stack>

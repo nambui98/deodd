@@ -225,9 +225,7 @@ const getJackpotWinner = async ({ page, size, drawId }: { page: number, size: nu
         url: baseURL + `/lottery/jackpot/winners`,
         method: 'GET',
 
-        params: drawId !== "all" ? {
-            page, size, drawId
-        } : { page, size }
+        params: { page, size }
 
     })
 }

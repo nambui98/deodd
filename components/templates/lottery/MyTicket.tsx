@@ -7,6 +7,7 @@ import { TableMyTickets } from './components/Table/Table'
 import { MyTicketInfo } from './components/TicketInfo'
 import { DeoddService } from 'libs/apis'
 import { useQuery } from '@tanstack/react-query'
+import CoinAnimation from 'components/common/CoinAnimation'
 
 type Props = {
     drawId: string | null
@@ -26,7 +27,7 @@ export type TicketType = {
 }
 const MyTicket = ({ drawId }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
-    const { setOpenModalBuyTicket } = useLotteryContext();
+    const { setOpenModalBuyTicket, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
@@ -36,6 +37,12 @@ const MyTicket = ({ drawId }: Props) => {
 
         }
     }, [drawId])
+    useEffect(() => {
+        if (!walletAddress) {
+            setMyTickets([])
+        }
+    }, [walletAddress])
+
 
     useQuery({
         queryKey: ["getMyTicket", walletAddress, limit, drawId],
@@ -56,10 +63,11 @@ const MyTicket = ({ drawId }: Props) => {
             setMyTickets(data)
         },
     });
-    // console.log(myTickets)
+    console.log(myTickets)
     // if (isLoading) {
     //     return
     // }
+
 
     return (
         <>
@@ -69,36 +77,38 @@ const MyTicket = ({ drawId }: Props) => {
                     <Typography variant='body2'>You have no ticket</Typography>
                     <Box mt={3}>
                         {
-                            walletAddress !== undefined ? (
-                                !walletIsConnected ?
-                                    <ButtonLoading
-                                        fullWidth={false}
-                                        onClick={handleConnectWallet}
-                                        sx={{
-                                            width: 'auto',
-                                            px: 5,
-                                            py: 2,
-                                            textTransform: 'none',
-                                            backgroundColor: 'background.default'
-                                        }}>
-                                        Connect Wallet to Buy Ticket
-                                    </ButtonLoading>
-                                    :
-                                    <ButtonLoading
-                                        onClick={() => setOpenModalBuyTicket(true)}
-                                        fullWidth={false}
-                                        sx={{
-                                            width: 'auto',
-                                            px: 5,
-                                            py: 2,
-                                            textTransform: 'none',
-                                            backgroundColor: 'background.default'
-                                        }}>
-                                        Buy Ticket
-                                    </ButtonLoading>
+                            !isRollComing ?
+                                walletAddress !== undefined ? (
+                                    !walletIsConnected ?
+                                        <ButtonLoading
+                                            fullWidth={false}
+                                            onClick={handleConnectWallet}
+                                            sx={{
+                                                width: 'auto',
+                                                px: 5,
+                                                py: 2,
+                                                textTransform: 'none',
+                                                backgroundColor: 'background.default'
+                                            }}>
+                                            Connect Wallet to Buy Ticket
+                                        </ButtonLoading>
+                                        :
+                                        <ButtonLoading
+                                            onClick={() => setOpenModalBuyTicket(true)}
+                                            fullWidth={false}
+                                            sx={{
+                                                width: 'auto',
+                                                px: 5,
+                                                py: 2,
+                                                textTransform: 'none',
+                                                backgroundColor: 'background.default'
+                                            }}>
+                                            Buy Ticket
+                                        </ButtonLoading>
 
-                            ) :
-                                <Skeleton variant="rounded" width={160} height={60} />
+                                ) :
+                                    <Skeleton variant="rounded" width={160} height={60} />
+                                : null
                         }
                     </Box>
                 </Stack>
@@ -113,6 +123,7 @@ const MyTicket = ({ drawId }: Props) => {
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
+
                         <TableMyTickets data={myTickets} />
                     </Box>
                     <Box textAlign={'center'}>
@@ -128,6 +139,7 @@ const MyTicket = ({ drawId }: Props) => {
         </>
 
     )
+
 }
 
 export default MyTicket
