@@ -129,6 +129,7 @@ const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
                     getAllowance();
                     refresh();
                     queryClient.invalidateQueries({ queryKey: ['getMyTicket'] });
+                    queryClient.invalidateQueries({ queryKey: ['getCurrentLottery'] });
                 })
                 .catch((error) => {
                     setIsLoading(false);
