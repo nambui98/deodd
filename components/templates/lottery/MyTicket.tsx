@@ -32,17 +32,11 @@ const MyTicket = ({ drawId }: Props) => {
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
     useEffect(() => {
-        if (drawId) {
+        if (drawId || !walletAddress) {
             setLimit(STEP_LIMIT);
-
-        }
-    }, [drawId])
-    useEffect(() => {
-        if (!walletAddress) {
             setMyTickets([])
         }
-    }, [walletAddress])
-
+    }, [drawId, walletAddress])
 
     useQuery({
         queryKey: ["getMyTicket", walletAddress, limit, drawId],

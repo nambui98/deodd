@@ -107,7 +107,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		enabled: !!walletAddress,
 		refetchOnWindowFocus: false,
 		// suspense: myTickets.length > 0 ? false : true,
-		queryFn: () => DeoddService.getMyTicket({ limit: 100, offset: 1, drawId: drawIdMyTicketResultRoll }),
+		queryFn: () => DeoddService.getMyTicket({ limit: 100, offset: 0, drawId: drawIdMyTicketResultRoll }),
 		select: (data: any) => {
 			let result: TicketType[] = [];
 			if (data.status === 200) {

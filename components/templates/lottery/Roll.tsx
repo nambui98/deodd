@@ -271,9 +271,9 @@ const Roll = (props: Props) => {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                myTicketsCurrentLottery.map(row =>
+                                                myTicketsCurrentLottery.map((row, index) =>
                                                     <TableRow
-                                                        key={row.draw_id}
+                                                        key={row.draw_id + index}
                                                         sx={{
                                                             'td, th': { border: 0, py: 1 }, 'th': {
                                                                 display: 'block'
