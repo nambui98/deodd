@@ -257,7 +257,7 @@ const Roll = (props: Props) => {
                     <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
                     {
                         myTicketsCurrentLottery && myTicketsCurrentLottery?.tickets!.length > 0 ?
-                            <Box mt={3} px={20}>
+                            <Box mt={3} px={{ xs: 0, md: 20 }}>
                                 <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
                                     <Table aria-label="simple table">
                                         <TableHead>
