@@ -150,7 +150,7 @@ function Chat({ open }: { open: boolean }) {
                 if (isPing) {
                     setIsPing(false);
                     // debugger
-                    router.reload();
+                    // router.reload();
 
                 }
             },

@@ -12,7 +12,6 @@ import { DeoddService } from 'libs/apis'
 import { useLotteryContext } from 'contexts/LotteryContext'
 
 type Props = {
-    drawId: string | null
 }
 export type WinnerType = {
     wallet: string,
@@ -24,17 +23,17 @@ export type WinnerType = {
     avatar_id: number | null
 }
 
-const Result = ({ drawId }: Props) => {
+const Result = (props: Props) => {
     const theme = useTheme();
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [page, setPage] = useState<number>(1)
     const [winnerList, setWinnerList] = useState<WinnerType[]>([]);
-    const { dataLotteryBuyDrawId } = useLotteryContext();
+    const { dataLotteryBuyDrawId, drawIdValue } = useLotteryContext();
     const { data: res } = useQuery({
-        queryKey: ["getWinnerList", page, drawId],
+        queryKey: ["getWinnerList", page, drawIdValue],
         // suspense: winnerList.length > 0 ? false : true,
         refetchOnWindowFocus: false,
-        queryFn: () => DeoddService.getWinnerList({ page: page, size: 10, drawId }),
+        queryFn: () => DeoddService.getWinnerList({ page: page, size: 10, drawId: drawIdValue }),
         onSuccess(data) {
             if (data && data.length > 0) {
                 setWinnerList(prev => [...prev, ...data])
@@ -50,11 +49,11 @@ const Result = ({ drawId }: Props) => {
     });
 
     useEffect(() => {
-        if (drawId) {
+        if (drawIdValue) {
             setPage(1);
             setWinnerList([])
         }
-    }, [drawId])
+    }, [drawIdValue])
 
     return (
         <Box mt={3}>

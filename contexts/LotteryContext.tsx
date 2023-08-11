@@ -31,7 +31,7 @@ interface LotteryContextType {
 
 	drawIdValue: string | null;
 	setDrawIdValue: Dispatch<SetStateAction<string | null>>;
-	myTicketsCurrentLottery: TicketType[] | null | undefined
+	myTicketsCurrentLottery: { tickets: TicketType[] | null, total: number } | undefined;
 	dataLotteryBuyDrawId: JackpotType | null;
 	resultRoll: JackpotType | null;
 	isEndRoll: boolean,
@@ -66,7 +66,7 @@ const LotteryContext = createContext<LotteryContextType>({
 	setOpenModalProvablyFair: () => { },
 	drawIdValue: null,
 	setDrawIdValue: () => { },
-	myTicketsCurrentLottery: null,
+	myTicketsCurrentLottery: { tickets: [], total: 0 },
 	dataLotteryBuyDrawId: null,
 	resultRoll: null,
 	isEndRoll: false,
@@ -152,18 +152,16 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		// suspense: myTickets.length > 0 ? false : true,
 		queryFn: () => DeoddService.getMyTicket({ limit: 100, offset: 0, drawId: drawIdMyTicketResultRoll }),
 		select: (data: any) => {
-			let result: TicketType[] = [];
+			let result: { tickets: TicketType[], total: number } = { tickets: [], total: 0 };
 			if (data.status === 200) {
 				result = data.data.data;
-			} else {
-				result = [];
 			}
 			return result;
 		},
 	});
 	useEffect(() => {
 		if (myTicketsCurrentLottery) {
-			let checkHasPrize = myTicketsCurrentLottery.some(ticket => BigNumber.from(ticket.prize).gt(BigNumber.from(0)));
+			let checkHasPrize = myTicketsCurrentLottery.tickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)));
 			setIsWinPrize(checkHasPrize);
 		}
 	}, [myTicketsCurrentLottery])

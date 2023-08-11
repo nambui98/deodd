@@ -8,9 +8,9 @@ import { useEffect, useState } from 'react'
 import { TableMyTickets } from './components/Table/Table'
 import { MyTicketInfo } from './components/TicketInfo'
 import { isAfter } from 'date-fns'
+import { da } from 'date-fns/locale'
 
 type Props = {
-    drawId: string | null
 }
 export type TicketType = {
     wallet: string,
@@ -26,41 +26,43 @@ export type TicketType = {
     draw_finished_time?: string
 
 }
-const MyTicket = ({ drawId }: Props) => {
+const MyTicket = ({ }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
-    const { setOpenModalBuyTicket, currentLottery, isRollComing } = useLotteryContext();
+    const { setOpenModalBuyTicket, drawIdValue, currentLottery, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
-    const [isEnd, setIsEnd] = useState<boolean>(false)
+    const [total, setTotal] = useState<number>(0)
     useEffect(() => {
-        if (drawId || !walletAddress) {
+        if (drawIdValue || !walletAddress) {
             setLimit(STEP_LIMIT);
             setMyTickets([])
-            setIsEnd(false);
+            setTotal(0);
         }
-    }, [drawId, walletAddress])
+    }, [drawIdValue, walletAddress])
 
     useQuery({
-        queryKey: ["getMyTicket", walletAddress, limit, drawId],
+        queryKey: ["getMyTicket", walletAddress, limit, drawIdValue],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId }),
+        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: drawIdValue }),
         select: (data: any) => {
-            let result: TicketType[] = [];
+            let result: { tickets: TicketType[], total: number } | undefined;
+
             if (data.status === 200) {
                 result = data.data.data;
-                if (data.data.data.length === 0) {
-                    setIsEnd(true);
-                }
+                // if (data.data.data.total === data.data.data.tickets.length) {
+                //     setIsEnd(true);
+                // }
             } else {
-                result = [];
+                result = undefined;
             }
             return result;
         },
         onSuccess(data) {
-            setMyTickets(data)
+            setMyTickets(data?.tickets ?? [])
+            setTotal(data?.total ?? 0)
         },
     });
     const getStatus = (ticket: TicketType) => {
@@ -137,7 +139,7 @@ const MyTicket = ({ drawId }: Props) => {
                         <TableMyTickets data={myTickets} getStatus={getStatus} />
                     </Box>
                     {
-                        !isEnd &&
+                        myTickets.length < total &&
 
                         <Box textAlign={'center'}>
                             <Button

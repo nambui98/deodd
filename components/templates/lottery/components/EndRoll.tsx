@@ -27,7 +27,7 @@ const EndRoll = (props: Props) => {
                 >
 
                     {
-                        myTicketsCurrentLottery && myTicketsCurrentLottery.length > 0 ?
+                        myTicketsCurrentLottery && myTicketsCurrentLottery?.tickets!.length > 0 ?
                             <Typography
                                 fontSize={16}
                                 fontWeight={600}

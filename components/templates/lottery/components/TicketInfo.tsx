@@ -101,10 +101,10 @@ export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
     )
 }
 
-export const TicketClaimInfo = (ticket: TicketType) => {
+export const TicketClaimInfo = ({ ticket, getStatus }: { ticket: TicketType, getStatus: (ticket: TicketType) => string | undefined }) => {
     return (
         <Stack gap={2}>
-            {/* <MyTicketInfo data={ticket} /> */}
+            <MyTicketInfo data={ticket} getStatus={getStatus} />
             <Box sx={{ alignSelf: 'flex-end' }}>
                 <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
                     Claimed

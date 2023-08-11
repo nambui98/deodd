@@ -6,7 +6,7 @@ import { useWalletContext } from 'contexts/WalletContext';
 
 import React, { Suspense, lazy, useEffect, useState } from 'react'
 import JackpotWinner from './JackpotWinner';
-import Claim from './Claim';
+// import Claim from './Claim';
 import CoinAnimation from 'components/common/CoinAnimation';
 
 // const MyTicket = lazy(() => import("./MyTicket"));
@@ -25,7 +25,11 @@ const MyTicket = dynamic(() =>
 const Result = lazy(() =>
     import('./Result')
 )
+const Claim = lazy(() =>
+    import('./Claim')
+)
 type Props = {}
+
 enum TabEnum {
     MY_TICKET,
     RESULT,
@@ -102,9 +106,9 @@ const BuyTickets = (props: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inView])
     const mapComponentTab: Record<TabEnum, React.ReactNode> = {
-        [TabEnum.MY_TICKET]: <MyTicket drawId={drawIdValue} />,
-        [TabEnum.RESULT]: <Result drawId={drawIdValue} />,
-        [TabEnum.JACKPOT]: <JackpotWinner drawId={drawIdValue} />,
+        [TabEnum.MY_TICKET]: <MyTicket />,
+        [TabEnum.RESULT]: <Result />,
+        [TabEnum.JACKPOT]: <JackpotWinner />,
         [TabEnum.CLAIM]: <Claim />,
     }
 

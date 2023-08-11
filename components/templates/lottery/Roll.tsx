@@ -256,7 +256,7 @@ const Roll = (props: Props) => {
                 <>
                     <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
                     {
-                        myTicketsCurrentLottery && myTicketsCurrentLottery?.length > 0 ?
+                        myTicketsCurrentLottery && myTicketsCurrentLottery?.tickets!.length > 0 ?
                             <Box mt={3} px={20}>
                                 <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
                                     <Table aria-label="simple table">
@@ -270,7 +270,7 @@ const Roll = (props: Props) => {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                myTicketsCurrentLottery.map((row, index) =>
+                                                myTicketsCurrentLottery?.tickets?.map((row, index) =>
                                                     <TableRow
                                                         key={row.draw_id + index}
                                                         sx={{
