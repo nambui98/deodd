@@ -14,12 +14,12 @@ import { useLotteryContext } from 'contexts/LotteryContext'
 import { useSiteContext } from 'contexts/SiteContext'
 
 type Props = {
-    data: TicketType | undefined
+    data: TicketType | undefined,
+    getStatus: (ticket: TicketType) => string | undefined
 }
 
-export const MyTicketInfo = ({ data }: Props) => {
-    const { setOpenModalProvablyFair } = useLotteryContext();
-    const { currentLottery } = useSiteContext();
+export const MyTicketInfo = ({ data, getStatus }: Props) => {
+    const { setOpenModalProvablyFair, currentLottery } = useLotteryContext();
     return (
         <Stack>
             <Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -37,7 +37,7 @@ export const MyTicketInfo = ({ data }: Props) => {
                 </Typography>
             </Stack>
             <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: data?.series! })}>
-                <Ticket mt={1} gap={1} numbers={data?.series!} />
+                <Ticket mt={1} gap={1} numbers={data?.series ?? [null, null, null, null, null, null]} />
             </Box>
 
             <Stack direction={'row'} mt={2} gap={2} alignItems={'center'}>
@@ -46,7 +46,7 @@ export const MyTicketInfo = ({ data }: Props) => {
                         Prize{" "}
                         <Typography sx={{ verticalAlign: '' }} component={'span'} variant='body2' color="white">
 
-                            {Format.formatMoney(ethers.utils.formatEther(BigNumber.from(data?.prize.toString())))}
+                            {Format.formatMoney(data?.prize ? ethers.utils.formatEther(BigNumber.from(data?.prize.toString())) : 0)}
                         </Typography>
                     </Typography>
 
@@ -55,7 +55,7 @@ export const MyTicketInfo = ({ data }: Props) => {
                 </Stack>
                 <Typography ml="auto" color="secondary.100" variant='body2'>
                     Status{" "}
-                    <Typography ml={.5} component={'span'} variant='body2' color="white">{data?.draw_id === currentLottery?.draw_id ? 'Wait for draw' : data?.claimed ? 'Claimed' : 'Slipped'}</Typography>
+                    <Typography ml={.5} component={'span'} variant='body2' color="white">{getStatus(data!)}</Typography>
                 </Typography>
             </Stack>
 
@@ -101,10 +101,10 @@ export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
     )
 }
 
-export const TicketClaimInfo = () => {
+export const TicketClaimInfo = (ticket: TicketType) => {
     return (
         <Stack gap={2}>
-            <MyTicketInfo data={undefined} />
+            {/* <MyTicketInfo data={ticket} /> */}
             <Box sx={{ alignSelf: 'flex-end' }}>
                 <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
                     Claimed

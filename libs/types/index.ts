@@ -42,11 +42,6 @@ export type SiteContextType = {
     turnOffAudio: VoidFunction;
     isGoldenHour: boolean;
     setIsGoldenHour: (value: boolean) => void;
-
-    isEndRoll: boolean,
-    setIsEndRoll: (value: boolean) => void,
-    currentLottery: JackpotType | undefined,
-    prevLottery: JackpotType | undefined
 }
 
 

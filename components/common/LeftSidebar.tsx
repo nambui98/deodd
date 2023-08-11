@@ -83,7 +83,7 @@ const styleButton = (item: TypeSideBarItem, open: boolean, isGoldenHour: boolean
 }
 
 function LeftSidebar({ open, mobileOpen, handleDrawerToggle, window }: Props) {
-    const { isGoldenHour, currentLottery } = useSiteContext();
+    const { isGoldenHour } = useSiteContext();
     const SIDE_BAR_LEFT: TypeSideBarItem[] = [
         {
             id: 1,

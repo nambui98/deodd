@@ -33,10 +33,9 @@ enum TabEnum {
     CLAIM
 }
 const BuyTickets = (props: Props) => {
-    const { drawIdValue, setDrawIdValue } = useLotteryContext();
+    const { drawIdValue, setDrawIdValue, currentLottery } = useLotteryContext();
     const [valueTab, setValueTab] = useState<TabEnum>(TabEnum.MY_TICKET);
 
-    const { currentLottery } = useSiteContext();
     const [page, setPage] = useState<number>(1)
     const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
     useEffect(() => {
@@ -64,7 +63,7 @@ const BuyTickets = (props: Props) => {
         },
     ];
     const { data: resListJackPot } = useQuery({
-        queryKey: ["getListJackpot", page],
+        queryKey: ["getListJackpot", page, currentLottery],
         // refetchOnWindowFocus: false,
         queryFn: () => DeoddService.getListJackpot({ page: page, size: 10 }),
         select: (data) => {

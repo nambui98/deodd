@@ -24,8 +24,7 @@ import Link from "next/link"
 type Props = {}
 
 const Roll = (props: Props) => {
-    const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, timeRemainingEndRoll, setOpenModalBuyTicket, myTicketsCurrentLottery } = useLotteryContext();
-    const { currentLottery, prevLottery } = useSiteContext();
+    const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, timeRemainingEndRoll, setOpenModalBuyTicket, myTicketsCurrentLottery, currentLottery, prevLottery } = useLotteryContext();
     const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
 
     let timeLeftToBuy: { hours: string | number, minutes: string | number, seconds: string | number } = {
@@ -45,7 +44,7 @@ const Roll = (props: Props) => {
         formattedTimeRemaining = Format.formatTimeCountDown(timeRemaining);
 
     }
-
+    const totalJackpot = Format.formatMoney(utils.formatEther(BigNumber.from((currentLottery?.initial_jackpot ?? 0).toString()).add(BigNumber.from(currentLottery?.bonus ?? 0))))
     return (
         <>
             <Box sx={{
@@ -110,7 +109,7 @@ const Roll = (props: Props) => {
                                 <Stack direction={'row'} alignItems={'center'} gap={1} mt={{ xs: 2, md: 0 }}>
                                     {
                                         currentLottery ?
-                                            <Typography fontSize={40} color="secondary.main" fontWeight={700}>{Format.formatMoney(utils.formatEther(BigNumber.from((currentLottery?.initial_jackpot ?? 0).toString())))}</Typography>
+                                            <Typography fontSize={40} color="secondary.main" fontWeight={700}>{totalJackpot}</Typography>
                                             :
                                             <Skeleton variant="rounded" width={50} height={30} />
                                     }

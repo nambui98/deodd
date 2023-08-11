@@ -23,9 +23,9 @@ type Props = {
 }
 
 const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
-    const { openModalApprove, setOpenModalApprove, setOpenModalBuyTicket, setOpenModalBuySuccess } = useLotteryContext();
+    const { openModalApprove, currentLottery, setOpenModalApprove, setOpenModalBuyTicket, setOpenModalBuySuccess } = useLotteryContext();
     const { walletAddress } = useWalletContext();
-    const { setIsError, setTitleError, currentLottery } = useSiteContext();
+    const { setIsError, setTitleError } = useSiteContext();
     const [allowance, setAllowance] = useState<number | string>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const price = totalAmountTicket * DefaultPriceTicket;

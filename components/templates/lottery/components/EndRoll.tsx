@@ -10,9 +10,8 @@ import React from 'react'
 type Props = {}
 
 const EndRoll = (props: Props) => {
-    const { isRollEnd, isWinPrize, setOpenModalBuyTicket, setOpenModalProvablyFair, myTicketsCurrentLottery } = useLotteryContext();
+    const { currentLottery, prevLottery, isRollEnd, isWinPrize, setOpenModalBuyTicket, setOpenModalProvablyFair, myTicketsCurrentLottery } = useLotteryContext();
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
-    const { currentLottery, prevLottery } = useSiteContext();
     if (
         isRollEnd && !isWinPrize
     ) {
@@ -35,7 +34,6 @@ const EndRoll = (props: Props) => {
                                 color={"white"}
                             >
                                 You haven&apos;t won any prizes in this draw. Try your luck again next time.
-
                             </Typography>
                             :
 

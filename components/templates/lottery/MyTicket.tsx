@@ -1,13 +1,13 @@
-import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { useWalletContext } from 'contexts/WalletContext'
+import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
 import { useLotteryContext } from 'contexts/LotteryContext'
+import { useWalletContext } from 'contexts/WalletContext'
+import { DeoddService } from 'libs/apis'
+import { useEffect, useState } from 'react'
 import { TableMyTickets } from './components/Table/Table'
 import { MyTicketInfo } from './components/TicketInfo'
-import { DeoddService } from 'libs/apis'
-import { useQuery } from '@tanstack/react-query'
-import CoinAnimation from 'components/common/CoinAnimation'
+import { isAfter } from 'date-fns'
 
 type Props = {
     drawId: string | null
@@ -22,19 +22,22 @@ export type TicketType = {
     ticket_price: string,
     lottery_id: number | null,
     claimed: boolean,
-    prize: number
+    prize: number,
+    draw_finished_time?: string
 
 }
 const MyTicket = ({ drawId }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
-    const { setOpenModalBuyTicket, isRollComing } = useLotteryContext();
+    const { setOpenModalBuyTicket, currentLottery, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
+    const [isEnd, setIsEnd] = useState<boolean>(false)
     useEffect(() => {
         if (drawId || !walletAddress) {
             setLimit(STEP_LIMIT);
             setMyTickets([])
+            setIsEnd(false);
         }
     }, [drawId, walletAddress])
 
@@ -48,6 +51,9 @@ const MyTicket = ({ drawId }: Props) => {
             let result: TicketType[] = [];
             if (data.status === 200) {
                 result = data.data.data;
+                if (data.data.data.length === 0) {
+                    setIsEnd(true);
+                }
             } else {
                 result = [];
             }
@@ -57,10 +63,20 @@ const MyTicket = ({ drawId }: Props) => {
             setMyTickets(data)
         },
     });
-    console.log(myTickets)
-    // if (isLoading) {
-    //     return
-    // }
+    const getStatus = (ticket: TicketType) => {
+        let drawFinishedTime = new Date(ticket.draw_finished_time ?? '');
+        drawFinishedTime.setMinutes(drawFinishedTime.getMinutes() + 30)
+
+        if (ticket.draw_id === currentLottery?.draw_id) return 'Wait for draw'
+
+        if (drawFinishedTime && isAfter(drawFinishedTime, new Date())) return "Be able to claim in 30 mins"
+
+        if (ticket.claimed) return "Claimed"
+
+        if (!ticket.claimed) return "Not Claimed"
+
+        if (ticket.prize === 0 || (parseFloat(ticket.prize.toString())) === 0 || !ticket.prize) return 'Slipped'
+    }
 
 
     return (
@@ -113,20 +129,24 @@ const MyTicket = ({ drawId }: Props) => {
                 <Box mt={3}>
                     <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
                         {
-                            myTickets?.map(ticket => <MyTicketInfo data={ticket} key={ticket.draw_id} />)
+                            myTickets?.map(ticket => <MyTicketInfo getStatus={getStatus} data={ticket} key={ticket.draw_id} />)
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
 
-                        <TableMyTickets data={myTickets} />
+                        <TableMyTickets data={myTickets} getStatus={getStatus} />
                     </Box>
-                    <Box textAlign={'center'}>
-                        <Button
-                            onClick={() => {
-                                setLimit((prev) => prev + STEP_LIMIT)
-                            }}
-                            variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
-                    </Box>
+                    {
+                        !isEnd &&
+
+                        <Box textAlign={'center'}>
+                            <Button
+                                onClick={() => {
+                                    setLimit((prev) => prev + STEP_LIMIT)
+                                }}
+                                variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
+                        </Box>
+                    }
                 </Box>
 
             }

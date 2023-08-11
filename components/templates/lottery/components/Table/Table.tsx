@@ -1,29 +1,25 @@
-import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import Ticket from '../Ticket'
-import React from 'react'
-import { USDTIcon } from 'utils/Icons'
-import MyImage from 'components/ui/image'
-import { getPathAvatar } from 'utils/checkAvatar'
+import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { ButtonLoading } from 'components/ui/button'
+import MyImage from 'components/ui/image'
+import { useLotteryContext } from 'contexts/LotteryContext'
+import { BigNumber, ethers } from 'ethers'
+import { USDTIcon } from 'utils/Icons'
+import { getPathAvatar } from 'utils/checkAvatar'
+import { Convert } from 'utils/convert'
+import { Format } from 'utils/format'
 import { TicketType } from '../../MyTicket'
 import { WinnerType } from '../../Result'
-import { Convert } from 'utils/convert'
-import { BigNumber, ethers } from 'ethers'
-import { Format } from 'utils/format'
-import { useLotteryContext } from 'contexts/LotteryContext'
-import { useSiteContext } from 'contexts/SiteContext'
+import Ticket from '../Ticket'
+import { isAfter } from 'date-fns'
 
 type Props = {
-    data: TicketType[] | undefined
+    data: TicketType[] | undefined,
+
+    getStatus: (ticket: TicketType) => string | undefined
 }
 
-export const TableMyTickets = ({ data }: Props) => {
-
-    const { setOpenModalProvablyFair } = useLotteryContext();
-    const { currentLottery } = useSiteContext();
-    console.log(currentLottery);
-    console.log(data);
-
+export const TableMyTickets = ({ data, getStatus }: Props) => {
+    const { setOpenModalProvablyFair, currentLottery } = useLotteryContext();
 
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
@@ -66,28 +62,21 @@ export const TableMyTickets = ({ data }: Props) => {
                                                     </svg>
                                                 </Box>
                                             }
-
-
-
                                         </Stack>
                                     </TableCell>
                                     <TableCell>
                                         {ticket.quantity}
                                     </TableCell>
-
                                     <TableCell >
                                         {ticket.matches}
                                     </TableCell>
-
                                     <TableCell align="right" >
                                         <Stack direction={'row'} gap={1} >
-                                            {/* <Box>{ticket.prize}</Box> <USDTIcon fill="#50ae94" width={24} height={24} /> */}
-
                                             <Box>{Format.formatMoney(ethers.utils.formatEther(BigNumber.from(ticket.prize.toString())))}</Box> <USDTIcon fill="#50ae94" width={24} height={24} />
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="right" >
-                                        <Typography variant='body2'>{ticket.draw_id === currentLottery?.draw_id ? 'Wait for draw' : ticket?.claimed ? 'Claimed' : 'Slipped'}</Typography>
+                                        <Typography variant='body2'>{getStatus(ticket)}</Typography>
                                     </TableCell>
                                 </TableRow>
 

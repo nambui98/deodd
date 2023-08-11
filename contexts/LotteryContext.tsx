@@ -1,4 +1,4 @@
-import { MinusBeforeSpin } from 'constants/index';
+import { MinusBeforeSpin, MinusWaitResultRoll } from 'constants/index';
 import { addDays, differenceInMilliseconds, differenceInSeconds, isAfter, isBefore, isEqual, setHours, setMinutes, setSeconds } from "date-fns";
 import { utcToZonedTime } from 'date-fns-tz';
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -34,6 +34,10 @@ interface LotteryContextType {
 	myTicketsCurrentLottery: TicketType[] | null | undefined
 	dataLotteryBuyDrawId: JackpotType | null;
 	resultRoll: JackpotType | null;
+	isEndRoll: boolean,
+	setIsEndRoll: (value: boolean) => void,
+	currentLottery: JackpotType | undefined,
+	prevLottery: JackpotType | undefined
 }
 
 const LotteryContext = createContext<LotteryContextType>({
@@ -65,12 +69,21 @@ const LotteryContext = createContext<LotteryContextType>({
 	myTicketsCurrentLottery: null,
 	dataLotteryBuyDrawId: null,
 	resultRoll: null,
+	isEndRoll: false,
+	setIsEndRoll: () => { },
+	currentLottery: {
+		bonus: 0,
+		draw_id: 0,
+		res: null,
+		initial_jackpot: '0',
+		lottery_id: null
+	},
+	prevLottery: undefined
 })
 
 export const useLotteryContext = () => useContext(LotteryContext);
 
 export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const { setIsEndRoll, prevLottery, currentLottery } = useSiteContext();
 	const { walletAddress } = useWalletContext();
 	const [isRollComing, setIsRollComing] = useState<boolean>(false);
 	const [isRolling, setIsRolling] = useState<boolean>(false);
@@ -82,10 +95,40 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	const [openModalBuySuccess, setOpenModalBuySuccess] = useState<boolean>(false);
 	const [openModalProvablyFair, setOpenModalProvablyFair] = useState<{ open: boolean, ticketSelected: (number | string | null)[] }>({ open: false, ticketSelected: [null, null, null, null, null, null] });
 
-	const [drawIdValue, setDrawIdValue] = useState<string | null>(currentLottery?.draw_id.toString() ?? null);
+	const [drawIdValue, setDrawIdValue] = useState<string | null>(null);
 
 	const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 	const [timeRemainingEndRoll, setTimeRemainingEndRoll] = useState<number | null>(null);
+	const [isEndRoll, setIsEndRoll] = useState<boolean>(false);
+	const [prevLottery, setPrevLottery] = useState<JackpotType | undefined>(undefined);
+
+	const { data: currentLottery, refetch } = useQuery({
+		queryKey: ["getCurrentLottery"],
+		refetchOnWindowFocus: false,
+		// refetchInterval: 5000,
+		queryFn: DeoddService.getCurrentLottery,
+		select: (data: any) => {
+			if (data.status === 200) {
+				return data.data.data;
+			} else {
+				return undefined
+			}
+		},
+	});
+
+	useEffect(() => {
+		setDrawIdValue(currentLottery?.draw_id.toString() ?? null)
+	}, [currentLottery])
+
+	useEffect(() => {
+		if (isEndRoll) {
+			setPrevLottery(currentLottery);
+			refetch();
+		} else {
+			setPrevLottery(undefined);
+		}
+	}, [isEndRoll])
+
 
 	const { data: dataLotteryBuyDrawId } = useQuery({
 		queryKey: ["lotteryBuyDrawId", drawIdValue],
@@ -154,12 +197,12 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			setIsRollComing(timeIsComing);
 
 			const timeIsRolling = new Date(currentTime);
-			timeIsRolling.setMinutes(timeIsRolling.getMinutes() - 1)
+			timeIsRolling.setMinutes(timeIsRolling.getMinutes() - MinusWaitResultRoll)
 			const checkTimeIsRolling = isAfter(nextSpinDate, timeIsRolling) && timeRemaining <= 0;
 			setIsRolling(checkTimeIsRolling)
 
 			const timeIsRollEnd = new Date(currentTime);
-			timeIsRollEnd.setMinutes(timeIsRollEnd.getMinutes() - 2)
+			timeIsRollEnd.setMinutes(timeIsRollEnd.getMinutes() - 1 - MinusWaitResultRoll)
 			const checkTimeIsRollEnd = isAfter(nextSpinDate, timeIsRollEnd) && !checkTimeIsRolling && timeRemaining <= 0;
 			setIsRollEnd(checkTimeIsRollEnd);
 			setIsEndRoll(checkTimeIsRollEnd);
@@ -212,13 +255,13 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		let minutesTarget = 0;
 		let hoursTarget = nextSpinDate.getHours();
 		console.log(nextSpinDate.getMinutes());
-		if (nextSpinDate.getMinutes() <= 1) {
+		if (nextSpinDate.getMinutes() <= MinusWaitResultRoll) {
 			minutesTarget = 0;
-		} else if (nextSpinDate.getMinutes() <= 16) {
+		} else if (nextSpinDate.getMinutes() <= 15 + MinusWaitResultRoll) {
 			minutesTarget = 15;
-		} else if (nextSpinDate.getMinutes() <= 31) {
+		} else if (nextSpinDate.getMinutes() <= 30 + MinusWaitResultRoll) {
 			minutesTarget = 30;
-		} else if (nextSpinDate.getMinutes() <= 46) {
+		} else if (nextSpinDate.getMinutes() <= 45 + MinusWaitResultRoll) {
 			minutesTarget = 45;
 		} else if (nextSpinDate.getMinutes() < 60) {
 			minutesTarget = 0;
@@ -282,7 +325,11 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 				setDrawIdValue,
 				myTicketsCurrentLottery,
 				dataLotteryBuyDrawId,
-				resultRoll
+				resultRoll,
+				currentLottery,
+				isEndRoll,
+				prevLottery,
+				setIsEndRoll
 			}
 		)
 	}, [isRollComing,
