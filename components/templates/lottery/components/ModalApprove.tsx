@@ -25,7 +25,7 @@ type Props = {
 const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
     const { openModalApprove, setOpenModalApprove, setOpenModalBuyTicket, setOpenModalBuySuccess } = useLotteryContext();
     const { walletAddress } = useWalletContext();
-    const { setIsError, setTitleError } = useSiteContext();
+    const { setIsError, setTitleError, currentLottery } = useSiteContext();
     const [allowance, setAllowance] = useState<number | string>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const price = totalAmountTicket * DefaultPriceTicket;
@@ -153,12 +153,16 @@ const ModalApprove = ({ totalAmountTicket, listTicket, refresh }: Props) => {
             width: 1,
             boxShadow: "0px 2px 16px 0px rgba(254, 241, 86, 0.50)"
         }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={isLoading || isLoadingBuy ? () => { } : setOpenModalApprove}>
-            <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>Approve token</Typography>
+            <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>
+                {
+                    price && parseFloat(allowance.toString()) < price ? 'Approve token' : 'Checkout'
+                }
+            </Typography>
 
             <Box component={'form'} onSubmit={handleSubmit(submitForm)}>
                 <Stack>
                     <Typography fontSize={16} fontWeight={600}>x{totalAmountTicket} Lottery {totalAmountTicket > 1 ? 'Tickets' : 'Ticket'}</Typography>
-                    <Typography variant='caption' fontWeight={400} color="secondary.main">Lottery #20231212</Typography>
+                    <Typography variant='caption' fontWeight={400} color="secondary.main">Lottery #{currentLottery?.lottery_id}</Typography>
                 </Stack>
                 <Stack mt={3} direction={'row'} justifyContent={"space-between"}>
                     <Typography variant='body2'>Price</Typography>

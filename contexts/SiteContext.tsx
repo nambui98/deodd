@@ -115,7 +115,7 @@ export const SiteProvider = ({ children }: IProps) => {
     const { data: currentLottery, refetch } = useQuery({
         queryKey: ["getCurrentLottery"],
         refetchOnWindowFocus: false,
-        refetchInterval: 5000,
+        // refetchInterval: 5000,
         queryFn: DeoddService.getCurrentLottery,
         select: (data: any) => {
             if (data.status === 200) {
