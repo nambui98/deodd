@@ -11,6 +11,8 @@ import { TicketType } from '../../MyTicket'
 import { WinnerType } from '../../Result'
 import Ticket from '../Ticket'
 import { isAfter } from 'date-fns'
+import { UseMutationResult } from '@tanstack/react-query'
+import { AxiosResponse } from 'axios'
 
 type Props = {
     data: TicketType[] | undefined,
@@ -225,9 +227,11 @@ export const TableJackpotWinners = ({ data }: { data: WinnerType[] }) => {
 type TableClaimProps = {
     data: TicketType[] | undefined,
     checkHasPrize: boolean,
-    getStatus: (ticket: TicketType) => string | undefined
+    getStatus: (ticket: TicketType) => string | undefined,
+    handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>
 }
-export const TableClaim = ({ data, checkHasPrize, getStatus }: TableClaimProps) => {
+export const TableClaim = ({ data, checkHasPrize, getStatus, handleClaim }: TableClaimProps) => {
+    const sIds: (number | string)[] | undefined = data?.filter(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && !ticket.claimed).map((ticket) => ticket.s_id);
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -239,7 +243,7 @@ export const TableClaim = ({ data, checkHasPrize, getStatus }: TableClaimProps) 
                         <TableCell >Prize</TableCell>
                         <TableCell align='right'>
                             <Box>
-                                <ButtonLoading disabled={!checkHasPrize} fullWidth={false} sx={{ px: 2, py: 1, textTransform: 'none', width: 'auto' }}>Claim all reward</ButtonLoading>
+                                <ButtonLoading disabled={!checkHasPrize} onClick={() => sIds ? handleClaim.mutate(sIds) : {}} fullWidth={false} sx={{ px: 2, py: 1, textTransform: 'none', width: 'auto' }}>Claim all reward</ButtonLoading>
                             </Box>
                         </TableCell>
                     </TableRow>
@@ -281,7 +285,9 @@ export const TableClaim = ({ data, checkHasPrize, getStatus }: TableClaimProps) 
                                                 <Typography variant='body2'>{getStatus(ticket)}</Typography>
                                                 :
                                                 <Box>
-                                                    <ButtonLoading disabled={status === "Claimed"} fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>{status}</ButtonLoading>
+                                                    <ButtonLoading disabled={status === "Claimed"}
+                                                        onClick={() => handleClaim.mutate([ticket.s_id!])}
+                                                        fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>{status}</ButtonLoading>
                                                 </Box>
                                         }
                                     </TableCell>

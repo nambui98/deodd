@@ -9,6 +9,7 @@ import { TableMyTickets } from './components/Table/Table'
 import { MyTicketInfo } from './components/TicketInfo'
 import { isAfter } from 'date-fns'
 import { da } from 'date-fns/locale'
+import Loader from 'components/common/Loader'
 
 type Props = {
 }
@@ -23,7 +24,8 @@ export type TicketType = {
     lottery_id: number | null,
     claimed: boolean,
     prize: number,
-    draw_finished_time?: string
+    draw_finished_time?: string,
+    s_id?: string | number
 
 }
 const MyTicket = ({ }: Props) => {
@@ -41,7 +43,7 @@ const MyTicket = ({ }: Props) => {
         }
     }, [drawIdValue, walletAddress])
 
-    useQuery({
+    const { isFetching } = useQuery({
         queryKey: ["getMyTicket", walletAddress, limit, drawIdValue],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
@@ -126,6 +128,7 @@ const MyTicket = ({ }: Props) => {
                 </Stack>
 
             }
+
             {
                 myTickets && myTickets?.length > 0 &&
                 <Box mt={3}>
@@ -138,6 +141,8 @@ const MyTicket = ({ }: Props) => {
 
                         <TableMyTickets data={myTickets} getStatus={getStatus} />
                     </Box>
+
+                    <Loader isInComponent isLoadingProps={isFetching} />
                     {
                         myTickets.length < total &&
 

@@ -12,6 +12,8 @@ import { BigNumber, ethers } from 'ethers'
 import { Format } from 'utils/format'
 import { useLotteryContext } from 'contexts/LotteryContext'
 import { useSiteContext } from 'contexts/SiteContext'
+import { AxiosResponse } from 'axios'
+import { UseMutationResult } from '@tanstack/react-query'
 
 type Props = {
     data: TicketType | undefined,
@@ -101,15 +103,25 @@ export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
     )
 }
 
-export const TicketClaimInfo = ({ ticket, getStatus }: { ticket: TicketType, getStatus: (ticket: TicketType) => string | undefined }) => {
+export const TicketClaimInfo = ({ ticket, getStatus, handleClaim }: {
+    ticket: TicketType, getStatus: (ticket: TicketType) => string | undefined,
+    handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>
+}) => {
+
+    let status = getStatus(ticket)
     return (
         <Stack gap={2}>
             <MyTicketInfo data={ticket} getStatus={getStatus} />
             <Box sx={{ alignSelf: 'flex-end' }}>
-                <ButtonLoading disabled fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>
-                    Claimed
-                </ButtonLoading>
 
+                {
+                    status !== 'Claimed' && status !== "Claim" ?
+                        <Typography variant='body2'>{getStatus(ticket)}</Typography>
+                        :
+                        <Box>
+                            <ButtonLoading disabled={status === "Claimed"} onClick={() => handleClaim.mutate([ticket.s_id!])} fullWidth={false} sx={{ width: 'auto', px: 2, py: 1, borderRadius: 2, textTransform: 'none' }}>{status}</ButtonLoading>
+                        </Box>
+                }
 
             </Box>
         </Stack>

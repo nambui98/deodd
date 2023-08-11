@@ -1,26 +1,25 @@
-import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
-import MyImage from 'components/ui/image'
-import { USDTIcon } from 'utils/Icons'
-import { getPathAvatar } from 'utils/checkAvatar'
-import Ticket from './components/Ticket'
-import { ButtonLoading } from 'components/ui/button'
-import { CoinEmptyImage } from 'utils/Images'
-import { useWalletContext } from 'contexts/WalletContext'
-import { useLotteryContext } from 'contexts/LotteryContext'
-import { TableClaim } from './components/Table/Table'
-import { MyTicketInfo, TicketClaimInfo } from './components/TicketInfo'
-import { useEffect, useState } from 'react'
-import { TicketType } from './MyTicket'
-import { useQuery } from '@tanstack/react-query'
-import { DeoddService } from 'libs/apis'
-import { isAfter } from 'date-fns'
+import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import Loader from 'components/common/Loader'
+import { ButtonLoading } from 'components/ui/button'
+import MyImage from 'components/ui/image'
+import { useLotteryContext } from 'contexts/LotteryContext'
+import { useSiteContext } from 'contexts/SiteContext'
+import { useWalletContext } from 'contexts/WalletContext'
+import { isAfter } from 'date-fns'
 import { BigNumber } from 'ethers'
+import { DeoddService } from 'libs/apis'
+import { useEffect, useState } from 'react'
+import { CoinEmptyImage } from 'utils/Images'
+import { TicketType } from './MyTicket'
+import { TableClaim } from './components/Table/Table'
+import { TicketClaimInfo } from './components/TicketInfo'
 
 type Props = {}
 
 const Claim = (props: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
+    const { setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const { setOpenModalBuyTicket, currentLottery, isRollComing, drawIdValue } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
@@ -34,7 +33,7 @@ const Claim = (props: Props) => {
         }
     }, [drawIdValue, walletAddress])
 
-    const { isFetching } = useQuery({
+    const { isFetching, refetch } = useQuery({
         queryKey: ["getListClaimJackpot", walletAddress, limit, drawIdValue],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
@@ -73,10 +72,29 @@ const Claim = (props: Props) => {
 
 
     let checkHasPrize = myTickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)));
+    // hanlde claim 
+    const handleClaim = useMutation({
+        mutationFn: (sIds: (string | number)[]) => {
+            return DeoddService.claimLotteryPrize(sIds)
+        },
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess: (data) => {
+            if (data.data.data) {
+                setTitleSuccess('Claim successfully')
+                setIsSuccess(true);
+                refetch();
+            } else {
+                setIsError(true);
+                setTitleError(data.data.meta.error_message)
+            }
+        },
+    });
 
     return (
         <Box mt={3}>
-            <Loader isLoadingProps={isFetching} />
             {
                 !isFetching && myTickets.length === 0 &&
                 <Stack
@@ -140,17 +158,20 @@ const Claim = (props: Props) => {
                 </Stack>
 
             }
+
             {
                 myTickets && myTickets.length > 0 &&
                 <Box mt={3}>
                     <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
                         {
-                            myTickets.map(ticket => <TicketClaimInfo key={ticket.draw_id} getStatus={getStatus} ticket={ticket} />)
+                            myTickets.map(ticket => <TicketClaimInfo key={ticket.draw_id} handleClaim={handleClaim} getStatus={getStatus} ticket={ticket} />)
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
-                        <TableClaim data={myTickets} checkHasPrize={checkHasPrize} getStatus={getStatus} />
+                        <TableClaim handleClaim={handleClaim} data={myTickets} checkHasPrize={checkHasPrize} getStatus={getStatus} />
                     </Box>
+
+                    <Loader isInComponent isLoadingProps={isFetching} />
                     {
                         myTickets.length < total &&
 
@@ -166,6 +187,7 @@ const Claim = (props: Props) => {
 
 
             }
+
         </Box>
     )
 }
