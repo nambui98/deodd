@@ -1,19 +1,22 @@
-import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import Loader from 'components/common/Loader'
-import { ButtonLoading } from 'components/ui/button'
+import { Box, Button, Divider, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import MyImage from 'components/ui/image'
-import { useLotteryContext } from 'contexts/LotteryContext'
-import { useSiteContext } from 'contexts/SiteContext'
-import { useWalletContext } from 'contexts/WalletContext'
-import { isAfter } from 'date-fns'
-import { BigNumber } from 'ethers'
-import { DeoddService } from 'libs/apis'
-import { useEffect, useState } from 'react'
+import { USDTIcon } from 'utils/Icons'
+import { getPathAvatar } from 'utils/checkAvatar'
+import Ticket from './components/Ticket'
+import { ButtonLoading } from 'components/ui/button'
 import { CoinEmptyImage } from 'utils/Images'
-import { TicketType } from './MyTicket'
+import { useWalletContext } from 'contexts/WalletContext'
+import { useLotteryContext } from 'contexts/LotteryContext'
 import { TableClaim } from './components/Table/Table'
-import { TicketClaimInfo } from './components/TicketInfo'
+import { MyTicketInfo, TicketClaimInfo } from './components/TicketInfo'
+import { useEffect, useState } from 'react'
+import { TicketType } from './MyTicket'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { DeoddService } from 'libs/apis'
+import { isAfter } from 'date-fns'
+import Loader from 'components/common/Loader'
+import { BigNumber } from 'ethers'
+import { useSiteContext } from 'contexts/SiteContext'
 
 type Props = {}
 
@@ -34,11 +37,11 @@ const Claim = (props: Props) => {
     }, [drawIdValue, walletAddress])
 
     const { isFetching, refetch } = useQuery({
-        queryKey: ["getListClaimJackpot", walletAddress, limit, drawIdValue],
+        queryKey: ["getListClaimJackpot", walletAddress, limit],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: drawIdValue }),
+        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: "all" }),
         select: (data: any) => {
             let result: { tickets: TicketType[], total: number } | undefined;
             if (data.status === 200) {

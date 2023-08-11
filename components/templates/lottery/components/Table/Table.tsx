@@ -231,7 +231,7 @@ type TableClaimProps = {
     handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>
 }
 export const TableClaim = ({ data, checkHasPrize, getStatus, handleClaim }: TableClaimProps) => {
-    const sIds: (number | string)[] | undefined = data?.filter(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && !ticket.claimed).map((ticket) => ticket.s_id);
+    const sIds: (number | string)[] | undefined = data?.filter(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && !ticket.claimed).map((ticket) => ticket.s_id!);
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
