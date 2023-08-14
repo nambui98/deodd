@@ -61,7 +61,7 @@ const Claim = (props: Props) => {
     }
 
 
-    let checkHasPrize = myTickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)));
+    let checkHasPrize = myTickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && getStatus(ticket) === "Claim");
     // hanlde claim 
     const handleClaim = useMutation({
         mutationFn: (sIds: (string | number)[]) => {
