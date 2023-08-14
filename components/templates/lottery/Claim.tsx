@@ -107,7 +107,7 @@ const Claim = (props: Props) => {
                         alt="Empty Coin Image"
                     />
                     {
-                        walletAddress !== undefined ?
+                        walletAddress !== undefined && walletAddress ?
                             <Typography
                                 variant='body1'
                                 fontWeight={600}
