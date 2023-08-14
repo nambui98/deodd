@@ -104,16 +104,25 @@ const Claim = (props: Props) => {
                         src={CoinEmptyImage}
                         alt="Empty Coin Image"
                     />
-                    <Typography
-                        variant='body1'
-                        fontWeight={600}
-                        color={"secondary.100"}
-                    >
-                        {
-                            walletAddress !== undefined ? "You have no prizes to claim at the moment. Keep trying your luck in <br /> the upcoming prize draws."
-                                : 'Please connect wallet to continue'
-                        }
-                    </Typography>
+                    {
+                        walletAddress !== undefined ?
+                            <Typography
+                                variant='body1'
+                                fontWeight={600}
+                                color={"secondary.100"}
+                            >
+                                You have no prizes to claim at the moment. Keep trying your luck in <br /> the upcoming prize draws.
+                            </Typography>
+                            : <Typography
+                                variant='body1'
+                                fontWeight={600}
+                                color={"secondary.100"}
+                            >
+                                Please connect wallet to continue
+                            </Typography>
+
+
+                    }
                     <Box>
                         {
                             walletAddress !== undefined ? (
