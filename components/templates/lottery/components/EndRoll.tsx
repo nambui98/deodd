@@ -42,10 +42,10 @@ const EndRoll = (props: Props) => {
                                 fontWeight={600}
                                 color={"white"}
                             >
-                                Give it a shot and try your luck with Lottery
-                                <Typography component={'span'} fontSize={"inherit"} fontWeight={'inherit'}>
+                                Give it a shot and try your luck with Lottery 625
+                                {/* <Typography component={'span'} fontSize={"inherit"} fontWeight={'inherit'}>
                                     #{currentLottery?.lottery_id}
-                                </Typography>
+                                </Typography> */}
                             </Typography>
                     }
 

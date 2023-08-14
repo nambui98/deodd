@@ -202,6 +202,12 @@ const getMyTicket = async ({ limit, offset, drawId }: { limit: number, offset: n
         }
     })
 }
+const getClaimableTickets = async () => {
+    return await vhIdRequest({
+        url: baseURL + `/lottery/ticket/claim`,
+        method: 'GET',
+    })
+}
 const claimLotteryPrize = async (sIds: (number | string)[]) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/ticket/claim`,
@@ -261,6 +267,7 @@ export const DeoddService = {
     ...AuthApis,
     ...ChatApis,
     ...ShopApis,
+    getClaimableTickets,
     claimLotteryPrize,
     getLotteryResultByDrawId,
     getJackpotWinner,

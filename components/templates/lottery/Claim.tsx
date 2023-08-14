@@ -24,52 +24,39 @@ const Claim = (props: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const { setOpenModalBuyTicket, currentLottery, isRollComing, drawIdValue } = useLotteryContext();
-    const STEP_LIMIT = 5;
-    const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
-    const [total, setTotal] = useState<number>(0)
     useEffect(() => {
-        if (drawIdValue || !walletAddress) {
-            setLimit(STEP_LIMIT);
+        if (!walletAddress) {
             setMyTickets([])
-            setTotal(0);
         }
-    }, [drawIdValue, walletAddress])
+    }, [walletAddress])
 
     const { isFetching, refetch } = useQuery({
-        queryKey: ["getListClaimJackpot", walletAddress, limit],
+        queryKey: ["getListClaimJackpot", walletAddress],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: "all" }),
+        queryFn: () => DeoddService.getClaimableTickets(),
         select: (data: any) => {
-            let result: { tickets: TicketType[], total: number } | undefined;
+            let result: TicketType[] | undefined;
             if (data.status === 200) {
                 result = data.data.data;
-
-
             } else {
                 result = undefined;
             }
             return result;
         },
         onSuccess(data) {
-            setMyTickets(data?.tickets ?? [])
-            setTotal(data?.total ?? 0)
+            setMyTickets(data ?? [])
         },
     });
     const getStatus = (ticket: TicketType) => {
         let drawFinishedTime = new Date(ticket.draw_finished_time ?? '');
         drawFinishedTime.setMinutes(drawFinishedTime.getMinutes() + 30)
-
         if (ticket.draw_id === currentLottery?.draw_id) return 'Wait for draw'
-
-        if (drawFinishedTime && isAfter(drawFinishedTime, new Date())) return "Be able to claim in 30 mins"
-
+        if (drawFinishedTime && isAfter(drawFinishedTime, new Date())) return "Claim within 30 minutes"
         if (ticket.claimed) return "Claimed"
-
         if (!ticket.claimed) return "Claim"
-
         if (ticket.prize === 0 || (parseFloat(ticket.prize.toString())) === 0 || !ticket.prize) return 'Slipped'
     }
 
@@ -122,7 +109,10 @@ const Claim = (props: Props) => {
                         fontWeight={600}
                         color={"secondary.100"}
                     >
-                        You have no prizes to claim at the moment. Keep trying your luck in <br /> the upcoming prize draws.
+                        {
+                            walletAddress !== undefined ? "You have no prizes to claim at the moment. Keep trying your luck in <br /> the upcoming prize draws."
+                                : 'Please connect wallet to continue'
+                        }
                     </Typography>
                     <Box>
                         {
@@ -164,7 +154,7 @@ const Claim = (props: Props) => {
 
             {
                 myTickets && myTickets.length > 0 &&
-                <Box mt={3}>
+                <Box mt={3} maxHeight={500} overflow={'auto'}>
                     <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
                         {
                             myTickets.map(ticket => <TicketClaimInfo key={ticket.draw_id} handleClaim={handleClaim} getStatus={getStatus} ticket={ticket} />)
@@ -175,17 +165,6 @@ const Claim = (props: Props) => {
                     </Box>
 
                     <Loader isInComponent isLoadingProps={isFetching} />
-                    {
-                        myTickets.length < total &&
-
-                        <Box textAlign={'center'}>
-                            <Button
-                                onClick={() => {
-                                    setLimit((prev) => prev + STEP_LIMIT)
-                                }}
-                                variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
-                        </Box>
-                    }
                 </Box>
 
 

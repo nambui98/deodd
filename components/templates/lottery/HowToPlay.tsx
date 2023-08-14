@@ -48,7 +48,7 @@ const HowToPlay = (props: Props) => {
             <Typography variant='h5' fontWeight={700} mt={3}>How to play</Typography>
             <Grid container pt={3} columnSpacing={4} rowSpacing={5} direction={'row'}>
                 <Grid item xs={12} md={4}>
-                    <Item image={TicketImage} title={'1. Buy a ticket'} description={'Buy ticket and pick 5 Numbers out of 25 1 Jackpot number out of 10'} />
+                    <Item image={TicketImage} title={'1. Buy a ticket'} description={`Buy ticket and pick <br /> 5 Numbers out of 25 <br />1 Jackpot number out of 10`} />
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Item image={BingoImage} title={'2. Wait for the Draw'} description={'Wait for the draw at 15:00 UTC +0 every Money, Wednesday, and Friday'} />
@@ -76,7 +76,13 @@ const Item = ({ image, title, description }: { image: string, title: string, des
             <MyImage src={image} width={80} minWidth={80} minHeight={80} height={80} alt="" />
             <Box>
                 <Typography fontSize={{ xs: 16, md: 24 }} fontWeight={700}>{title}</Typography>
-                <Typography mt={1} variant='body2' color="secondary.100" fontWeight={400}>{description}</Typography>
+                <Typography
+                    mt={1} variant='body2' color="secondary.100"
+                    fontWeight={400}
+                    dangerouslySetInnerHTML={{
+                        __html: description,
+                    }}
+                ></Typography>
             </Box>
         </Stack>
     )
