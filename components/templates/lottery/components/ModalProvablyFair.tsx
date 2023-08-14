@@ -12,12 +12,13 @@ import { Convert } from 'utils/convert'
 type Props = {}
 
 const ModalProvablyFair = (props: Props) => {
-  const { openModalProvablyFair, setOpenModalProvablyFair, dataLotteryBuyDrawId } = useLotteryContext();
-  const list = dataLotteryBuyDrawId?.random_values;
+  const { openModalProvablyFair, setOpenModalProvablyFair } = useLotteryContext();
+  const list = openModalProvablyFair.resultLottery?.random_values;
+  const dataResultLotteryByDrawId = openModalProvablyFair.resultLottery;
 
   let randomValues: { key: string, value: number, valueIsExits: boolean }[] = []
   if (list) {
-    list.forEach((randomValue: string, index) => {
+    list.forEach((randomValue: string, index: number) => {
       let countNotExits = randomValues.filter(obj => obj.valueIsExits === false).length
       if (countNotExits < 5) {
         let converterValue: number = parseFloat(randomValue.slice(-2)) % 25 + 1
@@ -33,13 +34,13 @@ const ModalProvablyFair = (props: Props) => {
   const styleTicket: Record<string, any> = {}
   if (openModalProvablyFair.ticketSelected) {
     openModalProvablyFair.ticketSelected.slice(0, 5).forEach((number, index) => {
-      if (dataLotteryBuyDrawId?.res.slice(0, 5).every((e: number) => e !== number)) {
+      if (dataResultLotteryByDrawId?.res.slice(0, 5).every((e: number) => e !== number)) {
         styleTicket[`:nth-child(${index + 1})`] = {
           opacity: .3,
         }
       }
     })
-    if (openModalProvablyFair.ticketSelected[5] !== dataLotteryBuyDrawId?.res[5]) {
+    if (openModalProvablyFair.ticketSelected[5] !== dataResultLotteryByDrawId?.res[5]) {
       styleTicket[':last-child'] = {
         marginLeft: 'auto',
         opacity: 0.3,
@@ -71,7 +72,7 @@ const ModalProvablyFair = (props: Props) => {
       overflow: 'auto',
       maxHeight: { xs: "calc(100vh - 100px)", md: "100vh" },
       boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.15)"
-    }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={() => setOpenModalProvablyFair({ open: false, ticketSelected: [null, null, null, null, null, null] })}>
+    }} haveIconClosed iconProps={{ width: 24, color: Colors.secondary }} setOpen={() => setOpenModalProvablyFair({ open: false, resultLottery: null, ticketSelected: [null, null, null, null, null, null] })}>
       <Typography textAlign={'center'} mb={3} variant='h5' fontWeight={700}>Provably Fair Ticket Detail</Typography>
 
       <Typography fontSize={16} fontWeight={600} color="white">Step 1: The request sent to VRF generates
@@ -80,7 +81,7 @@ const ModalProvablyFair = (props: Props) => {
           component={'a'}
           sx={{ textDecoration: 'underline', textDecorationColor: 'secondary.main', textUnderlineOffset: 2 }}
           // href={`https://oracle.binance.com/docs/category/vrf/`}
-          href={`${UrlBlockExplorer}/tx/${dataLotteryBuyDrawId?.txn?.replace("\\", '0')}`}
+          href={`${UrlBlockExplorer}/tx/${dataResultLotteryByDrawId?.txn?.replace("\\", '0')}`}
           target="_blank"
           color="inherit">
           {" "} Binance Oracle VRF </Typography>
@@ -142,7 +143,7 @@ const ModalProvablyFair = (props: Props) => {
       <Box maxWidth={376}>
 
         <Typography variant='body2' fontWeight={500} mt={5} mb={2}>Result</Typography>
-        <Ticket numbers={dataLotteryBuyDrawId?.res} />
+        <Ticket numbers={dataResultLotteryByDrawId?.res} />
         <Typography variant='body2' fontWeight={500} mt={3} mb={2}>Compare to your ticket</Typography>
         <Ticket numbers={openModalProvablyFair.ticketSelected} sx={{
           '> div': styleTicket

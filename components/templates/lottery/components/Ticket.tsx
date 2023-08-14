@@ -44,7 +44,7 @@ const Ticket = ({ numbers, size, text, sx, ...props }: Props) => {
         >
             {text}
             {
-                numbers.map((number, index) =>
+                numbers?.map((number, index) =>
                     <TicketNumber key={number + "" + index} size={size} number={number ?? ''} />
                 )
             }

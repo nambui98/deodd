@@ -17,14 +17,16 @@ type Props = {}
 const JackpotWinner = (props: Props) => {
     const theme = useTheme();
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const { dataLotteryBuyDrawId, drawIdValue } = useLotteryContext();
+    const { currentLottery, listJackpot } = useLotteryContext();
     const [page, setPage] = useState<number>(1)
+
+    const [drawIdValue, setDrawIdValue] = useState<string | null>(null);
     const [winnerList, setWinnerList] = useState<WinnerType[]>([]);
     const { data: res } = useQuery({
-        queryKey: ["getJackpotWinnerList", page, drawIdValue],
+        queryKey: ["getJackpotWinnerList", page],
         // suspense: winnerList.length > 0 ? false : true,
         refetchOnWindowFocus: false,
-        queryFn: () => DeoddService.getJackpotWinner({ page: page, size: 10, drawId: drawIdValue }),
+        queryFn: () => DeoddService.getJackpotWinner({ page: page, size: 10 }),
         onSuccess(data: WinnerType[] | null) {
             if (data && data.length > 0) {
                 setWinnerList(prev => [...prev, ...data])
@@ -38,13 +40,33 @@ const JackpotWinner = (props: Props) => {
             }
         },
     });
-
     useEffect(() => {
         if (drawIdValue) {
             setPage(1);
             setWinnerList([])
         }
     }, [drawIdValue])
+    useEffect(() => {
+        if (currentLottery) {
+            const indexPrevCurrentLottery = listJackpot.findIndex(lottery => lottery.draw_id === currentLottery.draw_id) + 1;
+            setDrawIdValue(listJackpot[indexPrevCurrentLottery]?.draw_id.toString() ?? null)
+        }
+    }, [currentLottery])
+
+    const { data: dataLotteryBuyDrawId } = useQuery({
+        queryKey: ["lotteryBuyDrawId", drawIdValue],
+        enabled: !!drawIdValue,
+        refetchOnWindowFocus: false,
+        queryFn: () => DeoddService.getLotteryResultByDrawId({ drawId: drawIdValue }),
+        select: (data: any) => {
+            if (data.status === 200) {
+                // debugger
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
 
     return (
         <Box mt={3}>

@@ -26,18 +26,18 @@ interface LotteryContextType {
 	openModalBuySuccess: boolean;
 	setOpenModalBuySuccess: Dispatch<SetStateAction<boolean>>;
 
-	openModalProvablyFair: { open: boolean, ticketSelected: (number | string | null)[] };
-	setOpenModalProvablyFair: Dispatch<SetStateAction<{ open: boolean, ticketSelected: (number | string | null)[] }>>;
+	openModalProvablyFair: { open: boolean, ticketSelected: (number | string | null)[], resultLottery: JackpotType | null };
+	setOpenModalProvablyFair: Dispatch<SetStateAction<{ open: boolean, resultLottery: JackpotType | null, ticketSelected: (number | string | null)[] }>>;
 
-	drawIdValue: string | null;
-	setDrawIdValue: Dispatch<SetStateAction<string | null>>;
 	myTicketsCurrentLottery: { tickets: TicketType[] | null, total: number } | undefined;
-	dataLotteryBuyDrawId: JackpotType | null;
 	resultRoll: JackpotType | null;
 	isEndRoll: boolean,
 	setIsEndRoll: (value: boolean) => void,
 	currentLottery: JackpotType | undefined,
-	prevLottery: JackpotType | undefined
+	prevLottery: JackpotType | undefined,
+	listJackpot: JackpotType[],
+	pageListJackpot: number,
+	setPageListJackpot: Dispatch<SetStateAction<number>>,
 }
 
 const LotteryContext = createContext<LotteryContextType>({
@@ -61,13 +61,11 @@ const LotteryContext = createContext<LotteryContextType>({
 
 	openModalProvablyFair: {
 		open: false,
+		resultLottery: null,
 		ticketSelected: [null, null, null, null, null, null]
 	},
 	setOpenModalProvablyFair: () => { },
-	drawIdValue: null,
-	setDrawIdValue: () => { },
 	myTicketsCurrentLottery: { tickets: [], total: 0 },
-	dataLotteryBuyDrawId: null,
 	resultRoll: null,
 	isEndRoll: false,
 	setIsEndRoll: () => { },
@@ -78,7 +76,10 @@ const LotteryContext = createContext<LotteryContextType>({
 		initial_jackpot: '0',
 		lottery_id: null
 	},
-	prevLottery: undefined
+	prevLottery: undefined,
+	listJackpot: [],
+	pageListJackpot: 1,
+	setPageListJackpot: () => { },
 })
 
 export const useLotteryContext = () => useContext(LotteryContext);
@@ -93,14 +94,17 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	const [openModalBuyRunOut, setOpenModalBuyRunOut] = useState<boolean>(false);
 	const [openModalApprove, setOpenModalApprove] = useState<boolean>(false);
 	const [openModalBuySuccess, setOpenModalBuySuccess] = useState<boolean>(false);
-	const [openModalProvablyFair, setOpenModalProvablyFair] = useState<{ open: boolean, ticketSelected: (number | string | null)[] }>({ open: false, ticketSelected: [null, null, null, null, null, null] });
+	const [openModalProvablyFair, setOpenModalProvablyFair] = useState<{ open: boolean, resultLottery: JackpotType | null, ticketSelected: (number | string | null)[] }>({ open: false, resultLottery: null, ticketSelected: [null, null, null, null, null, null] });
 
-	const [drawIdValue, setDrawIdValue] = useState<string | null>(null);
 
+	const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
 	const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 	const [timeRemainingEndRoll, setTimeRemainingEndRoll] = useState<number | null>(null);
 	const [isEndRoll, setIsEndRoll] = useState<boolean>(false);
 	const [prevLottery, setPrevLottery] = useState<JackpotType | undefined>(undefined);
+
+	const [pageListJackpot, setPageListJackpot] = useState<number>(1)
+	const [dataResultLotteryByDrawId, setDataResultLotteryByDrawId] = useState<JackpotType>();
 
 	const { data: currentLottery, refetch } = useQuery({
 		queryKey: ["getCurrentLottery"],
@@ -115,10 +119,30 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			}
 		},
 	});
+	const { data: resListJackPot } = useQuery({
+		queryKey: ["getListJackpot", pageListJackpot, currentLottery],
+		// refetchOnWindowFocus: false,
+		queryFn: () => DeoddService.getListJackpot({ page: pageListJackpot, size: 10 }),
+		select: (data) => {
+			let result: JackpotType[] = [];
+			if (data.status === 200) {
+				result = data.data.data;
+			} else {
+				result = [];
+			}
+			return result;
+		},
+		onSuccess(data) {
+			if (data && data.length > 0) {
+				if (listJackpot.length > 0 && listJackpot[listJackpot.length - 1].draw_id !== data[data.length - 1].draw_id) {
+					setListJackpot((prev) => [...prev, ...data]);
+				} else {
+					setListJackpot(data);
+				}
+			}
+		},
 
-	useEffect(() => {
-		setDrawIdValue(currentLottery?.draw_id.toString() ?? null)
-	}, [currentLottery])
+	});
 
 	useEffect(() => {
 		if (isEndRoll) {
@@ -129,21 +153,6 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		}
 	}, [isEndRoll])
 
-
-	const { data: dataLotteryBuyDrawId } = useQuery({
-		queryKey: ["lotteryBuyDrawId", drawIdValue],
-		enabled: !!drawIdValue,
-		refetchOnWindowFocus: false,
-		queryFn: () => DeoddService.getLotteryResultByDrawId({ drawId: drawIdValue }),
-		select: (data: any) => {
-			if (data.status === 200) {
-				// debugger
-				return data.data.data;
-			} else {
-				return undefined
-			}
-		},
-	});
 	const drawIdMyTicketResultRoll: string | null = (prevLottery?.draw_id.toString() ?? currentLottery?.draw_id.toString()) ?? null;
 	const { data: myTicketsCurrentLottery } = useQuery({
 		queryKey: ["getMyTicketCurrentLottery", walletAddress, 100, drawIdMyTicketResultRoll],
@@ -319,19 +328,18 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 				setOpenModalBuySuccess,
 				openModalProvablyFair,
 				setOpenModalProvablyFair,
-				drawIdValue,
-				setDrawIdValue,
 				myTicketsCurrentLottery,
-				dataLotteryBuyDrawId,
 				resultRoll,
 				currentLottery,
 				isEndRoll,
 				prevLottery,
-				setIsEndRoll
+				setIsEndRoll,
+				setPageListJackpot,
+				pageListJackpot,
+				listJackpot,
 			}
 		)
 	}, [isRollComing,
-		dataLotteryBuyDrawId,
 		resultRoll,
 		timeRemaining,
 		isRolling,
@@ -342,7 +350,6 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		openModalBuyRunOut,
 		openModalBuySuccess,
 		openModalProvablyFair,
-		drawIdValue,
 		myTicketsCurrentLottery
 	])
 	return <LotteryContext.Provider value={value}>{children}</LotteryContext.Provider>

@@ -23,7 +23,7 @@ type Props = {}
 const Claim = (props: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
-    const { setOpenModalBuyTicket, currentLottery, isRollComing, drawIdValue } = useLotteryContext();
+    const { setOpenModalBuyTicket, currentLottery } = useLotteryContext();
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
     useEffect(() => {
         if (!walletAddress) {

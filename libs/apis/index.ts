@@ -232,13 +232,11 @@ const getWinnerList = async ({ page, size, drawId }: { page: number, size: numbe
 
     })
 }
-const getJackpotWinner = async ({ page, size, drawId }: { page: number, size: number, drawId: string | null }) => {
+const getJackpotWinner = async ({ page, size }: { page: number, size: number }) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/jackpot/winners`,
         method: 'GET',
-
         params: { page, size }
-
     })
 }
 const getListJackpot = async ({ page, size }: { page: number, size: number }) => {

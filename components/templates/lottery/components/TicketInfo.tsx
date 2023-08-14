@@ -14,14 +14,16 @@ import { useLotteryContext } from 'contexts/LotteryContext'
 import { useSiteContext } from 'contexts/SiteContext'
 import { AxiosResponse } from 'axios'
 import { UseMutationResult } from '@tanstack/react-query'
+import { JackpotType } from 'libs/types'
 
 type Props = {
     data: TicketType | undefined,
-    getStatus: (ticket: TicketType) => string | undefined
+    getStatus: (ticket: TicketType) => string | undefined,
+    resultLottery?: JackpotType
 }
 
-export const MyTicketInfo = ({ data, getStatus }: Props) => {
-    const { setOpenModalProvablyFair, currentLottery } = useLotteryContext();
+export const MyTicketInfo = ({ data, getStatus, resultLottery }: Props) => {
+    const { setOpenModalProvablyFair } = useLotteryContext();
     return (
         <Stack>
             <Stack direction={'row'} gap={2} alignItems={'center'}>
@@ -38,7 +40,7 @@ export const MyTicketInfo = ({ data, getStatus }: Props) => {
                     <Typography component={'span'} variant='body2' color="white">{data?.matches}</Typography>
                 </Typography>
             </Stack>
-            <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: data?.series! })}>
+            <Box sx={{ cursor: 'pointer' }} onClick={() => resultLottery ? setOpenModalProvablyFair({ open: true, ticketSelected: data?.series!, resultLottery }) : {}}>
                 <Ticket mt={1} gap={1} numbers={data?.series ?? [null, null, null, null, null, null]} />
             </Box>
 
@@ -65,9 +67,9 @@ export const MyTicketInfo = ({ data, getStatus }: Props) => {
     )
 }
 type ResultTicketProps = {
-    data: WinnerType
+    data: WinnerType, resultLottery?: JackpotType
 }
-export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
+export const ResultTicketInfo = ({ data, resultLottery }: ResultTicketProps) => {
 
     const { setOpenModalProvablyFair } = useLotteryContext();
     return (
@@ -95,23 +97,23 @@ export const ResultTicketInfo = ({ data }: ResultTicketProps) => {
                     </Stack>
                 </Stack>
             </Stack>
-
-            <Box sx={{ cursor: 'pointer' }} onClick={() => setOpenModalProvablyFair({ open: true, ticketSelected: data.series })}>
+            <Box sx={{ cursor: 'pointer' }} onClick={() => resultLottery ? setOpenModalProvablyFair({ open: true, ticketSelected: data.series, resultLottery }) : {}}>
                 <Ticket mt={1} gap={1} numbers={data.series} />
             </Box>
         </Stack>
     )
 }
 
-export const TicketClaimInfo = ({ ticket, getStatus, handleClaim }: {
+export const TicketClaimInfo = ({ ticket, getStatus, handleClaim, resultLottery }: {
     ticket: TicketType, getStatus: (ticket: TicketType) => string | undefined,
-    handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>
+    handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>,
+    resultLottery?: JackpotType
 }) => {
 
     let status = getStatus(ticket)
     return (
         <Stack gap={2}>
-            <MyTicketInfo data={ticket} getStatus={getStatus} />
+            <MyTicketInfo data={ticket} resultLottery={resultLottery} getStatus={getStatus} />
             <Box sx={{ alignSelf: 'flex-end' }}>
 
                 {

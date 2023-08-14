@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Skeleton, Stack, Typography } from '@mui/material'
+import { Box, Button, Divider, MenuItem, Select, SelectChangeEvent, Skeleton, Stack, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { ButtonLoading } from 'components/ui/button'
 import { useLotteryContext } from 'contexts/LotteryContext'
@@ -10,6 +10,9 @@ import { MyTicketInfo } from './components/TicketInfo'
 import { isAfter } from 'date-fns'
 import { da } from 'date-fns/locale'
 import Loader from 'components/common/Loader'
+import { MyTabs2 } from 'components/common/Tabs'
+import { useInView } from 'react-intersection-observer'
+import { Colors } from 'constants/index'
 
 type Props = {
 }
@@ -30,11 +33,12 @@ export type TicketType = {
 }
 const MyTicket = ({ }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
-    const { setOpenModalBuyTicket, drawIdValue, currentLottery, isRollComing } = useLotteryContext();
+    const { setOpenModalBuyTicket, listJackpot, setPageListJackpot, currentLottery, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;
     const [limit, setLimit] = useState(STEP_LIMIT);
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
     const [total, setTotal] = useState<number>(0)
+    const [drawIdValue, setDrawIdValue] = useState<string | null>(null);
     useEffect(() => {
         if (drawIdValue || !walletAddress) {
             setLimit(STEP_LIMIT);
@@ -51,7 +55,6 @@ const MyTicket = ({ }: Props) => {
         queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: drawIdValue }),
         select: (data: any) => {
             let result: { tickets: TicketType[], total: number } | undefined;
-
             if (data.status === 200) {
                 result = data.data.data;
                 // if (data.data.data.total === data.data.data.tickets.length) {
@@ -82,9 +85,76 @@ const MyTicket = ({ }: Props) => {
 
     }
 
+    const [bottomRef, inView] = useInView();
+    useEffect(() => {
+        if (inView) {
+            if (listJackpot.length > 0) {
+                setPageListJackpot((prev) => prev + 1);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inView])
+    useEffect(() => {
+        if (currentLottery) {
+            setDrawIdValue(currentLottery.draw_id.toString())
+        }
+    }, [currentLottery])
+    const { data: dataLotteryBuyDrawId } = useQuery({
+        queryKey: ["lotteryBuyDrawIdMyTicket", drawIdValue],
+        enabled: !!drawIdValue,
+        refetchOnWindowFocus: false,
+        queryFn: () => DeoddService.getLotteryResultByDrawId({ drawId: drawIdValue }),
+        select: (data: any) => {
+            if (data.status === 200) {
+                // debugger
+                return data.data.data;
+            } else {
+                return undefined
+            }
+        },
+    });
+
+    useEffect(() => {
+        setDrawIdValue(currentLottery?.draw_id.toString() ?? null)
+    }, [currentLottery])
 
     return (
         <>
+            <Stack direction={'row'} flexWrap={'wrap'} alignItems={'center'} gap={2} mt={3}>
+                <Typography fontSize={14} fontWeight={500}>Lottery ID</Typography>
+                <Box>
+                    <Select
+                        value={drawIdValue ?? ''}
+                        placeholder='Select-'
+                        onChange={(event: SelectChangeEvent) => { setDrawIdValue(event.target.value) }}
+                        displayEmpty
+                        sx={styleInput}
+                        inputProps={{ 'aria-label': 'Select campaign' }}
+                        MenuProps={{ slotProps: { paper: { sx: { maxHeight: 250 } } } }}
+                    >
+                        <MenuItem value={"all"}>
+                            <Typography color={"secondary.100"}>All</Typography>
+                        </MenuItem>
+                        {
+                            listJackpot.map((jackpot, index) =>
+                                <MenuItem value={jackpot.draw_id.toString()} key={index}>
+                                    <Typography color={'white'} fontWeight={500} component={'span'} fontSize={14}>Lottery{" "}
+                                        <Typography color={"secondary.main"} fontWeight={500} component={'span'} fontSize={'inherit'}>
+                                            #{jackpot.lottery_id}
+                                        </Typography>
+                                    </Typography>
+                                </MenuItem>
+
+                            )
+                        }
+                        <Box ref={bottomRef} />
+                    </Select>
+                </Box>
+
+                {/* <Typography flex={{ xs: 1, md: 1 }} color='secondary.100' textAlign={{ xs: 'center', sm: 'left' }} fontSize={14} fontWeight={500}>12/12/2022, 16:20:00</Typography> */}
+            </Stack>
+
+
             {
                 (myTickets === undefined || myTickets.length <= 0) &&
                 <Stack alignItems={'center'} justifyContent={'center'} mt={3}>
@@ -134,12 +204,12 @@ const MyTicket = ({ }: Props) => {
                 <Box mt={3}>
                     <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
                         {
-                            myTickets?.map(ticket => <MyTicketInfo getStatus={getStatus} data={ticket} key={ticket.draw_id} />)
+                            myTickets?.map(ticket => <MyTicketInfo getStatus={getStatus} data={ticket} resultLottery={dataLotteryBuyDrawId} key={ticket.draw_id} />)
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
 
-                        <TableMyTickets data={myTickets} getStatus={getStatus} />
+                        <TableMyTickets data={myTickets} getStatus={getStatus} resultLottery={dataLotteryBuyDrawId} />
                     </Box>
 
                     <Loader isInComponent isLoadingProps={isFetching} />
@@ -164,3 +234,35 @@ const MyTicket = ({ }: Props) => {
 }
 
 export default MyTicket
+const styleInput = {
+    border: '0px solid',
+    borderColor: 'background.paper',
+    borderRadius: 2,
+    '.MuiOutlinedInput-notchedOutline': {
+        border: 'none'
+    },
+    width: "100%",
+    fontSize: 14,
+    backgroundColor: "background.paper",
+
+    '& .MuiInputBase-root': {
+        fontSize: "0.875rem",
+        fontWeight: 500,
+        lineHeight: "1.25rem",
+        cursor: "pointer",
+    },
+    // bgcolor: 'background.default',
+    'div': {
+        py: 1,
+        pl: 2,
+        fontSize: 16,
+    },
+    '& .MuiSvgIcon-root ': {
+        fill: Colors.secondary,
+    },
+    '& .MuiPaper-root ': {
+
+        backgroundColor: "background.paper",
+    }
+
+}
