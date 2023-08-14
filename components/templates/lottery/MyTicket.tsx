@@ -77,9 +77,9 @@ const MyTicket = ({ }: Props) => {
 
         if (ticket.claimed) return "Claimed"
 
+        if (ticket.prize === 0 || (parseFloat(ticket.prize.toString())) === 0 || !ticket.prize) return 'Slipped'
         if (!ticket.claimed) return "Not Claimed"
 
-        if (ticket.prize === 0 || (parseFloat(ticket.prize.toString())) === 0 || !ticket.prize) return 'Slipped'
     }
 
 

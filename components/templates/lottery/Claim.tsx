@@ -56,8 +56,10 @@ const Claim = (props: Props) => {
         if (ticket.draw_id === currentLottery?.draw_id) return 'Wait for draw'
         if (drawFinishedTime && isAfter(drawFinishedTime, new Date())) return "Claim within 30 minutes"
         if (ticket.claimed) return "Claimed"
-        if (!ticket.claimed) return "Claim"
+
         if (ticket.prize === 0 || (parseFloat(ticket.prize.toString())) === 0 || !ticket.prize) return 'Slipped'
+
+        if (!ticket.claimed) return "Claim"
     }
 
 
