@@ -7,9 +7,11 @@ import { useWalletContext } from 'contexts/WalletContext';
 import Lottie from 'lottie-react';
 import React from 'react'
 
-type Props = {}
+type Props = {
+    redirectToTabClaim: Function
+}
 
-const EndRoll = (props: Props) => {
+const EndRoll = ({ redirectToTabClaim }: Props) => {
     const { currentLottery, prevLottery, isRollEnd, isWinPrize, setOpenModalBuyTicket, setOpenModalProvablyFair, myTicketsCurrentLottery } = useLotteryContext();
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     if (
@@ -85,7 +87,7 @@ const EndRoll = (props: Props) => {
 
         )
     }
-    if (isWinPrize) {
+    if (isWinPrize && isRollEnd) {
         return <Stack>
             <Typography variant='h5' fontWeight={700}>Your numbers</Typography>
             <Stack position={'relative'} height={270} justifyContent={'center'} alignItems={'center'}>
@@ -104,28 +106,34 @@ const EndRoll = (props: Props) => {
                     >
                         Congrats! You won the Prize(s) on Lottery {' '}
                         <Typography component={'span'} color="secondary.main" fontSize={"inherit"} fontWeight={'inherit'}>
-                            #{currentLottery?.lottery_id}
+                            #{prevLottery?.lottery_id}
                         </Typography>
                     </Typography>
                     <Typography mt={2} variant='body2' fontWeight={400} >The system is calculating the prize value. It will be ready for you to claim in the next 30 minutes</Typography>
                     <Stack direction={'row'} mt={3} gap={2} >
-                        <ButtonLoading fullWidth={false} sx={{
-                            width: 'auto',
-                            px: 5,
-                            py: 2,
-                            textTransform: 'none',
-                            backgroundColor: 'background.default'
-                        }}>
+                        <ButtonLoading
+                            onClick={() => redirectToTabClaim()}
+                            fullWidth={false}
+                            sx={{
+                                width: 'auto',
+                                px: 5,
+                                py: 2,
+                                textTransform: 'none',
+                                backgroundColor: 'background.default'
+                            }}>
                             Go to Claim
                         </ButtonLoading>
 
-                        <ButtonLoading fullWidth={false} sx={{
-                            width: 'auto',
-                            px: 5,
-                            py: 2,
-                            textTransform: 'none',
-                            backgroundColor: 'background.default'
-                        }}>
+                        <ButtonLoading
+                            fullWidth={false}
+                            onClick={() => setOpenModalBuyTicket(true)}
+                            sx={{
+                                width: 'auto',
+                                px: 5,
+                                py: 2,
+                                textTransform: 'none',
+                                backgroundColor: 'background.default'
+                            }}>
                             Buy ticket for next drawn
                         </ButtonLoading>
                     </Stack>

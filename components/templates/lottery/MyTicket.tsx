@@ -15,6 +15,7 @@ import { useInView } from 'react-intersection-observer'
 import { Colors } from 'constants/index'
 
 type Props = {
+    setValueTab:Function
 }
 export type TicketType = {
     wallet: string,
@@ -31,7 +32,7 @@ export type TicketType = {
     s_id?: string | number
 
 }
-const MyTicket = ({ }: Props) => {
+const MyTicket = ({setValueTab }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { setOpenModalBuyTicket, listJackpot, setPageListJackpot, currentLottery, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;

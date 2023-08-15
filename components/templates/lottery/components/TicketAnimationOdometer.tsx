@@ -41,7 +41,6 @@ const TicketAnimationOdometer = ({ numbersInit, size, text, sx, ...props }: Prop
                             generateIndex = 0;
                             numberIndex++;
                         }
-                        debugger
                         return newNumbers;
                     });
                 } else {

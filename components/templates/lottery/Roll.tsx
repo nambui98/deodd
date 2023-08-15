@@ -25,6 +25,8 @@ type Props = {}
 
 const Roll = (props: Props) => {
     const { isRollComing, isRollEnd, timeRemaining, isRolling, resultRoll, timeRemainingEndRoll, setOpenModalBuyTicket, myTicketsCurrentLottery, currentLottery, prevLottery } = useLotteryContext();
+    console.log(myTicketsCurrentLottery);
+
     const { walletIsConnected, walletAddress, handleConnectWallet } = useWalletContext();
 
     let timeLeftToBuy: { hours: string | number, minutes: string | number, seconds: string | number } = {
@@ -78,7 +80,7 @@ const Roll = (props: Props) => {
                 </Stack>
                 {
                     isRollEnd ?
-                        <Stack alignItems={'center'} mt={2} mb={10}>
+                        <Stack alignItems={'center'} justifyContent={'center'} mt={2} mb={10}>
                             <Typography variant='h5' fontWeight={700}>
                                 Thank you for joining the draw of Lottery{" "}
                                 <Typography component={'span'} color={'secondary.main'} fontSize={'inherit'} fontWeight={'inherit'}>#{prevLottery?.lottery_id}</Typography>
@@ -100,7 +102,7 @@ const Roll = (props: Props) => {
                         </Stack>
                         :
                         <Stack
-                            mt={isRolling ? 4 : isRollComing ? -3 : 3}
+                            mt={{ xs: 3, md: isRolling ? 4 : isRollComing ? -3 : 3 }}
                             direction={'row'}
                             flexDirection={{ xs: 'column', md: 'row' }}
                         >
@@ -178,14 +180,14 @@ const Roll = (props: Props) => {
                                     isRollComing && <Box mb={4} height={20}>
                                         {/* <GenerateText /> */}
 
-                                        <Typography variant='body2' color={"secondary.main"} fontWeight={500}>The suspense is unbearable as we eagerly await the DeODD 625&apos;s lucky user.</Typography>
+                                        <Typography variant='body2' textAlign={'center'} color={"secondary.main"} fontWeight={500}>The suspense is unbearable as we eagerly await the DeODD 625&apos;s lucky user.</Typography>
                                     </Box>
                                 }
                             </Stack>
                             {
                                 isRolling &&
-                                <Stack width={1} flex={1} alignItems={'flex-start'} mb={10} >
-                                    <Stack gap={2} maxWidth={376} width={1} alignItems={'center'}>
+                                <Stack width={1} flex={1} alignItems={'flex-start'} justifyContent={'center'} mb={10} >
+                                    <Stack gap={2} maxWidth={376} width={1} alignItems={'center'} mx={{ xs: "auto", md: '0' }}>
                                         <Typography variant='h5' textTransform={'uppercase'} fontWeight={700}>Winning numbers</Typography>
                                         <Box width={1}>
                                             <TicketAnimationOdometer numbersInit={resultRoll?.res} mx="auto" py={1} px={2} />
@@ -339,7 +341,6 @@ const Roll = (props: Props) => {
 
 
             }
-            <EndRoll />
         </>
     )
 }

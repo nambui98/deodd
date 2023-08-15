@@ -18,6 +18,7 @@ import { JackpotType } from 'libs/types';
 import { useSiteContext } from 'contexts/SiteContext';
 import { useInView } from 'react-intersection-observer';
 import { useLotteryContext } from 'contexts/LotteryContext';
+import EndRoll from './components/EndRoll';
 
 const MyTicket = dynamic(() =>
     import('./MyTicket')
@@ -65,20 +66,24 @@ const BuyTickets = (props: Props) => {
 
 
     const mapComponentTab: Record<TabEnum, React.ReactNode> = {
-        [TabEnum.MY_TICKET]: <MyTicket />,
+        [TabEnum.MY_TICKET]: <MyTicket setValueTab={setValueTab} />,
         [TabEnum.RESULT]: <Result />,
         [TabEnum.JACKPOT]: <JackpotWinner />,
         [TabEnum.CLAIM]: <Claim />,
     }
 
+    const redirectToTabClaim = () => {
+        setValueTab(TabEnum.CLAIM)
+    }
 
     return (
         <Box>
+
+            <EndRoll redirectToTabClaim={redirectToTabClaim} />
             <Box overflow={'auto'}>
                 <MyTabs2 listTabs={listTabs} value={valueTab} setValue={setValueTab} />
             </Box>
             <Suspense fallback={<CoinAnimation mx="auto" width={50} height={50} />}>
-
                 {mapComponentTab[valueTab]}
             </Suspense>
         </Box>

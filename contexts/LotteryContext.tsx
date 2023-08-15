@@ -31,8 +31,6 @@ interface LotteryContextType {
 
 	myTicketsCurrentLottery: { tickets: TicketType[] | null, total: number } | undefined;
 	resultRoll: JackpotType | null;
-	isEndRoll: boolean,
-	setIsEndRoll: (value: boolean) => void,
 	currentLottery: JackpotType | undefined,
 	prevLottery: JackpotType | undefined,
 	listJackpot: JackpotType[],
@@ -67,8 +65,6 @@ const LotteryContext = createContext<LotteryContextType>({
 	setOpenModalProvablyFair: () => { },
 	myTicketsCurrentLottery: { tickets: [], total: 0 },
 	resultRoll: null,
-	isEndRoll: false,
-	setIsEndRoll: () => { },
 	currentLottery: {
 		bonus: 0,
 		draw_id: 0,
@@ -100,7 +96,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	const [listJackpot, setListJackpot] = useState<JackpotType[]>([])
 	const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 	const [timeRemainingEndRoll, setTimeRemainingEndRoll] = useState<number | null>(null);
-	const [isEndRoll, setIsEndRoll] = useState<boolean>(false);
+	// const [isEndRoll, setIsEndRoll] = useState<boolean>(false);
 	const [prevLottery, setPrevLottery] = useState<JackpotType | undefined>(undefined);
 
 	const [pageListJackpot, setPageListJackpot] = useState<number>(1)
@@ -145,17 +141,17 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 	});
 
 	useEffect(() => {
-		if (isEndRoll) {
+		if (isRollEnd) {
 			setPrevLottery(currentLottery);
 			refetch();
-		} else {
-			setPrevLottery(undefined);
 		}
-	}, [isEndRoll])
+	}, [isRollEnd])
 
 	const drawIdMyTicketResultRoll: string | null = (prevLottery?.draw_id.toString() ?? currentLottery?.draw_id.toString()) ?? null;
+	console.log("🚀 ~ file: LotteryContext.tsx:151 ~ drawIdMyTicketResultRoll:", drawIdMyTicketResultRoll)
+
 	const { data: myTicketsCurrentLottery } = useQuery({
-		queryKey: ["getMyTicketCurrentLottery", walletAddress, 100, drawIdMyTicketResultRoll],
+		queryKey: ["getMyTicketCurrentLottery", walletAddress, 100, drawIdMyTicketResultRoll, prevLottery, currentLottery],
 		enabled: !!walletAddress,
 		refetchOnWindowFocus: false,
 		// suspense: myTickets.length > 0 ? false : true,
@@ -173,7 +169,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			let checkHasPrize = myTicketsCurrentLottery.tickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)));
 			setIsWinPrize(checkHasPrize);
 		}
-	}, [myTicketsCurrentLottery])
+	}, [myTicketsCurrentLottery, isRollEnd])
 	const { data: resultRoll } = useQuery({
 		queryKey: ["resultRoll", drawIdMyTicketResultRoll],
 		enabled: isRolling,
@@ -212,7 +208,7 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 			timeIsRollEnd.setMinutes(timeIsRollEnd.getMinutes() - 1 - MinusWaitResultRoll)
 			const checkTimeIsRollEnd = isAfter(nextSpinDate, timeIsRollEnd) && !checkTimeIsRolling && timeRemaining <= 0;
 			setIsRollEnd(checkTimeIsRollEnd);
-			setIsEndRoll(checkTimeIsRollEnd);
+			// setIsEndRoll(checkTimeIsRollEnd);
 			if (checkTimeIsRollEnd) {
 				const timeEndRoll = calculateCountdown(timeIsRollEnd, nextSpinDate);
 				setTimeRemainingEndRoll(timeEndRoll);
@@ -331,9 +327,9 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 				myTicketsCurrentLottery,
 				resultRoll,
 				currentLottery,
-				isEndRoll,
+				// isEndRoll,
 				prevLottery,
-				setIsEndRoll,
+				// setIsEndRoll,
 				setPageListJackpot,
 				pageListJackpot,
 				listJackpot,
