@@ -25,31 +25,61 @@ const Claim = (props: Props) => {
     const { setIsError, setTitleError, setTitleSuccess, setIsSuccess } = useSiteContext();
     const { setOpenModalBuyTicket, currentLottery } = useLotteryContext();
     const [myTickets, setMyTickets] = useState<TicketType[]>([])
+    const STEP_LIMIT = 5;
+    const [limit, setLimit] = useState(STEP_LIMIT);
+    const [total, setTotal] = useState<number>(0)
+
     useEffect(() => {
         if (!walletAddress) {
+            setLimit(STEP_LIMIT);
             setMyTickets([])
+            setTotal(0);
         }
     }, [walletAddress])
 
-    const { isFetching, refetch } = useQuery({
-        queryKey: ["getListClaimJackpot", walletAddress],
+    // const { isFetching, refetch } = useQuery({
+    //     queryKey: ["getListClaimJackpot", walletAddress],
+    //     enabled: !!walletAddress,
+    //     refetchOnWindowFocus: false,
+    //     // suspense: myTickets.length > 0 ? false : true,
+    //     queryFn: () => DeoddService.getClaimableTickets(),
+    //     select: (data: any) => {
+    //         let result: TicketType[] | undefined;
+    //         if (data.status === 200) {
+    //             result = data.data.data;
+    //         } else {
+    //             result = undefined;
+    //         }
+    //         return result;
+    //     },
+    //     onSuccess(data) {
+    //         setMyTickets(data ?? [])
+    //     },
+    // });
+    const { isFetching, refetch, data } = useQuery({
+        queryKey: ["getListClaimJackpot", walletAddress, limit],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getClaimableTickets(),
+        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: 'all' }),
         select: (data: any) => {
-            let result: TicketType[] | undefined;
+            let result: { tickets: TicketType[], total: number, isClaimable: boolean } | undefined;
             if (data.status === 200) {
                 result = data.data.data;
+                // if (data.data.data.total === data.data.data.tickets.length) {
+                //     setIsEnd(true);
+                // }
             } else {
                 result = undefined;
             }
             return result;
         },
         onSuccess(data) {
-            setMyTickets(data ?? [])
+            setMyTickets(data?.tickets ?? [])
+            setTotal(data?.total ?? 0)
         },
     });
+
     const getStatus = (ticket: TicketType) => {
         let drawFinishedTime = new Date(ticket.draw_finished_time ?? '');
         drawFinishedTime.setMinutes(drawFinishedTime.getMinutes() + 30)
@@ -84,7 +114,24 @@ const Claim = (props: Props) => {
             }
         },
     });
-
+    // hanlde claim all 
+    const handleClaimAll = useMutation({
+        mutationFn: DeoddService.claimAllLotteryPrize,
+        onError(error: any, variables, context) {
+            setIsError(true)
+            setTitleError(error.response.data.meta.error_message)
+        },
+        onSuccess: (data) => {
+            if (data.data.data) {
+                setTitleSuccess('Claim successfully')
+                setIsSuccess(true);
+                refetch();
+            } else {
+                setIsError(true);
+                setTitleError(data.data.meta.error_message)
+            }
+        },
+    });
     return (
         <Box mt={3}>
             {
@@ -172,13 +219,25 @@ const Claim = (props: Props) => {
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
-                        <TableClaim handleClaim={handleClaim} data={myTickets} checkHasPrize={checkHasPrize} getStatus={getStatus} />
+                        <TableClaim handleClaimAll={handleClaimAll} handleClaim={handleClaim} data={myTickets} isClaimable={data?.isClaimable ?? false} getStatus={getStatus} />
                     </Box>
 
                     <Loader isInComponent isLoadingProps={isFetching} />
                 </Box>
 
 
+
+            }
+            {
+                myTickets.length < total &&
+
+                <Box textAlign={'center'}>
+                    <Button
+                        onClick={() => {
+                            setLimit((prev) => prev + STEP_LIMIT)
+                        }}
+                        variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
+                </Box>
             }
 
         </Box>

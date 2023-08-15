@@ -15,7 +15,7 @@ import { useInView } from 'react-intersection-observer'
 import { Colors } from 'constants/index'
 
 type Props = {
-    setValueTab:Function
+    setValueTab: Function
 }
 export type TicketType = {
     wallet: string,
@@ -32,7 +32,7 @@ export type TicketType = {
     s_id?: string | number
 
 }
-const MyTicket = ({setValueTab }: Props) => {
+const MyTicket = ({ setValueTab }: Props) => {
     const { walletAddress, walletIsConnected, handleConnectWallet } = useWalletContext();
     const { setOpenModalBuyTicket, listJackpot, setPageListJackpot, currentLottery, isRollComing } = useLotteryContext();
     const STEP_LIMIT = 5;
@@ -202,31 +202,27 @@ const MyTicket = ({setValueTab }: Props) => {
 
             {
                 myTickets && myTickets?.length > 0 &&
-                <Box mt={3}>
+                <Box mt={3} maxHeight={500} overflow={'auto'}>
                     <Stack display={{ xs: 'flex', md: 'none' }} divider={<Divider sx={{ my: 2 }} />}>
                         {
                             myTickets?.map(ticket => <MyTicketInfo getStatus={getStatus} data={ticket} resultLottery={dataLotteryBuyDrawId} key={ticket.draw_id} />)
                         }
                     </Stack>
                     <Box display={{ xs: 'none', md: 'block' }}>
-
                         <TableMyTickets data={myTickets} getStatus={getStatus} resultLottery={dataLotteryBuyDrawId} />
                     </Box>
-
                     <Loader isInComponent isLoadingProps={isFetching} />
-                    {
-                        myTickets.length < total &&
-
-                        <Box textAlign={'center'}>
-                            <Button
-                                onClick={() => {
-                                    setLimit((prev) => prev + STEP_LIMIT)
-                                }}
-                                variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
-                        </Box>
-                    }
                 </Box>
-
+            }
+            {
+                myTickets.length < total &&
+                <Box textAlign={'center'}>
+                    <Button
+                        onClick={() => {
+                            setLimit((prev) => prev + STEP_LIMIT)
+                        }}
+                        variant='text' sx={{ color: 'secondary.main' }} >View more</Button>
+                </Box>
             }
         </>
 

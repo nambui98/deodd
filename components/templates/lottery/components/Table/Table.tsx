@@ -230,12 +230,12 @@ export const TableJackpotWinners = ({ data }: { data: WinnerType[] }) => {
 }
 type TableClaimProps = {
     data: TicketType[] | undefined,
-    checkHasPrize: boolean,
+    isClaimable: boolean,
     getStatus: (ticket: TicketType) => string | undefined,
     handleClaim: UseMutationResult<AxiosResponse<any, any>, any, (string | number)[], unknown>
+    handleClaimAll: UseMutationResult<unknown, unknown, void, unknown>
 }
-export const TableClaim = ({ data, checkHasPrize, getStatus, handleClaim }: TableClaimProps) => {
-    const sIds: (number | string)[] | undefined = data?.filter(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && !ticket.claimed).map((ticket) => ticket.s_id!);
+export const TableClaim = ({ data, isClaimable, getStatus, handleClaim, handleClaimAll }: TableClaimProps) => {
     return (
         <TableContainer sx={{ backgroundColor: "transparent", backgroundImage: 'none', boxShadow: "none" }}>
             <Table aria-label="simple table">
@@ -247,7 +247,7 @@ export const TableClaim = ({ data, checkHasPrize, getStatus, handleClaim }: Tabl
                         <TableCell >Prize</TableCell>
                         <TableCell align='right'>
                             <Box>
-                                <ButtonLoading disabled={!checkHasPrize} onClick={() => sIds ? handleClaim.mutate(sIds) : {}} fullWidth={false} sx={{ px: 2, py: 1, textTransform: 'none', width: 'auto' }}>Claim all reward</ButtonLoading>
+                                <ButtonLoading disabled={!isClaimable} onClick={() => handleClaimAll.mutate()} fullWidth={false} sx={{ px: 2, py: 1, textTransform: 'none', width: 'auto' }}>Claim all reward</ButtonLoading>
                             </Box>
                         </TableCell>
                     </TableRow>
