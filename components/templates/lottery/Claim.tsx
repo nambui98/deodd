@@ -57,11 +57,11 @@ const Claim = (props: Props) => {
     //     },
     // });
     const { isFetching, refetch, data } = useQuery({
-        queryKey: ["getListClaimJackpot", walletAddress, limit],
+        queryKey: ["getClaimableTickets", walletAddress, limit],
         enabled: !!walletAddress,
         refetchOnWindowFocus: false,
         // suspense: myTickets.length > 0 ? false : true,
-        queryFn: () => DeoddService.getMyTicket({ limit: limit, offset: 0, drawId: 'all' }),
+        queryFn: () => DeoddService.getClaimableTickets({ limit: limit, offset: 0 }),
         select: (data: any) => {
             let result: { tickets: TicketType[], total: number, isClaimable: boolean } | undefined;
             if (data.status === 200) {
@@ -93,7 +93,6 @@ const Claim = (props: Props) => {
     }
 
 
-    let checkHasPrize = myTickets?.some(ticket => BigNumber.from(ticket.prize.toString()).gt(BigNumber.from(0)) && getStatus(ticket) === "Claim");
     // hanlde claim 
     const handleClaim = useMutation({
         mutationFn: (sIds: (string | number)[]) => {

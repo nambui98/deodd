@@ -202,12 +202,17 @@ const getMyTicket = async ({ limit, offset, drawId }: { limit: number, offset: n
         }
     })
 }
-const getClaimableTickets = async () => {
+const getClaimableTickets = async ({ limit, offset }: { limit: number, offset: number }) => {
     return await vhIdRequest({
-        url: baseURL + `/lottery/ticket/claim`,
-        method: 'GET',
+        url: baseURL + `/lottery/claimable-tickets`,
+        method: 'POST',
+        data: {
+            limit,
+            offset,
+        }
     })
 }
+
 const claimLotteryPrize = async (sIds: (number | string)[]) => {
     return await vhIdRequest({
         url: baseURL + `/lottery/ticket/claim`,
