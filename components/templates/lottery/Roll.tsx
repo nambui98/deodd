@@ -131,7 +131,7 @@ const Roll = (props: Props) => {
                                         {Format.formatMoney(utils.formatEther(currentLottery?.bonus ?? 0))} USDT
 
                                     </Typography>
-                                    (bonus, estimated)
+                                    (bonus)
                                 </Typography>
                                 {
                                     !isRolling &&

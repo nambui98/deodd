@@ -51,7 +51,7 @@ const HowToPlay = (props: Props) => {
                     <Item image={TicketImage} title={'1. Buy a ticket'} description={`Buy ticket and pick <br /> 5 Numbers out of 25 <br />1 Jackpot number out of 10`} />
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <Item image={BingoImage} title={'2. Wait for the Draw'} description={'Wait for the draw at 15:00 UTC +0 every Money, Wednesday, and Friday'} />
+                    <Item image={BingoImage} title={'2. Wait for the Draw'} description={'Wait for the draw at 15:00 UTC +0 every Monday, Wednesday, and Friday'} />
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Item image={LuckyImage} title={'3. Check the results'} description={'Compare results and claim rewards'} />
@@ -313,7 +313,7 @@ const ProvablyFair = () => {
                     The VRF will then generate a random number in hexadecimal format, which will then be converted to decimal and use modulus operator for determining the lucky number outcomes.
                 </Typography>
             </Stack>
-            <Typography variant='body2' color={'secondary.100'} fontWeight={400} lineHeight={'20px'}>
+            <Typography pl={3.5} variant='body2' color={'secondary.100'} fontWeight={400} lineHeight={'20px'}>
                 Note: To check your hexadecimal number, visit the transaction link in BSC. From the first log, take a look at the second line in the Data section. You can use any online converter to convert a hexadecimal number to a decimal number.
             </Typography>
             <Stack direction={'row'} pl={1} gap={1}>
