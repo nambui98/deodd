@@ -232,49 +232,49 @@ export const LotteryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 		6: 2,
 	}
 
-	// function getNextSpinDate(currentDate: Date): Date {
-	// 	let nextSpinDate = currentDate;
-	// 	if (nextSpinDate.getUTCDay() === 1 || nextSpinDate.getUTCDay() === 3 || nextSpinDate.getUTCDay() === 5) {
-	// 		const targetTime = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 15, 0, 0, 0));
-	// 		if (isAfter(currentDate, targetTime)) {
-	// 			nextSpinDate = addDays(nextSpinDate, nextSpinDate.getUTCDay() === 5 ? 3 : 2);
-	// 		}
-	// 	} else {
-	// 		nextSpinDate = addDays(nextSpinDate, mapDayToTargetDay[nextSpinDate.getUTCDay()]);
-	// 	}
-
-	// 	return new Date(Date.UTC(nextSpinDate.getUTCFullYear(), nextSpinDate.getUTCMonth(), nextSpinDate.getUTCDate(), 15, 0, 0, 0));
-	// }
 	function getNextSpinDate(currentDate: Date): Date {
 		let nextSpinDate = currentDate;
-		// if (nextSpinDate.getUTCDay() === 1 || nextSpinDate.getUTCDay() === 3 || nextSpinDate.getUTCDay() === 5) {
-		// 	const targetTime = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 15, 0, 0, 0));
-		// 	if (isAfter(currentDate, targetTime)) {
-		// 		nextSpinDate = addDays(nextSpinDate, nextSpinDate.getUTCDay() === 5 ? 3 : 2);
-		// 	}
-		// } else {
-		// 	nextSpinDate = addDays(nextSpinDate, mapDayToTargetDay[nextSpinDate.getUTCDay()]);
-		// }
-		let minutesTarget = 0;
-		let hoursTarget = nextSpinDate.getHours();
-		console.log(nextSpinDate.getMinutes());
-		if (nextSpinDate.getMinutes() <= MinusWaitResultRoll) {
-			minutesTarget = 0;
-		} else if (nextSpinDate.getMinutes() <= 15 + MinusWaitResultRoll) {
-			minutesTarget = 15;
-		} else if (nextSpinDate.getMinutes() <= 30 + MinusWaitResultRoll) {
-			minutesTarget = 30;
-		} else if (nextSpinDate.getMinutes() <= 45 + MinusWaitResultRoll) {
-			minutesTarget = 45;
-		} else if (nextSpinDate.getMinutes() < 60) {
-			minutesTarget = 0;
-			hoursTarget += 1;
+		if (nextSpinDate.getUTCDay() === 1 || nextSpinDate.getUTCDay() === 3 || nextSpinDate.getUTCDay() === 5) {
+			const targetTime = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 15, 0, 0, 0));
+			if (isAfter(currentDate, targetTime)) {
+				nextSpinDate = addDays(nextSpinDate, nextSpinDate.getUTCDay() === 5 ? 3 : 2);
+			}
+		} else {
+			nextSpinDate = addDays(nextSpinDate, mapDayToTargetDay[nextSpinDate.getUTCDay()]);
 		}
 
-		// debugger
-		// return new Date(nextSpinDate);
-		return new Date(nextSpinDate.getFullYear(), nextSpinDate.getMonth(), nextSpinDate.getDate(), hoursTarget, minutesTarget, 0, 0);
+		return new Date(Date.UTC(nextSpinDate.getUTCFullYear(), nextSpinDate.getUTCMonth(), nextSpinDate.getUTCDate(), 15, 0, 0, 0));
 	}
+	// function getNextSpinDate(currentDate: Date): Date {
+	// 	let nextSpinDate = currentDate;
+	// 	// if (nextSpinDate.getUTCDay() === 1 || nextSpinDate.getUTCDay() === 3 || nextSpinDate.getUTCDay() === 5) {
+	// 	// 	const targetTime = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 15, 0, 0, 0));
+	// 	// 	if (isAfter(currentDate, targetTime)) {
+	// 	// 		nextSpinDate = addDays(nextSpinDate, nextSpinDate.getUTCDay() === 5 ? 3 : 2);
+	// 	// 	}
+	// 	// } else {
+	// 	// 	nextSpinDate = addDays(nextSpinDate, mapDayToTargetDay[nextSpinDate.getUTCDay()]);
+	// 	// }
+	// 	let minutesTarget = 0;
+	// 	let hoursTarget = nextSpinDate.getHours();
+	// 	console.log(nextSpinDate.getMinutes());
+	// 	if (nextSpinDate.getMinutes() <= MinusWaitResultRoll) {
+	// 		minutesTarget = 0;
+	// 	} else if (nextSpinDate.getMinutes() <= 15 + MinusWaitResultRoll) {
+	// 		minutesTarget = 15;
+	// 	} else if (nextSpinDate.getMinutes() <= 30 + MinusWaitResultRoll) {
+	// 		minutesTarget = 30;
+	// 	} else if (nextSpinDate.getMinutes() <= 45 + MinusWaitResultRoll) {
+	// 		minutesTarget = 45;
+	// 	} else if (nextSpinDate.getMinutes() < 60) {
+	// 		minutesTarget = 0;
+	// 		hoursTarget += 1;
+	// 	}
+
+	// debugger
+	// return new Date(nextSpinDate);
+	// 	return new Date(nextSpinDate.getFullYear(), nextSpinDate.getMonth(), nextSpinDate.getDate(), hoursTarget, minutesTarget, 0, 0);
+	// }
 	// if (timeRemaining !== null) {
 	// 	const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
 	// 	const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));

@@ -49,8 +49,8 @@ export const mapTypeTitle: { [key in EnumNFTNumber]: string } = {
 }
 export const DateOpenMainnet = "2023-06-29T09:00:00Z";
 export const DateOpenShop = "2023-06-27T13:00:00Z";
-export const MinusBeforeSpin = 5;
-export const MinusWaitResultRoll = 3;
+export const MinusBeforeSpin = 10;
+export const MinusWaitResultRoll = 2;
 
 export const DateClaimCampaign: { start: string, end: string } = {
   start: "2023-07-25T14:00:00Z",
