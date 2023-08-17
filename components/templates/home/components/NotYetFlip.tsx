@@ -15,6 +15,8 @@ import React, { useState } from 'react'
 import { BnbIcon } from 'utils/Icons';
 import { ButtonProps } from '@mui/base';
 import TestailPoint from './TestailPoint';
+import MyModal from 'components/common/Modal';
+import ModalHowToPlay from 'components/common/ModalHowToPlay';
 
 type Props = {
     isShowing: boolean
@@ -95,8 +97,10 @@ function FormActions() {
     }
     return (
         <Box maxWidth={544} mx="auto" textAlign={'left'}>
-
-            <Typography variant="h3" fontWeight={600} mt={{ md: 2, xl: 5 }} mb={2}>Bet amount</Typography>
+            <Stack direction={'row'} justifyContent={'space-between'} mt={{ md: 2, xl: 5 }} mb={2}>
+                <Typography variant="h3" fontWeight={600} >Bet amount</Typography>
+                <ModalHowToPlay />
+            </Stack>
             <Stack direction={'row'} justifyContent={'space-between'} flexWrap={'wrap'} columnGap={1.5} rowGap={2}>
                 {AMOUNTS.map((item, index) => (
                     <Box flexBasis={{ md: '23%', xs: "23%" }} flexGrow={1} flexShrink={0} key={index}>

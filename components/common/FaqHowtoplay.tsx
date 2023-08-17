@@ -64,7 +64,6 @@ function FaqHowtoplay({ }: Props) {
                                 }
                             >
                                 <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.FAQ)}>FAQ</Item>
-                                <Item variant='body2' onClick={() => handleShowPopup(Modal_Type.HOW_TO_PLAY)}>How to play</Item>
                             </Stack>
                             <Stack
                                 direction={'row'} justifyContent={{ xs: 'flex-start', lg: 'center' }}

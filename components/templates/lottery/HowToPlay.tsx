@@ -196,7 +196,7 @@ const Rules = () => {
                                 Fourth prize
                             </StyledTableCell>
                             <StyledTableCell>
-                                Must match zero balls in total.
+                                Must match zero white balls in total.
                             </StyledTableCell>
                             <StyledTableCell>
                                 0.5 USDT + Quantity of winning tickets
