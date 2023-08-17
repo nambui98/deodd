@@ -10,9 +10,10 @@ import { DashboardErrorType, DashboardFlipType } from "libs/types/dashboardTypes
 type FlipPropsType = {
   error: DashboardErrorType;
   flipDashboardStat: DashboardFlipType;
+  timeStatus: 'TODAY' | 'UNTIL_NOW'
 };
 
-export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
+export function FlipResultSection({ flipDashboardStat, timeStatus, error }: FlipPropsType) {
   return (
     <>
       <DashboardCard
@@ -183,7 +184,7 @@ export function FlipResultSection({ flipDashboardStat, error }: FlipPropsType) {
                 ? "0" + flipDashboardStat.numberFlipToday
                 : flipDashboardStat.numberFlipToday}
             </Typography>
-            <CompareText data={flipDashboardStat.flipCompareYesterdayPercentage} />
+            <CompareText timeStatus={timeStatus} data={flipDashboardStat.flipCompareYesterdayPercentage} />
           </>
         ) : (
           <Typography variant="body2">{error.statData.errorMessage}</Typography>

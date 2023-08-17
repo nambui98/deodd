@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next/types"
-import allStar from '../../../../data/merkle-allstar.json'
-import ref from '../../../../data/merkle-ref.json'
-import nft from '../../../../data/merkle-nft.json'
+import allStar from '../../../../data/merkle-allstar-mainnet.json'
+import ref from '../../../../data/merkle-ref-mainnet.json'
+import nft from '../../../../data/merkle-nft-mainnet.json'
+import bugbuster from '../../../../data/merkle-bugbuster-mainnet.json'
 import { BigNumber, ethers } from "ethers"
 type ResType = {
     data: any
@@ -38,6 +39,11 @@ export default function handler(
             myData = (nft as any).merkleData.claimData[wallet.toLowerCase()]
             if (myData) {
                 myData.amount = parseFloat(myData?.amount ?? '0').toString();
+            }
+        } else if (type === 'BUG_BUSTER') {
+            myData = (bugbuster as any).merkleData.claimData[wallet.toLowerCase()]
+            if (myData) {
+                myData.amount = ethers.utils.formatEther(BigNumber.from(myData?.amount));
             }
         }
         return res.status(200).json({

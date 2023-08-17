@@ -52,6 +52,10 @@ export const DateOpenShop = "2023-06-27T13:00:00Z";
 export const MinusBeforeSpin = 5;
 export const MinusWaitResultRoll = 3;
 
+export const DateClaimCampaign: { start: string, end: string } = {
+  start: "2023-07-25T14:00:00Z",
+  end: "2023-07-27T14:00:00Z"
+};
 export const DefaultRewardPool: number = 1000;
 export const DefaultStaked: number = 30;
 export const DefaultSeason: number = 30;
